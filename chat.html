@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PD | Chat</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link
+href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
+rel="stylesheet">
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body class="phone-page">
+
+<div class="phone-app chat-app">
+
+<header class="chat-header">
+
+<a href="home.html">
+<i class="fa-solid fa-arrow-left"></i>
+</a>
+
+<div class="chat-person">
+
+<div class="person-avatar">
+♥
+</div>
+
+<div>
+<strong>
+<span data-user-name>My Princess ❤️</span>
+</strong>
+
+<span>
+online
+</span>
+</div>
+
+</div>
+
+<div class="chat-actions">
+
+<i class="fa-solid fa-phone"></i>
+<i class="fa-solid fa-ellipsis-vertical"></i>
+
+</div>
+
+</header>
+
+
+<main id="chatMessages" class="chat-messages">
+
+<div class="message received">
+
+Good morning my Deib 🥰
+
+<span>
+08:16
+</span>
+
+</div>
+
+
+<div class="message sent">
+
+Good morning my queen 💜<br>
+Another day, another reason to love you more.
+
+<span>
+08:18 ✓✓
+</span>
+
+</div>
+
+
+<div class="message received">
+
+Aww my Deib 🥰<br>
+You always know how to make my day.
+
+<span>
+08:20
+</span>
+
+</div>
+
+
+<div class="message sent">
+
+I love you more princess ❤️
+
+<span>
+08:21 ✓✓
+</span>
+
+</div>
+
+</main>
+
+
+<form class="chat-input" id="chatForm">
+
+<button type="button">
+<i class="fa-regular fa-face-smile"></i>
+</button>
+
+<input
+type="text"
+id="messageInput"
+placeholder="Type a message..."
+autocomplete="off"
+>
+
+<button type="button">
+<i class="fa-solid fa-paperclip"></i>
+</button>
+
+<button class="send-message" type="submit">
+<i class="fa-solid fa-paper-plane"></i>
+</button>
+
+</form>
+
+</div>
+<script
+    type="module"
+    src="auth-guard.js"
+></script>
+
+<script
+    type="module"
+    src="chat.js"
+></script>
+<script src="script.js"></script>
+<script type="module" src="firebase.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>

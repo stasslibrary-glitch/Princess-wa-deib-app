@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Login | Princess wa Deib</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+
+<body class="login-page">
+
+    <main class="login-container">
+
+        <!-- HEART -->
+
+        <div class="login-heart">
+
+            <i class="fa-solid fa-heart"></i>
+
+        </div>
+
+
+        <!-- BRAND -->
+
+        <h1>
+            Princess wa Deib
+        </h1>
+
+        <p class="login-subtitle">
+            our little world ❤️
+        </p>
+
+
+        <!-- LOGIN CARD -->
+
+        <section class="login-card">
+
+            <div class="login-heading">
+
+                <h2>
+                    Welcome back
+                </h2>
+
+                <p>
+                    Just you. Just me. Just us.
+                </p>
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            <div
+                id="loginError"
+                class="login-error"
+            ></div>
+
+
+            <!-- EMAIL -->
+
+            <div class="input-group">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-regular fa-envelope"></i>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="input-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="input-box">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                    >
+
+                    <button
+                        type="button"
+                        id="togglePassword"
+                        class="password-toggle"
+                    >
+
+                        <i class="fa-regular fa-eye"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- LOGIN -->
+
+            <button
+                type="button"
+                id="loginButton"
+                class="login-button"
+            >
+
+                <span>
+                    Log in
+                </span>
+
+                <i class="fa-solid fa-heart"></i>
+
+            </button>
+
+
+            <!-- DIVIDER -->
+
+            <div class="login-divider">
+
+                <span></span>
+
+                <small>or</small>
+
+                <span></span>
+
+            </div>
+
+
+            <!-- GOOGLE -->
+
+            <button
+                type="button"
+                id="googleButton"
+                class="google-button"
+            >
+
+                <i class="fa-brands fa-google"></i>
+
+                <span>
+                    Continue with Google
+                </span>
+
+            </button>
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <p class="login-footer">
+            Made with love for two ❤️
+        </p>
+
+        <div class="login-date">
+            Since 26 June 2026
+        </div>
+
+    </main>
+
+
+    <script
+        type="module"
+        src="login.js"
+    ></script>
+
+</body>
+
+</html>

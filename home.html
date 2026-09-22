@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PD | Home</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+</head>
+
+<body class="phone-page">
+
+<div class="phone-app">
+
+    <header class="app-header">
+
+        <button class="icon-btn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div class="header-logo">
+            Princess wa Deib
+            <span>(PD)</span>
+        </div>
+
+        <div class="header-heart">
+            ♥
+        </div>
+
+    </header>
+
+
+    <main class="app-content">
+
+        <!-- HERO -->
+
+        <section class="home-cover">
+
+            <div class="cover-overlay"></div>
+
+            <div class="cover-text">
+
+                <h1>
+                    Together<br>
+                    is my favourite<br>
+                    place to be...
+                </h1>
+
+                <span>♥</span>
+
+            </div>
+
+        </section>
+
+
+        <!-- DAYS -->
+
+        <section class="home-card days-home">
+
+            <div class="home-icon">
+                <i class="fa-regular fa-calendar-days"></i>
+            </div>
+
+            <div>
+
+                <small>
+                    Days Together
+                </small>
+
+                <strong id="daysTogether">
+                    0
+                </strong>
+
+                <p>
+                    Since 26th June ♥
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- SONG -->
+
+        <section class="home-card song-home">
+
+            <div class="home-icon">
+                <i class="fa-solid fa-music"></i>
+            </div>
+
+            <div class="song-home-info">
+
+                <small>
+                    Song of the Day
+                </small>
+
+                <strong id="songTitle">
+                    Your love amazes me
+                </strong>
+
+            </div>
+
+            <a href="song.html" class="play-btn">
+                <i class="fa-solid fa-play"></i>
+            </a>
+
+        </section>
+
+
+        <!-- FOUR BUTTONS -->
+
+        <section class="home-grid">
+
+            <a href="chat.html" class="home-menu">
+
+                <div>
+                    <i class="fa-regular fa-comments"></i>
+
+                    <span class="notification">
+                        2
+                    </span>
+                </div>
+
+                <p>
+                    Chat
+                </p>
+
+            </a>
+
+
+            <a href="stats.html" class="home-menu">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                <p>
+                    Our Stats
+                </p>
+
+            </a>
+
+
+            <a href="love.html" class="home-menu">
+
+                <i class="fa-solid fa-chart-pie"></i>
+
+                <p>
+                    Love Pie
+                </p>
+
+            </a>
+
+
+            <a href="settings.html" class="home-menu">
+
+                <i class="fa-solid fa-gear"></i>
+
+                <p>
+                    Settings
+                </p>
+
+            </a>
+
+        </section>
+
+    </main>
+
+</div>
+<script
+    type="module"
+    src="auth-guard.js"
+></script>
+<script src="script.js"></script>
+<script type="module" src="firebase.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>
