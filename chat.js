@@ -34,14 +34,14 @@ const PD_PROFILES = {
 
     /* PRINCESS ACCOUNT */
     "princess@gmail.com": {
-        name: "Princess",
-        displayName: "My Princess ❤️"
+        name: "Jaris",
+        displayName: "Jaris ❤️"
     },
 
     /* DEIB ACCOUNT */
     "deib@gmail.com": {
-        name: "Deib",
-        displayName: "Deib ❤️"
+        name: "Ernest",
+        displayName: "Ernest ❤️"
     }
 
 };
