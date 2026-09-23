@@ -53,27 +53,24 @@
         </button>
 
     </header>
-
+<i class="fa-regular fa-calendar-days"></i>
 
     <!-- CONTENT -->
 
     <main class="calendar-page">
 
 
-        <!-- INTRO -->
+        <div class="journey-info">
 
-        <section class="journey-intro">
+    <h4>
+        Every date has a story. ❤️
+    </h4>
 
-            <h3>
-                Every date has a story.
-            </h3>
+    <p>
+        Tap a date to add or view a special moment.
+    </p>
 
-            <p>
-                Our little timeline of
-                memories, moments and love.
-            </p>
-
-        </section>
+</div>
 
 
         <!-- STATS -->
@@ -233,115 +230,6 @@
 </div>
 
 
-<!-- ADD MEMORY MODAL -->
-
-<div
-    class="memory-modal"
-    id="memoryModal"
->
-
-    <div class="memory-modal-card">
-
-        <button
-            class="modal-close"
-            id="closeMemoryModal"
-        >
-
-            <i class="fa-solid fa-xmark"></i>
-
-        </button>
-
-
-        <h3>
-            Add Special Day ❤️
-        </h3>
-
-
-        <p
-            class="modal-date"
-            id="selectedMemoryDate"
-        >
-            Choose a date
-        </p>
-
-
-        <label>
-            Event type
-        </label>
-
-        <select id="memoryType">
-
-            <option value="love">
-                ❤️ Love
-            </option>
-
-            <option value="date">
-                🌹 Date
-            </option>
-
-            <option value="song">
-                🎵 Song
-            </option>
-
-            <option value="memory">
-                📸 Memory
-            </option>
-
-            <option value="gift">
-                🎁 Gift
-            </option>
-
-            <option value="conversation">
-                💬 Special conversation
-            </option>
-
-            <option value="celebration">
-                🎉 Celebration
-            </option>
-
-            <option value="other">
-                ⭐ Other
-            </option>
-
-        </select>
-
-
-        <label>
-            Title
-        </label>
-
-        <input
-            type="text"
-            id="memoryTitle"
-            placeholder="Our first proper date ❤️"
-        >
-
-
-        <label>
-            Memory / Note
-        </label>
-
-        <textarea
-            id="memoryNote"
-            rows="4"
-            placeholder="Tell the story..."
-        ></textarea>
-
-
-        <button
-            class="save-memory-btn"
-            id="saveMemoryBtn"
-        >
-
-            <i class="fa-solid fa-heart"></i>
-
-            Save Memory
-
-        </button>
-
-    </div>
-
-</div>
 
 
 <script
@@ -349,10 +237,180 @@
     src="auth-guard.js"
 ></script>
 
-<script
-    type="module"
-    src="script.js"
-></script>
+
+<script type="module" src="calendar.js"></script>
+
+
+<!-- =====================================================
+     MEMORY POPUP
+     ===================================================== -->
+
+<div class="memory-popup-overlay">
+
+    <div class="memory-popup">
+
+
+        <!-- CLOSE -->
+
+        <button
+            class="memory-popup-close"
+            data-close-memory
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+
+        <!-- ADD MEMORY -->
+
+        <form id="memoryForm">
+
+            <div class="popup-heart">
+                ❤️
+            </div>
+
+
+            <h2 id="memoryFormTitle">
+                Add Special Day
+            </h2>
+
+
+            <p class="popup-date">
+                📅
+                <span id="memoryDate">
+                    Date
+                </span>
+            </p>
+
+
+            <label>
+                What happened?
+            </label>
+
+
+            <input
+                type="text"
+                id="memoryEvent"
+                placeholder="Our first proper date ❤️"
+                required
+            >
+
+
+            <label>
+                Type
+            </label>
+
+
+            <select id="memoryType">
+
+                <option value="love">
+                    ❤️ Love
+                </option>
+
+                <option value="date">
+                    🌹 Date
+                </option>
+
+                <option value="song">
+                    🎵 Song
+                </option>
+
+                <option value="memory">
+                    📸 Memory
+                </option>
+
+                <option value="gift">
+                    🎁 Gift
+                </option>
+
+                <option value="conversation">
+                    💬 Special conversation
+                </option>
+
+                <option value="celebration">
+                    🎉 Celebration
+                </option>
+
+                <option value="other">
+                    ⭐ Other
+                </option>
+
+            </select>
+
+
+            <label>
+                Memory / Note
+            </label>
+
+
+            <textarea
+                id="memoryNote"
+                rows="4"
+                placeholder="Tell the story of this day..."
+            ></textarea>
+
+
+            <button
+                type="submit"
+                id="saveMemoryButton"
+                class="save-memory-btn"
+            >
+                <i class="fa-solid fa-heart"></i>
+                Save Memory
+            </button>
+
+        </form>
+
+
+        <!-- VIEW MEMORY -->
+
+        <div
+            id="memoryView"
+            style="display:none;"
+        >
+
+            <div
+                id="viewMemoryIcon"
+                class="view-memory-icon"
+            >
+                ❤️
+            </div>
+
+
+            <h2>
+                <span id="viewMemoryEvent">
+                </span>
+            </h2>
+
+
+            <p
+                id="viewMemoryNote"
+                class="view-memory-note"
+            >
+            </p>
+
+
+            <button
+                class="delete-memory-btn"
+                data-delete-memory
+            >
+                <i class="fa-solid fa-trash"></i>
+                Delete
+            </button>
+
+        </div>
+
+
+        <button
+            class="memory-cancel-btn"
+            data-cancel-memory
+        >
+            Cancel
+        </button>
+
+
+    </div>
+
+</div>
 
 </body>
 

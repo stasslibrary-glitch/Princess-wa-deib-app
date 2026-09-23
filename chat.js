@@ -34,13 +34,13 @@ const PD_PROFILES = {
 
     /* PRINCESS ACCOUNT */
     "princess@gmail.com": {
-        name: "Jaris",
+        name: "Princess",
         displayName: "Jaris ❤️"
     },
 
     /* DEIB ACCOUNT */
     "deib@gmail.com": {
-        name: "Ernest",
+        name: "Deib",
         displayName: "Ernest ❤️"
     }
 
@@ -398,49 +398,71 @@ function startChat() {
         );
 
 
-    onSnapshot(
-        messagesQuery,
+    let firstChatLoad = true;
 
-        snapshot => {
+onSnapshot(
+    messagesQuery,
+    snapshot => {
 
-            const container =
-                document.querySelector(
-                    ".chat-messages"
-                );
+        const container =
+            document.querySelector(".chat-messages");
 
+        if (!container) return;
 
-            if (!container)
-                return;
+        container.innerHTML = "";
 
+        snapshot.docChanges().forEach(change => {
 
-            container.innerHTML = "";
+            if (
+                change.type === "added" &&
+                !firstChatLoad
+            ) {
 
+                const data =
+                    change.doc.data();
 
-            snapshot.forEach(
-                documentSnapshot => {
+                if (
+                    data.senderUID !==
+                    currentProfile.uid
+                ) {
 
-                    displayMessage(
-                        documentSnapshot.data()
+                    const count =
+                        parseInt(
+                            localStorage.getItem(
+                                "pdChatNotifications"
+                            ) || "0",
+                            10
+                        );
+
+                    localStorage.setItem(
+                        "pdChatNotifications",
+                        count + 1
                     );
 
                 }
+
+            }
+
+        });
+
+
+        snapshot.forEach(documentSnapshot => {
+
+            displayMessage(
+                documentSnapshot.data()
             );
 
+        });
 
-            container.scrollTop =
-                container.scrollHeight;
 
-        },
+        container.scrollTop =
+            container.scrollHeight;
 
-        error => {
 
-            console.error(
-                "❌ Chat listener error:",
-                error
-            );
+        firstChatLoad = false;
 
-        }
-    );
+    }
+);
 
 }
 

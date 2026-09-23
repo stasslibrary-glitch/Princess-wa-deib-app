@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,114 +25,103 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <div class="phone-app chat-app">
 
-<header class="chat-header">
+    <!-- CHAT HEADER -->
 
-<a href="home.html">
-<i class="fa-solid fa-arrow-left"></i>
-</a>
+    <header class="chat-header">
 
-<div class="chat-person">
+        <a href="home.html">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
 
-<div class="person-avatar">
-♥
-</div>
+        <div class="chat-person">
 
-<div>
-<strong>
-<span data-user-name>My Princess ❤️</span>
-</strong>
+            <div class="person-avatar">
+                ♥
+            </div>
 
-<span>
-online
-</span>
-</div>
+            <div>
 
-</div>
+                <strong>
+                    <span data-user-name>
+                        My Princess ❤️
+                    </span>
+                </strong>
 
-<div class="chat-actions">
+                <span class="online-status">
+                    online
+                </span>
 
-<i class="fa-solid fa-phone"></i>
-<i class="fa-solid fa-ellipsis-vertical"></i>
+            </div>
 
-</div>
+        </div>
 
-</header>
+        <div class="chat-actions">
 
+            <i class="fa-solid fa-phone"></i>
 
-<main id="chatMessages" class="chat-messages">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
 
-<div class="message received">
+        </div>
 
-Good morning my Deib 🥰
-
-<span>
-08:16
-</span>
-
-</div>
+    </header>
 
 
-<div class="message sent">
+    <!-- MESSAGES -->
 
-Good morning my queen 💜<br>
-Another day, another reason to love you more.
+    <main
+        class="chat-messages"
+        id="chatMessages"
+    >
 
-<span>
-08:18 ✓✓
-</span>
+        <!-- Firebase messages appear here -->
 
-</div>
-
-
-<div class="message received">
-
-Aww my Deib 🥰<br>
-You always know how to make my day.
-
-<span>
-08:20
-</span>
-
-</div>
+    </main>
 
 
-<div class="message sent">
+    <!-- MESSAGE INPUT -->
 
-I love you more princess ❤️
+    <form
+        class="chat-input"
+        id="chatForm"
+    >
 
-<span>
-08:21 ✓✓
-</span>
+        <button
+            type="button"
+            class="emoji-button"
+            data-emoji
+        >
+            <i class="fa-regular fa-face-smile"></i>
+        </button>
 
-</div>
 
-</main>
+        <input
+            type="text"
+            id="messageInput"
+            placeholder="Type a message..."
+            autocomplete="off"
+        >
 
 
-<form class="chat-input" id="chatForm">
+        <button
+            type="button"
+            class="attach-button"
+        >
+            <i class="fa-solid fa-paperclip"></i>
+        </button>
 
-<button type="button">
-<i class="fa-regular fa-face-smile"></i>
-</button>
 
-<input
-type="text"
-id="messageInput"
-placeholder="Type a message..."
-autocomplete="off"
->
+        <button
+            class="send-message"
+            type="submit"
+        >
+            <i class="fa-solid fa-paper-plane"></i>
+        </button>
 
-<button type="button">
-<i class="fa-solid fa-paperclip"></i>
-</button>
-
-<button class="send-message" type="submit">
-<i class="fa-solid fa-paper-plane"></i>
-</button>
-
-</form>
+    </form>
 
 </div>
+
+
 <script
     type="module"
     src="auth-guard.js"
@@ -141,8 +131,7 @@ autocomplete="off"
     type="module"
     src="chat.js"
 ></script>
-<script src="script.js"></script>
-<script type="module" src="firebase.js"></script>
-<script type="module" src="script.js"></script>
+
 </body>
+
 </html>

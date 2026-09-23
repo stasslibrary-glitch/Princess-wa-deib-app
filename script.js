@@ -1,3 +1,4 @@
+
 import {
     auth,
     db
@@ -27,14 +28,21 @@ console.log("❤️ PD Firebase connected!");
 console.log("Firebase Auth:", auth);
 console.log("Firestore:", db);
 import {
+    db
+} from "./firebase.js";
+import {
     collection,
     addDoc,
     getDocs,
     query,
     orderBy,
     onSnapshot,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+    serverTimestamp,
+    doc,
+    updateDoc,
+    deleteDoc,
+    where
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 /* =========================================================
   
 PRINCESS WA DEIB — PD
@@ -115,11 +123,8 @@ document.addEventListener("DOMContentLoaded", () => {
 function initializeApp() {
 
     updateDatingCounter();
-
-    loadSongOfTheDay();
-
-    initializeLovePie();
-
+    initializeNotifications();
+    
     initializeChat();
 
     initializeSettings();
@@ -162,50 +167,146 @@ function calculateDatingDays() {
 
 }
 
+/* =========================================================
+   DAYS TOGETHER + SPECIAL MEMORIES
+   ========================================================= */
 
 function updateDatingCounter() {
 
-    const days = calculateDatingDays();
+    const startDate =
+        new Date("2026-06-26T00:00:00");
 
-    const counters =
-        document.querySelectorAll(
-            "[data-days-together]"
+    const today =
+        new Date();
+
+    startDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+
+    const difference =
+        today.getTime() -
+        startDate.getTime();
+
+
+    const days =
+        Math.max(
+            0,
+            Math.floor(
+                difference /
+                (1000 * 60 * 60 * 24)
+            )
         );
 
-    counters.forEach(counter => {
 
-        counter.textContent = days;
+    /* DAYS TOGETHER */
 
-    });
+    document
+        .querySelectorAll(
+            "[data-days-together], #daysTogether"
+        )
+        .forEach(element => {
+
+            element.textContent =
+                days;
+
+        });
 
 
-    const textCounters =
-        document.querySelectorAll(
+    /* TEXT VERSION */
+
+    document
+        .querySelectorAll(
             ".days-together"
-        );
+        )
+        .forEach(element => {
 
-    textCounters.forEach(element => {
+            element.textContent =
+                `${days} days, loving each other`;
 
-        element.textContent =
-            `${days} days, loving each other`;
-
-    });
+        });
 
 
-    const dateElements =
-        document.querySelectorAll(
+    /* START DATE */
+
+    document
+        .querySelectorAll(
             "[data-start-date]"
-        );
+        )
+        .forEach(element => {
 
-    dateElements.forEach(element => {
+            element.textContent =
+                "26 June 2026";
 
-        element.textContent =
-            formatDate(PD.relationshipStart);
+        });
 
-    });
+
+    /*
+       Refresh special-memory count
+       from Firestore.
+    */
+
+    loadSpecialMemoryCount();
 
 }
 
+
+/* =========================================================
+   SPECIAL MEMORY COUNT
+   ========================================================= */
+
+async function loadSpecialMemoryCount() {
+
+    const counters =
+        document.querySelectorAll(
+            "[data-special-memories], #specialMemories"
+        );
+
+
+    if (!counters.length)
+        return;
+
+
+    try {
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "calendarMemories"
+                )
+            );
+
+
+        const count =
+            snapshot.size;
+
+
+        counters.forEach(
+            element => {
+
+                element.textContent =
+                    count;
+
+            }
+        );
+
+
+        console.log(
+            "❤️ Special memories:",
+            count
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ Could not count memories:",
+            error
+        );
+
+    }
+
+}
 
 /* =========================================================
    4. DATE FORMAT
@@ -1287,19 +1388,85 @@ function loadMemories() {
 
 }
 
+/*
+   Shared relationship calendar.
+
+   Every memory is stored in:
+
+   Firestore
+   └── calendarMemories
+*/
+
+
+let calendarDate = new Date();
+
+let calendarMemories = [];
+
+let selectedMemoryDate = null;
+
+let calendarUnsubscribe = null;
+
 
 /* =========================================================
-   13. CALENDAR
+   EVENT TYPES
    ========================================================= */
 
-let calendarDate =
-    new Date();
+const MEMORY_ICONS = {
 
+    love: "❤️",
+
+    date: "🌹",
+
+    song: "🎵",
+
+    memory: "📸",
+
+    gift: "🎁",
+
+    conversation: "💬",
+
+    celebration: "🎉",
+
+    other: "⭐"
+
+};
+
+
+/* =========================================================
+   INITIALIZE CALENDAR
+   ========================================================= */
 
 function initializeCalendar() {
 
+    const calendar =
+        document.querySelector("[data-calendar]");
+
+    /*
+       If this isn't the calendar page,
+       don't run calendar code.
+    */
+
+    if (!calendar) return;
+
+
     renderCalendar();
 
+    initializeCalendarButtons();
+
+    initializeMemoryModal();
+
+    startFirestoreCalendar();
+
+    updateJourneyDays();
+
+}
+
+
+/* =========================================================
+   CALENDAR BUTTONS
+   ========================================================= */
+
+function initializeCalendarButtons() {
 
     const previous =
         document.querySelector(
@@ -1350,12 +1517,17 @@ function initializeCalendar() {
 }
 
 
+/* =========================================================
+   RENDER CALENDAR
+   ========================================================= */
+
 function renderCalendar() {
 
     const calendar =
         document.querySelector(
             "[data-calendar]"
         );
+
 
     if (!calendar) return;
 
@@ -1409,6 +1581,10 @@ function renderCalendar() {
     calendar.innerHTML = "";
 
 
+    /*
+       Empty spaces before day 1.
+    */
+
     for (
         let i = 0;
         i < firstDay;
@@ -1416,7 +1592,9 @@ function renderCalendar() {
     ) {
 
         const blank =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         blank.className =
             "calendar-empty";
@@ -1426,6 +1604,10 @@ function renderCalendar() {
     }
 
 
+    /*
+       Actual days.
+    */
+
     for (
         let day = 1;
         day <= daysInMonth;
@@ -1433,110 +1615,777 @@ function renderCalendar() {
     ) {
 
         const cell =
-            document.createElement("button");
+            document.createElement(
+                "button"
+            );
 
 
         cell.className =
             "calendar-day";
 
 
-        cell.textContent =
+        const dateKey =
+            formatCalendarKey(
+                year,
+                month,
+                day
+            );
+
+
+        cell.dataset.date =
+            dateKey;
+
+
+        /*
+           Relationship start.
+        */
+
+        if (
+            dateKey ===
+            PD.relationshipStart
+        ) {
+
+            cell.classList.add(
+                "relationship-start"
+            );
+
+        }
+
+
+        /*
+           Today.
+        */
+
+        const today =
+            new Date();
+
+
+        const todayKey =
+            formatCalendarKey(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate()
+            );
+
+
+        if (
+            dateKey === todayKey
+        ) {
+
+            cell.classList.add(
+                "today"
+            );
+
+        }
+
+
+        /*
+           Find memories for this date.
+        */
+
+        const memories =
+            calendarMemories.filter(
+                memory =>
+                    memory.date === dateKey
+            );
+
+
+        /*
+           Day number.
+        */
+
+        const number =
+            document.createElement(
+                "span"
+            );
+
+        number.className =
+            "calendar-day-number";
+
+        number.textContent =
             day;
 
+        cell.appendChild(number);
 
-        cell.addEventListener(
-            "click",
-            () => {
 
-                selectCalendarDate(
-                    year,
-                    month,
-                    day
+        /*
+           Relationship start marker.
+        */
+
+        if (
+            dateKey ===
+            PD.relationshipStart
+        ) {
+
+            const marker =
+                document.createElement(
+                    "span"
+                );
+
+            marker.className =
+                "calendar-marker";
+
+            marker.textContent =
+                "💜";
+
+            cell.appendChild(marker);
+
+        }
+
+
+        /*
+           Memory markers.
+        */
+
+        memories.forEach(
+            memory => {
+
+                const marker =
+                    document.createElement(
+                        "span"
+                    );
+
+                marker.className =
+                    "calendar-marker";
+
+                marker.textContent =
+                    MEMORY_ICONS[
+                        memory.type
+                    ] || "⭐";
+
+                cell.appendChild(
+                    marker
                 );
 
             }
         );
 
 
-        calendar.appendChild(cell);
+        /*
+           Clicking a day opens the
+           memory form.
+        */
+
+        cell.addEventListener(
+            "click",
+            () => {
+
+                openMemoryModal(
+                    dateKey
+                );
+
+            }
+        );
+
+
+        calendar.appendChild(
+            cell
+        );
 
     }
 
 }
 
 
-function selectCalendarDate(
+/* =========================================================
+   DATE KEY
+   ========================================================= */
+
+function formatCalendarKey(
     year,
     month,
     day
 ) {
 
-    const date =
-        new Date(
-            year,
-            month,
-            day
+    return `${year}-${String(
+        month + 1
+    ).padStart(2, "0")}-${String(
+        day
+    ).padStart(2, "0")}`;
+
+}
+
+
+/* =========================================================
+   FIRESTORE LISTENER
+   ========================================================= */
+
+function startFirestoreCalendar() {
+
+    const memoriesRef =
+        collection(
+            db,
+            "calendarMemories"
         );
 
 
-    const formatted =
-        date.toLocaleDateString(
-            "en-GB",
+    const memoriesQuery =
+        query(
+            memoriesRef,
+            orderBy(
+                "date",
+                "asc"
+            )
+        );
+
+
+    calendarUnsubscribe =
+        onSnapshot(
+            memoriesQuery,
+            snapshot => {
+
+                calendarMemories = [];
+
+
+                snapshot.forEach(
+                    memoryDoc => {
+
+                        calendarMemories.push({
+
+                            id:
+                                memoryDoc.id,
+
+                            ...memoryDoc.data()
+
+                        });
+
+                    }
+                );
+
+
+                renderCalendar();
+
+                renderMemoryList();
+
+                updateMemoryCount();
+
+            },
+
+            error => {
+
+                console.error(
+                    "❌ Calendar error:",
+                    error
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   OPEN MEMORY MODAL
+   ========================================================= */
+
+function openMemoryModal(
+    dateKey
+) {
+
+    const modal =
+        document.querySelector(
+            "#memoryModal"
+        );
+
+
+    if (!modal) return;
+
+
+    selectedMemoryDate =
+        dateKey;
+
+
+    const dateDisplay =
+        document.querySelector(
+            "#selectedMemoryDate"
+        );
+
+
+    if (dateDisplay) {
+
+        dateDisplay.textContent =
+            formatPrettyDate(
+                dateKey
+            );
+
+    }
+
+
+    /*
+       Clear old form values.
+    */
+
+    const title =
+        document.querySelector(
+            "#memoryTitle"
+        );
+
+    const note =
+        document.querySelector(
+            "#memoryNote"
+        );
+
+    const type =
+        document.querySelector(
+            "#memoryType"
+        );
+
+
+    if (title)
+        title.value = "";
+
+    if (note)
+        note.value = "";
+
+    if (type)
+        type.value = "love";
+
+
+    modal.classList.add(
+        "show"
+    );
+
+}
+
+
+/* =========================================================
+   MEMORY MODAL CONTROLS
+   ========================================================= */
+
+function initializeMemoryModal() {
+
+    const addButton =
+        document.querySelector(
+            "#addMemoryBtn"
+        );
+
+    const modal =
+        document.querySelector(
+            "#memoryModal"
+        );
+
+    const closeButton =
+        document.querySelector(
+            "#closeMemoryModal"
+        );
+
+    const saveButton =
+        document.querySelector(
+            "#saveMemoryBtn"
+        );
+
+
+    if (addButton) {
+
+        addButton.addEventListener(
+            "click",
+            () => {
+
+                /*
+                   Default to today.
+                */
+
+                const today =
+                    new Date();
+
+                const todayKey =
+                    formatCalendarKey(
+                        today.getFullYear(),
+                        today.getMonth(),
+                        today.getDate()
+                    );
+
+
+                openMemoryModal(
+                    todayKey
+                );
+
+            }
+        );
+
+    }
+
+
+    if (closeButton) {
+
+        closeButton.addEventListener(
+            "click",
+            closeMemoryModal
+        );
+
+    }
+
+
+    if (modal) {
+
+        modal.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target === modal
+                ) {
+
+                    closeMemoryModal();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    if (saveButton) {
+
+        saveButton.addEventListener(
+            "click",
+            saveCalendarMemory
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CLOSE MODAL
+   ========================================================= */
+
+function closeMemoryModal() {
+
+    const modal =
+        document.querySelector(
+            "#memoryModal"
+        );
+
+
+    if (modal) {
+
+        modal.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE MEMORY
+   ========================================================= */
+
+async function saveCalendarMemory() {
+
+    if (!selectedMemoryDate) {
+
+        alert(
+            "Please choose a date."
+        );
+
+        return;
+
+    }
+
+
+    const title =
+        document.querySelector(
+            "#memoryTitle"
+        )?.value.trim();
+
+
+    const note =
+        document.querySelector(
+            "#memoryNote"
+        )?.value.trim();
+
+
+    const type =
+        document.querySelector(
+            "#memoryType"
+        )?.value;
+
+
+    if (!title) {
+
+        alert(
+            "Please give this memory a title ❤️"
+        );
+
+        return;
+
+    }
+
+
+    const user =
+        auth.currentUser;
+
+
+    if (!user) {
+
+        alert(
+            "Please log in first."
+        );
+
+        return;
+
+    }
+
+
+    const saveButton =
+        document.querySelector(
+            "#saveMemoryBtn"
+        );
+
+
+    if (saveButton) {
+
+        saveButton.disabled = true;
+
+        saveButton.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+    }
+
+
+    try {
+
+        await addDoc(
+            collection(
+                db,
+                "calendarMemories"
+            ),
             {
-                day: "numeric",
-                month: "long",
-                year: "numeric"
+
+                date:
+                    selectedMemoryDate,
+
+                type:
+                    type || "other",
+
+                title:
+                    title,
+
+                note:
+                    note || "",
+
+                createdBy:
+                    user.uid,
+
+                createdByEmail:
+                    user.email || "",
+
+                createdAt:
+                    serverTimestamp()
+
             }
         );
 
 
-    const note =
-        prompt(
-            `Add a memory for ${formatted}:`
+        closeMemoryModal();
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ Could not save memory:",
+            error
         );
 
 
-    if (!note) return;
+        alert(
+            "The memory could not be saved. Please try again."
+        );
+
+    }
 
 
-    saveCalendarMemory({
+    if (saveButton) {
 
-        date:
-            `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
+        saveButton.disabled = false;
 
-        note:
-            note
+        saveButton.innerHTML =
+            '<i class="fa-solid fa-heart"></i> Save Memory';
 
-    });
-
-
-    alert(
-        "❤️ Memory saved!"
-    );
+    }
 
 }
 
 
-function saveCalendarMemory(memory) {
+/* =========================================================
+   MEMORY LIST
+   ========================================================= */
+
+function renderMemoryList() {
+
+    const container =
+        document.querySelector(
+            "#calendarMemoryList"
+        );
+
+
+    if (!container) return;
+
+
+    container.innerHTML = "";
+
+
+    if (
+        calendarMemories.length === 0
+    ) {
+
+        container.innerHTML = `
+            <p class="empty-memory">
+                Your special moments
+                will appear here ❤️
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    /*
+       Newest dates first.
+    */
 
     const memories =
-        JSON.parse(
-            localStorage.getItem(
-                "pdCalendarMemories"
-            ) || "[]"
-        );
+        [...calendarMemories]
+            .sort(
+                (a, b) =>
+                    b.date.localeCompare(
+                        a.date
+                    )
+            );
 
 
-    memories.push(memory);
+    memories.forEach(
+        memory => {
+
+            const card =
+                document.createElement(
+                    "article"
+                );
+
+            card.className =
+                "journey-memory";
 
 
-    localStorage.setItem(
-        "pdCalendarMemories",
-        JSON.stringify(memories)
+            const icon =
+                MEMORY_ICONS[
+                    memory.type
+                ] || "⭐";
+
+
+            card.innerHTML = `
+
+                <div class="journey-memory-icon">
+                    ${icon}
+                </div>
+
+                <div class="journey-memory-content">
+
+                    <small>
+                        ${formatPrettyDate(memory.date)}
+                    </small>
+
+                    <h4>
+                        ${escapeHTML(memory.title)}
+                    </h4>
+
+                    ${
+                        memory.note
+                            ? `
+                                <p>
+                                    ${escapeHTML(memory.note)}
+                                </p>
+                              `
+                            : ""
+                    }
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                card
+            );
+
+        }
     );
 
 }
 
+
+/* =========================================================
+   MEMORY COUNT
+   ========================================================= */
+
+function updateMemoryCount() {
+
+    const counter =
+        document.querySelector(
+            "#memoryCount"
+        );
+
+
+    if (counter) {
+
+        counter.textContent =
+            calendarMemories.length;
+
+    }
+
+}
+
+
+/* =========================================================
+   JOURNEY DAYS
+   ========================================================= */
+
+function updateJourneyDays() {
+
+    const counter =
+        document.querySelector(
+            "#journeyDays"
+        );
+
+
+    if (!counter) return;
+
+
+    counter.textContent =
+        calculateDatingDays();
+
+}
+
+
+/* =========================================================
+   PRETTY DATE
+   ========================================================= */
+
+function formatPrettyDate(
+    dateString
+) {
+
+    const date =
+        new Date(
+            dateString + "T00:00:00"
+        );
+
+
+    return date.toLocaleDateString(
+        "en-GB",
+        {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        }
+    );
+
+}
 
 /* =========================================================
    14. NAVIGATION
@@ -1636,10 +2485,217 @@ function escapeHTML(text) {
 
 }
 
+/* =========================================================
+   17. PD NOTIFICATION SYSTEM
+   ========================================================= */
+
+const PD_NOTIFICATIONS = {
+    chat: "pdChatNotifications",
+    memories: "pdMemoryNotifications"
+};
+
 
 /* =========================================================
-   17. NOTIFICATION COUNT
+   GET NOTIFICATION COUNT
    ========================================================= */
+
+function getNotificationCount(type) {
+
+    return parseInt(
+        localStorage.getItem(
+            PD_NOTIFICATIONS[type]
+        ) || "0",
+        10
+    );
+
+}
+
+
+/* =========================================================
+   SET NOTIFICATION COUNT
+   ========================================================= */
+
+function setNotificationCount(type, count) {
+
+    localStorage.setItem(
+        PD_NOTIFICATIONS[type],
+        Math.max(0, count)
+    );
+
+    updateNotificationBadges();
+
+}
+
+
+/* =========================================================
+   ADD NOTIFICATION
+   ========================================================= */
+
+function addNotification(type) {
+
+    const current =
+        getNotificationCount(type);
+
+    setNotificationCount(
+        type,
+        current + 1
+    );
+
+}
+
+
+/* =========================================================
+   CLEAR NOTIFICATIONS
+   ========================================================= */
+
+function clearNotifications(type) {
+
+    setNotificationCount(
+        type,
+        0
+    );
+
+}
+
+
+/* =========================================================
+   UPDATE BADGES
+   ========================================================= */
+
+function updateNotificationBadges() {
+
+    const chatCount =
+        getNotificationCount("chat");
+
+    const memoryCount =
+        getNotificationCount("memories");
+
+
+    /* -----------------------------
+       CHAT BADGES
+       ----------------------------- */
+
+    document
+        .querySelectorAll(".notification")
+        .forEach(badge => {
+
+            if (chatCount <= 0) {
+
+                badge.style.display = "none";
+
+            } else {
+
+                badge.style.display = "flex";
+
+                badge.textContent =
+                    chatCount > 99
+                        ? "99+"
+                        : chatCount;
+
+            }
+
+        });
+
+
+    /* -----------------------------
+       MEMORY BADGES
+       ----------------------------- */
+
+    document
+        .querySelectorAll("[data-memory-notification]")
+        .forEach(badge => {
+
+            if (memoryCount <= 0) {
+
+                badge.style.display = "none";
+
+            } else {
+
+                badge.style.display = "flex";
+
+                badge.textContent =
+                    memoryCount > 99
+                        ? "99+"
+                        : memoryCount;
+
+            }
+
+        });
+
+}
+
+
+/* =========================================================
+   CLEAR CHAT NOTIFICATIONS WHEN CHAT OPENS
+   ========================================================= */
+
+function initializeChatNotifications() {
+
+    if (
+        window.location.pathname
+            .toLowerCase()
+            .includes("chat.html")
+    ) {
+
+        clearNotifications("chat");
+
+    }
+
+}
+
+
+/* =========================================================
+   CLEAR MEMORY NOTIFICATIONS
+   ========================================================= */
+
+function initializeMemoryNotifications() {
+
+    if (
+        window.location.pathname
+            .toLowerCase()
+            .includes("calendar.html")
+    ) {
+
+        clearNotifications("memories");
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIALIZE NOTIFICATIONS
+   ========================================================= */
+
+function initializeNotifications() {
+
+    updateNotificationBadges();
+
+    initializeChatNotifications();
+
+    initializeMemoryNotifications();
+
+}
+
+
+/* =========================================================
+   EXPOSE NOTIFICATION FUNCTIONS
+   ========================================================= */
+
+window.PD.notifications = {
+
+    get: getNotificationCount,
+
+    add: addNotification,
+
+    clear: clearNotifications,
+
+    update: updateNotificationBadges
+
+};
+
+
+
 
 function updateChatNotification(count) {
 
@@ -1698,30 +2754,33 @@ document.addEventListener(
    20. EXPOSE USEFUL FUNCTIONS
    ========================================================= */
 
+
 window.PD = {
 
     calculateDatingDays,
-
     updateDatingCounter,
-
     getSongForToday,
 
     getLoveData,
-
     saveLoveData,
-
     updateLovePie,
-
     analyzeLoveFromMessages,
 
     sendMessage,
 
     goBack,
-
     navigateTo,
 
     getMemories,
+    saveMemories,
 
-    saveMemories
+    notifications: {
+
+        get: getNotificationCount,
+        add: addNotification,
+        clear: clearNotifications,
+        update: updateNotificationBadges
+
+    }
 
 };
