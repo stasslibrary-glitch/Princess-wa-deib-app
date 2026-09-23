@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>PD | Our Journey</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+<body class="phone-page">
+
+<div class="phone-app">
+
+    <!-- HEADER -->
+
+    <header class="simple-header">
+
+        <a href="home.html">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+        </a>
+
+        <h2>
+            Our Journey ❤️
+        </h2>
+
+        <button
+            class="calendar-add-btn"
+            id="addMemoryBtn"
+        >
+
+            <i class="fa-solid fa-plus"></i>
+
+        </button>
+
+    </header>
+
+
+    <!-- CONTENT -->
+
+    <main class="calendar-page">
+
+
+        <!-- INTRO -->
+
+        <section class="journey-intro">
+
+            <h3>
+                Every date has a story.
+            </h3>
+
+            <p>
+                Our little timeline of
+                memories, moments and love.
+            </p>
+
+        </section>
+
+
+        <!-- STATS -->
+
+        <section class="journey-stats">
+
+            <div>
+
+                <strong
+                    id="journeyDays"
+                >
+                    0
+                </strong>
+
+                <span>
+                    Days together
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <strong
+                    id="memoryCount"
+                >
+                    0
+                </strong>
+
+                <span>
+                    Special memories
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- CALENDAR -->
+
+        <section class="calendar-card">
+
+            <div class="calendar-heading">
+
+                <button
+                    data-calendar-prev
+                    class="calendar-nav"
+                >
+
+                    <i class="fa-solid fa-chevron-left"></i>
+
+                </button>
+
+
+                <h3
+                    data-calendar-title
+                >
+                    September 2026
+                </h3>
+
+
+                <button
+                    data-calendar-next
+                    class="calendar-nav"
+                >
+
+                    <i class="fa-solid fa-chevron-right"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="calendar-weekdays">
+
+                <span>Sun</span>
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+
+            </div>
+
+
+            <div
+                class="calendar-grid"
+                data-calendar
+            >
+            </div>
+
+        </section>
+
+
+        <!-- LEGEND -->
+
+        <section class="calendar-legend">
+
+            <div>
+
+                <span class="legend-heart">
+                    ❤️
+                </span>
+
+                Love / Special day
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    💜
+                </span>
+
+                Relationship start
+
+            </div>
+
+        </section>
+
+
+        <!-- MEMORIES -->
+
+        <section class="memory-list-section">
+
+            <div class="section-title">
+
+                <h3>
+                    Our memories
+                </h3>
+
+                <span>
+                    ♥
+                </span>
+
+            </div>
+
+
+            <div
+                class="calendar-memory-list"
+                id="calendarMemoryList"
+            >
+
+                <p class="empty-memory">
+                    Your special moments
+                    will appear here ❤️
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ADD MEMORY MODAL -->
+
+<div
+    class="memory-modal"
+    id="memoryModal"
+>
+
+    <div class="memory-modal-card">
+
+        <button
+            class="modal-close"
+            id="closeMemoryModal"
+        >
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+
+        <h3>
+            Add Special Day ❤️
+        </h3>
+
+
+        <p
+            class="modal-date"
+            id="selectedMemoryDate"
+        >
+            Choose a date
+        </p>
+
+
+        <label>
+            Event type
+        </label>
+
+        <select id="memoryType">
+
+            <option value="love">
+                ❤️ Love
+            </option>
+
+            <option value="date">
+                🌹 Date
+            </option>
+
+            <option value="song">
+                🎵 Song
+            </option>
+
+            <option value="memory">
+                📸 Memory
+            </option>
+
+            <option value="gift">
+                🎁 Gift
+            </option>
+
+            <option value="conversation">
+                💬 Special conversation
+            </option>
+
+            <option value="celebration">
+                🎉 Celebration
+            </option>
+
+            <option value="other">
+                ⭐ Other
+            </option>
+
+        </select>
+
+
+        <label>
+            Title
+        </label>
+
+        <input
+            type="text"
+            id="memoryTitle"
+            placeholder="Our first proper date ❤️"
+        >
+
+
+        <label>
+            Memory / Note
+        </label>
+
+        <textarea
+            id="memoryNote"
+            rows="4"
+            placeholder="Tell the story..."
+        ></textarea>
+
+
+        <button
+            class="save-memory-btn"
+            id="saveMemoryBtn"
+        >
+
+            <i class="fa-solid fa-heart"></i>
+
+            Save Memory
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<script
+    type="module"
+    src="auth-guard.js"
+></script>
+
+<script
+    type="module"
+    src="script.js"
+></script>
+
+</body>
+
+</html>
