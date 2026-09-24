@@ -1638,237 +1638,604 @@ button {
 }
 
 
+
+
 /* =========================================================
-   21. SONG PAGE
+   PD — SONG OF THE DAY
    ========================================================= */
 
-.song-page {
-    height: calc(100% - 70px);
-
-    overflow-y: auto;
-
-    padding: 20px 17px;
-
-    text-align: center;
+.song-app {
+    min-height: 100%;
 }
 
 
-.album-art {
-    height: 330px;
+/* =========================================================
+   SONG PAGE
+   ========================================================= */
 
-    border-radius: 19px;
+.song-page {
+    flex: 1;
+
+    padding: 25px 18px 35px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    overflow-y: auto;
+
+    text-align: center;
+
+    background:
+        radial-gradient(
+            circle at 50% 15%,
+            rgba(168, 92, 255, 0.16),
+            transparent 38%
+        );
+}
+
+
+/* =========================================================
+   COVER / VINYL
+   ========================================================= */
+
+.song-cover {
+    width: 235px;
+    height: 235px;
+
+    margin: 12px auto 25px;
 
     position: relative;
 
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.song-glow {
+    position: absolute;
+
+    width: 190px;
+    height: 190px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #a85cff,
+            #f238a9
+        );
+
+    filter: blur(35px);
+
+    opacity: 0.35;
+
+    animation:
+        songGlow 3s ease-in-out infinite;
+}
+
+
+.vinyl {
+    position: relative;
+
+    width: 205px;
+    height: 205px;
+
+    border-radius: 50%;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
     background:
-        radial-gradient(
-            circle at 50% 35%,
-            #e359bc,
-            #7b278e 38%,
-            #190d48 75%
+        repeating-radial-gradient(
+            circle,
+            #111 0px,
+            #111 3px,
+            #1d1d1d 4px,
+            #111 6px
         );
 
     box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.35);
+        0 15px 40px rgba(0, 0, 0, 0.45),
+        inset 0 0 20px rgba(255, 255, 255, 0.04);
+
+    animation:
+        vinylSpin 9s linear infinite;
+
+    animation-play-state: paused;
 }
 
 
-.album-art::before {
+.song-playing .vinyl {
+    animation-play-state: running;
+}
+
+
+.vinyl::before {
     content: "";
 
     position: absolute;
 
-    width: 230px;
-    height: 230px;
+    width: 7px;
+    height: 7px;
 
     border-radius: 50%;
 
+    background: #050505;
+
+    z-index: 3;
+}
+
+
+.vinyl-inner {
+    width: 82px;
+    height: 82px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     background:
-        radial-gradient(
-            circle,
-            rgba(255, 158, 229, 0.38),
-            transparent 65%
+        linear-gradient(
+            135deg,
+            #a85cff,
+            #f238a9
         );
-
-    bottom: -50px;
-}
-
-
-.music-icon {
-    position: absolute;
-
-    top: 17px;
-    left: 17px;
-
-    width: 42px;
-    height: 42px;
-
-    border-radius: 13px;
-
-    background:
-        rgba(20, 5, 48, 0.55);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    color: #ff72dc;
-}
-
-
-.big-play {
-    width: 70px;
-    height: 70px;
-
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background:
-        rgba(18, 7, 46, 0.55);
-
-    border:
-        2px solid rgba(255, 255, 255, 0.75);
 
     color: white;
 
-    font-size: 23px;
-
-    padding-left: 4px;
-
-    position: relative;
-    z-index: 2;
+    font-size: 27px;
 
     box-shadow:
-        0 0 30px rgba(255, 77, 213, 0.25);
-}
-
-
-.song-title-area {
-    position: relative;
-
-    text-align: left;
-
-    padding: 19px 2px 10px;
-}
-
-
-.song-title-area h1 {
-    font-size: 21px;
-
-    font-weight: 600;
-}
-
-
-.song-title-area p {
-    color: #a6a3bd;
-
-    margin-top: 4px;
-
-    font-size: 12px;
-}
-
-
-.song-title-area > i {
-    position: absolute;
-
-    right: 5px;
-    top: 26px;
-
-    color: #f257ca;
-
-    font-size: 19px;
-}
-
-
-.song-progress {
-    margin-top: 12px;
-}
-
-
-.progress-line {
-    height: 4px;
-
-    border-radius: 10px;
-
-    background:
-        #28264b;
+        0 0 25px rgba(242, 56, 169, 0.35);
 
     position: relative;
+
+    z-index: 2;
 }
 
 
-.progress-line span {
-    display: block;
+.vinyl-inner i {
+    animation:
+        heartPulse 1.8s ease-in-out infinite;
+}
 
-    width: 36%;
 
-    height: 100%;
+/* =========================================================
+   SONG INFORMATION
+   ========================================================= */
+
+.song-information {
+    width: 100%;
+}
+
+
+.song-today-label {
+    display: inline-block;
+
+    margin-bottom: 10px;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    color: #d895ff;
+}
+
+
+.song-information h1 {
+    margin: 0;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 27px;
+
+    line-height: 1.2;
+
+    color: white;
+}
+
+
+.song-information p {
+    margin: 8px 0 0;
+
+    font-size: 13px;
+
+    color: #a9a4c3;
+}
+
+
+/* =========================================================
+   MUSIC SPECTRUM
+   ========================================================= */
+
+.music-spectrum {
+    width: 210px;
+    height: 55px;
+
+    margin: 25px 0 10px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 4px;
+}
+
+
+.music-spectrum span {
+    width: 4px;
+
+    height: 15px;
 
     border-radius: 10px;
 
     background:
         linear-gradient(
-            90deg,
-            #c335e8,
-            #ff59ca
+            to top,
+            #a85cff,
+            #f238a9
         );
 
-    position: relative;
+    opacity: 0.65;
+
+    transform-origin: center;
+
+    animation:
+        spectrum 1s ease-in-out infinite;
+
+    animation-play-state: paused;
 }
 
 
-.progress-line span::after {
-    content: "";
+.song-playing .music-spectrum span {
+    animation-play-state: running;
+}
 
-    position: absolute;
 
-    width: 9px;
-    height: 9px;
+.music-spectrum span:nth-child(1) {
+    animation-delay: -0.8s;
+}
+
+.music-spectrum span:nth-child(2) {
+    animation-delay: -0.2s;
+}
+
+.music-spectrum span:nth-child(3) {
+    animation-delay: -0.6s;
+}
+
+.music-spectrum span:nth-child(4) {
+    animation-delay: -0.1s;
+}
+
+.music-spectrum span:nth-child(5) {
+    animation-delay: -0.7s;
+}
+
+.music-spectrum span:nth-child(6) {
+    animation-delay: -0.3s;
+}
+
+.music-spectrum span:nth-child(7) {
+    animation-delay: -0.9s;
+}
+
+.music-spectrum span:nth-child(8) {
+    animation-delay: -0.4s;
+}
+
+.music-spectrum span:nth-child(9) {
+    animation-delay: -0.6s;
+}
+
+.music-spectrum span:nth-child(10) {
+    animation-delay: -0.2s;
+}
+
+.music-spectrum span:nth-child(11) {
+    animation-delay: -0.8s;
+}
+
+.music-spectrum span:nth-child(12) {
+    animation-delay: -0.3s;
+}
+
+.music-spectrum span:nth-child(13) {
+    animation-delay: -0.7s;
+}
+
+.music-spectrum span:nth-child(14) {
+    animation-delay: -0.1s;
+}
+
+.music-spectrum span:nth-child(15) {
+    animation-delay: -0.5s;
+}
+
+.music-spectrum span:nth-child(16) {
+    animation-delay: -0.9s;
+}
+
+.music-spectrum span:nth-child(17) {
+    animation-delay: -0.4s;
+}
+
+.music-spectrum span:nth-child(18) {
+    animation-delay: -0.6s;
+}
+
+.music-spectrum span:nth-child(19) {
+    animation-delay: -0.2s;
+}
+
+.music-spectrum span:nth-child(20) {
+    animation-delay: -0.8s;
+}
+
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+.song-progress-area {
+    width: 100%;
+
+    max-width: 330px;
+
+    margin-top: 2px;
+}
+
+
+#songProgress {
+    width: 100%;
+
+    height: 4px;
+
+    appearance: none;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    cursor: pointer;
+
+    background: #292442;
+}
+
+
+#songProgress::-webkit-slider-thumb {
+    appearance: none;
+
+    width: 13px;
+    height: 13px;
 
     border-radius: 50%;
 
-    background: #ff6ed8;
+    background: #f238a9;
 
-    right: -4px;
-    top: -3px;
+    box-shadow:
+        0 0 10px rgb(255, 255, 255);
+
+    cursor: pointer;
 }
 
 
-.time-row {
+#songProgress::-moz-range-thumb {
+    width: 13px;
+    height: 13px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #f238a9;
+
+    cursor: pointer;
+}
+
+
+.song-times {
     display: flex;
+
     justify-content: space-between;
 
-    color: #77758e;
+    margin-top: 7px;
+
+    padding: 0 2px;
+
+    color: #777392;
 
     font-size: 9px;
-
-    margin-top: 7px;
 }
 
 
-.song-quote {
-    margin-top: 32px;
+/* =========================================================
+   PLAY BUTTON
+   ========================================================= */
 
-    font-family: "Playfair Display", serif;
+.big-play {
+    width: 68px;
+    height: 68px;
+
+    margin-top: 22px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #a62ce4,
+            #fdfcfc
+        );
+
+    color: rgb(255, 255, 255);
+
+    font-size: 21px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 30px rgba(213, 43, 198, 0.35);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.big-play:hover {
+    transform: scale(1.06);
+
+    box-shadow:
+        0 12px 35px rgba(213, 43, 198, 0.5);
+}
+
+
+.big-play:active {
+    transform: scale(0.94);
+}
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+.song-message {
+    margin: 25px 0 0;
+
+    color: #85809e;
+
+    font-family:
+        "Playfair Display",
+        serif;
 
     font-style: italic;
 
     font-size: 13px;
 
-    line-height: 1.8;
-
-    color: #aaa7c0;
+    line-height: 1.7;
 }
 
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes vinylSpin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+@keyframes heartPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+}
+
+
+@keyframes songGlow {
+
+    0%,
+    100% {
+        transform: scale(0.95);
+        opacity: 0.28;
+    }
+
+    50% {
+        transform: scale(1.08);
+        opacity: 0.45;
+    }
+
+}
+
+
+@keyframes spectrum {
+
+    0%,
+    100% {
+        height: 10px;
+    }
+
+    25% {
+        height: 35px;
+    }
+
+    50% {
+        height: 52px;
+    }
+
+    75% {
+        height: 22px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-height: 700px) {
+
+    .song-page {
+        padding-top: 12px;
+    }
+
+    .song-cover {
+        width: 185px;
+        height: 185px;
+
+        margin-bottom: 15px;
+    }
+
+    .vinyl {
+        width: 165px;
+        height: 165px;
+    }
+
+    .vinyl-inner {
+        width: 67px;
+        height: 67px;
+    }
+
+    .music-spectrum {
+        margin-top: 15px;
+    }
+
+}
 
 /* =========================================================
    22. SOUND WAVE
@@ -1896,7 +2263,7 @@ button {
         linear-gradient(
             to top,
             #8e29d2,
-            #ff55d2
+            #ff1212
         );
 
     animation:
@@ -1981,7 +2348,186 @@ button {
 
 }
 
+/* =========================================================
+   PD — PHOTO & VIDEO SLIDESHOW
+   ========================================================= */
 
+.pd-slideshow {
+    width: 100%;
+    max-width: 350px;
+    height: 300px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: 25px;
+
+    margin: 5px auto 25px;
+
+    background: #0d102d;
+
+    box-shadow:
+        0 15px 45px rgba(0, 0, 0, 0.35),
+        0 0 30px rgba(168, 92, 255, 0.12);
+}
+
+
+/* SLIDES */
+
+.pd-slideshow .slide {
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0;
+
+    transform: scale(1.05);
+
+    transition:
+        opacity 3s ease,
+        transform 8s ease;
+
+    pointer-events: none;
+}
+
+
+.pd-slideshow .slide.active {
+    opacity: 1;
+
+    transform: scale(1);
+
+    z-index: 2;
+}
+
+
+/* IMAGES */
+
+.pd-slideshow img,
+.pd-slideshow video {
+    width: 100%;
+    height: 120%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+
+/* DARK OVERLAY */
+
+.pd-slideshow::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 3;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(5, 7, 25, 0.7),
+            transparent 55%
+        );
+}
+
+
+/* SLIDESHOW TEXT */
+
+.slideshow-overlay {
+    position: absolute;
+
+    left: 18px;
+    bottom: 28px;
+
+    z-index: 5;
+
+    text-align: left;
+
+    pointer-events: none;
+}
+
+
+.slideshow-overlay span {
+    font-size: 17px;
+
+    color: #ff79d2;
+}
+
+
+.slideshow-overlay p {
+    margin: 4px 0 0;
+
+    color: white;
+
+    font-size: 12px;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-style: italic;
+}
+
+
+/* DOTS */
+
+.slide-dots {
+    position: absolute;
+
+    bottom: 12px;
+
+    left: 0;
+    right: 0;
+
+    z-index: 6;
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 5px;
+}
+
+
+.slide-dots span {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.45);
+
+    transition:
+        width 0.3s ease,
+        background 0.3s ease;
+}
+
+
+.slide-dots span.active {
+    width: 16px;
+
+    border-radius: 10px;
+
+    background: #f238a9;
+}
+
+
+/* SMALL PHONES */
+
+@media (max-height: 700px) {
+
+    .pd-slideshow {
+        height: 245px;
+
+        margin-bottom: 18px;
+    }
+
+}
 /* =========================================================
    23. SETTINGS
    ========================================================= */

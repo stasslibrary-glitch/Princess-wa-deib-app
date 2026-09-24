@@ -1,133 +1,398 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
+```
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>PD | Song of the Day</title>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-<link rel="stylesheet" href="style.css">
-
-<link
-href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
-rel="stylesheet">
+<title>PD | Our Song Today</title>
 
 <link
-rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    rel="stylesheet"
+    href="style.css"
+>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
+    rel="stylesheet"
+>
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+>
+```
 
 </head>
 
 <body class="phone-page">
 
-<div class="phone-app">
+<div class="phone-app song-app">
+
+```
+<!-- HEADER -->
 
 <header class="simple-header">
 
-<a href="home.html">
-<i class="fa-solid fa-arrow-left"></i>
-</a>
+    <a href="home.html">
 
-<h2>
-Song of the Day
-</h2>
+        <i class="fa-solid fa-arrow-left"></i>
+
+    </a>
+
+    <h2>
+        Our Song ♥
+    </h2>
 
 </header>
 
 
 <main class="song-page">
 
-<div class="album-art">
 
-<div class="music-icon">
-<i class="fa-solid fa-music"></i>
-</div>
+ <section class="pd-slideshow">
 
-<button class="big-play">
-<i class="fa-solid fa-play"></i>
-</button>
-
-</div>
-
-
-<div class="song-title-area">
-
-<h1 id="songTitle">
-Your love amazes me
-</h1>
-
-<p>
-Westlife
-</p>
-
-<i class="fa-solid fa-heart"></i>
-
+```
+<!-- VIDEO 1 -->
+<div class="slide active" data-slide="video">
+    <video muted playsinline preload="metadata">
+        <source src="slideshow/video1.mp4" type="video/mp4">
+    </video>
 </div>
 
 
-<div class="song-progress">
-
-<div class="progress-line">
-
-<span></span>
-
-</div>
-
-<div class="time-row">
-
-<span>
-1:32
-</span>
-
-<span>
-4:21
-</span>
-
-</div>
-
+<!-- VIDEO 2 -->
+<div class="slide" data-slide="video">
+    <video muted playsinline preload="metadata">
+        <source src="slideshow/video2.mp4" type="video/mp4">
+    </video>
 </div>
 
 
-<p class="song-quote">
+<!-- VIDEO 3 -->
+<div class="slide" data-slide="video">
+    <video muted playsinline preload="metadata">
+        <source src="slideshow/video3.mp4" type="video/mp4">
+    </video>
+</div>
 
-"Your love amazes me,<br>
-I can't explain it...<br>
-It's more than just a feeling..."
 
-</p>
+<!-- VIDEO 4 -->
+<div class="slide" data-slide="video">
+    <video muted playsinline preload="metadata">
+        <source src="slideshow/video4.mp4" type="video/mp4">
+    </video>
+</div>
 
 
-<div class="sound-wave">
+<!-- PHOTO 1 -->
+<div class="slide" data-slide="photo">
+    <img
+        src="slideshow/photo1.jpg"
+        alt="Our memory"
+    >
+</div>
 
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
+
+<!-- PHOTO 2 -->
+<div class="slide" data-slide="photo">
+    <img
+        src="slideshow/photo2.jpg"
+        alt="Our memory"
+    >
+</div>
+
+
+<!-- PHOTO 3 -->
+<div class="slide" data-slide="photo">
+    <img
+        src="slideshow/photo3.jpg"
+        alt="Our memory"
+    >
+</div>
+
+
+<!-- SLIDESHOW OVERLAY -->
+<div class="slideshow-overlay">
+
+    <span>♥</span>
+
+    <p>
+        Our little moments
+    </p>
 
 </div>
+
+
+<!-- DOTS -->
+<div
+    class="slide-dots"
+    id="slideDots"
+></div>
+```
+
+</section>
+
+
+    <!-- SONG INFORMATION -->
+
+    <section class="song-information">
+
+        <span class="song-today-label">
+            ♥ OUR SONG OF TODAY ♥
+        </span>
+
+        <h1 id="songTitle">
+            Your Love Amazes Me
+        </h1>
+
+        <p id="songArtist">
+            Westlife
+        </p>
+
+    </section>
+
+
+    <!-- MUSIC SPECTRUM -->
+
+    <div
+        class="music-spectrum"
+        aria-hidden="true"
+    >
+
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+
+    </div>
+
+
+    <!-- PROGRESS -->
+
+    <div class="song-progress-area">
+
+        <input
+            type="range"
+            id="songProgress"
+            min="0"
+            max="100"
+            value="0"
+        >
+
+        <div class="song-times">
+
+            <span id="currentTime">
+                0:00
+            </span>
+
+            <span id="songDuration">
+                0:00
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- PLAY -->
+
+    <button
+        class="big-play"
+        id="songPlay"
+        type="button"
+    >
+
+        <i class="fa-solid fa-play"></i>
+
+    </button>
+
+
+    <p class="song-message">
+
+        A little song for you,
+        <br>
+
+        because every love story
+        needs a soundtrack. ♥
+
+    </p>
+
+
+    <!-- AUDIO -->
+
+    <audio
+        id="songAudio"
+        preload="metadata"
+    >
+
+        <source
+            id="songSource"
+            src=""
+            type="audio/mpeg"
+        >
+
+    </audio>
+
 
 </main>
+```
 
 </div>
+
 <script
     type="module"
     src="auth-guard.js"
 ></script>
-<script src="script.js"></script>
-<script type="module" src="firebase.js"></script>
-<script type="module" src="script.js"></script>
+
+<script src="song.js"></script>
+
+<!-- =====================================================
+     SLIDESHOW SCRIPT
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const slides =
+            document.querySelectorAll(".slide");
+
+        const dotsContainer =
+            document.getElementById("slideDots");
+
+        let currentSlide = 0;
+
+
+        /* CREATE DOTS */
+
+        slides.forEach(
+            (slide, index) => {
+
+                const dot =
+                    document.createElement("span");
+
+                dot.className =
+                    index === 0
+                        ? "active"
+                        : "";
+
+                dotsContainer.appendChild(dot);
+
+            }
+        );
+
+
+        const dots =
+            dotsContainer.querySelectorAll("span");
+
+
+        /* SHOW SLIDE */
+
+        function showSlide(index) {
+
+            slides.forEach(
+                slide => {
+
+                    slide.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+
+
+            dots.forEach(
+                dot => {
+
+                    dot.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+
+
+            slides[index].classList.add(
+                "active"
+            );
+
+            dots[index].classList.add(
+                "active"
+            );
+
+
+            const video =
+                slides[index].querySelector(
+                    "video"
+                );
+
+
+            if (video) {
+
+                video.currentTime = 0;
+
+                video.play().catch(
+                    () => {}
+                );
+
+            }
+
+        }
+
+
+        /* CHANGE EVERY 5 SECONDS */
+
+        setInterval(
+            () => {
+
+                currentSlide++;
+
+                if (
+                    currentSlide >=
+                    slides.length
+                ) {
+
+                    currentSlide = 0;
+
+                }
+
+                showSlide(currentSlide);
+
+            },
+            5000
+        );
+
+    }
+);
+
+</script>
+
 </body>
+
 </html>
