@@ -968,12 +968,23 @@ button {
 
     gap: 11px;
 
-    background:
-        radial-gradient(
-            circle at 15% 30%,
-            rgba(125, 41, 187, 0.07),
-            transparent 30%
-        );
+    /* =========================================================
+   PD CHAT — PHOTO WALLPAPER
+   ========================================================= */
+
+.chat-messages {
+    background-image:
+        linear-gradient(
+            rgba(5, 7, 25, 0.72),
+            rgba(5, 7, 25, 0.72)
+        ),
+        url("slideshow/photo1.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+}
 }
 
 /* scrollbar */
@@ -4741,18 +4752,642 @@ button {
 }
 
 
+/* =========================================================
+   PD — NEW OUR STATS DESIGN
+   ========================================================= */
+
+.stats-page {
+    padding: 18px 15px 30px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+}
+
+.stat-card {
+    position: relative !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 14px !important;
+
+    padding: 17px !important;
+
+    border-radius: 20px !important;
+
+    background: linear-gradient(
+        135deg,
+        rgba(168, 92, 255, 0.14),
+        rgba(242, 56, 169, 0.08)
+    ) !important;
+
+    border: 1px solid rgba(168, 92, 255, 0.18) !important;
+
+    box-shadow:
+        0 8px 25px rgba(90, 30, 130, 0.08) !important;
+}
+
+.stat-icon {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+
+    border-radius: 16px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: linear-gradient(
+        135deg,
+        #a85cff,
+        #f238a9
+    ) !important;
+
+    color: white !important;
+
+    font-size: 19px !important;
+}
+
+.stat-card span {
+    display: block !important;
+
+    font-size: 11px !important;
+
+    color: #8b849f !important;
+
+    margin-bottom: 3px !important;
+}
+
+.stat-card strong {
+    display: block !important;
+
+    font-family: "Playfair Display", serif !important;
+
+    font-size: 28px !important;
+
+    line-height: 1.1 !important;
+
+    color: #4d245e !important;
+}
+
+.stat-card small {
+    display: block !important;
+
+    margin-top: 5px !important;
+
+    font-size: 10px !important;
+
+    color: #9a91a8 !important;
+}
 
 
+/* SONG */
+
+.stat-song {
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+.stat-song strong {
+    font-family: "DM Sans", sans-serif !important;
+
+    font-size: 15px !important;
+
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+
+    text-overflow: ellipsis !important;
+}
 
 
+/* PLAY BUTTON */
+
+.small-play {
+    width: 40px !important;
+    height: 40px !important;
+
+    min-width: 40px !important;
+
+    border-radius: 50% !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    text-decoration: none !important;
+
+    color: white !important;
+
+    background: linear-gradient(
+        135deg,
+        #a85cff,
+        #f238a9
+    ) !important;
+
+    box-shadow:
+        0 6px 15px rgba(168, 92, 255, 0.25) !important;
+}
 
 
+/* JOURNEY */
+
+.journey-card {
+    padding: 20px 17px !important;
+
+    border-radius: 22px !important;
+
+    background: linear-gradient(
+        145deg,
+        #fff9ff,
+        #f9f0ff
+    ) !important;
+
+    border: 1px solid rgba(168, 92, 255, 0.15) !important;
+
+    box-shadow:
+        0 8px 25px rgba(100, 40, 140, 0.07) !important;
+}
+
+.journey-card h3 {
+    margin: 0 0 17px !important;
+
+    font-family: "Playfair Display", serif !important;
+
+    font-size: 21px !important;
+
+    color: #552263 !important;
+}
+
+.journey-item {
+    display: grid !important;
+
+    grid-template-columns: 32px 1fr auto !important;
+
+    align-items: center !important;
+
+    gap: 9px !important;
+
+    min-height: 47px !important;
+
+    border-bottom:
+        1px solid rgba(168, 92, 255, 0.09) !important;
+}
+
+.journey-item:last-child {
+    border-bottom: none !important;
+}
+
+.journey-item i {
+    width: 28px !important;
+    height: 28px !important;
+
+    border-radius: 50% !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    font-size: 11px !important;
+
+    color: #f238a9 !important;
+
+    background:
+        rgba(242, 56, 169, 0.10) !important;
+}
+
+.journey-item span {
+    font-size: 12px !important;
+
+    font-weight: 600 !important;
+
+    color: #5e5267 !important;
+}
+
+.journey-item small {
+    font-size: 10px !important;
+
+    color: #9d92a6 !important;
+}
 
 
+/* TODAY */
+
+.journey-item:last-child i {
+    color: white !important;
+
+    background: linear-gradient(
+        135deg,
+        #a85cff,
+        #f238a9
+    ) !important;
+}
+
+.journey-item:last-child span {
+    color: #8b3e9d !important;
+}
 
 
+/* QUOTE */
+
+.quote-card {
+    padding: 23px 18px !important;
+
+    border-radius: 22px !important;
+
+    text-align: center !important;
+
+    font-family:
+        "Playfair Display",
+        serif !important;
+
+    font-style: italic !important;
+
+    font-size: 16px !important;
+
+    line-height: 1.7 !important;
+
+    color: #6b356f !important;
+
+    background: linear-gradient(
+        135deg,
+        rgba(168, 92, 255, 0.10),
+        rgba(242, 56, 169, 0.10)
+    ) !important;
+
+    border:
+        1px solid rgba(168, 92, 255, 0.12) !important;
+}/* =========================================================
+   PD — OUR STATS PAGE
+   ========================================================= */
+
+.stats-page {
+    padding: 18px 15px 35px;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+
+    background:
+        radial-gradient(
+            circle at 90% 5%,
+            rgba(190, 55, 255, 0.10),
+            transparent 30%
+        );
+}
 
 
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+
+.stat-card {
+    min-height: 88px;
+
+    margin-bottom: 12px;
+    padding: 15px;
+
+    display: flex;
+    align-items: center;
+
+    position: relative;
+
+    border-radius: 18px;
+
+    border: 1px solid rgba(150, 64, 220, 0.28);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(25, 16, 62, 0.97),
+            rgba(10, 9, 36, 0.97)
+        );
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.18),
+        inset 0 0 25px rgba(130, 45, 210, 0.05);
+
+    transition: 0.25s ease;
+}
 
 
+.stat-card:hover {
+    transform: translateY(-2px);
 
+    border-color:
+        rgba(218, 73, 214, 0.50);
+
+    box-shadow:
+        0 10px 30px rgba(121, 39, 188, 0.18);
+}
+
+
+/* =========================================================
+   STAT ICON
+   ========================================================= */
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+
+    min-width: 50px;
+
+    margin-right: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+
+    color: #e75bd9;
+
+    font-size: 21px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(151, 52, 225, 0.18),
+            rgba(224, 54, 183, 0.08)
+        );
+
+    border:
+        1px solid rgba(190, 65, 230, 0.20);
+
+    box-shadow:
+        0 0 18px rgba(187, 51, 222, 0.10);
+}
+
+
+/* =========================================================
+   STAT TEXT
+   ========================================================= */
+
+.stat-card span {
+    display: block;
+
+    color: #aaa7c4;
+
+    font-size: 11px;
+}
+
+
+.stat-card strong {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 25px;
+
+    line-height: 1.1;
+
+    font-weight: 700;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #e879dc
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+}
+
+
+.stat-card small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #777493;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   SONG CARD
+   ========================================================= */
+
+.stat-song {
+    min-width: 0;
+    padding-right: 42px;
+}
+
+
+.stat-song strong {
+    font-size: 14px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+.stat-song small {
+    line-height: 1.4;
+
+    max-width: 245px;
+}
+
+
+/* =========================================================
+   SONG PLAY BUTTON
+   ========================================================= */
+
+.small-play {
+    position: absolute;
+
+    right: 15px;
+
+    width: 37px;
+    height: 37px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #9c34e9,
+            #dd36b7
+        );
+
+    box-shadow:
+        0 0 18px rgba(216, 46, 197, 0.30);
+
+    font-size: 11px;
+
+    transition: 0.25s ease;
+}
+
+
+.small-play:hover {
+    transform: scale(1.08);
+
+    box-shadow:
+        0 0 25px rgba(216, 46, 197, 0.50);
+}
+
+
+/* =========================================================
+   JOURNEY
+   ========================================================= */
+
+.journey-card {
+    margin-top: 15px;
+
+    padding: 18px;
+
+    border-radius: 18px;
+
+    border:
+        1px solid rgba(140, 57, 212, 0.28);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20, 14, 52, 0.98),
+            rgba(10, 9, 34, 0.98)
+        );
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.18);
+}
+
+
+.journey-card h3 {
+    font-family: "Playfair Display", serif;
+
+    font-size: 17px;
+
+    font-weight: 500;
+
+    margin-bottom: 16px;
+
+    color: #f2d8f2;
+}
+
+
+.journey-item {
+    min-height: 43px;
+
+    display: flex;
+    align-items: center;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.045);
+}
+
+
+.journey-item:last-child {
+    border-bottom: none;
+}
+
+
+.journey-item i {
+    width: 30px;
+
+    color: #ff61d6;
+
+    font-size: 11px;
+
+    text-shadow:
+        0 0 10px rgba(255, 67, 208, 0.45);
+}
+
+
+.journey-item span {
+    font-size: 11px;
+
+    color: #e7e4f1;
+}
+
+
+.journey-item small {
+    margin-left: auto;
+
+    color: #918da8;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   QUOTE
+   ========================================================= */
+
+.quote-card {
+    margin-top: 8px;
+
+    padding: 24px 12px 30px;
+
+    text-align: center;
+
+    color: #aaa6c0;
+
+    font-family: "Playfair Display", serif;
+
+    font-style: italic;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .stats-page {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .stat-card {
+        padding: 14px;
+    }
+
+    .stat-icon {
+        width: 47px;
+        height: 47px;
+        min-width: 47px;
+    }
+
+    .stat-card strong {
+        font-size: 23px;
+    }
+
+}
+
+
+/* PD CHAT WALLPAPER */
+
+.chat-messages {
+    background-image: url("./slideshow/photo1.jpg") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+.chat-messages {
+    background:
+        linear-gradient(
+            rgba(5, 8, 30, 0.35),
+            rgba(5, 8, 30, 0.35)
+        ),
+        url("slideshow/your-picture.jpg") center / cover no-repeat;
+
+    background-attachment: scroll;
+}

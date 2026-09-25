@@ -29,9 +29,9 @@ const PD_SONGS = [
         file: "songs/swear-it-again.mp3"
     },
     {
-        title: "I Lay My Love on You",
-        artist: "Westlife",
-        file: "songs/i-lay-my-love-on-you.mp3"
+        title: "Beautiful in White",
+        artist: "Westlife Singapore version",
+        file: "Westlife Singapore version.mp3"
     },
     {
         title: "Puzzle of my Heart",

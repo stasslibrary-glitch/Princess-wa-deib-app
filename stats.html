@@ -1,79 +1,68 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>PD | Our Stats</title>
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
+        rel="stylesheet"
+    >
 
-<title>PD | Our Stats</title>
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
 
-<link
-    rel="stylesheet"
-    href="style.css"
->
-
-<link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
-    rel="stylesheet"
->
-
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
->
-
+    <!-- STATS ONLY CSS -->
+    <link rel="stylesheet" href="stats.css">
 </head>
 
 
-<body class="phone-page">
+<body>
 
-
-<div class="phone-app stats-app">
-
+<div class="stats-app">
 
     <!-- HEADER -->
+    <header class="stats-header">
 
-    <header class="simple-header">
-
-        <a href="home.html">
-
+        <a href="home.html" class="back-btn">
             <i class="fa-solid fa-arrow-left"></i>
-
         </a>
 
-        <h2>
-            Our Stats ♥
-        </h2>
+        <div class="header-title">
+            <span>Our</span>
+            <h1>Stats</h1>
+        </div>
+
+        <div class="header-heart">
+            <i class="fa-solid fa-heart"></i>
+        </div>
 
     </header>
 
 
     <!-- MAIN -->
-
-    <main class="stats-page">
+    <main class="stats-content">
 
 
         <!-- INTRO -->
-
         <section class="stats-intro">
 
-            <span class="stats-heart">
-                ♥
-            </span>
+            <div class="intro-heart">
+                <i class="fa-solid fa-heart"></i>
+            </div>
 
-            <h1>
-                Our little numbers
-            </h1>
+            <h2>Our Little Journey</h2>
 
             <p>
-                Every message, every memory,
-                every day... is part of our story.
+                Every day with you becomes another beautiful
+                part of our story.
             </p>
 
         </section>
@@ -81,309 +70,117 @@
 
 
         <!-- DAYS TOGETHER -->
+        <section class="main-stat-card">
 
-        <section class="days-stat-card">
+            <div class="main-stat-glow"></div>
 
-            <div class="days-icon">
+            <div class="main-stat-icon">
+                <i class="fa-solid fa-calendar-heart"></i>
+            </div>
+
+            <div class="main-stat-text">
+
+                <span>We've been together</span>
+
+                <strong id="daysTogether">0</strong>
+
+                <small>
+                    days of loving each other ♥
+                </small>
+
+            </div>
+
+            <div class="since-date">
+                Since 26th June 2026
+            </div>
+
+        </section>
+
+
+
+        <!-- SMALL STATS -->
+        <div class="stats-grid">
+
+
+            <!-- MEMORIES -->
+            <div class="small-stat-card">
+
+                <div class="small-stat-icon memory-icon">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+
+                <span>Special Memories</span>
+
+                <strong id="memoryCount">0</strong>
+
+                <small>
+                    Our little moments
+                </small>
+
+            </div>
+
+
+
+            <!-- SONG -->
+            <div class="small-stat-card song-card">
+
+                <div class="small-stat-icon song-icon">
+                    <i class="fa-solid fa-music"></i>
+                </div>
+
+                <span>Song of the Day</span>
+
+                <strong id="songTitle">
+                    Your Love Amazes Me
+                </strong>
+
+                <small>
+                    A song for us
+                </small>
+
+                <a href="song.html" class="song-play">
+                    <i class="fa-solid fa-play"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- OUR JOURNEY -->
+        <section class="journey-card">
+
+            <div class="section-heading">
+
+                <div>
+                    <span>OUR STORY</span>
+                    <h2>Our Journey</h2>
+                </div>
 
                 <i class="fa-solid fa-heart"></i>
 
             </div>
 
-            <span>
-                WE'VE BEEN US FOR
-            </span>
 
-            <strong id="daysTogether">
-                0
-            </strong>
-
-            <small>
-                days together ♥
-            </small>
-
-            <p>
-                Since 26 June 2026
-            </p>
-
-        </section>
+            <div class="timeline">
 
 
+                <!-- START -->
+                <div class="timeline-item">
 
-        <!-- QUICK STATS -->
+                    <div class="timeline-dot">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
 
-        <section class="stats-grid">
+                    <div class="timeline-line"></div>
 
+                    <div class="timeline-content">
 
-            <!-- MESSAGES -->
-
-            <div class="mini-stat">
-
-                <div class="mini-stat-icon">
-                    <i class="fa-regular fa-comments"></i>
-                </div>
-
-                <strong id="messageCount">
-                    0
-                </strong>
-
-                <span>
-                    Messages
-                </span>
-
-            </div>
-
-
-            <!-- MEMORIES -->
-
-            <div class="mini-stat">
-
-                <div class="mini-stat-icon">
-                    <i class="fa-regular fa-images"></i>
-                </div>
-
-                <strong id="memoryCount">
-                    0
-                </strong>
-
-                <span>
-                    Memories
-                </span>
-
-            </div>
-
-
-            <!-- SONGS -->
-
-            <div class="mini-stat">
-
-                <div class="mini-stat-icon">
-                    <i class="fa-solid fa-music"></i>
-                </div>
-
-                <strong id="songCount">
-                    0
-                </strong>
-
-                <span>
-                    Songs
-                </span>
-
-            </div>
-
-
-            <!-- LOVE -->
-
-            <div class="mini-stat">
-
-                <div class="mini-stat-icon">
-                    <i class="fa-solid fa-heart"></i>
-                </div>
-
-                <strong>
-                    ♥
-                </strong>
-
-                <span>
-                    Still Us
-                </span>
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- MESSAGE BALANCE -->
-
-        <section class="stats-card">
-
-            <div class="section-heading">
-
-                <div>
-
-                    <span>
-                        OUR CONVERSATIONS
-                    </span>
-
-                    <h3>
-                        Who talks more?
-                    </h3>
-
-                </div>
-
-                <i class="fa-solid fa-comments"></i>
-
-            </div>
-
-
-            <div class="people-stats">
-
-
-                <!-- DEIB -->
-
-                <div class="person-stat">
-
-                    <div class="person-stat-top">
+                        <strong>Our Story Began</strong>
 
                         <span>
-                            Deib
-                        </span>
-
-                        <strong id="deibMessages">
-                            0
-                        </strong>
-
-                    </div>
-
-                    <div class="stat-bar">
-
-                        <span
-                            id="deibBar"
-                            style="width: 50%;"
-                        ></span>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- PRINCESS -->
-
-                <div class="person-stat">
-
-                    <div class="person-stat-top">
-
-                        <span>
-                            Princess
-                        </span>
-
-                        <strong id="princessMessages">
-                            0
-                        </strong>
-
-                    </div>
-
-                    <div class="stat-bar">
-
-                        <span
-                            id="princessBar"
-                            style="width: 50%;"
-                        ></span>
-
-                    </div>
-
-                </div>
-
-
-            </div>
-
-        </section>
-
-
-
-        <!-- SONG -->
-
-        <section class="stats-card song-stat-card">
-
-            <div class="section-heading">
-
-                <div>
-
-                    <span>
-                        MUSIC
-                    </span>
-
-                    <h3>
-                        Our song today
-                    </h3>
-
-                </div>
-
-                <i class="fa-solid fa-music"></i>
-
-            </div>
-
-
-            <div class="song-stat-content">
-
-                <div class="song-disc">
-
-                    <i class="fa-solid fa-music"></i>
-
-                </div>
-
-
-                <div class="song-stat-info">
-
-                    <strong id="songTitle">
-                        Your Love Amazes Me
-                    </strong>
-
-                    <span id="songArtist">
-                        Westlife
-                    </span>
-
-                </div>
-
-
-                <a
-                    href="song.html"
-                    class="small-play"
-                >
-
-                    <i class="fa-solid fa-play"></i>
-
-                </a>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- JOURNEY -->
-
-        <section class="stats-card">
-
-            <div class="section-heading">
-
-                <div>
-
-                    <span>
-                        OUR STORY
-                    </span>
-
-                    <h3>
-                        Little milestones
-                    </h3>
-
-                </div>
-
-                <i class="fa-solid fa-road"></i>
-
-            </div>
-
-
-            <div class="milestone-list">
-
-
-                <div class="milestone">
-
-                    <div class="milestone-icon">
-                        ♥
-                    </div>
-
-                    <div>
-
-                        <strong>
-                            We started
-                        </strong>
-
-                        <span>
-                            26 June 2026
+                            26th June 2026
                         </span>
 
                     </div>
@@ -391,20 +188,22 @@
                 </div>
 
 
-                <div class="milestone">
 
-                    <div class="milestone-icon">
-                        💬
+                <!-- DAY 7 -->
+                <div class="timeline-item">
+
+                    <div class="timeline-dot">
+                        <i class="fa-solid fa-heart"></i>
                     </div>
 
-                    <div>
+                    <div class="timeline-line"></div>
 
-                        <strong>
-                            Our conversations
-                        </strong>
+                    <div class="timeline-content">
+
+                        <strong>One Week Together</strong>
 
                         <span>
-                            Growing every day
+                            2nd July 2026
                         </span>
 
                     </div>
@@ -412,20 +211,22 @@
                 </div>
 
 
-                <div class="milestone">
 
-                    <div class="milestone-icon">
-                        📸
+                <!-- DAY 30 -->
+                <div class="timeline-item">
+
+                    <div class="timeline-dot">
+                        <i class="fa-solid fa-heart"></i>
                     </div>
 
-                    <div>
+                    <div class="timeline-line"></div>
 
-                        <strong>
-                            Our memories
-                        </strong>
+                    <div class="timeline-content">
+
+                        <strong>One Month Together</strong>
 
                         <span>
-                            Little moments that matter
+                            25th July 2026
                         </span>
 
                     </div>
@@ -433,17 +234,40 @@
                 </div>
 
 
-                <div class="milestone">
 
-                    <div class="milestone-icon">
-                        💜
+                <!-- DAY 60 -->
+                <div class="timeline-item">
+
+                    <div class="timeline-dot">
+                        <i class="fa-solid fa-heart"></i>
                     </div>
 
-                    <div>
+                    <div class="timeline-line"></div>
 
-                        <strong>
-                            Today
-                        </strong>
+                    <div class="timeline-content">
+
+                        <strong>60 Days Together</strong>
+
+                        <span>
+                            24th August 2026
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TODAY -->
+                <div class="timeline-item today-item">
+
+                    <div class="timeline-dot today-dot">
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+
+                    <div class="timeline-content">
+
+                        <strong>Today ♥</strong>
 
                         <span id="todayJourney">
                             Our story continues...
@@ -460,25 +284,18 @@
 
 
 
-        <!-- FINAL MESSAGE -->
+        <!-- LOVE QUOTE -->
+        <section class="quote-card">
 
-        <section class="stats-love-message">
-
-            <div>
-                ♥
-            </div>
-
-            <h3>
-                It's not really about the numbers.
-            </h3>
+            <i class="fa-solid fa-quote-left"></i>
 
             <p>
-                It's about every moment behind them.
+                Not just a love story...
+                <br>
+                <strong>But our story. ♥</strong>
             </p>
 
-            <span>
-                Princess wa Deib
-            </span>
+            <span>— PD</span>
 
         </section>
 
@@ -489,16 +306,8 @@
 
 
 
-<script
-    type="module"
-    src="auth-guard.js"
-></script>
-
-<script
-    type="module"
-    src="stats.js"
-></script>
+<!-- STATS ONLY JAVASCRIPT -->
+<script type="module" src="stats.js"></script>
 
 </body>
-
 </html>
