@@ -25,6 +25,16 @@ import {
 
 let currentProfile = null;
 
+/* =========================================================
+   PD MESSAGE NOTIFICATION SOUND
+   ========================================================= */
+
+const messageSound = new Audio("sounds/message.mp3");
+
+messageSound.volume = 0.7;
+
+let firstMessagesLoaded = false;
+
 
 /* =========================================================
    PD PROFILES
@@ -185,7 +195,7 @@ function updatePDInterface() {
             ) {
 
                 element.textContent =
-                    "My Princess ❤️";
+                    "My Princess 💜";
 
             } else {
 
@@ -405,66 +415,91 @@ onSnapshot(
     snapshot => {
 
         const container =
-            document.querySelector(".chat-messages");
+            document.querySelector(
+                ".chat-messages"
+            );
 
-        if (!container) return;
+        if (!container)
+            return;
+
 
         container.innerHTML = "";
 
-        snapshot.docChanges().forEach(change => {
 
-            if (
-                change.type === "added" &&
-                !firstChatLoad
-            ) {
+        snapshot.forEach(
+            documentSnapshot => {
 
-                const data =
-                    change.doc.data();
+                const message =
+                    documentSnapshot.data();
 
-                if (
-                    data.senderUID !==
-                    currentProfile.uid
-                ) {
-
-                    const count =
-                        parseInt(
-                            localStorage.getItem(
-                                "pdChatNotifications"
-                            ) || "0",
-                            10
-                        );
-
-                    localStorage.setItem(
-                        "pdChatNotifications",
-                        count + 1
-                    );
-
-                }
+                displayMessage(message);
 
             }
-
-        });
-
-
-        snapshot.forEach(documentSnapshot => {
-
-            displayMessage(
-                documentSnapshot.data()
-            );
-
-        });
+        );
 
 
         container.scrollTop =
             container.scrollHeight;
 
 
-        firstChatLoad = false;
+        /* =================================================
+           NOTIFICATION SOUND
+        ================================================= */
+
+        if (firstMessagesLoaded) {
+
+            snapshot.docChanges().forEach(
+                change => {
+
+                    if (
+                        change.type === "added"
+                    ) {
+
+                        const message =
+                            change.doc.data();
+
+
+                        /* Don't alert yourself */
+
+                        if (
+                            message.senderUID !==
+                            currentProfile.uid
+                        ) {
+
+                            messageSound.currentTime = 0;
+
+                            messageSound.play()
+                                .catch(error => {
+
+                                    console.log(
+                                        "🔇 Notification sound waiting for user interaction."
+                                    );
+
+                                });
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        firstMessagesLoaded = true;
 
     }
 );
 
 }
+
+
+
+
+
+
+
 
 
 /* =========================================================
