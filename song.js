@@ -34,9 +34,9 @@ const PD_SONGS = [
         file: "songs/i-lay-my-love-on-you.mp3"
     },
     {
-        title: "You Raise Me Up",
-        artist: "Lutty Neika",
-        file: "songs/you-raise-me-up.mp3"
+        title: "Puzzle of my Heart",
+        artist: "Westlife",
+        file: "songs/Puzzle_of_my_heart.mp3"
     },
     {
         title: "Anaconda",
