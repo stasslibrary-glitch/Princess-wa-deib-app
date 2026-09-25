@@ -839,44 +839,35 @@ button {
 
 
 /* =========================================================
-   14. CHAT HEADER
+   PD CHAT — FIXED HEADER
    ========================================================= */
 
+.chat-app {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
 .chat-header {
-
     height: 73px;
-
     min-height: 73px;
 
     padding: 0 15px;
 
     display: flex;
-
     align-items: center;
 
-    border-bottom:
-        1px solid rgba(125, 63, 206, 0.18);
+    border-bottom: 1px solid rgba(125, 63, 206, 0.18);
 
-    background:
-        rgba(5, 8, 30, 0.97);
+    background: rgba(5, 8, 30, 0.97);
 
     flex-shrink: 0;
 
+    position: sticky;
+    top: 0;
+    z-index: 20;
 }
-
-
-.chat-header > a {
-
-    width: 35px;
-
-    font-size: 19px;
-
-    color: white;
-
-    text-decoration: none;
-
-}
-
 
 .chat-person {
 
@@ -964,22 +955,18 @@ button {
    ========================================================= */
 
 .chat-messages {
-
     flex: 1;
-
     min-height: 0;
 
     overflow-y: auto;
-
     overflow-x: hidden;
 
-    padding: 18px 14px 20px;
+    padding: 22px 14px;
 
     display: flex;
-
     flex-direction: column;
 
-    gap: 10px;
+    gap: 11px;
 
     background:
         radial-gradient(
@@ -987,11 +974,7 @@ button {
             rgba(125, 41, 187, 0.07),
             transparent 30%
         );
-
-    scroll-behavior: smooth;
-
 }
-
 
 /* scrollbar */
 
@@ -1062,7 +1045,7 @@ button {
 
     align-self: flex-start;
 
-    background: #1b2448;
+    background: #c50000;
 
     border-bottom-left-radius: 5px;
 
@@ -1078,8 +1061,8 @@ button {
     background:
         linear-gradient(
             135deg,
-            #7426c9,
-            #9d26bd
+            #da52f5,
+            #9000a3
         );
 
     border-bottom-right-radius: 5px;
@@ -1088,34 +1071,51 @@ button {
 
 }
 
+.person-avatar {
+    width: 42px;
+    height: 42px;
 
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+
+    background: #a938dc;
+
+    box-shadow:
+        0 0 18px rgba(225, 59, 209, 0.25);
+}
+
+.person-avatar img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+    object-position: center;
+}
 /* =========================================================
    16. CHAT INPUT
    ========================================================= */
 
 .chat-input {
-
     min-height: 67px;
-
     height: 67px;
-
-    box-sizing: border-box;
 
     padding: 10px;
 
     display: flex;
-
     align-items: center;
 
     gap: 7px;
 
     background: #070b27;
 
-    border-top:
-        1px solid rgba(133, 61, 202, 0.2);
+    border-top: 1px solid rgba(133, 61, 202, 0.2);
 
     flex-shrink: 0;
-
 }
 
 
@@ -1214,131 +1214,6 @@ button {
 
 
 
-
-
-/* =========================================================
-   16. STATS PAGE
-   ========================================================= */
-
-.stats-page {
-    padding: 16px;
-    overflow-y: auto;
-    height: calc(100% - 70px);
-}
-
-
-.stat-card {
-    min-height: 112px;
-
-    padding: 17px;
-
-    margin-bottom: 13px;
-
-    display: flex;
-    align-items: center;
-
-    border-radius: 17px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(20, 13, 58, 0.96),
-            rgba(10, 10, 37, 0.96)
-        );
-
-    border:
-        1px solid rgba(142, 59, 215, 0.28);
-
-    position: relative;
-}
-
-
-.stat-icon {
-    width: 50px;
-    height: 50px;
-
-    border-radius: 13px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    color: #ec58d9;
-
-    font-size: 22px;
-
-    background:
-        rgba(194, 50, 211, 0.09);
-
-    margin-right: 14px;
-}
-
-
-.stat-card span {
-    display: block;
-
-    font-size: 12px;
-
-    color: #b1aec9;
-}
-
-
-.stat-card strong {
-    display: block;
-
-    color: #f45bd7;
-
-    font-size: 28px;
-
-    margin: 3px 0;
-}
-
-
-.stat-card small {
-    display: block;
-
-    font-size: 10px;
-
-    color: #9996b3;
-}
-
-
-.stat-song {
-    max-width: 240px;
-}
-
-
-.stat-song strong {
-    color: #ffffff;
-
-    font-size: 14px;
-
-    margin: 7px 0;
-}
-
-
-.stat-song small {
-    line-height: 1.5;
-}
-
-
-.small-play {
-    margin-left: auto;
-
-    width: 35px;
-    height: 35px;
-
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background:
-        #8e32ce;
-
-    font-size: 11px;
-}
 
 
 /* =========================================================
@@ -3639,35 +3514,395 @@ button {
     font-size: 11px;
 
 }
+/* =========================================================
+   OUR STATS
+   ========================================================= */
+
+.stats-page {
+    padding: 18px 15px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
 
 
-/* MOBILE */
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
 
-@media (max-width: 430px) {
+.stat-card {
+    position: relative;
 
-    .login-page {
+    display: flex;
+    align-items: center;
 
-        padding: 20px 14px;
+    gap: 14px;
 
+    padding: 17px;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(168, 92, 255, 0.14),
+            rgba(242, 56, 169, 0.08)
+        );
+
+    border:
+        1px solid rgba(168, 92, 255, 0.18);
+
+    box-shadow:
+        0 8px 25px rgba(90, 30, 130, 0.08);
+}
+
+
+/* ICON */
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+
+    min-width: 48px;
+
+    border-radius: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #a85cff,
+            #f238a9
+        );
+
+    color: white;
+
+    font-size: 19px;
+
+    box-shadow:
+        0 7px 18px rgba(168, 92, 255, 0.25);
+}
+
+
+/* TEXT */
+
+.stat-card > div:last-of-type {
+    min-width: 0;
+}
+
+.stat-card span {
+    display: block;
+
+    font-size: 11px;
+
+    color: #8b849f;
+
+    margin-bottom: 3px;
+}
+
+.stat-card strong {
+    display: block;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 28px;
+
+    line-height: 1.1;
+
+    color: #4d245e;
+}
+
+.stat-card small {
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    color: #9a91a8;
+}
+
+
+/* =========================================================
+   SONG CARD
+   ========================================================= */
+
+.stat-song {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.stat-song strong {
+    font-family:
+        "DM Sans",
+        sans-serif;
+
+    font-size: 15px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* PLAY BUTTON */
+
+.small-play {
+    width: 40px;
+    height: 40px;
+
+    min-width: 40px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #a85cff,
+            #f238a9
+        );
+
+    box-shadow:
+        0 6px 15px rgba(168, 92, 255, 0.25);
+
+    transition:
+        transform 0.2s ease;
+}
+
+.small-play:active {
+    transform: scale(0.9);
+}
+
+
+/* =========================================================
+   JOURNEY
+   ========================================================= */
+
+.journey-card {
+    padding: 20px 17px;
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fff9ff,
+            #f9f0ff
+        );
+
+    border:
+        1px solid rgba(168, 92, 255, 0.15);
+
+    box-shadow:
+        0 8px 25px rgba(100, 40, 140, 0.07);
+}
+
+.journey-card h3 {
+    margin: 0 0 17px;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 21px;
+
+    color: #552263;
+}
+
+
+/* JOURNEY ITEM */
+
+.journey-item {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        32px 1fr auto;
+
+    align-items: center;
+
+    gap: 9px;
+
+    min-height: 47px;
+
+    border-bottom:
+        1px solid rgba(168, 92, 255, 0.09);
+}
+
+.journey-item:last-child {
+    border-bottom: none;
+}
+
+
+/* HEART */
+
+.journey-item i {
+    width: 28px;
+    height: 28px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 11px;
+
+    color: #f238a9;
+
+    background:
+        rgba(242, 56, 169, 0.10);
+}
+
+
+/* NAME */
+
+.journey-item span {
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: #5e5267;
+}
+
+
+/* DATE */
+
+.journey-item small {
+    font-size: 10px;
+
+    color: #9d92a6;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TODAY JOURNEY
+   ========================================================= */
+
+.journey-item:last-child i {
+    color: white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #a85cff,
+            #f238a9
+        );
+
+    box-shadow:
+        0 4px 12px rgba(168, 92, 255, 0.2);
+}
+
+.journey-item:last-child span {
+    color: #8b3e9d;
+}
+
+
+/* =========================================================
+   QUOTE
+   ========================================================= */
+
+.quote-card {
+    padding: 23px 18px;
+
+    border-radius: 22px;
+
+    text-align: center;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-style: italic;
+
+    font-size: 16px;
+
+    line-height: 1.7;
+
+    color: #6b356f;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(168, 92, 255, 0.10),
+            rgba(242, 56, 169, 0.10)
+        );
+
+    border:
+        1px solid rgba(168, 92, 255, 0.12);
+}
+
+
+/* =========================================================
+   MOBILE TOUCH
+   ========================================================= */
+
+.stat-card,
+.journey-card,
+.quote-card {
+    animation:
+        statsFade 0.45s ease both;
+}
+
+.stat-card:nth-child(2) {
+    animation-delay: 0.05s;
+}
+
+.stat-card:nth-child(3) {
+    animation-delay: 0.1s;
+}
+
+.journey-card {
+    animation-delay: 0.15s;
+}
+
+.quote-card {
+    animation-delay: 0.2s;
+}
+
+
+@keyframes statsFade {
+
+    from {
+        opacity: 0;
+        transform: translateY(8px);
     }
 
-
-    .login-container h1 {
-
-        font-size: 32px;
-
-    }
-
-
-    .login-card {
-
-        padding: 24px 18px;
-
-        border-radius: 24px;
-
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 
 }
+
+
+
+
+
+
+
+
+
+
 /* =========================================================
    PD JOURNEY CALENDAR
    ========================================================= */
@@ -4504,3 +4739,20 @@ button {
     font-size: 12px;
     color: #888;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

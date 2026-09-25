@@ -415,83 +415,37 @@ onSnapshot(
     snapshot => {
 
         const container =
-            document.querySelector(
-                ".chat-messages"
-            );
+            document.querySelector(".chat-messages");
 
-        if (!container)
-            return;
-
+        if (!container) return;
 
         container.innerHTML = "";
 
+        snapshot.forEach(docSnapshot => {
 
-        snapshot.forEach(
-            documentSnapshot => {
-
-                const message =
-                    documentSnapshot.data();
-
-                displayMessage(message);
-
-            }
-        );
-
-
-        container.scrollTop =
-            container.scrollHeight;
-
-
-        /* =================================================
-           NOTIFICATION SOUND
-        ================================================= */
-
-        if (firstMessagesLoaded) {
-
-            snapshot.docChanges().forEach(
-                change => {
-
-                    if (
-                        change.type === "added"
-                    ) {
-
-                        const message =
-                            change.doc.data();
-
-
-                        /* Don't alert yourself */
-
-                        if (
-                            message.senderUID !==
-                            currentProfile.uid
-                        ) {
-
-                            messageSound.currentTime = 0;
-
-                            messageSound.play()
-                                .catch(error => {
-
-                                    console.log(
-                                        "🔇 Notification sound waiting for user interaction."
-                                    );
-
-                                });
-
-                        }
-
-                    }
-
-                }
+            displayMessage(
+                docSnapshot.data()
             );
 
-        }
+        });
 
+        requestAnimationFrame(() => {
 
-        firstMessagesLoaded = true;
+            container.scrollTop =
+                container.scrollHeight;
+
+        });
+
+    },
+    error => {
+
+        console.error(
+            "❌ Chat loading error:",
+            error
+        );
 
     }
 );
-
 }
 
 
