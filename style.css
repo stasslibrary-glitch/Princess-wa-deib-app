@@ -5391,3 +5391,210 @@ button {
 
     background-attachment: scroll;
 }
+
+
+
+
+
+
+
+/* =====================================================
+   FLOATING COUPLE
+   ===================================================== */
+
+.floating-couple {
+    position: fixed;
+    width: 150px;
+    height: auto;
+    z-index: 5;
+    pointer-events: none;
+
+    left: -180px;
+    top: 70%;
+
+    animation: floatCouple 18s linear infinite;
+}
+
+.floating-couple img {
+    width: 100%;
+    height: auto;
+    display: block;
+
+    animation: gentleFloat 3s ease-in-out infinite;
+}
+
+/* Move the couple across the whole screen */
+@keyframes floatCouple {
+    0% {
+        left: -180px;
+        top: 75%;
+        transform: rotate(-5deg);
+    }
+
+    25% {
+        top: 55%;
+    }
+
+    50% {
+        top: 70%;
+    }
+
+    75% {
+        top: 50%;
+    }
+
+    100% {
+        left: 110%;
+        top: 65%;
+        transform: rotate(5deg);
+    }
+}
+
+/* Gentle floating/bobbing movement */
+@keyframes gentleFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-18px);
+    }
+}
+
+
+
+/* =====================================================
+   FLOATING COUPLES
+   ===================================================== */
+
+.floating-couple {
+    position: fixed;
+    width: 90px;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.95;
+}
+
+.floating-couple img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* COUPLE 1 */
+.couple-one {
+    animation: coupleOne 22s ease-in-out infinite;
+}
+
+/* COUPLE 2 */
+.couple-two {
+    animation: coupleTwo 27s ease-in-out infinite;
+}
+
+
+/* =====================================================
+   RANDOM-LOOKING MOVEMENT
+   ===================================================== */
+
+@keyframes coupleOne {
+
+    0% {
+        left: 5%;
+        top: 75%;
+        transform: rotate(-8deg);
+    }
+
+    15% {
+        left: 25%;
+        top: 55%;
+        transform: rotate(5deg);
+    }
+
+    30% {
+        left: 45%;
+        top: 78%;
+        transform: rotate(-4deg);
+    }
+
+    45% {
+        left: 70%;
+        top: 60%;
+        transform: rotate(8deg);
+    }
+
+    60% {
+        left: 85%;
+        top: 35%;
+        transform: rotate(-6deg);
+    }
+
+    75% {
+        left: 60%;
+        top: 20%;
+        transform: rotate(4deg);
+    }
+
+    90% {
+        left: 25%;
+        top: 40%;
+        transform: rotate(-7deg);
+    }
+
+    100% {
+        left: 5%;
+        top: 75%;
+        transform: rotate(-8deg);
+    }
+}
+
+
+@keyframes coupleTwo {
+
+    0% {
+        left: 80%;
+        top: 20%;
+        transform: rotate(6deg);
+    }
+
+    15% {
+        left: 60%;
+        top: 40%;
+        transform: rotate(-5deg);
+    }
+
+    30% {
+        left: 85%;
+        top: 65%;
+        transform: rotate(7deg);
+    }
+
+    45% {
+        left: 55%;
+        top: 80%;
+        transform: rotate(-4deg);
+    }
+
+    60% {
+        left: 30%;
+        top: 60%;
+        transform: rotate(6deg);
+    }
+
+    75% {
+        left: 10%;
+        top: 35%;
+        transform: rotate(-7deg);
+    }
+
+    90% {
+        left: 35%;
+        top: 15%;
+        transform: rotate(4deg);
+    }
+
+    100% {
+        left: 80%;
+        top: 20%;
+        transform: rotate(6deg);
+    }
+}
