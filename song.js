@@ -31,7 +31,7 @@ const PD_SONGS = [
     {
         title: "Beautiful in White",
         artist: "Westlife Singapore version",
-        file: "songs/Beautiful in White Westlife Singapore.mp3"
+        file: "songs/Beautiful in White.mp3"
     },
     {
         title: "Puzzle of my Heart",
