@@ -501,7 +501,7 @@ button {
     background:
         linear-gradient(
             135deg,
-            #531a83,
+            #7900db,
             #d83c9d
         );
 
@@ -519,7 +519,7 @@ button {
     background:
         radial-gradient(
             circle at 85% 50%,
-            rgba(255, 126, 219, 0.35),
+            rgba(192, 1, 1, 0.37),
             transparent 30%
         );
 }
@@ -532,7 +532,7 @@ button {
     background:
         linear-gradient(
             90deg,
-            rgba(23, 6, 44, 0.82),
+            rgba(23, 6, 44, 0.849),
             rgba(23, 6, 44, 0.25)
         );
 }
@@ -584,7 +584,7 @@ button {
         linear-gradient(
             145deg,
             rgba(18, 13, 55, 0.96),
-            rgba(12, 10, 39, 0.96)
+            rgba(113, 17, 223, 0.96)
         );
 
     display: flex;
@@ -5727,6 +5727,1171 @@ button {
             scale(1);
 
         opacity: 0;
+
+    }
+
+}
+
+
+
+
+
+
+
+/* =====================================================
+   PD PHONE ATMOSPHERE
+   ===================================================== */
+
+#pd-atmosphere {
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 1;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(170, 70, 255, .16),
+            transparent 42%
+        ),
+        radial-gradient(
+            circle at 20% 80%,
+            rgba(255, 50, 170, .10),
+            transparent 40%
+        );
+
+    animation:
+        pdAtmosphereMove 12s ease-in-out
+        infinite alternate;
+}
+
+
+/* =====================================================
+   STARS — ONLY INSIDE PHONE
+   ===================================================== */
+
+#pd-stars {
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    z-index: 2;
+}
+
+
+.pd-star {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    background: white;
+
+    box-shadow:
+        0 0 4px white,
+        0 0 10px rgba(190, 100, 255, .8);
+
+    opacity: .15;
+
+    animation:
+        pdStarTwinkle
+        ease-in-out
+        infinite;
+}
+
+
+@keyframes pdStarTwinkle {
+
+    0% {
+        opacity: .1;
+        transform: scale(.6);
+    }
+
+    50% {
+        opacity: .85;
+        transform: scale(1.4);
+    }
+
+    100% {
+        opacity: .1;
+        transform: scale(.6);
+    }
+
+}
+
+
+/* =====================================================
+   SHOOTING STAR
+   ===================================================== */
+
+#pd-shooting-star {
+
+    position: absolute;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    box-shadow:
+        0 0 8px white,
+        0 0 18px #d08aff,
+        0 0 35px #9b4dff;
+
+    pointer-events: none;
+
+    z-index: 5;
+
+    opacity: 0;
+
+}
+
+
+/* LONG PURPLE/WHITE TRAIL */
+
+#pd-shooting-star::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 2px;
+
+    right: 0;
+    top: 50%;
+
+    transform:
+        translateY(-50%)
+        rotate(-25deg);
+
+    transform-origin: right;
+
+    background:
+        linear-gradient(
+            to left,
+            rgba(255,255,255,.95),
+            rgba(210,140,255,.7),
+            transparent
+        );
+
+    filter:
+        drop-shadow(
+            0 0 5px
+            rgba(180,100,255,.7)
+        );
+}
+
+
+/* =====================================================
+   LONG DIAGONAL SHOOTING STAR
+   ===================================================== */
+
+.pd-shoot {
+
+    animation:
+        pdLongShootingStar
+        2.8s
+        cubic-bezier(.15,.65,.25,1)
+        forwards;
+
+}
+
+
+@keyframes pdLongShootingStar {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translate(
+                -20px,
+                -20px
+            )
+            rotate(-25deg);
+
+    }
+
+    8% {
+
+        opacity: 1;
+
+    }
+
+    85% {
+
+        opacity: .9;
+
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            translate(
+                125vw,
+                125vh
+            )
+            rotate(-25deg);
+
+    }
+
+}
+
+
+/* =====================================================
+   STARS
+   ===================================================== */
+
+#pd-stars {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+}
+
+
+.pd-star {
+
+    position: absolute;
+
+    display: block;
+
+    border-radius: 50%;
+
+    background: white;
+
+    box-shadow:
+        0 0 5px rgba(255,255,255,.8),
+        0 0 12px rgba(190,100,255,.7);
+
+    opacity: .15;
+
+    animation:
+        pdStarTwinkle
+        ease-in-out
+        infinite;
+
+}
+
+
+/* =====================================================
+   ATMOSPHERE MOVEMENT
+   ===================================================== */
+
+@keyframes pdAtmosphereMove {
+
+    0% {
+        transform:
+            translate(-10px, -8px)
+            scale(1);
+    }
+
+    100% {
+        transform:
+            translate(12px, 10px)
+            scale(1.04);
+    }
+
+}
+
+
+/* =====================================================
+   STAR TWINKLE
+   ===================================================== */
+
+@keyframes pdStarTwinkle {
+
+    0% {
+        opacity: .08;
+        transform: scale(.7);
+    }
+
+    50% {
+        opacity: .9;
+        transform: scale(1.3);
+    }
+
+    100% {
+        opacity: .08;
+        transform: scale(.7);
+    }
+
+}
+
+
+/* =====================================================
+   SHOOTING STAR
+   ===================================================== */
+
+#pd-shooting-star {
+
+    position: fixed;
+
+    width: 4px;
+    height: 4px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    box-shadow:
+        0 0 8px white,
+        0 0 20px #c77dff,
+        0 0 35px #a855f7;
+
+    z-index: 2;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+}
+
+
+#pd-shooting-star::after {
+
+    content: "";
+
+    position: absolute;
+
+    right: 2px;
+
+    top: 50%;
+
+    width: 130px;
+    height: 2px;
+
+    transform:
+        translateY(-50%)
+        rotate(-25deg);
+
+    transform-origin: right;
+
+    background:
+        linear-gradient(
+            to left,
+            rgba(255,255,255,.9),
+            rgba(190,100,255,.5),
+            transparent
+        );
+
+}
+
+
+.pd-shoot {
+
+    animation:
+        pdShootingStar 1.5s
+        ease-out
+        forwards;
+
+}
+
+
+@keyframes pdShootingStar {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translate(0, 0)
+            rotate(-25deg);
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translate(380px, 230px)
+            rotate(-25deg);
+    }
+
+}
+
+
+/* =====================================================
+   SECRET HEART
+   ===================================================== */
+
+#pd-secret-heart {
+
+    position: fixed;
+
+    right: 22px;
+    bottom: 22px;
+
+    width: 34px;
+    height: 34px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background:
+        rgba(150, 60, 255, .12);
+
+    color:
+        rgba(210, 150, 255, .65);
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    z-index: 50;
+
+    opacity: .55;
+
+    box-shadow:
+        0 0 15px
+        rgba(170,70,255,.25);
+
+    transition:
+        transform .3s ease,
+        opacity .3s ease,
+        box-shadow .3s ease;
+
+}
+
+
+/* Gentle pulse */
+
+#pd-secret-heart {
+
+    animation:
+        secretHeartPulse 3s
+        ease-in-out
+        infinite;
+
+}
+
+
+#pd-secret-heart:hover {
+
+    opacity: 1;
+
+    transform:
+        scale(1.25);
+
+    box-shadow:
+        0 0 25px
+        rgba(190,90,255,.7);
+
+}
+
+
+@keyframes secretHeartPulse {
+
+    0%, 100% {
+        box-shadow:
+            0 0 10px
+            rgba(170,70,255,.2);
+    }
+
+    50% {
+        box-shadow:
+            0 0 25px
+            rgba(190,90,255,.6);
+    }
+
+}
+
+
+/* =====================================================
+   LOVE REVEAL
+   ===================================================== */
+
+#pd-love-reveal {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    visibility: hidden;
+
+    opacity: 0;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(110,30,180,.85),
+            rgba(25,5,45,.96)
+        );
+
+    backdrop-filter:
+        blur(12px);
+
+    transition:
+        opacity 1s ease,
+        visibility 1s ease;
+
+    overflow: hidden;
+
+}
+
+
+.pd-reveal-active {
+
+    visibility: visible !important;
+
+    opacity: 1 !important;
+
+}
+
+
+.pd-reveal-glow {
+
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(190,90,255,.35),
+            transparent 65%
+        );
+
+    animation:
+        revealGlow 3s
+        ease-in-out
+        infinite;
+
+}
+
+
+@keyframes revealGlow {
+
+    0%, 100% {
+        transform: scale(.8);
+        opacity: .5;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+
+}
+
+
+/* =====================================================
+   REVEAL CONTENT
+   ===================================================== */
+
+.pd-reveal-content {
+
+    position: relative;
+
+    z-index: 5;
+
+    text-align: center;
+
+    color: white;
+
+    animation:
+        revealContent 1.4s
+        ease-out
+        forwards;
+
+}
+
+
+.pd-reveal-sparkle {
+
+    font-size: 30px;
+
+    margin-bottom: 25px;
+
+    color: #e8c8ff;
+
+    animation:
+        sparkleRotate 3s
+        linear
+        infinite;
+
+}
+
+
+.pd-reveal-message {
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+    font-size:
+        clamp(30px, 7vw, 60px);
+
+    max-width: 800px;
+
+    padding: 0 25px;
+
+    line-height: 1.25;
+
+}
+
+
+.pd-reveal-heart {
+
+    margin-top: 28px;
+
+    font-size: 45px;
+
+    color: #ff8fcf;
+
+    animation:
+        revealHeart 1.5s
+        ease-in-out
+        infinite;
+
+}
+
+
+.pd-reveal-signature {
+
+    margin-top: 18px;
+
+    font-size: 16px;
+
+    opacity: .7;
+
+    letter-spacing: 3px;
+
+}
+
+
+@keyframes revealContent {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translateY(30px)
+            scale(.9);
+    }
+
+    100% {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+@keyframes revealHeart {
+
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.25);
+    }
+
+}
+
+
+@keyframes sparkleRotate {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =====================================================
+   RISING PARTICLES
+   ===================================================== */
+
+#pd-particles {
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+}
+
+
+.pd-love-particle {
+
+    position: absolute;
+
+    bottom: 0;
+
+    color: #e7c7ff;
+
+    font-size:
+        calc(8px + 1vw);
+
+    text-shadow:
+        0 0 10px
+        rgba(210,150,255,.9);
+
+    animation:
+        loveParticleRise
+        ease-out
+        forwards;
+
+}
+
+
+@keyframes loveParticleRise {
+
+    0% {
+
+        transform:
+            translate(0, 0)
+            scale(.3);
+
+        opacity: 0;
+
+    }
+
+    15% {
+
+        opacity: 1;
+
+    }
+
+    100% {
+
+        transform:
+            translate(
+                var(--particle-x),
+                -100vh
+            )
+            scale(1.2);
+
+        opacity: 0;
+
+    }
+
+}
+
+
+/* =====================================================
+   WHEN LOVE REVEAL IS ACTIVE
+   ===================================================== */
+
+body.pd-love-active {
+
+    overflow: hidden;
+
+}
+
+
+
+
+/* =====================================================
+   PD DREAMY PURPLE NIGHT SKY
+   ===================================================== */
+
+#pd-night-sky {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 48%;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+    z-index: 1;
+
+    background:
+        radial-gradient(
+            circle at 75% 18%,
+            rgba(190, 90, 255, .22),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 25% 30%,
+            rgba(120, 60, 255, .14),
+            transparent 35%
+        ),
+        linear-gradient(
+            180deg,
+            rgba(65, 15, 100, .55),
+            rgba(35, 10, 60, .18),
+            transparent
+        );
+}
+
+
+/* =====================================================
+   PURPLE MOON
+   ===================================================== */
+
+#pd-moon {
+
+    position: absolute;
+
+    top: 28px;
+    right: 25px;
+
+    width: 78px;
+    height: 78px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 35% 30%,
+            #f7eaff 0%,
+            #e9c9ff 18%,
+            #c982ff 45%,
+            #9b45e8 70%,
+            #6822a5 100%
+        );
+
+    box-shadow:
+
+        0 0 10px
+        rgba(220, 170, 255, .8),
+
+        0 0 30px
+        rgba(180, 80, 255, .55),
+
+        0 0 65px
+        rgba(150, 50, 255, .3);
+
+    animation:
+        moonGlow 5s
+        ease-in-out
+        infinite alternate;
+
+}
+
+
+/* Moon surface details */
+
+#pd-moon::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 12px;
+    height: 12px;
+
+    left: 18px;
+    top: 23px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(125, 55, 170, .25);
+
+    box-shadow:
+
+        22px 18px 0
+        rgba(125, 55, 170, .18),
+
+        30px -7px 0
+        rgba(125, 55, 170, .14),
+
+        5px 35px 0
+        rgba(125, 55, 170, .13);
+
+}
+
+
+/* Moon glow */
+
+@keyframes moonGlow {
+
+    0% {
+
+        transform: scale(1);
+
+        box-shadow:
+
+            0 0 10px
+            rgba(220,170,255,.7),
+
+            0 0 28px
+            rgba(180,80,255,.45),
+
+            0 0 55px
+            rgba(150,50,255,.25);
+
+    }
+
+    100% {
+
+        transform: scale(1.035);
+
+        box-shadow:
+
+            0 0 15px
+            rgba(240,200,255,.9),
+
+            0 0 40px
+            rgba(190,90,255,.65),
+
+            0 0 80px
+            rgba(150,50,255,.35);
+
+    }
+
+}
+
+
+/* =====================================================
+   STARS
+   ===================================================== */
+
+#pd-stars {
+
+    position: absolute;
+
+    inset: 0;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+}
+
+
+/* Star */
+
+.pd-star {
+
+    position: absolute;
+
+    display: block;
+
+    border-radius: 50%;
+
+    background: white;
+
+    box-shadow:
+
+        0 0 5px
+        rgba(255,255,255,.9),
+
+        0 0 12px
+        rgba(210,150,255,.9),
+
+        0 0 20px
+        rgba(170,80,255,.5);
+
+    opacity: .35;
+
+    animation:
+        pdStarTwinkle
+        ease-in-out
+        infinite;
+
+}
+
+
+/* Bigger visible stars */
+
+@keyframes pdStarTwinkle {
+
+    0% {
+
+        opacity: .25;
+
+        transform:
+            scale(.65);
+
+    }
+
+    50% {
+
+        opacity: 1;
+
+        transform:
+            scale(1.35);
+
+    }
+
+    100% {
+
+        opacity: .25;
+
+        transform:
+            scale(.65);
+
+    }
+
+}
+
+
+/* =====================================================
+   LONG WISHING STAR
+   ===================================================== */
+
+#pd-shooting-star {
+
+    position: absolute;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    box-shadow:
+
+        0 0 8px white,
+
+        0 0 18px #e8c9ff,
+
+        0 0 35px #b65cff,
+
+        0 0 60px rgba(160,60,255,.7);
+
+    opacity: 0;
+
+    z-index: 10;
+
+}
+
+
+/* Long glowing tail */
+
+#pd-shooting-star::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 190px;
+
+    height: 3px;
+
+    right: 2px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%)
+        rotate(-28deg);
+
+    transform-origin: right center;
+
+    background:
+
+        linear-gradient(
+            to left,
+            rgba(255,255,255,.95),
+            rgba(215,150,255,.75),
+            rgba(160,70,255,.35),
+            transparent
+        );
+
+    filter:
+        drop-shadow(
+            0 0 6px
+            rgba(190,100,255,.9)
+        );
+
+}
+
+
+/* Wishing star movement */
+
+.pd-shoot {
+
+    animation:
+        wishingStar
+        2.8s
+        cubic-bezier(.15,.65,.25,1)
+        forwards;
+
+}
+
+
+@keyframes wishingStar {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translate(-30px,-30px)
+            rotate(-28deg);
+
+    }
+
+    8% {
+
+        opacity: 1;
+
+    }
+
+    75% {
+
+        opacity: 1;
+
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            translate(
+                125vw,
+                100vh
+            )
+            rotate(-28deg);
 
     }
 

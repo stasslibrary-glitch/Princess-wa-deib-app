@@ -24,9 +24,9 @@ const PD_SONGS = [
         file: "songs/flying-without-wings.mp3"
     },
     {
-        title: "Swear It Again",
-        artist: "Westlife",
-        file: "songs/swear-it-again.mp3"
+        title: "Gutamiiza",
+        artist: "Radio-and-Weasel Feat-B2C",
+        file: "songs/Radio-and-Weasel-Gutamiiza-Feat-B2C.mp3"
     },
     {
         title: "Beautiful in White",
