@@ -6434,3 +6434,84 @@ button {
     pointer-events: none;
 
 }
+/* =========================================================
+   PD CHAT — PHONE APP FIX
+   ========================================================= */
+
+.phone-page {
+    overflow: hidden;
+}
+
+.phone-app.chat-app {
+    height: 100dvh;
+    max-height: 100dvh;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    position: relative;
+}
+
+
+/* =========================================================
+   CHAT HEADER — ALWAYS VISIBLE
+   ========================================================= */
+
+.chat-header {
+    position: relative;
+
+    top: auto;
+    left: auto;
+    right: auto;
+
+    flex: 0 0 auto;
+
+    width: 100%;
+
+    z-index: 1000;
+}
+
+
+/* =========================================================
+   ONLY MESSAGES SCROLL
+   ========================================================= */
+
+.chat-messages {
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    -webkit-overflow-scrolling: touch;
+
+    overscroll-behavior: contain;
+
+    scroll-behavior: smooth;
+}
+
+
+/* =========================================================
+   MESSAGE INPUT — STAYS AT BOTTOM
+   ========================================================= */
+
+.chat-input {
+    flex: 0 0 auto;
+
+    width: 100%;
+
+    position: relative;
+
+    z-index: 1001;
+
+    padding-bottom:
+        max(
+            10px,
+            env(safe-area-inset-bottom)
+        );
+}
