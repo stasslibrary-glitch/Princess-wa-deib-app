@@ -843,7 +843,8 @@ button {
    ========================================================= */
 
 .chat-app {
-    height: 100dvh;
+    height: 100%;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -870,27 +871,19 @@ button {
 }
 
 .chat-person {
-
     display: flex;
-
     align-items: center;
-
     gap: 10px;
-
 }
 
-
 .person-avatar {
-
     width: 42px;
     height: 42px;
 
     border-radius: 50%;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     background:
@@ -904,51 +897,30 @@ button {
 
     box-shadow:
         0 0 18px rgba(225, 59, 209, 0.25);
-
 }
-
 
 .chat-person strong {
-
     display: block;
-
     font-size: 14px;
-
 }
-
 
 .chat-person strong span {
-
     color: white;
-
 }
-
 
 .chat-person .online-status {
-
     display: block;
-
     margin-top: 2px;
-
     color: #8dca9d;
-
     font-size: 10px;
-
 }
-
 
 .chat-actions {
-
     margin-left: auto;
-
     display: flex;
-
     gap: 19px;
-
     color: #d5d1e7;
-
 }
-
 
 /* =========================================================
    15. CHAT MESSAGES
@@ -6455,23 +6427,6 @@ button {
 }
 
 
-/* =========================================================
-   CHAT HEADER — ALWAYS VISIBLE
-   ========================================================= */
-
-.chat-header {
-    position: relative;
-
-    top: auto;
-    left: auto;
-    right: auto;
-
-    flex: 0 0 auto;
-
-    width: 100%;
-
-    z-index: 1000;
-}
 
 
 /* =========================================================
@@ -6623,13 +6578,23 @@ body {
 
 /* Lyrics must NOT create extra page height */
 
+/* =========================================================
+   PD — CURRENT LYRIC
+   ========================================================= */
+
 #pdCurrentLyric {
     position: absolute;
+
     left: 50%;
+    bottom: 10px;
+
     transform: translateX(-50%);
 
     width: 90%;
     max-width: 90%;
+
+    margin: 0;
+    padding: 0;
 
     pointer-events: none;
 
@@ -6694,4 +6659,183 @@ select {
 [class*="butterfly"],
 [class*="heart"] {
     pointer-events: none;
+}
+
+
+/* =========================================================
+   PD — FULL PHONE LAYOUT RESET
+   Fixes content being pushed below the phone screen
+   ========================================================= */
+
+/* Stop the document itself from becoming taller */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   MAIN PD PHONE
+   ========================================================= */
+
+.phone,
+.phone-container,
+.app,
+.app-container {
+    box-sizing: border-box;
+    max-height: 100dvh;
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   CHAT APP
+   ========================================================= */
+
+.chat-app {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CHAT HEADER
+   ========================================================= */
+
+.chat-header {
+    flex: 0 0 73px;
+
+    height: 73px;
+    min-height: 73px;
+    max-height: 73px;
+
+    box-sizing: border-box;
+
+    position: relative;
+
+    z-index: 100;
+}
+
+
+/* =========================================================
+   CHAT CONTENT
+   ========================================================= */
+
+.chat-messages,
+.chat-body,
+.chat-content {
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CHAT INPUT / SEND AREA
+   ========================================================= */
+
+.chat-input,
+.chat-input-area,
+.chat-footer,
+.chat-compose {
+    flex: 0 0 auto;
+
+    box-sizing: border-box;
+
+    position: relative;
+    z-index: 100;
+}
+
+
+/* =========================================================
+   BOTTOM NAVIGATION
+   ========================================================= */
+
+.bottom-nav,
+.bottom-navigation,
+#bottomNav {
+    flex-shrink: 0;
+
+    position: relative;
+
+    z-index: 200;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   BUTTONS MUST STAY CLICKABLE
+   ========================================================= */
+
+button,
+a,
+input,
+textarea {
+    pointer-events: auto;
+}
+
+
+/* =========================================================
+   FLOATING DECORATIONS MUST NOT COVER BUTTONS
+   ========================================================= */
+
+[class*="floating"],
+[class*="float"],
+[class*="particle"] {
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   PREVENT ANYTHING FROM WIDENING THE PHONE
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   IMPORTANT — DO NOT LET SONG/Lyrics CREATE PAGE HEIGHT
+   ========================================================= */
+
+#pdCurrentLyric {
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   EMERGENCY MOBILE HEIGHT PROTECTION
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    body {
+        overflow: hidden;
+    }
+
+    .chat-app {
+        height: 100%;
+        max-height: 100%;
+        overflow: hidden;
+    }
+
 }
