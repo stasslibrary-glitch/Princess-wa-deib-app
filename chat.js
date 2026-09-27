@@ -594,11 +594,31 @@ function startChat() {
 
         snapshot => {
 
-            /*
-               Render immediately.
-            */
+    container.innerHTML = "";
 
-            container.innerHTML = "";
+    /*
+       Firebase has delivered the messages.
+       Now remove the opening screen.
+    */
+
+    const loader =
+        document.getElementById(
+            "pd-chat-loader"
+        );
+
+    if (loader) {
+
+        loader.classList.add(
+            "pd-loaded"
+        );
+
+        setTimeout(() => {
+
+            loader.remove();
+
+        }, 150);
+
+    }
 
 
             let previousDateKey =
