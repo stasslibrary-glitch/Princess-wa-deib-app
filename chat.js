@@ -1,11 +1,13 @@
 
 /* =========================================================
    PRINCESS WA DEIB — CHAT
+   FAST CHAT + DATES + VOICE NOTES
    ========================================================= */
 
 import {
     auth,
-    db
+    db,
+    storage
 } from "./firebase.js";
 
 import {
@@ -23,35 +25,27 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
+import {
+    ref,
+    uploadBytes,
+    getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-storage.js";
+
+
+/* =========================================================
+   PD PROFILE
+   ========================================================= */
 
 let currentProfile = null;
 
 
-/* =========================================================
-   PD MESSAGE NOTIFICATION SOUND
-   ========================================================= */
-
-const messageSound =
-    new Audio("sounds/message.mp3");
-
-messageSound.volume = 0.7;
-
-let firstMessagesLoaded = false;
-
-
-/* =========================================================
-   PD PROFILES
-   ========================================================= */
-
 const PD_PROFILES = {
 
-    /* PRINCESS ACCOUNT */
     "princess@gmail.com": {
         name: "Princess",
         displayName: "Jaris ❤️"
     },
 
-    /* DEIB ACCOUNT */
     "deib@gmail.com": {
         name: "Deib",
         displayName: "Ernest ❤️"
@@ -61,7 +55,7 @@ const PD_PROFILES = {
 
 
 /* =========================================================
-   GET / CREATE PROFILE
+   PROFILE
    ========================================================= */
 
 async function setupProfile(user) {
@@ -72,28 +66,18 @@ async function setupProfile(user) {
     const profile =
         PD_PROFILES[email];
 
+
     if (!profile) {
 
         console.error(
-            "❌ This Firebase email is not assigned to a PD profile:",
+            "❌ No PD profile for:",
             email
         );
 
         return false;
+
     }
 
-
-    const profileRef =
-        doc(
-            db,
-            "users",
-            user.uid
-        );
-
-
-    /*
-       Write/update profile every login.
-    */
 
     currentProfile = {
 
@@ -103,13 +87,23 @@ async function setupProfile(user) {
 
         name: profile.name,
 
-        displayName: profile.displayName
+        displayName:
+            profile.displayName
 
     };
 
 
-    await setDoc(
-        profileRef,
+    /*
+       Update Firestore profile,
+       but don't let this delay chat.
+    */
+
+    setDoc(
+        doc(
+            db,
+            "users",
+            user.uid
+        ),
         {
 
             uid: user.uid,
@@ -118,7 +112,8 @@ async function setupProfile(user) {
 
             name: profile.name,
 
-            displayName: profile.displayName,
+            displayName:
+                profile.displayName,
 
             updatedAt:
                 serverTimestamp()
@@ -127,22 +122,19 @@ async function setupProfile(user) {
         {
             merge: true
         }
+    ).catch(
+        error => {
+
+            console.error(
+                "Profile update error:",
+                error
+            );
+
+        }
     );
 
 
     updatePDInterface();
-
-
-    console.log(
-        "❤️ PD account:",
-        currentProfile.name
-    );
-
-    console.log(
-        "❤️ Display name:",
-        currentProfile.displayName
-    );
-
 
     return true;
 
@@ -150,7 +142,7 @@ async function setupProfile(user) {
 
 
 /* =========================================================
-   UPDATE PD INTERFACE
+   UPDATE INTERFACE
    ========================================================= */
 
 function updatePDInterface() {
@@ -159,85 +151,65 @@ function updatePDInterface() {
         return;
 
 
-    /*
-       Logged-in user's display name.
-    */
-
-    const profileNames =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "[data-user-name]"
-        );
-
-
-    profileNames.forEach(
-        element => {
-
-            element.textContent =
-                currentProfile.displayName;
-
-        }
-    );
-
-
-    /*
-       Person being chatted with.
-    */
-
-    const chatPerson =
-        document.querySelectorAll(
-            "[data-chat-person-name]"
-        );
-
-
-    chatPerson.forEach(
-        element => {
-
-            if (
-                currentProfile.name ===
-                "Deib"
-            ) {
+        )
+        .forEach(
+            element => {
 
                 element.textContent =
-                    "My Princess 💜";
-
-            } else {
-
-                element.textContent =
-                    "My Deib ❤️";
+                    currentProfile.displayName;
 
             }
+        );
 
-        }
-    );
+
+    document
+        .querySelectorAll(
+            "[data-chat-person-name]"
+        )
+        .forEach(
+            element => {
+
+                element.textContent =
+                    currentProfile.name ===
+                    "Deib"
+
+                        ? "My Princess 💜"
+
+                        : "My Deib ❤️";
+
+            }
+        );
 
 }
 
 
 /* =========================================================
-   SEND MESSAGE
+   SEND TEXT
    ========================================================= */
 
 async function sendMessage() {
 
+    if (!currentProfile)
+        return;
+
+
     const input =
-        document.querySelector(
-            ".chat-input input"
+        document.getElementById(
+            "messageInput"
         );
 
-    const sendButton =
+
+    const button =
         document.querySelector(
             ".send-message"
         );
 
 
-    if (
-        !input ||
-        !currentProfile
-    ) {
-
+    if (!input)
         return;
-
-    }
 
 
     const text =
@@ -248,8 +220,8 @@ async function sendMessage() {
         return;
 
 
-    if (sendButton)
-        sendButton.disabled = true;
+    if (button)
+        button.disabled = true;
 
 
     try {
@@ -260,6 +232,8 @@ async function sendMessage() {
                 "messages"
             ),
             {
+
+                type: "text",
 
                 text: text,
 
@@ -294,8 +268,8 @@ async function sendMessage() {
     }
 
 
-    if (sendButton)
-        sendButton.disabled = false;
+    if (button)
+        button.disabled = false;
 
 }
 
@@ -306,24 +280,21 @@ async function sendMessage() {
 
 function getDateKey(date) {
 
-    return (
-        date.getFullYear() +
-        "-" +
+    return [
+        date.getFullYear(),
+
         String(
             date.getMonth() + 1
-        ).padStart(2, "0") +
-        "-" +
+        ).padStart(2, "0"),
+
         String(
             date.getDate()
         ).padStart(2, "0")
-    );
+
+    ].join("-");
 
 }
 
-
-/* =========================================================
-   FORMAT CHAT DATE
-   ========================================================= */
 
 function formatChatDate(date) {
 
@@ -340,19 +311,13 @@ function formatChatDate(date) {
     );
 
 
-    const messageDate =
+    const key =
         getDateKey(date);
-
-    const todayDate =
-        getDateKey(today);
-
-    const yesterdayDate =
-        getDateKey(yesterday);
 
 
     if (
-        messageDate ===
-        todayDate
+        key ===
+        getDateKey(today)
     ) {
 
         return "Today";
@@ -361,8 +326,8 @@ function formatChatDate(date) {
 
 
     if (
-        messageDate ===
-        yesterdayDate
+        key ===
+        getDateKey(yesterday)
     ) {
 
         return "Yesterday";
@@ -383,109 +348,55 @@ function formatChatDate(date) {
 
 
 /* =========================================================
-   DISPLAY MESSAGE
+   DATE SEPARATOR
    ========================================================= */
 
-function displayMessage(
-    data,
-    previousDateKey
+function addDateSeparator(
+    container,
+    date
 ) {
 
-    const container =
-        document.querySelector(
-            ".chat-messages"
+    const separator =
+        document.createElement(
+            "div"
         );
 
 
-    if (
-        !container ||
-        !currentProfile
-    ) {
-
-        return previousDateKey;
-
-    }
+    separator.className =
+        "chat-date-separator";
 
 
-    /* -----------------------------------------
-       GET MESSAGE DATE
-       ----------------------------------------- */
-
-    let messageDate = null;
-
-
-    if (
-        data.createdAt &&
-        typeof data.createdAt.toDate ===
-        "function"
-    ) {
-
-        messageDate =
-            data.createdAt.toDate();
-
-    }
+    const span =
+        document.createElement(
+            "span"
+        );
 
 
-    /* -----------------------------------------
-       ADD DATE SEPARATOR
-       ----------------------------------------- */
-
-    if (messageDate) {
-
-        const currentDateKey =
-            getDateKey(
-                messageDate
-            );
+    span.textContent =
+        formatChatDate(date);
 
 
-        if (
-            currentDateKey !==
-            previousDateKey
-        ) {
-
-            const separator =
-                document.createElement(
-                    "div"
-                );
+    separator.appendChild(
+        span
+    );
 
 
-            separator.className =
-                "chat-date-separator";
+    container.appendChild(
+        separator
+    );
+
+}
 
 
-            const separatorText =
-                document.createElement(
-                    "span"
-                );
+/* =========================================================
+   DISPLAY TEXT MESSAGE
+   ========================================================= */
 
-
-            separatorText.textContent =
-                formatChatDate(
-                    messageDate
-                );
-
-
-            separator.appendChild(
-                separatorText
-            );
-
-
-            container.appendChild(
-                separator
-            );
-
-
-            previousDateKey =
-                currentDateKey;
-
-        }
-
-    }
-
-
-    /* -----------------------------------------
-       CREATE MESSAGE
-       ----------------------------------------- */
+function displayTextMessage(
+    container,
+    data,
+    date
+) {
 
     const message =
         document.createElement(
@@ -504,10 +415,6 @@ function displayMessage(
             : "message received";
 
 
-    /* -----------------------------------------
-       MESSAGE TEXT
-       ----------------------------------------- */
-
     const text =
         document.createElement(
             "div"
@@ -522,10 +429,6 @@ function displayMessage(
         data.text || "";
 
 
-    /* -----------------------------------------
-       MESSAGE TIME
-       ----------------------------------------- */
-
     const time =
         document.createElement(
             "span"
@@ -536,10 +439,10 @@ function displayMessage(
         "message-time";
 
 
-    if (messageDate) {
+    if (date) {
 
         time.textContent =
-            messageDate.toLocaleTimeString(
+            date.toLocaleTimeString(
                 [],
                 {
                     hour: "2-digit",
@@ -550,10 +453,6 @@ function displayMessage(
     }
 
 
-    /* -----------------------------------------
-       ADD MESSAGE TO CHAT
-       ----------------------------------------- */
-
     message.appendChild(
         text
     );
@@ -562,21 +461,118 @@ function displayMessage(
         time
     );
 
+
     container.appendChild(
         message
     );
-
-
-    return previousDateKey;
 
 }
 
 
 /* =========================================================
-   REAL-TIME CHAT
+   DISPLAY VOICE MESSAGE
+   ========================================================= */
+
+function displayVoiceMessage(
+    container,
+    data
+) {
+
+    if (!data.audioURL)
+        return;
+
+
+    const message =
+        document.createElement(
+            "div"
+        );
+
+
+    const mine =
+        data.senderUID ===
+        currentProfile.uid;
+
+
+    message.className =
+        mine
+            ? "message sent voice-message"
+            : "message received voice-message";
+
+
+    const box =
+        document.createElement(
+            "div"
+        );
+
+
+    box.className =
+        "voice-message-box";
+
+
+    const icon =
+        document.createElement(
+            "div"
+        );
+
+
+    icon.className =
+        "voice-icon";
+
+
+    icon.innerHTML =
+        '<i class="fa-solid fa-microphone"></i>';
+
+
+    const audio =
+        document.createElement(
+            "audio"
+        );
+
+
+    audio.controls = true;
+
+    audio.preload = "metadata";
+
+    audio.src =
+        data.audioURL;
+
+
+    box.appendChild(
+        icon
+    );
+
+    box.appendChild(
+        audio
+    );
+
+
+    message.appendChild(
+        box
+    );
+
+
+    container.appendChild(
+        message
+    );
+
+}
+
+
+/* =========================================================
+   START CHAT
    ========================================================= */
 
 function startChat() {
+
+    const container =
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    if (!container)
+        return;
+
 
     const messagesQuery =
         query(
@@ -598,27 +594,12 @@ function startChat() {
 
         snapshot => {
 
-            const container =
-                document.querySelector(
-                    ".chat-messages"
-                );
-
-
-            if (!container)
-                return;
-
-
             /*
-               Clear the current display.
+               Render immediately.
             */
 
             container.innerHTML = "";
 
-
-            /*
-               Keep track of the date
-               of the previous message.
-            */
 
             let previousDateKey =
                 null;
@@ -631,19 +612,86 @@ function startChat() {
                         docSnapshot.data();
 
 
-                    previousDateKey =
-                        displayMessage(
-                            data,
+                    let date = null;
+
+
+                    if (
+                        data.createdAt &&
+                        typeof
+                        data.createdAt.toDate ===
+                        "function"
+                    ) {
+
+                        date =
+                            data.createdAt.toDate();
+
+                    }
+
+
+                    /*
+                       Date separator
+                    */
+
+                    if (date) {
+
+                        const dateKey =
+                            getDateKey(
+                                date
+                            );
+
+
+                        if (
+                            dateKey !==
                             previousDateKey
+                        ) {
+
+                            addDateSeparator(
+                                container,
+                                date
+                            );
+
+
+                            previousDateKey =
+                                dateKey;
+
+                        }
+
+                    }
+
+
+                    /*
+                       Voice
+                    */
+
+                    if (
+                        data.type ===
+                        "voice"
+                    ) {
+
+                        displayVoiceMessage(
+                            container,
+                            data
                         );
+
+                    }
+
+                    /*
+                       Text
+                    */
+
+                    else {
+
+                        displayTextMessage(
+                            container,
+                            data,
+                            date
+                        );
+
+                    }
 
                 }
             );
 
-
-            /*
-               Scroll to newest message.
-            */
 
             requestAnimationFrame(
                 () => {
@@ -659,7 +707,7 @@ function startChat() {
         error => {
 
             console.error(
-                "❌ Chat loading error:",
+                "❌ Firestore chat error:",
                 error
             );
 
@@ -671,7 +719,331 @@ function startChat() {
 
 
 /* =========================================================
-   START PD
+   VOICE RECORDING
+   ========================================================= */
+
+let mediaRecorder = null;
+
+let audioChunks = [];
+
+let recording = false;
+
+
+/* =========================================================
+   START RECORDING
+   ========================================================= */
+
+async function startRecording() {
+
+    if (recording)
+        return;
+
+
+    try {
+
+        const stream =
+            await navigator
+                .mediaDevices
+                .getUserMedia({
+                    audio: true
+                });
+
+
+        mediaRecorder =
+            new MediaRecorder(
+                stream
+            );
+
+
+        audioChunks = [];
+
+        recording = true;
+
+
+        mediaRecorder.ondataavailable =
+            event => {
+
+                if (
+                    event.data.size > 0
+                ) {
+
+                    audioChunks.push(
+                        event.data
+                    );
+
+                }
+
+            };
+
+
+        mediaRecorder.onstop =
+            async () => {
+
+                stream
+                    .getTracks()
+                    .forEach(
+                        track =>
+                            track.stop()
+                    );
+
+
+                const blob =
+                    new Blob(
+                        audioChunks,
+                        {
+                            type:
+                                mediaRecorder.mimeType ||
+                                "audio/webm"
+                        }
+                    );
+
+
+                if (
+                    blob.size > 0
+                ) {
+
+                    await uploadVoice(
+                        blob
+                    );
+
+                }
+
+            };
+
+
+        mediaRecorder.start();
+
+
+        updateVoiceButton(
+            true
+        );
+
+
+        console.log(
+            "🔴 PD voice recording started"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ Microphone error:",
+            error
+        );
+
+
+        alert(
+            "Please allow microphone access for PD ❤️"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   STOP RECORDING
+   ========================================================= */
+
+function stopRecording() {
+
+    if (
+        !mediaRecorder ||
+        !recording
+    )
+        return;
+
+
+    recording = false;
+
+
+    mediaRecorder.stop();
+
+
+    updateVoiceButton(
+        false
+    );
+
+}
+
+
+/* =========================================================
+   UPLOAD VOICE
+   ========================================================= */
+
+async function uploadVoice(
+    audioBlob
+) {
+
+    if (!currentProfile)
+        return;
+
+
+    const button =
+        document.getElementById(
+            "voiceButton"
+        );
+
+
+    if (button)
+        button.classList.add(
+            "uploading"
+        );
+
+
+    try {
+
+        const fileName =
+            `voice_${Date.now()}.webm`;
+
+
+        const storageRef =
+            ref(
+                storage,
+                `voice-messages/${currentProfile.uid}/${fileName}`
+            );
+
+
+        await uploadBytes(
+            storageRef,
+            audioBlob
+        );
+
+
+        const audioURL =
+            await getDownloadURL(
+                storageRef
+            );
+
+
+        await addDoc(
+            collection(
+                db,
+                "messages"
+            ),
+            {
+
+                type: "voice",
+
+                audioURL:
+                    audioURL,
+
+                senderUID:
+                    currentProfile.uid,
+
+                senderName:
+                    currentProfile.name,
+
+                senderDisplayName:
+                    currentProfile.displayName,
+
+                createdAt:
+                    serverTimestamp()
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ Voice upload error:",
+            error
+        );
+
+
+        alert(
+            "Voice note failed to send."
+        );
+
+    }
+
+
+    if (button)
+        button.classList.remove(
+            "uploading"
+        );
+
+}
+
+
+/* =========================================================
+   VOICE BUTTON
+   ========================================================= */
+
+function setupVoiceButton() {
+
+    const button =
+        document.getElementById(
+            "voiceButton"
+        );
+
+
+    if (!button)
+        return;
+
+
+    button.addEventListener(
+        "click",
+        async () => {
+
+            if (recording) {
+
+                stopRecording();
+
+            } else {
+
+                await startRecording();
+
+            }
+
+        }
+    );
+
+}
+
+
+function updateVoiceButton(
+    active
+) {
+
+    const button =
+        document.getElementById(
+            "voiceButton"
+        );
+
+
+    if (!button)
+        return;
+
+
+    if (active) {
+
+        button.classList.add(
+            "recording"
+        );
+
+
+        button.innerHTML =
+            '<i class="fa-solid fa-stop"></i>';
+
+    } else {
+
+        button.classList.remove(
+            "recording"
+        );
+
+
+        button.innerHTML =
+            '<i class="fa-solid fa-microphone"></i>';
+
+    }
+
+}
+
+
+/* =========================================================
+   AUTH
    ========================================================= */
 
 onAuthStateChanged(
@@ -689,19 +1061,18 @@ onAuthStateChanged(
         }
 
 
-        console.log(
-            "🔐 Firebase user:",
-            user.email
-        );
+        /*
+           Setup profile first,
+           then immediately start chat.
+        */
 
-
-        const profileReady =
+        const ready =
             await setupProfile(
                 user
             );
 
 
-        if (!profileReady)
+        if (!ready)
             return;
 
 
@@ -712,42 +1083,71 @@ onAuthStateChanged(
 
 
 /* =========================================================
-   SEND BUTTON
+   BUTTON EVENTS
    ========================================================= */
 
-document
-    .querySelector(
-        ".send-message"
-    )
-    ?.addEventListener(
-        "click",
-        sendMessage
-    );
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        /*
+           TEXT SEND
+        */
+
+        const sendButton =
+            document.querySelector(
+                ".send-message"
+            );
 
 
-/* =========================================================
-   ENTER TO SEND
-   ========================================================= */
+        if (sendButton) {
 
-document
-    .querySelector(
-        ".chat-input input"
-    )
-    ?.addEventListener(
-        "keydown",
-
-        event => {
-
-            if (
-                event.key ===
-                "Enter"
-            ) {
-
-                event.preventDefault();
-
-                sendMessage();
-
-            }
+            sendButton.addEventListener(
+                "click",
+                sendMessage
+            );
 
         }
-    );
+
+
+        /*
+           ENTER
+        */
+
+        const input =
+            document.getElementById(
+                "messageInput"
+            );
+
+
+        if (input) {
+
+            input.addEventListener(
+                "keydown",
+                event => {
+
+                    if (
+                        event.key ===
+                        "Enter"
+                    ) {
+
+                        event.preventDefault();
+
+                        sendMessage();
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /*
+           VOICE
+        */
+
+        setupVoiceButton();
+
+    }
+);

@@ -5986,3 +5986,244 @@ button {
 
     white-space: nowrap;
 }
+
+/* =========================================
+   PD — VOICE NOTES
+   ========================================= */
+
+.voice-message-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    min-width: 190px;
+}
+
+.voice-icon {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: rgba(168, 92, 255, 0.15);
+
+    color: #a85cff;
+}
+
+.voice-message audio {
+    width: 150px;
+    height: 34px;
+}
+
+
+/* Recording */
+
+#voiceButton.recording {
+    color: #e91e63;
+
+    animation:
+        pdRecordingPulse 1s infinite;
+}
+
+
+#voiceButton.uploading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+
+@keyframes pdRecordingPulse {
+
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+
+}
+
+
+
+
+/* =========================================================
+   PD — MESSAGE NOTIFICATION POPUP
+   ========================================================= */
+
+#pd-notification-container {
+    position: fixed;
+
+    top: 20px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 99999;
+
+    pointer-events: none;
+}
+
+
+.pd-message-popup {
+
+    width: min(
+        340px,
+        calc(100vw - 30px)
+    );
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px 14px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(255, 255, 255, 0.94);
+
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px);
+
+    box-shadow:
+        0 15px 45px
+        rgba(100, 30, 130, 0.28);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.8);
+
+    opacity: 0;
+
+    transform:
+        translateY(-35px)
+        scale(0.92);
+
+    transition:
+        opacity 0.35s ease,
+        transform 0.45s
+        cubic-bezier(.2,.8,.2,1);
+
+    pointer-events:
+        auto;
+}
+
+
+.pd-message-popup.show {
+
+    opacity: 1;
+
+    transform:
+        translateY(0)
+        scale(1);
+
+}
+
+
+.pd-popup-icon {
+
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #a85cff,
+            #e63ca6
+        );
+
+    color: white;
+
+    font-size: 17px;
+
+    box-shadow:
+        0 5px 15px
+        rgba(168,92,255,.35);
+
+}
+
+
+.pd-popup-text {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+}
+
+
+.pd-popup-text strong {
+
+    font-size: 13px;
+
+    color: #6d2aa8;
+
+}
+
+
+.pd-popup-text span {
+
+    font-size: 12px;
+
+    color: #555;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    max-width: 220px;
+
+}
+
+
+#pd-popup-close {
+
+    margin-left: auto;
+
+    border: none;
+
+    background: transparent;
+
+    color: #d6ff65;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    line-height: 1;
+
+}
+
+
