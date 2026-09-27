@@ -6579,3 +6579,119 @@ button {
         translateY(0)
         scale(1);
 }
+
+
+/* =========================================================
+   PD — MOBILE SCREEN / SONG LAYOUT FIX
+   Prevent song + lyrics from pushing the phone page down
+   ========================================================= */
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
+
+/* Keep the main phone content inside the screen */
+
+body {
+    position: relative;
+}
+
+
+/* Song of the Day */
+
+#songPlay {
+    position: relative;
+    z-index: 20;
+    pointer-events: auto;
+}
+
+
+/* Song controls must remain clickable */
+
+#songAudio,
+#songProgress,
+#songPlay {
+    z-index: 20;
+}
+
+
+/* Lyrics must NOT create extra page height */
+
+#pdCurrentLyric {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 90%;
+    max-width: 90%;
+
+    pointer-events: none;
+
+    z-index: 5;
+}
+
+
+/* Floating decorations should never block buttons */
+
+.song-playing .floating,
+.song-playing .floating-heart,
+.song-playing .floating-object {
+    pointer-events: none;
+}
+
+
+/* Chat send button */
+
+#sendMessage,
+#sendBtn,
+.send-btn,
+.chat-send button {
+    position: relative;
+    z-index: 50;
+    pointer-events: auto;
+}
+
+
+/* Prevent accidental horizontal/vertical expansion */
+
+.phone,
+.phone-container,
+.app,
+.app-container,
+.page,
+.main-content {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* Buttons stay clickable */
+
+button,
+a,
+input,
+textarea,
+select {
+    position: relative;
+    z-index: 20;
+}
+
+
+/* =========================================================
+   IMPORTANT:
+   Decorative elements must not cover controls
+   ========================================================= */
+
+[class*="floating"],
+[class*="float"],
+[class*="particle"],
+[class*="butterfly"],
+[class*="heart"] {
+    pointer-events: none;
+}
