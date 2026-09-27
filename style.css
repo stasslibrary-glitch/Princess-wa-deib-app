@@ -6515,3 +6515,67 @@ button {
             env(safe-area-inset-bottom)
         );
 }
+
+/* =========================================================
+   PD — SYNCHRONIZED SONG LYRICS
+   ========================================================= */
+
+.pd-lyrics-section {
+    width: 100%;
+    padding: 10px 18px 20px;
+    text-align: center;
+}
+
+.lyrics-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    opacity: .55;
+    margin-bottom: 8px;
+}
+
+.pd-lyrics {
+    min-height: 65px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+#pdCurrentLyric {
+    display: block;
+
+    max-width: 95%;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 19px;
+    line-height: 1.45;
+
+    font-style: italic;
+
+    opacity: 0;
+
+    transform:
+        translateY(15px)
+        scale(.97);
+
+    transition:
+        opacity .55s ease,
+        transform .55s ease;
+
+    text-shadow:
+        0 4px 18px
+        rgba(120, 45, 160, .25);
+}
+
+#pdCurrentLyric.show {
+    opacity: 1;
+
+    transform:
+        translateY(0)
+        scale(1);
+}
