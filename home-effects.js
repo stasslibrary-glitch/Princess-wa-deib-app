@@ -21,37 +21,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const particles =
         document.getElementById("pd-particles");
-/* =================================================
-   CREATE STARS
-   ================================================= */
 
-const stars =
-    document.getElementById("pd-stars");
+        
 
-for (let i = 0; i < 38; i++) {
+/* =========================================
+   CREATE SKY STARS
+   ========================================= */
 
-    const star =
-        document.createElement("span");
+const stars = document.getElementById("pd-stars");
+
+for (let i = 0; i < 55; i++) {
+
+    const star = document.createElement("span");
 
     star.className = "pd-star";
 
-    /*
-       Larger stars so they are actually
-       visible on a phone screen.
-    */
-
     const size =
-        Math.random() * 3.5 + 1.5;
+        Math.random() * 4 + 1.5;
 
     star.style.width =
         `${size}px`;
 
     star.style.height =
         `${size}px`;
-
-    /*
-       Keep stars inside the night sky.
-    */
 
     star.style.left =
         `${Math.random() * 100}%`;
@@ -60,46 +52,56 @@ for (let i = 0; i < 38; i++) {
         `${Math.random() * 100}%`;
 
     star.style.animationDelay =
-        `${Math.random() * 5}s`;
+        `${Math.random() * 6}s`;
 
     star.style.animationDuration =
-        `${Math.random() * 4 + 3}s`;
+        `${3 + Math.random() * 5}s`;
 
     stars.appendChild(star);
 }
-/* =================================================
+
+
+/* =========================================
    WISHING STAR
-   ================================================= */
+   ========================================= */
 
 const shootingStar =
-    document.getElementById(
-        "pd-shooting-star"
-    );
+    document.getElementById("pd-shooting-star");
 
 
-function launchWishingStar() {
+function launchShootingStar() {
 
-    shootingStar.classList.remove(
-        "pd-shoot"
-    );
+    shootingStar.classList.remove("pd-shoot");
 
     void shootingStar.offsetWidth;
-
-    /*
-       Start from different places near
-       the upper part of the phone.
-    */
 
     shootingStar.style.left =
         `${Math.random() * 20 - 10}%`;
 
     shootingStar.style.top =
-        `${Math.random() * 25 - 10}%`;
+        `${Math.random() * 20}%`;
 
-    shootingStar.classList.add(
-        "pd-shoot"
-    );
+    shootingStar.classList.add("pd-shoot");
 }
+
+
+/* First one */
+
+setTimeout(() => {
+
+    launchShootingStar();
+
+}, 5000);
+
+
+/* Keep appearing occasionally */
+
+setInterval(() => {
+
+    launchShootingStar();
+
+}, 12000 + Math.random() * 10000);
+
 
 
 /* First one */

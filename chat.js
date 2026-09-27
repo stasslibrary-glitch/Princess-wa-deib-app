@@ -1,4 +1,5 @@
- /* =========================================================
+
+/* =========================================================
    PRINCESS WA DEIB — CHAT
    ========================================================= */
 
@@ -25,11 +26,13 @@ import {
 
 let currentProfile = null;
 
+
 /* =========================================================
    PD MESSAGE NOTIFICATION SOUND
    ========================================================= */
 
-const messageSound = new Audio("sounds/message.mp3");
+const messageSound =
+    new Audio("sounds/message.mp3");
 
 messageSound.volume = 0.7;
 
@@ -63,14 +66,16 @@ const PD_PROFILES = {
 
 async function setupProfile(user) {
 
-    const email = user.email?.toLowerCase();
+    const email =
+        user.email?.toLowerCase();
 
-    const profile = PD_PROFILES[email];
+    const profile =
+        PD_PROFILES[email];
 
     if (!profile) {
 
         console.error(
-            "❌ This Firebase email is not assigned a PD profile:",
+            "❌ This Firebase email is not assigned to a PD profile:",
             email
         );
 
@@ -78,19 +83,16 @@ async function setupProfile(user) {
     }
 
 
-    const profileRef = doc(
-        db,
-        "users",
-        user.uid
-    );
+    const profileRef =
+        doc(
+            db,
+            "users",
+            user.uid
+        );
 
 
     /*
-       IMPORTANT:
-
-       We write the profile every time the user logs in.
-       This fixes old/wrong profile information that may
-       already exist in Firestore.
+       Write/update profile every login.
     */
 
     currentProfile = {
@@ -118,7 +120,8 @@ async function setupProfile(user) {
 
             displayName: profile.displayName,
 
-            updatedAt: serverTimestamp()
+            updatedAt:
+                serverTimestamp()
 
         },
         {
@@ -128,6 +131,7 @@ async function setupProfile(user) {
 
 
     updatePDInterface();
+
 
     console.log(
         "❤️ PD account:",
@@ -141,6 +145,7 @@ async function setupProfile(user) {
 
 
     return true;
+
 }
 
 
@@ -155,8 +160,7 @@ function updatePDInterface() {
 
 
     /*
-       Elements specifically marked with
-       data-user-name will show the logged-in user.
+       Logged-in user's display name.
     */
 
     const profileNames =
@@ -176,8 +180,7 @@ function updatePDInterface() {
 
 
     /*
-       The chat header should show the PERSON
-       YOU ARE TALKING TO, not yourself.
+       Person being chatted with.
     */
 
     const chatPerson =
@@ -298,10 +301,95 @@ async function sendMessage() {
 
 
 /* =========================================================
+   DATE HELPERS
+   ========================================================= */
+
+function getDateKey(date) {
+
+    return (
+        date.getFullYear() +
+        "-" +
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0") +
+        "-" +
+        String(
+            date.getDate()
+        ).padStart(2, "0")
+    );
+
+}
+
+
+/* =========================================================
+   FORMAT CHAT DATE
+   ========================================================= */
+
+function formatChatDate(date) {
+
+    const today =
+        new Date();
+
+
+    const yesterday =
+        new Date();
+
+
+    yesterday.setDate(
+        yesterday.getDate() - 1
+    );
+
+
+    const messageDate =
+        getDateKey(date);
+
+    const todayDate =
+        getDateKey(today);
+
+    const yesterdayDate =
+        getDateKey(yesterday);
+
+
+    if (
+        messageDate ===
+        todayDate
+    ) {
+
+        return "Today";
+
+    }
+
+
+    if (
+        messageDate ===
+        yesterdayDate
+    ) {
+
+        return "Yesterday";
+
+    }
+
+
+    return date.toLocaleDateString(
+        "en-GB",
+        {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+/* =========================================================
    DISPLAY MESSAGE
    ========================================================= */
 
-function displayMessage(data) {
+function displayMessage(
+    data,
+    previousDateKey
+) {
 
     const container =
         document.querySelector(
@@ -312,9 +400,92 @@ function displayMessage(data) {
     if (
         !container ||
         !currentProfile
-    )
-        return;
+    ) {
 
+        return previousDateKey;
+
+    }
+
+
+    /* -----------------------------------------
+       GET MESSAGE DATE
+       ----------------------------------------- */
+
+    let messageDate = null;
+
+
+    if (
+        data.createdAt &&
+        typeof data.createdAt.toDate ===
+        "function"
+    ) {
+
+        messageDate =
+            data.createdAt.toDate();
+
+    }
+
+
+    /* -----------------------------------------
+       ADD DATE SEPARATOR
+       ----------------------------------------- */
+
+    if (messageDate) {
+
+        const currentDateKey =
+            getDateKey(
+                messageDate
+            );
+
+
+        if (
+            currentDateKey !==
+            previousDateKey
+        ) {
+
+            const separator =
+                document.createElement(
+                    "div"
+                );
+
+
+            separator.className =
+                "chat-date-separator";
+
+
+            const separatorText =
+                document.createElement(
+                    "span"
+                );
+
+
+            separatorText.textContent =
+                formatChatDate(
+                    messageDate
+                );
+
+
+            separator.appendChild(
+                separatorText
+            );
+
+
+            container.appendChild(
+                separator
+            );
+
+
+            previousDateKey =
+                currentDateKey;
+
+        }
+
+    }
+
+
+    /* -----------------------------------------
+       CREATE MESSAGE
+       ----------------------------------------- */
 
     const message =
         document.createElement(
@@ -333,6 +504,10 @@ function displayMessage(data) {
             : "message received";
 
 
+    /* -----------------------------------------
+       MESSAGE TEXT
+       ----------------------------------------- */
+
     const text =
         document.createElement(
             "div"
@@ -347,6 +522,10 @@ function displayMessage(data) {
         data.text || "";
 
 
+    /* -----------------------------------------
+       MESSAGE TIME
+       ----------------------------------------- */
+
     const time =
         document.createElement(
             "span"
@@ -357,18 +536,10 @@ function displayMessage(data) {
         "message-time";
 
 
-    if (
-        data.createdAt &&
-        typeof data.createdAt.toDate ===
-        "function"
-    ) {
-
-        const date =
-            data.createdAt.toDate();
-
+    if (messageDate) {
 
         time.textContent =
-            date.toLocaleTimeString(
+            messageDate.toLocaleTimeString(
                 [],
                 {
                     hour: "2-digit",
@@ -379,11 +550,24 @@ function displayMessage(data) {
     }
 
 
-    message.appendChild(text);
+    /* -----------------------------------------
+       ADD MESSAGE TO CHAT
+       ----------------------------------------- */
 
-    message.appendChild(time);
+    message.appendChild(
+        text
+    );
 
-    container.appendChild(message);
+    message.appendChild(
+        time
+    );
+
+    container.appendChild(
+        message
+    );
+
+
+    return previousDateKey;
 
 }
 
@@ -408,52 +592,82 @@ function startChat() {
         );
 
 
-    let firstChatLoad = true;
+    onSnapshot(
 
-onSnapshot(
-    messagesQuery,
-    snapshot => {
+        messagesQuery,
 
-        const container =
-            document.querySelector(".chat-messages");
+        snapshot => {
 
-        if (!container) return;
+            const container =
+                document.querySelector(
+                    ".chat-messages"
+                );
 
-        container.innerHTML = "";
 
-        snapshot.forEach(docSnapshot => {
+            if (!container)
+                return;
 
-            displayMessage(
-                docSnapshot.data()
+
+            /*
+               Clear the current display.
+            */
+
+            container.innerHTML = "";
+
+
+            /*
+               Keep track of the date
+               of the previous message.
+            */
+
+            let previousDateKey =
+                null;
+
+
+            snapshot.forEach(
+                docSnapshot => {
+
+                    const data =
+                        docSnapshot.data();
+
+
+                    previousDateKey =
+                        displayMessage(
+                            data,
+                            previousDateKey
+                        );
+
+                }
             );
 
-        });
 
-        requestAnimationFrame(() => {
+            /*
+               Scroll to newest message.
+            */
 
-            container.scrollTop =
-                container.scrollHeight;
+            requestAnimationFrame(
+                () => {
 
-        });
+                    container.scrollTop =
+                        container.scrollHeight;
 
-    },
-    error => {
+                }
+            );
 
-        console.error(
-            "❌ Chat loading error:",
-            error
-        );
+        },
 
-    }
-);
+        error => {
+
+            console.error(
+                "❌ Chat loading error:",
+                error
+            );
+
+        }
+
+    );
+
 }
-
-
-
-
-
-
-
 
 
 /* =========================================================
@@ -482,7 +696,9 @@ onAuthStateChanged(
 
 
         const profileReady =
-            await setupProfile(user);
+            await setupProfile(
+                user
+            );
 
 
         if (!profileReady)
