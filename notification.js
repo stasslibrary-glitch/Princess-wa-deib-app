@@ -1,7 +1,7 @@
 
 /* =========================================================
    PD — NOTIFICATIONS
-   FIRESTORE REAL-TIME MESSAGE NOTIFICATIONS
+   WhatsApp-style unread count + popup + sound
    ========================================================= */
 
 import {
@@ -26,59 +26,86 @@ import {
    ========================================================= */
 
 let currentUser = null;
-
 let firstLoad = true;
-
 let knownMessages = new Set();
 
-let notificationSound = null;
+let unreadCount =
+    Number(
+        localStorage.getItem(
+            "pdUnreadMessages"
+        ) || 0
+    );
 
 
 /* =========================================================
    NOTIFICATION SOUND
    ========================================================= */
 
-function setupNotificationSound() {
+const notificationSound =
+    new Audio(
+        "sounds/message.mp3"
+    );
 
-    notificationSound =
-        new Audio("sounds/message.mp3");
+notificationSound.preload = "auto";
 
-    notificationSound.volume = 0.75;
+notificationSound.volume = 1.0;
+
+
+/* =========================================================
+   PREPARE SOUND
+   ========================================================= */
+
+let soundUnlocked = false;
+
+
+function unlockNotificationSound() {
+
+    if (soundUnlocked)
+        return;
+
+
+    notificationSound
+        .play()
+        .then(() => {
+
+            notificationSound.pause();
+
+            notificationSound.currentTime = 0;
+
+            soundUnlocked = true;
+
+            console.log(
+                "🔊 PD notification sound unlocked."
+            );
+
+        })
+        .catch(() => {
+
+            /*
+               Browser may still be waiting
+               for a stronger user interaction.
+            */
+
+        });
 
 }
 
 
-/* =========================================================
-   ENABLE SOUND AFTER USER INTERACTION
-   ========================================================= */
+/*
+   Unlock after the user's first interaction.
+*/
 
 document.addEventListener(
     "click",
-    () => {
+    unlockNotificationSound,
+    {
+        once: true
+    }
+);
 
-        if (!notificationSound) {
-
-            setupNotificationSound();
-
-        }
-
-        /*
-           This prepares the browser to allow
-           future notification sounds.
-        */
-
-        notificationSound
-            ?.play()
-            .then(() => {
-
-                notificationSound.pause();
-
-                notificationSound.currentTime = 0;
-
-            })
-            .catch(() => {});
-
-    },
+document.addEventListener(
+    "touchstart",
+    unlockNotificationSound,
     {
         once: true
     }
@@ -86,31 +113,27 @@ document.addEventListener(
 
 
 /* =========================================================
-   PLAY NOTIFICATION SOUND
+   PLAY SOUND
    ========================================================= */
 
 function playNotificationSound() {
-
-    if (!notificationSound) {
-
-        setupNotificationSound();
-
-    }
-
-
-    if (!notificationSound)
-        return;
-
 
     notificationSound.currentTime = 0;
 
 
     notificationSound
         .play()
-        .catch(error => {
+        .then(() => {
 
             console.log(
-                "🔕 Browser blocked notification sound:",
+                "🔊 PD notification sound played."
+            );
+
+        })
+        .catch(error => {
+
+            console.warn(
+                "🔕 Sound blocked:",
                 error
             );
 
@@ -120,23 +143,94 @@ function playNotificationSound() {
 
 
 /* =========================================================
-   CREATE POPUP CONTAINER
+   UPDATE CHAT BADGE
    ========================================================= */
 
-function createNotificationContainer() {
+function updateChatBadge() {
 
-    let container =
-        document.getElementById(
-            "pd-notification-container"
+    const badges =
+        document.querySelectorAll(
+            "#chatNotification"
         );
 
 
-    if (container)
-        return container;
+    badges.forEach(
+        badge => {
+
+            if (unreadCount > 0) {
+
+                badge.textContent =
+                    unreadCount;
+
+                badge.style.display =
+                    "flex";
+
+            } else {
+
+                badge.textContent =
+                    "0";
+
+                badge.style.display =
+                    "none";
+
+            }
+
+        }
+    );
 
 
-    container =
-        document.createElement("div");
+    localStorage.setItem(
+        "pdUnreadMessages",
+        unreadCount
+    );
+
+}
+
+
+/* =========================================================
+   CLEAR UNREAD
+   ========================================================= */
+
+function clearUnreadMessages() {
+
+    unreadCount = 0;
+
+
+    localStorage.setItem(
+        "pdUnreadMessages",
+        "0"
+    );
+
+
+    updateChatBadge();
+
+}
+
+
+/* =========================================================
+   POPUP
+   ========================================================= */
+
+let popupTimer;
+
+
+function createPopup() {
+
+    if (
+        document.getElementById(
+            "pd-notification-container"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const container =
+        document.createElement(
+            "div"
+        );
 
 
     container.id =
@@ -156,11 +250,11 @@ function createNotificationContainer() {
 
             <div class="pd-popup-text">
 
-                <strong>
+                <strong id="pd-popup-title">
                     New message ❤️
                 </strong>
 
-                <span id="pd-popup-message">
+                <span id="pd-popup-body">
                     You have a new message
                 </span>
 
@@ -168,7 +262,7 @@ function createNotificationContainer() {
 
             <button
                 id="pd-popup-close"
-                aria-label="Close notification"
+                type="button"
             >
                 ×
             </button>
@@ -183,25 +277,14 @@ function createNotificationContainer() {
     );
 
 
-    const closeButton =
-        document.getElementById(
+    document
+        .getElementById(
             "pd-popup-close"
+        )
+        ?.addEventListener(
+            "click",
+            hidePopup
         );
-
-
-    closeButton?.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-
-            hideNotificationPopup();
-
-        }
-    );
-
-
-    return container;
 
 }
 
@@ -210,15 +293,12 @@ function createNotificationContainer() {
    SHOW POPUP
    ========================================================= */
 
-let popupTimer = null;
-
-
-function showNotificationPopup(
-    senderName,
-    messageText
+function showPopup(
+    sender,
+    message
 ) {
 
-    createNotificationContainer();
+    createPopup();
 
 
     const popup =
@@ -227,18 +307,28 @@ function showNotificationPopup(
         );
 
 
-    const message =
+    const title =
         document.getElementById(
-            "pd-popup-message"
+            "pd-popup-title"
         );
 
 
-    if (!popup || !message)
+    const body =
+        document.getElementById(
+            "pd-popup-body"
+        );
+
+
+    if (!popup)
         return;
 
 
-    message.textContent =
-        `${senderName}: ${messageText}`;
+    title.textContent =
+        `${sender} ❤️`;
+
+
+    body.textContent =
+        message;
 
 
     popup.classList.remove(
@@ -246,22 +336,15 @@ function showNotificationPopup(
     );
 
 
-    /*
-       Small delay allows the
-       animation to restart.
-    */
-
-    requestAnimationFrame(() => {
-
-        requestAnimationFrame(() => {
+    requestAnimationFrame(
+        () => {
 
             popup.classList.add(
                 "show"
             );
 
-        });
-
-    });
+        }
+    );
 
 
     clearTimeout(
@@ -271,11 +354,7 @@ function showNotificationPopup(
 
     popupTimer =
         setTimeout(
-            () => {
-
-                hideNotificationPopup();
-
-            },
+            hidePopup,
             5000
         );
 
@@ -286,7 +365,7 @@ function showNotificationPopup(
    HIDE POPUP
    ========================================================= */
 
-function hideNotificationPopup() {
+function hidePopup() {
 
     const popup =
         document.getElementById(
@@ -306,155 +385,97 @@ function hideNotificationPopup() {
 
 
 /* =========================================================
-   BROWSER NOTIFICATION
+   NEW MESSAGE
    ========================================================= */
 
-async function showBrowserNotification(
-    senderName,
-    messageText
+function handleNewMessage(
+    data
 ) {
 
-    if (
-        !("Notification" in window)
-    )
-        return;
-
-
     /*
-       Don't request permission
-       automatically.
-
-       The browser requires user interaction
-       before permission can be requested
-       in many situations.
+       Don't notify yourself.
     */
 
     if (
-        Notification.permission !==
-        "granted"
-    )
+        data.senderUID ===
+        currentUser.uid
+    ) {
+
         return;
-
-
-    try {
-
-        new Notification(
-            `${senderName} ❤️`,
-            {
-
-                body:
-                    messageText,
-
-                icon:
-                    "./icon-192.png",
-
-                badge:
-                    "./icon-192.png"
-
-            }
-        );
-
-    } catch (error) {
-
-        console.log(
-            "Browser notification unavailable:",
-            error
-        );
 
     }
 
-}
+
+    let messageText =
+        data.text;
 
 
-/* =========================================================
-   UPDATE CHAT BADGE
-   ========================================================= */
+    /*
+       Voice message
+    */
 
-function updateNotificationBadge() {
+    if (
+        data.type ===
+        "voice"
+    ) {
 
-    const badge =
-        document.getElementById(
-            "chatNotification"
-        );
+        messageText =
+            "🎙️ Sent you a voice note";
 
-
-    if (!badge)
-        return;
-
-
-    let unread =
-        parseInt(
-            localStorage.getItem(
-                "pdUnreadMessages"
-            ) || "0"
-        );
+    }
 
 
-    unread++;
+    if (!messageText) {
+
+        messageText =
+            "You have a new message 💕";
+
+    }
 
 
-    localStorage.setItem(
-        "pdUnreadMessages",
-        unread
+    /*
+       Increase unread count.
+    */
+
+    unreadCount++;
+
+
+    updateChatBadge();
+
+
+    /*
+       Popup.
+    */
+
+    showPopup(
+        data.senderDisplayName ||
+        data.senderName ||
+        "My Love",
+
+        messageText
     );
 
 
-    badge.textContent =
-        unread;
+    /*
+       Sound.
+    */
 
-
-    badge.style.display =
-        "flex";
-
-}
-
-
-/* =========================================================
-   CLEAR CHAT BADGE
-   ========================================================= */
-
-function clearNotificationBadge() {
-
-    localStorage.setItem(
-        "pdUnreadMessages",
-        "0"
-    );
-
-
-    const badge =
-        document.getElementById(
-            "chatNotification"
-        );
-
-
-    if (!badge)
-        return;
-
-
-    badge.textContent =
-        "0";
-
-
-    badge.style.display =
-        "none";
-
-}
-
-
-/* =========================================================
-   WATCH FIRESTORE MESSAGES
-   ========================================================= */
-
-function startNotificationListener() {
-
-    if (!currentUser)
-        return;
+    playNotificationSound();
 
 
     console.log(
-        "🔔 PD notification listener started."
+        "💌 New PD message!",
+        unreadCount
     );
 
+}
+
+
+/* =========================================================
+   FIRESTORE LISTENER
+   ========================================================= */
+
+function startNotificationListener() {
 
     const messagesQuery =
         query(
@@ -479,8 +500,8 @@ function startNotificationListener() {
             /*
                FIRST LOAD
 
-               Remember all existing messages,
-               but don't notify for them.
+               Remember existing messages
+               but don't notify them.
             */
 
             if (firstLoad) {
@@ -499,9 +520,11 @@ function startNotificationListener() {
                 firstLoad = false;
 
 
+                updateChatBadge();
+
+
                 console.log(
-                    "🔔 Existing PD messages loaded:",
-                    knownMessages.size
+                    "🔔 PD notifications ready."
                 );
 
 
@@ -511,7 +534,7 @@ function startNotificationListener() {
 
 
             /*
-               NEW MESSAGES
+               LOOK FOR NEW MESSAGES
             */
 
             snapshot.docChanges()
@@ -529,11 +552,6 @@ function startNotificationListener() {
                             change.doc.id;
 
 
-                        /*
-                           Don't process the
-                           same message twice.
-                        */
-
                         if (
                             knownMessages.has(
                                 id
@@ -547,68 +565,8 @@ function startNotificationListener() {
                         );
 
 
-                        const data =
-                            change.doc.data();
-
-
-                        /*
-                           Don't notify yourself.
-                        */
-
-                        if (
-                            data.senderUID ===
-                            currentUser.uid
-                        )
-                            return;
-
-
-                        const sender =
-                            data.senderName ||
-                            "My Love";
-
-
-                        const text =
-                            data.text ||
-                            "Sent you a voice note 🎙️";
-
-
-                        console.log(
-                            "💌 New PD message:",
-                            data
-                        );
-
-
-                        /*
-                           SOUND
-                        */
-
-                        playNotificationSound();
-
-
-                        /*
-                           BEAUTIFUL POPUP
-                        */
-
-                        showNotificationPopup(
-                            sender,
-                            text
-                        );
-
-
-                        /*
-                           CHAT BADGE
-                        */
-
-                        updateNotificationBadge();
-
-
-                        /*
-                           BROWSER NOTIFICATION
-                        */
-
-                        showBrowserNotification(
-                            sender,
-                            text
+                        handleNewMessage(
+                            change.doc.data()
                         );
 
                     }
@@ -619,7 +577,7 @@ function startNotificationListener() {
         error => {
 
             console.error(
-                "❌ PD notification listener error:",
+                "❌ PD notification error:",
                 error
             );
 
@@ -631,16 +589,25 @@ function startNotificationListener() {
 
 
 /* =========================================================
-   CLEAR BADGE WHEN CHAT IS OPEN
+   CHAT PAGE
    ========================================================= */
 
-if (
+const isChatPage =
     window.location.pathname
         .toLowerCase()
-        .includes("chat.html")
-) {
+        .includes(
+            "chat.html"
+        );
 
-    clearNotificationBadge();
+
+/*
+   Opening chat means the user
+   has seen their messages.
+*/
+
+if (isChatPage) {
+
+    clearUnreadMessages();
 
 }
 
@@ -654,11 +621,8 @@ onAuthStateChanged(
 
     user => {
 
-        if (!user) {
-
+        if (!user)
             return;
-
-        }
 
 
         currentUser =
@@ -669,4 +633,3 @@ onAuthStateChanged(
 
     }
 );
-
