@@ -25,7 +25,7 @@ const PD_SONGS = [
         file: "songs/Westlife - Written in the Stars.mp3"
     },
     {
-        title: "Gutamiiza",
+        title: "Written in the Stars",
         artist: "Radio-and-Weasel Feat-B2C",
         file: "songs/Radio-and-Weasel-Gutamiiza-Feat-B2C.mp3"
     },
@@ -49,7 +49,7 @@ const PD_SONGS = [
 
 /* =========================================================
    PD — SYNCHRONIZED LYRICS
-   YOUR TIMINGS — NOT CHANGED
+   TIMINGS ARE EXACTLY AS PROVIDED
    ========================================================= */
 
 const WRITTEN_IN_THE_STARS_LYRICS = [
@@ -112,11 +112,30 @@ const WRITTEN_IN_THE_STARS_LYRICS = [
 
 
 /* =========================================================
-   LYRICS DATE
-   Lyrics begin working on September 28, 2026
+   LYRICS ACTIVATION DATE
+   =========================================================
+   Lyrics are completely disabled before this date.
+   They become available automatically at 12:00 AM.
    ========================================================= */
 
 const LYRICS_START_DATE = "2026-09-28";
+
+
+/* =========================================================
+   GET TODAY'S DATE
+   ========================================================= */
+
+function getTodayDateKey() {
+
+    const today = new Date();
+
+    return `${today.getFullYear()}-${String(
+        today.getMonth() + 1
+    ).padStart(2, "0")}-${String(
+        today.getDate()
+    ).padStart(2, "0")}`;
+
+}
 
 
 /* =========================================================
@@ -155,6 +174,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const song = getTodaySong();
 
+    const todayKey = getTodayDateKey();
+
+    /*
+       Lyrics are allowed ONLY from 28 September 2026 onward.
+    */
+    const lyricsDateIsActive =
+        todayKey >= LYRICS_START_DATE;
+
+
     const title =
         document.getElementById("songTitle");
 
@@ -163,6 +191,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const audio =
         document.getElementById("songAudio");
+
+    const lyricBox =
+        document.getElementById("pdCurrentLyric");
 
     const source =
         document.getElementById("songSource");
@@ -182,14 +213,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const duration =
         document.getElementById("songDuration");
 
-    const lyricBox =
-        document.getElementById("pdCurrentLyric");
-
     let currentLyricIndex = -1;
 
 
     /* =====================================================
-       TODAY'S SONG INFORMATION
+       SONG INFORMATION
        ===================================================== */
 
     if (title) {
@@ -202,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       LOAD TODAY'S AUDIO
+       LOAD SONG
        ===================================================== */
 
     if (source) {
@@ -215,12 +243,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       LYRICS START HIDDEN
+       LYRICS ARE HIDDEN INITIALLY
        ===================================================== */
 
     if (lyricBox) {
+
         lyricBox.textContent = "";
+
         lyricBox.classList.remove("show");
+
     }
 
 
@@ -228,24 +259,28 @@ document.addEventListener("DOMContentLoaded", () => {
        PLAY / PAUSE
        ===================================================== */
 
-    playButton?.addEventListener("click", () => {
+    playButton?.addEventListener("click", async () => {
 
         if (!audio) return;
 
-        if (audio.paused) {
+        try {
 
-            audio.play().catch(error => {
+            if (audio.paused) {
 
-                console.error(
-                    "Song could not play:",
-                    error
-                );
+                await audio.play();
 
-            });
+            } else {
 
-        } else {
+                audio.pause();
 
-            audio.pause();
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Could not play song:",
+                error
+            );
 
         }
 
@@ -253,14 +288,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       AUDIO PLAYING
+       PLAY
        ===================================================== */
 
     audio?.addEventListener("play", () => {
 
         if (playIcon) {
+
             playIcon.className =
                 "fa-solid fa-pause";
+
         }
 
         document.body.classList.add(
@@ -271,14 +308,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       AUDIO PAUSED
+       PAUSE
        ===================================================== */
 
     audio?.addEventListener("pause", () => {
 
         if (playIcon) {
+
             playIcon.className =
                 "fa-solid fa-play";
+
         }
 
         document.body.classList.remove(
@@ -289,7 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       AUDIO READY
+       DURATION
        ===================================================== */
 
     audio?.addEventListener(
@@ -308,7 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       AUDIO TIME UPDATE
+       TIME UPDATE
        ===================================================== */
 
     audio?.addEventListener(
@@ -327,7 +366,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     audio.duration) * 100;
 
             if (progress) {
+
                 progress.value = percent;
+
             }
 
 
@@ -348,28 +389,14 @@ document.addEventListener("DOMContentLoaded", () => {
             /* =================================================
                LYRICS
                
-               IMPORTANT:
-               Lyrics are ONLY allowed when:
-               - date is September 28, 2026 or later
-               - today's song is Written in the Stars
+               MUST MEET BOTH CONDITIONS:
+               
+               1. Today is 28 September 2026 or later
+               2. Today's song is Written in the Stars
                ================================================= */
 
-            const today = new Date();
-
-            const todayKey =
-                `${today.getFullYear()}-${String(
-                    today.getMonth() + 1
-                ).padStart(2, "0")}-${String(
-                    today.getDate()
-                ).padStart(2, "0")}`;
-
-
-            const lyricsAllowed =
-                todayKey >= LYRICS_START_DATE;
-
-
             if (
-                lyricsAllowed &&
+                lyricsDateIsActive &&
                 song.title === "Written in the Stars" &&
                 lyricBox
             ) {
@@ -399,6 +426,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
+                /* ---------------------------------------------
+                   SHOW CURRENT LYRIC
+                   --------------------------------------------- */
+
                 if (
                     lyricIndex !== -1 &&
                     lyricIndex !== currentLyricIndex
@@ -407,9 +438,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     currentLyricIndex =
                         lyricIndex;
 
+
                     lyricBox.classList.remove(
                         "show"
                     );
+
 
                     setTimeout(() => {
 
@@ -435,7 +468,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             } else {
 
-                /* TODAY HAS NO LYRICS */
+                /* ---------------------------------------------
+                   NO LYRICS TODAY
+                   --------------------------------------------- */
 
                 if (lyricBox) {
 
@@ -474,7 +509,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       SONG ENDED
+       SONG FINISHED
        ===================================================== */
 
     audio?.addEventListener(
@@ -482,28 +517,43 @@ document.addEventListener("DOMContentLoaded", () => {
         () => {
 
             if (playIcon) {
+
                 playIcon.className =
                     "fa-solid fa-play";
+
             }
 
             document.body.classList.remove(
                 "song-playing"
             );
 
+
             if (progress) {
+
                 progress.value = 0;
+
             }
 
+
             if (currentTime) {
+
                 currentTime.textContent =
                     "0:00";
+
             }
+
 
             currentLyricIndex = -1;
 
+
             if (lyricBox) {
+
                 lyricBox.textContent = "";
-                lyricBox.classList.remove("show");
+
+                lyricBox.classList.remove(
+                    "show"
+                );
+
             }
 
         }
@@ -519,7 +569,9 @@ document.addEventListener("DOMContentLoaded", () => {
 function formatTime(seconds) {
 
     if (!seconds || isNaN(seconds)) {
+
         return "0:00";
+
     }
 
     const minutes =

@@ -6839,3 +6839,34 @@ textarea {
     }
 
 }
+/* =========================================================
+   PD — SONG LYRICS
+   Positioned directly below song details
+   ========================================================= */
+
+#pdCurrentLyric {
+    position: relative !important;
+
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+
+    transform: none !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 12px 0 8px !important;
+    padding: 0 15px !important;
+
+    min-height: 24px;
+
+    text-align: center;
+
+    pointer-events: none;
+
+    z-index: 5;
+
+    box-sizing: border-box;
+}
