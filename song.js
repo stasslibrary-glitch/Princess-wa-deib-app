@@ -15,9 +15,9 @@ const PD_SONGS = [
         file: "songs/queen-of-my-heart.mp3"
     },
     {
-        title: "My Love",
-        artist: "Westlife",
-        file: "songs/my-love.mp3"
+        title: "For My Hand",
+        artist: "Burna Boy feat. Ed Sheeran",
+        file: "songs/Burna Boy - For My Hand feat. Ed Sheeran.mp3"
     },
     {
         title: "Written in the Stars",
@@ -47,68 +47,171 @@ const PD_SONGS = [
 ];
 
 
+
+
 /* =========================================================
-   PD — SYNCHRONIZED LYRICS
-   TIMINGS ARE EXACTLY AS PROVIDED
+   GET LYRIC ELEMENT
    ========================================================= */
 
-const WRITTEN_IN_THE_STARS_LYRICS = [
-    { time: 18, text: "Stay with me" },
-    { time: 22, text: "Don't fall asleep too soon" },
-    { time: 26, text: "The angels can wait for the moment" },
-    { time: 32, text: "Come real close" },
-    { time: 36, text: "Forget the world outside" },
-    { time: 40, text: "Tonight we're alone" },
-    { time: 45, text: "It's finally you and I" },
-    { time: 50, text: "It wasn't meant to feel like this" },
-    { time: 58, text: "Not without you" },
+const pdCurrentLyric =
+    document.getElementById("pdCurrentLyric");
 
-    { time: 63, text: "'Cause when I look at my life" },
-    { time: 67, text: "How the pieces fall into place" },
-    { time: 71, text: "It just wouldn't rhyme without you" },
-    { time: 78, text: "When I see how my path" },
-    { time: 82, text: "Seem to end up before your face" },
-    { time: 86, text: "The state of my heart, the place where we are" },
-    { time: 90, text: "Was written in the stars" },
 
-    { time: 94, text: "Don't be afraid" },
-    { time: 97, text: "I'll be right by your side" },
-    { time: 102, text: "Through the laughter and pain" },
-    { time: 105, text: "Together we're bound to fly" },
-    { time: 112, text: "I wasn't meant to love like this" },
-    { time: 116, text: "Not without you" },
+/* =========================================================
+   GET AUDIO
+   ========================================================= */
 
-    { time: 118, text: "'Cause when I look at my life" },
-    { time: 124, text: "How the pieces fall into place" },
-    { time: 128, text: "It just wouldn't rhyme without you" },
-    { time: 136, text: "When I see how my path" },
-    { time: 140, text: "Seem to end up before your face" },
-    { time: 143, text: "The state of my heart, the place where we are" },
-    { time: 147, text: "Was written in the stars" },
+const songAudio =
+    document.getElementById("songAudio");
 
-    { time: 152, text: "I made a few mistakes, yeah" },
-    { time: 157, text: "Like sometimes we do" },
-    { time: 160, text: "Been through lot of heartache" },
-    { time: 164, text: "But I made it back to you" },
 
-    { time: 170, text: "'Cause when I look at my life" },
-    { time: 174, text: "How the pieces fall into place" },
-    { time: 178, text: "It just wouldn't rhyme without you" },
-    { time: 185, text: "When I see how my path" },
-    { time: 189, text: "Seem to end up before your face" },
-    { time: 193, text: "The state of my heart, the place where we are" },
-    { time: 197, text: "Was written in the stars" },
 
-    { time: 199, text: "When I look at my life" },
-    { time: 203, text: "How the pieces fall into place" },
-    { time: 207, text: "It just wouldn't rhyme without you" },
-    { time: 214, text: "When I see how my path" },
-    { time: 218, text: "Seem to end up before your face" },
-    { time: 222, text: "The state of my heart, the place where we are" },
-    { time: 226, text: "Was written in the stars" },
-    { time: 230, text: "The state of my heart, the place where we are" },
-    { time: 234, text: "Was written in the stars" }
-];
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+/* =========================================================
+   FIND THE CURRENT LYRIC
+   ========================================================= */
+
+function updateGrowOldLyrics() {
+
+    if (!songAudio || !pdCurrentLyric) {
+        return;
+    }
+
+    const currentTime =
+        songAudio.currentTime;
+
+
+    /*
+       Find the LAST lyric whose starting time
+       has already been reached.
+    */
+
+    let currentLyric = null;
+
+    for (
+        let i = 0;
+        i < I_WANNA_GROW_OLD_LYRICS.length;
+        i++
+    ) {
+
+        if (
+            currentTime >=
+            I_WANNA_GROW_OLD_LYRICS[i].time
+        ) {
+
+            currentLyric =
+                I_WANNA_GROW_OLD_LYRICS[i];
+
+        } else {
+
+            break;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       DISPLAY CURRENT LYRIC
+       ===================================================== */
+
+    if (currentLyric) {
+
+        if (
+            pdCurrentLyric.textContent !==
+            currentLyric.text
+        ) {
+
+            pdCurrentLyric.style.opacity = "0";
+
+            setTimeout(() => {
+
+                pdCurrentLyric.textContent =
+                    currentLyric.text;
+
+                pdCurrentLyric.style.opacity = "1";
+
+            }, 120);
+
+        }
+
+    } else {
+
+        pdCurrentLyric.textContent =
+            "♪ Our song is playing... ♪";
+
+    }
+
+}
+
+
+/* =========================================================
+   SYNCHRONIZE WITH AUDIO
+   ========================================================= */
+
+if (songAudio) {
+
+    songAudio.addEventListener(
+        "timeupdate",
+        updateGrowOldLyrics
+    );
+
+
+    /*
+       When the user moves the progress bar,
+       immediately find the correct lyric.
+    */
+
+    songAudio.addEventListener(
+        "seeked",
+        updateGrowOldLyrics
+    );
+
+
+    /*
+       When a new song is loaded, reset the lyric.
+    */
+
+    songAudio.addEventListener(
+        "loadedmetadata",
+        () => {
+
+            pdCurrentLyric.textContent =
+                "♪ Our song is playing... ♪";
+
+        }
+    );
+
+
+    /*
+       When the song finishes.
+    */
+
+    songAudio.addEventListener(
+        "ended",
+        () => {
+
+            pdCurrentLyric.textContent =
+                "♥ I wanna grow old with you ♥";
+
+        }
+    );
+
+}
 
 
 /* =========================================================
