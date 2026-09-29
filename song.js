@@ -763,3 +763,76 @@ function formatTime(seconds) {
     return `${minutes}:${remainingSeconds}`;
 
 }
+/* =========================================================
+   PD — TOUCH THE MUSIC EFFECT
+   ========================================================= */
+
+document.addEventListener("pointerdown", function (event) {
+
+    /* Only work inside the song page */
+    const songApp = document.querySelector(".song-app");
+
+    if (!songApp) return;
+
+    /* Create main ripple */
+    const ripple = document.createElement("div");
+
+    ripple.className = "pd-touch-ripple";
+
+    ripple.style.left = event.clientX + "px";
+    ripple.style.top = event.clientY + "px";
+
+    document.body.appendChild(ripple);
+
+
+    /* Create little glowing particles */
+
+    const particleCount = 8;
+
+    for (let i = 0; i < particleCount; i++) {
+
+        const particle = document.createElement("div");
+
+        particle.className = "pd-touch-particle";
+
+        particle.style.left = event.clientX + "px";
+        particle.style.top = event.clientY + "px";
+
+        const angle =
+            (Math.PI * 2 * i) / particleCount;
+
+        const distance =
+            25 + Math.random() * 45;
+
+        const x =
+            Math.cos(angle) * distance;
+
+        const y =
+            Math.sin(angle) * distance;
+
+        particle.style.setProperty(
+            "--move-x",
+            x + "px"
+        );
+
+        particle.style.setProperty(
+            "--move-y",
+            y + "px"
+        );
+
+        document.body.appendChild(particle);
+
+
+        /* Remove particle */
+        setTimeout(() => {
+            particle.remove();
+        }, 1000);
+    }
+
+
+    /* Remove ripple */
+    setTimeout(() => {
+        ripple.remove();
+    }, 1200);
+
+});

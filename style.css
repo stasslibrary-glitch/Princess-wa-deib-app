@@ -5190,12 +5190,12 @@ button {
     background:
         linear-gradient(
             135deg,
-            #9c34e9,
-            #dd36b7
+            #00c98c,
+            #8d066d
         );
 
     box-shadow:
-        0 0 18px rgba(216, 46, 197, 0.30);
+        0 0 18px rgba(2, 194, 136, 0.986);
 
     font-size: 11px;
 
