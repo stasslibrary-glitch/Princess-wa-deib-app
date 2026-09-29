@@ -10,9 +10,9 @@ const PD_SONGS = [
         file: "songs/your-love-amazes-me.mp3"
     },
     {
-        title: "Queen of My Heart",
-        artist: "Westlife",
-        file: "songs/queen-of-my-heart.mp3"
+        title: "Ordinary",
+        artist: "Alex Warren",
+        file: "songs/Alex Warren - Ordinary.mp3"
     },
     {
         title: "For My Hand",
@@ -66,6 +66,81 @@ const songAudio =
 
 
 
+/* =========================================================
+   PD — I WANNA GROW OLD WITH YOU
+   SYNCHRONIZED LYRICS
+   ========================================================= */
+
+const I_WANNA_GROW_OLD_LYRICS = [
+
+    /* INTRO */
+    { time: 12.0, text: "Another day without your smile" },
+    { time: 20.0, text: "Another day just passes by" },
+    { time: 27.0, text: "And now I know" },
+    { time: 30.2, text: "How much it means" },
+    { time: 34.5, text: "For you to stay right here with me" },
+
+    /* VERSE 2 */
+    { time: 40.0, text: "The time we spent apart" },
+    { time: 42.0, text: "Will make our love grow stronger" },
+    { time: 48.0, text: "But it hurts so bad" },
+    { time: 50.5, text: "I can't take it any longer" },
+
+    /* CHORUS */
+    { time: 54.0, text: "I wanna grow old with you" },
+    { time: 57.0, text: "I wanna die lying in your arms" },
+    { time: 60.0, text: "I wanna grow old with you" },
+    { time: 57.0, text: "I wanna be looking in your eyes" },
+    { time: 61.0, text: "I wanna be there for you" },
+    { time: 65.0, text: "Sharing in everything you do" },
+    { time: 69.0, text: "I wanna grow old with you" },
+
+    /* SECOND VERSE */
+    { time: 78.0, text: "A thousand miles between us now" },
+    { time: 82.0, text: "It causes me to wonder how" },
+    { time: 86.0, text: "Our love tonight remains so strong" },
+    { time: 91.0, text: "It makes our risk right all along" },
+
+    /* PRE-CHORUS */
+    { time: 96.0, text: "The time we spent apart" },
+    { time: 100.0, text: "Will make our love grow stronger" },
+    { time: 104.0, text: "But it hurts so bad" },
+    { time: 107.0, text: "I can't take it any longer" },
+
+    /* CHORUS */
+    { time: 112.0, text: "I wanna grow old with you" },
+    { time: 116.0, text: "I wanna die lying in your arms" },
+    { time: 120.0, text: "I wanna grow old with you" },
+    { time: 124.0, text: "I wanna be looking in your eyes" },
+    { time: 128.0, text: "I wanna be there for you" },
+    { time: 132.0, text: "Sharing in everything you do" },
+    { time: 136.0, text: "I wanna grow old with you" },
+
+    /* BRIDGE */
+    { time: 145.0, text: "Things can come and go" },
+    { time: 149.0, text: "I know but" },
+    { time: 151.5, text: "Baby I believe" },
+    { time: 154.5, text: "Something's burning strong between us" },
+    { time: 159.0, text: "Makes it clear to me" },
+
+    /* FINAL CHORUS */
+    { time: 165.0, text: "I wanna grow old with you" },
+    { time: 169.0, text: "I wanna die lying in your arms" },
+    { time: 173.0, text: "I wanna grow old with you" },
+    { time: 177.0, text: "I wanna be looking in your eyes" },
+    { time: 181.0, text: "I wanna be there for you" },
+    { time: 185.0, text: "Sharing in everything you do" },
+
+    /* FINAL REPEAT */
+    { time: 191.0, text: "I wanna grow old with you" },
+    { time: 195.0, text: "I wanna die lying in your arms" },
+    { time: 199.0, text: "I wanna grow old with you" },
+    { time: 203.0, text: "I wanna be looking in your eyes" },
+    { time: 207.0, text: "I wanna be there for you" },
+    { time: 211.0, text: "Sharing in everything you do" },
+    { time: 215.0, text: "I wanna grow old with you" }
+
+];
 
 
 

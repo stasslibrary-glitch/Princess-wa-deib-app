@@ -1,94 +1,228 @@
 
 /* =========================================================
-   PD — SONG PAGE DESIGN
-   song.css
-   ---------------------------------------------------------
-   Visual styling only.
-   Does NOT control:
-   - song playback
-   - synchronized lyrics
-   - bubbles
-   - slideshow JavaScript
+   PD — SONG PAGE
+   CLEAN PHONE + SCROLLING VERSION
    ========================================================= */
 
 
 /* =========================================================
-   1. SONG PAGE BACKGROUND
+   1. PAGE BACKGROUND
    ========================================================= */
 
-body.phone-page {
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body.song-page {
     margin: 0;
     min-height: 100vh;
 
     background:
-        linear-gradient(
-            180deg,
-            rgba(141, 47, 255, 0.45),
-            rgb(106, 14, 218)
+        radial-gradient(
+            circle at 50% 10%,
+            rgb(241, 0, 185),
+            transparent 38%
         ),
-        url("images/song-bg.jpg") center center / cover fixed no-repeat;
+        linear-gradient(
+            145deg,
+            #5e00f5,
+            #a72ff7,
+            #7b287d
+        );
 
-    color: #fff;
+    color: #eb2727;
+
     overflow-x: hidden;
 }
 
 
 /* =========================================================
-   2. DREAMY PURPLE LIGHT
+   2. PHONE FRAME
    ========================================================= */
 
-body.song-page::before {
-    content: "";
-    position: fixed;
-    inset: 0;
+/*
+   IMPORTANT:
+   Do NOT use overflow:hidden here.
+   The phone itself must allow the song area to scroll.
+*/
+
+body.song-page .phone-app {
+
+    position: relative;
+
+    width: 100%;
+    max-width: 430px;
+
+    height: 100dvh;
+    min-height: 0;
+
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
 
     background:
         radial-gradient(
-            circle at 20% 20%,
-            rgba(143, 11, 238, 0.829),
-            transparent 35%
+            circle at 85% 5%,
+            rgba(6, 255, 214, 0.534),
+            transparent 30%
         ),
         radial-gradient(
-            circle at 85% 30%,
-            rgba(255, 70, 180, 0.15),
+            circle at 10% 90%,
+            rgba(231, 6, 141, 0.63),
             transparent 35%
         ),
-        radial-gradient(
-            circle at 50% 90%,
-            rgba(119, 55, 255, 0.18),
-            transparent 40%
+        linear-gradient(
+            145deg,
+            #751fff,
+            #42145f,
+            #66246e
+        );
+}
+
+
+/* =========================================================
+   3. SONG APP — THE ACTUAL SCROLLING AREA
+   ========================================================= */
+
+body.song-page .song-app {
+
+    position: relative;
+
+    width: 100%;
+
+    /*
+       THIS IS THE IMPORTANT PART.
+       The song area gets all available phone height.
+    */
+
+    flex: 1 1 0;
+
+    min-height: 0;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    /*
+       Allows smooth finger scrolling.
+    */
+
+    -webkit-overflow-scrolling: touch;
+
+    overscroll-behavior-y: contain;
+
+    /*
+       Prevent weird horizontal movement.
+    */
+
+    touch-action: pan-y;
+
+    /*
+       Background stays inside phone.
+    */
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(54, 232, 255, 0.329),
+            rgba(177, 20, 255, 0.719)
+        ),
+        url("images/aaaa.jpg") center top / cover no-repeat;
+
+    scrollbar-width: thin;
+}
+
+
+/* =========================================================
+   4. SONG BACKGROUND OVERLAY
+   ========================================================= */
+
+body.song-page .song-app::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.06),
+            rgba(0, 0, 0, 0.20)
         );
 
     pointer-events: none;
-    z-index: -1;
+
+    z-index: 0;
 }
 
 
 /* =========================================================
-   3. MAIN SONG CONTAINER
+   5. KEEP CONTENT ABOVE BACKGROUND
    ========================================================= */
 
-.song-container {
+body.song-page .song-app > * {
+
     position: relative;
-    width: min(92%, 520px);
-    margin: 0 auto;
-    padding: 25px 0 45px;
+
+    z-index: 2;
 }
 
 
 /* =========================================================
-   4. SONG HEADER
+   6. SONG CONTAINER
+   ========================================================= */
+
+body.song-page .song-container {
+
+    position: relative;
+
+    width: min(92%, 520px);
+
+    margin: 0 auto;
+
+    /*
+       Top spacing
+    */
+
+    padding-top: 20px;
+
+    /*
+       VERY IMPORTANT:
+       Extra bottom space lets you reach the play button
+       and anything underneath it.
+    */
+
+    padding-bottom: 140px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   7. SONG HEADER
    ========================================================= */
 
 .song-header {
+
     text-align: center;
+
     margin-bottom: 20px;
 }
 
 .song-header h1 {
+
     margin: 0;
 
     font-family: "Playfair Display", serif;
+
     font-size: clamp(28px, 8vw, 42px);
 
     color: #fff;
@@ -99,25 +233,39 @@ body.song-page::before {
 }
 
 .song-header p {
-    margin-top: 7px;
+
+    margin: 7px 0 0;
 
     color: rgba(255,255,255,0.78);
+
     font-size: 13px;
+
     letter-spacing: 1px;
 }
 
 
 /* =========================================================
-   5. SONG CARD
+   8. SONG CARD
    ========================================================= */
 
 .song-card {
+
     position: relative;
 
+    width: 100%;
+
+    box-sizing: border-box;
+
     padding: 22px;
+
     border-radius: 28px;
 
-    background: rgba(121, 3, 218, 0.884);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(121, 3, 218, 0.88),
+            rgba(75, 10, 130, 0.82)
+        );
 
     border: 1px solid rgba(255,255,255,0.14);
 
@@ -125,21 +273,28 @@ body.song-page::before {
     -webkit-backdrop-filter: blur(15px);
 
     box-shadow:
-        0 20px 60px rgba(252, 15, 15, 0.35),
+        0 20px 60px rgba(252, 15, 15, 0.20),
         0 0 35px rgba(174, 79, 255, 0.18);
 
-    overflow: hidden;
+    /*
+       DO NOT use overflow:hidden here.
+       It can clip controls/elements.
+    */
+
+    overflow: visible;
 }
 
 
 /* =========================================================
-   6. SOFT GLOW INSIDE CARD
+   9. CARD GLOW
    ========================================================= */
 
 .song-card::before {
+
     content: "";
 
     position: absolute;
+
     width: 180px;
     height: 180px;
 
@@ -149,17 +304,23 @@ body.song-page::before {
     background: rgba(214, 103, 255, 0.25);
 
     filter: blur(45px);
+
     border-radius: 50%;
 
     pointer-events: none;
+
+    z-index: 0;
 }
 
 
 /* =========================================================
-   7. SONG ART / COVER
+   10. SONG COVER
    ========================================================= */
 
 .song-cover {
+
+    position: relative;
+
     width: 170px;
     height: 170px;
 
@@ -174,9 +335,12 @@ body.song-page::before {
     box-shadow:
         0 0 25px rgba(205, 90, 255, 0.55),
         0 0 70px rgba(205, 90, 255, 0.20);
+
+    z-index: 2;
 }
 
 .song-cover img {
+
     width: 100%;
     height: 100%;
 
@@ -187,13 +351,17 @@ body.song-page::before {
 
 
 /* =========================================================
-   8. SONG DETAILS
+   11. SONG TITLE
    ========================================================= */
 
 .song-title {
+
+    position: relative;
+
     text-align: center;
 
     font-family: "Playfair Display", serif;
+
     font-size: 25px;
 
     margin: 8px 0 4px;
@@ -202,22 +370,33 @@ body.song-page::before {
 
     text-shadow:
         0 0 12px rgba(255,255,255,0.25);
+
+    z-index: 2;
 }
 
+
 .song-artist {
+
+    position: relative;
+
     text-align: center;
 
     color: rgba(255,255,255,0.68);
 
     font-size: 14px;
+
+    z-index: 2;
 }
 
 
 /* =========================================================
-   9. OUR SONG
+   12. OUR SONG
    ========================================================= */
 
 .our-song {
+
+    position: relative;
+
     text-align: center;
 
     margin: 24px 0 18px;
@@ -233,10 +412,13 @@ body.song-page::before {
     text-shadow:
         0 0 8px rgba(255, 95, 200, 0.65),
         0 0 20px rgba(255, 95, 200, 0.30);
+
+    z-index: 5;
 }
 
 .our-song::before,
 .our-song::after {
+
     content: "♥";
 
     margin: 0 9px;
@@ -249,10 +431,11 @@ body.song-page::before {
 
 
 /* =========================================================
-   10. LYRICS AREA
+   13. LYRICS
    ========================================================= */
 
 .lyrics-container {
+
     position: relative;
 
     margin-top: 15px;
@@ -260,6 +443,8 @@ body.song-page::before {
     padding: 20px 16px;
 
     min-height: 180px;
+
+    box-sizing: border-box;
 
     border-radius: 22px;
 
@@ -272,22 +457,22 @@ body.song-page::before {
 
     text-align: center;
 
-    overflow: hidden;
+    overflow: visible;
+
+    z-index: 5;
 }
 
 
-/* Lyrics text */
-
 .lyrics-container,
 .lyrics-container * {
+
     font-family: "DM Sans", sans-serif;
 }
 
 
-/* Current lyric */
-
 .lyrics-container .active,
 .lyrics-container .current {
+
     color: #ffffff;
 
     font-size: 21px;
@@ -307,10 +492,9 @@ body.song-page::before {
 }
 
 
-/* Previous / upcoming lyrics */
-
 .lyrics-container .previous,
 .lyrics-container .next {
+
     color: rgba(255,255,255,0.42);
 
     font-size: 15px;
@@ -320,10 +504,82 @@ body.song-page::before {
 
 
 /* =========================================================
-   11. AUDIO PLAYER
+   14. PD LYRICS SECTION
+   ========================================================= */
+
+.song-app .pd-lyrics-section {
+
+    position: relative;
+
+    margin-top: 16px;
+
+    padding: 16px;
+
+    border-radius: 22px;
+
+    background: rgba(15, 3, 25, 0.25);
+
+    border: 1px solid rgba(255, 255, 255, 0.13);
+
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.20);
+
+    text-align: center;
+
+    z-index: 5;
+}
+
+
+.song-app .lyrics-label {
+
+    margin-bottom: 12px;
+
+    color: #ffffff;
+
+    font-family: "Playfair Display", serif;
+
+    font-size: 14px;
+
+    letter-spacing: 2px;
+
+    text-shadow:
+        0 0 10px rgba(255, 120, 210, 0.8);
+}
+
+
+.song-app #pdCurrentLyric {
+
+    position: relative;
+
+    color: #ffffff;
+
+    font-size: 20px;
+
+    font-weight: 600;
+
+    line-height: 1.55;
+
+    text-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.75),
+        0 0 15px rgba(255, 120, 220, 0.35);
+
+    transition: all 0.3s ease;
+
+    z-index: 10;
+}
+
+
+/* =========================================================
+   15. AUDIO PLAYER
    ========================================================= */
 
 .song-player {
+
+    position: relative;
+
     margin-top: 20px;
 
     padding: 12px;
@@ -335,29 +591,148 @@ body.song-page::before {
     border: 1px solid rgba(255,255,255,0.10);
 
     backdrop-filter: blur(10px);
+
+    z-index: 20;
 }
 
+
 .song-player audio {
+
+    display: block;
+
     width: 100%;
+
+    min-height: 45px;
+
+    position: relative;
+
+    z-index: 25;
 }
 
 
 /* =========================================================
-   12. PROGRESS / CONTROLS
+   16. MUSIC SPECTRUM
    ========================================================= */
 
+.song-app .music-spectrum {
+
+    position: relative;
+
+    margin: 15px auto;
+
+    padding: 8px 0;
+
+    border-radius: 15px;
+
+    background: rgba(0, 0, 0, 0.18);
+
+    backdrop-filter: blur(5px);
+
+    z-index: 5;
+}
+
+
+/* =========================================================
+   17. PROGRESS AREA
+   ========================================================= */
+
+.song-app .song-progress-area {
+
+    position: relative;
+
+    padding: 10px;
+
+    border-radius: 16px;
+
+    background: rgba(0, 0, 0, 0.20);
+
+    backdrop-filter: blur(6px);
+
+    z-index: 10;
+}
+
+
+/* =========================================================
+   18. BIG PLAY BUTTON
+   ========================================================= */
+
+/*
+   THIS IS THE IMPORTANT PLAY BUTTON FIX.
+*/
+
+.song-app .big-play {
+
+    position: relative;
+
+    z-index: 100;
+
+    pointer-events: auto;
+
+    cursor: pointer;
+
+    touch-action: manipulation;
+
+    box-shadow:
+        0 0 25px rgba(205, 83, 255, 0.55),
+        0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+
+/*
+   If the button is an actual button,
+   make sure nothing blocks it.
+*/
+
+.song-app .big-play button {
+
+    position: relative;
+
+    z-index: 101;
+
+    pointer-events: auto;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   19. ALL SONG BUTTONS
+   ========================================================= */
+
+.song-app button {
+
+    position: relative;
+
+    z-index: 50;
+
+    pointer-events: auto;
+
+    cursor: pointer;
+
+    touch-action: manipulation;
+}
+
+
 .song-controls {
+
+    position: relative;
+
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
     gap: 12px;
 
     margin-top: 15px;
+
+    z-index: 50;
 }
 
+
 .song-controls button {
+
     border: none;
 
     width: 46px;
@@ -379,31 +754,193 @@ body.song-page::before {
 
     cursor: pointer;
 
+    pointer-events: auto;
+
+    touch-action: manipulation;
+
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease;
 }
 
+
 .song-controls button:hover {
+
     transform: scale(1.08);
 
     box-shadow:
         0 0 28px rgba(224, 88, 255, 0.65);
 }
 
+
 .song-controls button:active {
+
     transform: scale(0.94);
 }
 
 
 /* =========================================================
-   13. FLOATING BUBBLES
-   ---------------------------------------------------------
-   This only styles existing bubbles.
-   It does NOT create/remove them.
+   20. SONG INFORMATION
    ========================================================= */
 
+.song-app .song-information {
+
+    position: relative;
+
+    margin-top: 15px;
+
+    padding: 15px;
+
+    border-radius: 20px;
+
+    background: rgba(20, 5, 30, 0.28);
+
+    border: 1px solid rgba(255, 255, 255, 0.14);
+
+    backdrop-filter: blur(8px);
+
+    -webkit-backdrop-filter: blur(8px);
+
+    text-align: center;
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.20);
+
+    z-index: 5;
+}
+
+
+/* =========================================================
+   21. SLIDESHOW
+   ========================================================= */
+
+.slideshow,
+.song-slideshow,
+.song-app .pd-slideshow {
+
+    position: relative;
+
+    width: 100%;
+
+    overflow: hidden;
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.30);
+
+    z-index: 5;
+}
+
+
+.slideshow img,
+.song-slideshow img {
+
+    width: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+
+/* =========================================================
+   22. SONG MESSAGE
+   ========================================================= */
+
+.song-app .song-message {
+
+    color: #ffffff;
+
+    text-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.70);
+}
+
+
+/* =========================================================
+   23. FLOATING HEARTS
+   ========================================================= */
+
+.song-heart {
+
+    position: fixed;
+
+    pointer-events: none;
+
+    color: rgba(255, 126, 214, 0.75);
+
+    text-shadow:
+        0 0 12px rgba(255, 70, 190, 0.7);
+
+    animation:
+        songHeartFloat 6s linear forwards;
+
+    z-index: 30;
+}
+
+
+@keyframes songHeartFloat {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translateY(20px)
+            scale(0.7);
+    }
+
+    15% {
+
+        opacity: 1;
+    }
+
+    80% {
+
+        opacity: 0.75;
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            translateY(-100vh)
+            scale(1.25);
+    }
+}
+
+
+/* =========================================================
+   24. FLOATING COUPLE
+   ========================================================= */
+
+.song-app .floating-couple {
+
+    position: relative;
+
+    z-index: 30;
+}
+
+
+/* =========================================================
+   25. CLICK BUBBLES
+   ========================================================= */
+
+.song-app #click-bubbles {
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 40;
+}
+
+
 .bubble {
+
     position: fixed;
 
     border-radius: 50%;
@@ -424,478 +961,219 @@ body.song-page::before {
 
     backdrop-filter: blur(2px);
 
-    z-index: 0;
+    z-index: 40;
 }
 
 
 /* =========================================================
-   14. SLIDESHOW
-   ---------------------------------------------------------
-   Existing slideshow remains untouched.
+   26. SCROLLBAR
    ========================================================= */
 
-.slideshow,
-.song-slideshow {
-    position: relative;
+body.song-page .song-app::-webkit-scrollbar {
 
-    width: 100%;
-
-    overflow: hidden;
-
-    border-radius: 22px;
-
-    box-shadow:
-        0 15px 40px rgba(0,0,0,0.30);
+    width: 5px;
 }
 
-.slideshow img,
-.song-slideshow img {
-    width: 100%;
 
-    display: block;
+body.song-page .song-app::-webkit-scrollbar-track {
 
-    object-fit: cover;
+    background: transparent;
+}
+
+
+body.song-page .song-app::-webkit-scrollbar-thumb {
+
+    background:
+        rgba(205, 105, 255, 0.55);
+
+    border-radius: 20px;
 }
 
 
 /* =========================================================
-   15. FLOATING HEART EFFECT
-   ========================================================= */
-
-.song-heart {
-    position: fixed;
-
-    pointer-events: none;
-
-    color: rgba(255, 126, 214, 0.75);
-
-    text-shadow:
-        0 0 12px rgba(255, 70, 190, 0.7);
-
-    animation:
-        songHeartFloat 6s linear forwards;
-
-    z-index: 1;
-}
-
-@keyframes songHeartFloat {
-
-    0% {
-        opacity: 0;
-        transform: translateY(20px) scale(0.7);
-    }
-
-    15% {
-        opacity: 1;
-    }
-
-    80% {
-        opacity: 0.75;
-    }
-
-    100% {
-        opacity: 0;
-        transform: translateY(-100vh) scale(1.25);
-    }
-}
-
-
-/* =========================================================
-   16. MOBILE OPTIMIZATION
+   27. MOBILE
    ========================================================= */
 
 @media (max-width: 600px) {
 
-    body.song-page {
-        background-attachment: scroll;
+    body.song-page .phone-app {
+
+        width: 100%;
+
+        max-width: 430px;
+
+        height: 100dvh;
+
+        min-height: 0;
+
+        overflow: hidden;
     }
 
-    .song-container {
-        width: 92%;
-        padding-top: 18px;
+
+    body.song-page .song-app {
+
+        flex: 1 1 0;
+
+        min-height: 0;
+
+        height: auto;
+
+        overflow-x: hidden;
+
+        overflow-y: auto;
+
+        -webkit-overflow-scrolling: touch;
+
+        touch-action: pan-y;
     }
+
+
+    body.song-page .song-container {
+
+        width: 92%;
+
+        padding-top: 18px;
+
+        /*
+           Extra bottom room.
+           This is what makes the lowest controls reachable.
+        */
+
+        padding-bottom: 160px;
+    }
+
 
     .song-card {
+
         padding: 17px;
 
         border-radius: 24px;
     }
 
+
     .song-cover {
+
         width: 145px;
+
         height: 145px;
     }
 
+
     .song-title {
+
         font-size: 22px;
     }
 
+
     .lyrics-container {
+
         padding: 18px 12px;
 
         min-height: 170px;
     }
 
+
     .lyrics-container .active,
     .lyrics-container .current {
+
         font-size: 19px;
+    }
+
+
+    .song-app #pdCurrentLyric {
+
+        font-size: 18px;
+    }
+
+
+    /*
+       Make the play button comfortably tappable.
+    */
+
+    .song-app .big-play {
+
+        min-width: 55px;
+
+        min-height: 55px;
     }
 }
 
 
 /* =========================================================
-   17. VERY SMALL PHONES
+   28. VERY SMALL PHONES
    ========================================================= */
 
 @media (max-width: 380px) {
 
-    .song-container {
+    body.song-page .song-container {
+
         width: 94%;
+
+        padding-bottom: 180px;
     }
 
+
     .song-cover {
+
         width: 125px;
+
         height: 125px;
     }
 
+
     .song-card {
+
         padding: 14px;
     }
 
+
     .lyrics-container .active,
     .lyrics-container .current {
+
         font-size: 17px;
     }
 }
 
 
 /* =========================================================
-   PD — SONG PAGE
-   Background stays INSIDE the phone frame
+   29. EXTRA SAFETY
    ========================================================= */
 
+/*
+   Prevent accidental CSS elsewhere from making the
+   scrolling area impossible to use.
+*/
 
-/* The actual phone-frame content */
-.song-app {
-    position: relative;
-    overflow: hidden;
+body.song-page .song-app,
+body.song-page .song-app * {
 
-    /*
-       Your background image.
-       If song.css is beside song.html:
-       images/song-bg.jpg
-
-       If song.css is inside a css folder:
-       ../images/song-bg.jpg
-    */
-    background-image: url("images/song-bg.jpg");
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-
-    /* Makes sure the background fills the phone app */
-    min-height: 100vh;
+    box-sizing: border-box;
 }
 
 
-/* =========================================================
-   SOFT DARK GLASS OVERLAY
-   ---------------------------------------------------------
-   This is intentionally VERY transparent.
-   The photograph remains visible.
-   ========================================================= */
+/*
+   Do NOT allow invisible overlays to steal clicks.
+*/
 
-.song-app::before {
-    content: "";
+.song-app::before,
+.song-card::before {
 
-    position: absolute;
-    inset: 0;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0.08),
-            rgba(0, 0, 0, 0.18)
-        );
-
-    pointer-events: none;
-
-    z-index: 0;
+    pointer-events: none !important;
 }
 
 
-/* =========================================================
-   KEEP EVERYTHING ABOVE THE BACKGROUND
-   ========================================================= */
+/*
+   Play-related elements always remain interactive.
+*/
 
-.song-app > * {
-    position: relative;
-    z-index: 1;
+body.song-page .big-play,
+body.song-page .big-play *,
+body.song-page .song-controls,
+body.song-page .song-controls *,
+body.song-page audio {
+
+    pointer-events: auto;
 }
-
-
-/* =========================================================
-   SONG CONTENT
-   ========================================================= */
-
-.song-app .song-page {
-    position: relative;
-    z-index: 2;
-
-    /*
-       IMPORTANT:
-       Don't give this a solid background.
-       We want the photo behind everything.
-    */
-    background: transparent !important;
-}
-
-
-/* =========================================================
-   SLIDESHOW
-   ========================================================= */
-
-.song-app .pd-slideshow {
-    position: relative;
-
-    overflow: hidden;
-
-    border-radius: 22px;
-
-    box-shadow:
-        0 12px 35px rgba(0, 0, 0, 0.30);
-}
-
-
-/* =========================================================
-   SONG INFORMATION
-   ========================================================= */
-
-.song-app .song-information {
-    position: relative;
-
-    margin-top: 15px;
-    padding: 15px;
-
-    border-radius: 20px;
-
-    background: rgba(20, 5, 30, 0.28);
-
-    border: 1px solid rgba(255, 255, 255, 0.14);
-
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-
-    text-align: center;
-
-    box-shadow:
-        0 8px 30px rgba(0, 0, 0, 0.20);
-}
-
-
-/* =========================================================
-   OUR SONG / LYRICS
-   ========================================================= */
-
-.song-app .pd-lyrics-section {
-    position: relative;
-
-    margin-top: 16px;
-    padding: 16px;
-
-    border-radius: 22px;
-
-    /*
-       Transparent glass so the photograph remains visible
-    */
-    background: rgba(15, 3, 25, 0.25);
-
-    border: 1px solid rgba(255, 255, 255, 0.13);
-
-    backdrop-filter: blur(7px);
-    -webkit-backdrop-filter: blur(7px);
-
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.20);
-
-    text-align: center;
-}
-
-
-/* OUR SONG label */
-
-.song-app .lyrics-label {
-    margin-bottom: 12px;
-
-    color: #ffffff;
-
-    font-family: "Playfair Display", serif;
-
-    font-size: 14px;
-
-    letter-spacing: 2px;
-
-    text-shadow:
-        0 0 10px rgba(255, 120, 210, 0.8);
-}
-
-
-/* Current lyric */
-
-.song-app #pdCurrentLyric {
-    color: #ffffff;
-
-    font-size: 20px;
-
-    font-weight: 600;
-
-    line-height: 1.55;
-
-    text-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.75),
-        0 0 15px rgba(255, 120, 220, 0.35);
-
-    transition: all 0.3s ease;
-}
-
-
-/* =========================================================
-   MUSIC SPECTRUM
-   ========================================================= */
-
-.song-app .music-spectrum {
-    position: relative;
-
-    margin: 15px auto;
-
-    padding: 8px 0;
-
-    border-radius: 15px;
-
-    background: rgba(0, 0, 0, 0.18);
-
-    backdrop-filter: blur(5px);
-}
-
-
-/* =========================================================
-   PROGRESS
-   ========================================================= */
-
-.song-app .song-progress-area {
-    position: relative;
-
-    padding: 10px;
-
-    border-radius: 16px;
-
-    background: rgba(0, 0, 0, 0.20);
-
-    backdrop-filter: blur(6px);
-}
-
-
-/* =========================================================
-   PLAY BUTTON
-   ========================================================= */
-
-.song-app .big-play {
-    position: relative;
-
-    box-shadow:
-        0 0 25px rgba(205, 83, 255, 0.55),
-        0 8px 25px rgba(0, 0, 0, 0.25);
-}
-
-
-/* =========================================================
-   MESSAGE
-   ========================================================= */
-
-.song-app .song-message {
-    color: #ffffff;
-
-    text-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.70);
-}
-
-
-/* =========================================================
-   FLOATING COUPLES
-   ---------------------------------------------------------
-   Your existing floating couple animation remains intact.
-   ========================================================= */
-
-.song-app .floating-couple {
-    z-index: 3;
-}
-
-
-/* =========================================================
-   BUBBLES
-   ---------------------------------------------------------
-   Existing bubbles stay above the background.
-   ========================================================= */
-
-.song-app #click-bubbles {
-    position: relative;
-    z-index: 4;
-}
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 600px) {
-
-    .song-app {
-        min-height: 100vh;
-
-        background-position: center top;
-    }
-
-    .song-app #pdCurrentLyric {
-        font-size: 18px;
-    }
-}
-
-
-/* =========================================================
-   PD — BRIGHT PHONE FRAME BACKGROUND
-   ========================================================= */
-
-.phone-page {
-    background:
-        radial-gradient(
-            circle at 50% 10%,
-            rgba(255, 170, 235, 0.45),
-            transparent 38%
-        ),
-        linear-gradient(
-            145deg,
-            #241044,
-            #4b176d,
-            #7b287d
-        ) !important;
-}
-
-.phone-app {
-    background:
-        radial-gradient(
-            circle at 85% 5%,
-            rgba(255, 150, 230, 0.30),
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 10% 90%,
-            rgba(255, 90, 190, 0.20),
-            transparent 35%
-        ),
-        linear-gradient(
-            145deg,
-            #241044,
-            #42145f,
-            #66246e
-        ) !important;
+body.song-page .song-app {
+    background: red !important;
 }
