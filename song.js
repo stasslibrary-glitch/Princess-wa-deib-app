@@ -25,9 +25,9 @@ const PD_SONGS = [
         file: "songs/Westlife - Written in the Stars.mp3"
     },
     {
-        title: "Written in the Stars",
-        artist: "Radio-and-Weasel Feat-B2C",
-        file: "songs/Radio-and-Weasel-Gutamiiza-Feat-B2C.mp3"
+        title: "Ordinary",
+        artist: "Alex Warren",
+        file: "songs/Alex Warren - Ordinary.mp3"
     },
     {
         title: "Beautiful in White",
