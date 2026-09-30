@@ -5,9 +5,24 @@
 
 const PD_SONGS = [
     {
-        title: "Your Love Amazes Me",
-        artist: "Westlife",
-        file: "songs/your-love-amazes-me.mp3"
+         title: "Champion Gal",
+        artist: "Fik Fameica",
+        file: "songs/Champion Gal by Fik Fameica.mp3"
+    },
+    {
+         title: "Champion Gal",
+        artist: "Fik Fameica",
+        file: "songs/Champion Gal by Fik Fameica.mp3"
+    },
+    {
+         title: "Champion Gal",
+        artist: "Fik Fameica",
+        file: "songs/Champion Gal by Fik Fameica.mp3"
+    },
+    {
+        title: "Champion Gal",
+        artist: "Fik Fameica",
+        file: "songs/Champion Gal by Fik Fameica.mp3"
     },
     {
         title: "Ordinary",
@@ -15,34 +30,19 @@ const PD_SONGS = [
         file: "songs/Alex Warren - Ordinary.mp3"
     },
     {
-        title: "For My Hand",
-        artist: "Burna Boy feat. Ed Sheeran",
-        file: "songs/Burna Boy - For My Hand feat. Ed Sheeran.mp3"
+        title: "Champion Gal",
+        artist: "Fik Fameica",
+        file: "songs/Champion Gal by Fik Fameica.mp3"
     },
     {
-        title: "Written in the Stars",
-        artist: "Westlife",
-        file: "songs/Westlife - Written in the Stars.mp3"
+        title: "Champion Gal",
+        artist: "Fik Fameica",
+        file: "songs/Champion Gal by Fik Fameica.mp3"
     },
     {
-        title: "Ordinary",
-        artist: "Alex Warren",
-        file: "songs/Alex Warren - Ordinary.mp3"
-    },
-    {
-        title: "Beautiful in White",
-        artist: "Westlife Singapore version",
-        file: "songs/Beautiful in White.mp3"
-    },
-    {
-        title: "Puzzle of my Heart",
-        artist: "Westlife",
-        file: "songs/Puzzle_of_my_heart.mp3"
-    },
-    {
-        title: "Anaconda",
-        artist: "Lutty Neika ft. Bravion Emcee",
-        file: "songs/Anaconda.mp3"
+         title: "Champion Gal",
+        artist: "Fik Fameica",
+        file: "songs/Champion Gal by Fik Fameica.mp3"
     }
 ];
 
