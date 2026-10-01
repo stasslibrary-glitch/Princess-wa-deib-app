@@ -1205,3 +1205,248 @@ input:focus-visible {
 
     outline-offset: 2px;
 }
+
+/* =========================================================
+   PD CHAT — BOTTOM CONTROLS FIX
+   ========================================================= */
+
+/* Make the chat itself the viewport */
+.chat-app {
+    position: relative !important;
+
+    height: 100dvh !important;
+    min-height: 0 !important;
+    max-height: 100dvh !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    overflow: hidden !important;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.chat-header {
+    position: relative !important;
+
+    flex: 0 0 70px !important;
+
+    height: 70px !important;
+    min-height: 70px !important;
+    max-height: 70px !important;
+
+    z-index: 100 !important;
+}
+
+
+/* =========================================================
+   MESSAGES
+   ---------------------------------------------------------
+   VERY IMPORTANT:
+   The message section takes the remaining space.
+   It is the ONLY section allowed to scroll.
+   ========================================================= */
+
+.chat-messages {
+    position: relative !important;
+
+    flex: 1 1 0% !important;
+
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    padding-bottom: 12px !important;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+
+/* =========================================================
+   BOTTOM MESSAGE BAR
+   ========================================================= */
+
+.chat-input {
+    position: relative !important;
+
+    flex: 0 0 68px !important;
+
+    width: 100% !important;
+
+    height: 68px !important;
+    min-height: 68px !important;
+    max-height: 68px !important;
+
+    z-index: 200 !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    box-sizing: border-box !important;
+
+    padding:
+        8px
+        8px
+        calc(8px + env(safe-area-inset-bottom))
+        8px !important;
+
+    margin: 0 !important;
+
+    background:
+        rgba(12, 7, 20, 0.98) !important;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.10) !important;
+}
+
+
+/* =========================================================
+   TYPING BOX
+   ========================================================= */
+
+#messageInput {
+    flex: 1 1 auto !important;
+
+    width: auto !important;
+    min-width: 0 !important;
+
+    height: 44px !important;
+    min-height: 44px !important;
+
+    box-sizing: border-box !important;
+
+    margin: 0 !important;
+}
+
+
+/* =========================================================
+   ALL BOTTOM BUTTONS
+   ========================================================= */
+
+.chat-input button {
+    position: relative !important;
+
+    flex: 0 0 42px !important;
+
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    z-index: 210 !important;
+}
+
+
+/* =========================================================
+   SEND BUTTON
+   ========================================================= */
+
+.chat-input .send-message {
+    flex: 0 0 42px !important;
+
+    width: 42px !important;
+    height: 42px !important;
+
+    min-width: 42px !important;
+    min-height: 42px !important;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    pointer-events: auto !important;
+}
+
+
+/* =========================================================
+   VOICE BUTTON
+   ========================================================= */
+
+#voiceButton {
+    visibility: visible !important;
+
+    opacity: 1 !important;
+
+    pointer-events: auto !important;
+}
+
+
+/* =========================================================
+   PAPERCLIP
+   ========================================================= */
+
+.chat-input .attach-button {
+    visibility: visible !important;
+
+    opacity: 1 !important;
+
+    pointer-events: auto !important;
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .chat-header {
+        flex-basis: 64px !important;
+
+        height: 64px !important;
+        min-height: 64px !important;
+        max-height: 64px !important;
+    }
+
+    .chat-input {
+        flex-basis: 64px !important;
+
+        height: 64px !important;
+        min-height: 64px !important;
+        max-height: 64px !important;
+
+        padding:
+            6px
+            5px
+            calc(6px + env(safe-area-inset-bottom))
+            5px !important;
+    }
+
+    #messageInput {
+        height: 42px !important;
+    }
+
+    .chat-input button {
+        flex-basis: 39px !important;
+
+        width: 39px !important;
+        min-width: 39px !important;
+
+        height: 39px !important;
+        min-height: 39px !important;
+    }
+
+    .chat-input .send-message {
+        flex-basis: 39px !important;
+
+        width: 39px !important;
+        height: 39px !important;
+    }
+}
