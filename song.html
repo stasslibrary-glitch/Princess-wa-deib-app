@@ -1,418 +1,648 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
 
-<link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="song.css">
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>PD | Our Song Today</title>
+    <meta
+        name="theme-color"
+        content="#080719"
+    >
 
-<link
-    rel="stylesheet"
-    href="style.css"
->
+    <title>PD — Song of the Day</title>
 
-<link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
-    rel="stylesheet"
->
 
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
->
+    <!-- =====================================================
+         FONTS
+         ===================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         FONT AWESOME
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <!-- =====================================================
+         SONG CSS
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="song.css"
+    >
 
 </head>
 
-<body class="phone-page">
 
-<div class="phone-app song-app">
-
-
-<!-- HEADER -->
-
-<header class="simple-header">
-
-    <a href="home.html">
-
-        <i class="fa-solid fa-arrow-left"></i>
-
-    </a>
-
-    <h2>
-        PRINCESS & DEIB ♥
-    </h2>
-
-</header>
+<body class="song-page">
 
 
-<main class="song-page">
+<!-- =========================================================
+     PHONE APP
+     ========================================================= -->
+
+<div class="phone-app">
 
 
- <section class="pd-slideshow">
+    <!-- =====================================================
+         SONG APPLICATION
+         ===================================================== -->
+
+    <main class="song-app">
 
 
-<!-- VIDEO 1 -->
-<div class="slide active" data-slide="video">
-    <video muted playsinline preload="metadata">
-        <source src="slideshow/video1.mp4" type="video/mp4">
-    </video>
-</div>
+        <!-- =================================================
+             BACKGROUND DECORATION
+             ================================================= -->
+
+        <div class="background-orb orb-one"></div>
+        <div class="background-orb orb-two"></div>
+        <div class="background-orb orb-three"></div>
 
 
-<!-- VIDEO 2 -->
-<div class="slide" data-slide="video">
-    <video muted playsinline preload="metadata">
-        <source src="slideshow/video2.mp4" type="video/mp4">
-    </video>
-</div>
+        <!-- =================================================
+             MAIN CONTAINER
+             ================================================= -->
+
+        <div class="song-container">
 
 
-<!-- VIDEO 3 -->
-<div class="slide" data-slide="video">
-    <video muted playsinline preload="metadata">
-        <source src="slideshow/video3.mp4" type="video/mp4">
-    </video>
-</div>
+            <!-- =================================================
+                 TOP HEADER
+                 ================================================= -->
+
+            <header class="song-header">
+
+                <div class="header-small">
+                    PRINCESS WA DEIB
+                </div>
+
+                <h1>
+                    Song of the Day
+                </h1>
+
+                <p>
+                    With Special Dedicatiom
+                </p>
+
+            </header>
 
 
-<!-- VIDEO 4 -->
-<div class="slide" data-slide="video">
-    <video muted playsinline preload="metadata">
-        <source src="slideshow/video4.mp4" type="video/mp4">
-    </video>
-</div>
+
+            <!-- =================================================
+                 MAIN MUSIC CARD
+                 ================================================= -->
+
+            <section class="song-card">
 
 
-<!-- PHOTO 1 -->
-<div class="slide" data-slide="photo">
-    <img
-        src="slideshow/photo1.jpg"
-        alt="Our memory"
-    >
-</div>
+                <!-- =============================================
+                     SONG TOP
+                     ============================================= -->
+
+                <div class="song-top">
 
 
-<!-- PHOTO 2 -->
-<div class="slide" data-slide="photo">
-    <img
-        src="slideshow/photo2.jpg"
-        alt="Our memory"
-    >
-</div>
+                    <!-- COVER -->
+
+                    <div class="song-cover-wrap">
+
+                        <div class="song-cover">
+
+                            <img
+                                id="songCover"
+                                src="slideshow/111.jpg"
+                                alt="Song artwork"
+                            >
+
+                        </div>
+
+                    </div>
 
 
-<!-- PHOTO 3 -->
-<div class="slide" data-slide="photo">
-    <img
-        src="slideshow/photo3.jpg"
-        alt="Our memory"
-    >
-</div>
+
+                    <!-- SONG DETAILS -->
+
+                    <div class="song-details">
+
+                        <div class="today-label">
+                            TODAY'S SONG
+                        </div>
 
 
-<!-- SLIDESHOW OVERLAY -->
-<div class="slideshow-overlay">
-
-    <span>♥</span>
-
-    <p>
-       Jaris wa Ernest
-    </p>
-
-</div>
+                        <h2
+                            id="songTitle"
+                            class="song-title"
+                        >
+                            Loading...
+                        </h2>
 
 
-<!-- DOTS -->
-<div
-    class="slide-dots"
-    id="slideDots"
-></div>
+                        <p
+                            id="songArtist"
+                            class="song-artist"
+                        >
+                            Loading...
+                        </p>
 
 
-</section>
+                        <div class="our-song">
+                            ✦ OUR SONG ✦
+                        </div>
+
+                    </div>
+
+                </div>
 
 
-    <!-- SONG INFORMATION -->
 
-    <section class="song-information">
+                <!-- =============================================
+                     AUDIO
+                     ============================================= -->
 
-        <span class="song-today-label">
-            ♥ Loved Jaris, Forever ♥
-        </span>
+                <audio
+                    id="songAudio"
+                    preload="metadata"
+                >
 
-        <h1 id="songTitle">
-            Your Love Amazes Me
-        </h1>
+                    <source
+                        id="songSource"
+                        src=""
+                        type="audio/mpeg"
+                    >
 
-        <p id="songArtist">
-            Westlife
-        </p>
+                    Your browser does not support audio.
 
-    </section>
-<!-- =====================================================
-     PD — SYNCHRONIZED LYRICS
-====================================================== -->
-
-
-    <!-- MUSIC SPECTRUM -->
-
-    <div
-        class="music-spectrum"
-        aria-hidden="true"
-    >
-
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-
-    </div>
+                </audio>
 
 
-    <!-- PROGRESS -->
 
-    <div class="song-progress-area">
+                <!-- =============================================
+                     VISUALIZER
+                     ============================================= -->
 
-        <input
-            type="range"
-            id="songProgress"
-            min="0"
-            max="100"
-            value="0"
-        >
+                <div
+                    class="music-spectrum"
+                    id="musicSpectrum"
+                    aria-hidden="true"
+                >
 
-        <div class="song-times">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
 
-            <span id="currentTime">
-                0:00
-            </span>
+                </div>
 
-            <span id="songDuration">
-                0:00
-            </span>
+
+
+                <!-- =============================================
+                     TIME
+                     ============================================= -->
+
+                <div class="time-row">
+
+                    <span id="currentTime">
+                        0:00
+                    </span>
+
+                    <span id="songDuration">
+                        0:00
+                    </span>
+
+                </div>
+
+
+
+                <!-- =============================================
+                     PROGRESS
+                     ============================================= -->
+
+                <div class="progress-wrapper">
+
+                    <input
+                        type="range"
+                        id="songProgress"
+                        min="0"
+                        max="100"
+                        value="0"
+                        step="0.1"
+                    >
+
+                </div>
+
+
+
+                <!-- =============================================
+                     CUSTOM CONTROLS
+                     ============================================= -->
+
+                <div class="song-controls">
+
+
+                    <button
+                        id="previousSong"
+                        type="button"
+                        aria-label="Previous song"
+                    >
+
+                        <i class="fa-solid fa-backward-step"></i>
+
+                    </button>
+
+
+
+                    <button
+                        id="songPlay"
+                        class="main-play"
+                        type="button"
+                        aria-label="Play song"
+                    >
+
+                        <i class="fa-solid fa-play"></i>
+
+                    </button>
+
+
+
+                    <button
+                        id="nextSong"
+                        type="button"
+                        aria-label="Next song"
+                    >
+
+                        <i class="fa-solid fa-forward-step"></i>
+
+                    </button>
+
+
+                </div>
+
+
+
+                <!-- =============================================
+                     LYRICS
+                     ============================================= -->
+
+                <div
+                    id="pdCurrentLyric"
+                    class="pd-current-lyric"
+                ></div>
+
+
+
+                <!-- =============================================
+                     SONG MESSAGE
+                     ============================================= -->
+
+                <section class="song-message-card">
+
+                    <div class="message-icon">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            A little note for you
+                        </h3>
+
+                        <p class="song-message">
+
+                            Some songs are just songs.
+
+                            <br>
+
+                            But some songs become memories.
+
+                            <br>
+
+                            This one belongs to us. 💜
+
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 MEMORIES SECTION
+                 ================================================= -->
+
+            <section class="memories-section">
+
+
+                <div class="section-heading">
+
+                    <span>
+                        OUR MEMORIES
+                    </span>
+
+                    <small>
+                        photos & video
+                    </small>
+
+                </div>
+
+
+
+                <!-- =============================================
+                     MEDIA SLIDESHOW
+                     ============================================= -->
+
+                <div class="media-showcase">
+
+
+                    <!-- =========================================
+                         PHOTO SLIDES
+                         ========================================= -->
+
+                    <div
+                        class="media-slide active"
+                        data-type="photo"
+                    >
+
+                        <img
+                            src="slideshow/photo1.jpg"
+                            alt="Our memory"
+                        >
+
+                    </div>
+
+
+                    <div
+                        class="media-slide"
+                        data-type="photo"
+                    >
+
+                        <img
+                            src="slideshow/photo2.jpg"
+                            alt="Our memory"
+                        >
+
+                    </div>
+
+
+                    <div
+                        class="media-slide"
+                        data-type="photo"
+                    >
+
+                        <img
+                            src="slideshow/photo3.jpg"
+                            alt="Our memory"
+                        >
+
+                    </div>
+
+
+                    <div
+                        class="media-slide"
+                        data-type="photo"
+                    >
+
+                        <img
+                            src="slideshow/slide4.jpg"
+                            alt="Our memory"
+                        >
+
+                    </div>
+
+
+
+                    <!-- =========================================
+                         VIDEO SLIDE
+                         ========================================= -->
+
+                    <div
+                        class="media-slide video-slide"
+                        data-type="video"
+                    >
+
+                        <video
+                            id="memoryVideo"
+                            muted
+                            playsinline
+                            preload="metadata"
+                        >
+
+                            <source
+                                src="slideshow/video1.mp4"
+                                type="video/mp4"
+                            >
+
+                            Your browser does not support video.
+
+                        </video>
+
+                    </div>
+
+                    <div
+                        class="media-slide video-slide"
+                        data-type="video"
+                    >
+
+                        <video
+                            id="memoryVideo"
+                            muted
+                            playsinline
+                            preload="metadata"
+                        >
+
+                            <source
+                                src="slideshow/video2.mp4"
+                                type="video/mp4"
+                            >
+
+                            Your browser does not support video.
+
+                        </video>
+
+
+                        
+
+                    </div>
+                    <div
+                        class="media-slide video-slide"
+                        data-type="video"
+                    >
+
+                        <video
+                            id="memoryVideo"
+                            muted
+                            playsinline
+                            preload="metadata"
+                        >
+
+                            <source
+                                src="slideshow/video3.mp4"
+                                type="video/mp4"
+                            >
+
+                            Your browser does not support video.
+
+                        </video>
+
+
+                        
+
+                    </div>
+                 
+
+                       
+                    <!-- =========================================
+                         SLIDESHOW ARROWS
+                         ========================================= -->
+
+                    <button
+                        id="previousSlide"
+                        class="slide-arrow slide-left"
+                        type="button"
+                        aria-label="Previous memory"
+                    >
+
+                        <i class="fa-solid fa-chevron-left"></i>
+
+                    </button>
+
+
+                    <button
+                        id="nextSlide"
+                        class="slide-arrow slide-right"
+                        type="button"
+                        aria-label="Next memory"
+                    >
+
+                        <i class="fa-solid fa-chevron-right"></i>
+
+                    </button>
+
+
+
+                    <!-- =========================================
+                         SLIDE COUNTER
+                         ========================================= -->
+
+                    <div
+                        id="slideCounter"
+                        class="slide-counter"
+                    >
+                        1 / 5
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =============================================
+                     DOTS
+                     ============================================= -->
+
+                <div
+                    id="slideDots"
+                    class="slide-dots"
+                ></div>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 BOTTOM LOVE CARD
+                 ================================================= -->
+
+            <section class="love-card">
+
+                <div class="love-symbol">
+                    ♥
+                </div>
+
+                <h3>
+                    Jaris & Ernest
+                </h3>
+
+                <p>
+                    Forever Faitfully, Your Love Amazes me
+                </p>
+
+            </section>
+
+
 
         </div>
 
-    </div>
+
+        <!-- =================================================
+             CLICK BUBBLES
+             ================================================= -->
+
+        <div id="click-bubbles"></div>
 
 
-    <!-- PLAY -->
-
-    <button
-        class="big-play"
-        id="songPlay"
-        type="button"
-    >
-
-        <i class="fa-solid fa-play"></i>
-
-    </button>
-
-
-    <p class="song-message">
-
-        Loved Jaris,
-        <br>
-
-        Jaris wa Hubby<br>
-        Hubby wa Jaris. ♥
-
-    </p>
-
-
-    <!-- AUDIO -->
-
-    <audio
-        id="songAudio"
-        preload="metadata"
-    >
-
-        <source
-            id="songSource"
-            src=""
-            type="audio/mpeg"
-        >
-
-    </audio>
-
-
-</main>
+    </main>
 
 
 </div>
 
-<script
-    type="module"
-    src="auth-guard.js"
-></script>
+
+
+<!-- =========================================================
+     SONG JAVASCRIPT
+     ========================================================= -->
 
 <script src="song.js"></script>
 
-<!-- =====================================================
-     SLIDESHOW SCRIPT
-====================================================== -->
 
-<script>
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        const slides =
-            document.querySelectorAll(".slide");
-
-        const dotsContainer =
-            document.getElementById("slideDots");
-
-        let currentSlide = 0;
-
-
-        /* CREATE DOTS */
-
-        slides.forEach(
-            (slide, index) => {
-
-                const dot =
-                    document.createElement("span");
-
-                dot.className =
-                    index === 0
-                        ? "active"
-                        : "";
-
-                dotsContainer.appendChild(dot);
-
-            }
-        );
-
-
-        const dots =
-            dotsContainer.querySelectorAll("span");
-
-
-        /* SHOW SLIDE */
-
-        function showSlide(index) {
-
-            slides.forEach(
-                slide => {
-
-                    slide.classList.remove(
-                        "active"
-                    );
-
-                }
-            );
-
-
-            dots.forEach(
-                dot => {
-
-                    dot.classList.remove(
-                        "active"
-                    );
-
-                }
-            );
-
-
-            slides[index].classList.add(
-                "active"
-            );
-
-            dots[index].classList.add(
-                "active"
-            );
-
-
-            const video =
-                slides[index].querySelector(
-                    "video"
-                );
-
-
-            if (video) {
-
-                video.currentTime = 0;
-
-                video.play().catch(
-                    () => {}
-                );
-
-            }
-
-        }
-
-
-        /* CHANGE EVERY 5 SECONDS */
-
-        setInterval(
-            () => {
-
-                currentSlide++;
-
-                if (
-                    currentSlide >=
-                    slides.length
-                ) {
-
-                    currentSlide = 0;
-
-                }
-
-                showSlide(currentSlide);
-
-            },
-            5000
-        );
-
-    }
-);
-
-</script>
-<script type="module" src="notification.js"></script>
-<!-- Floating Couples -->
-<div class="floating-couple couple-one">
-    <img src="slideshow/couple.png" alt="">
-</div>
-
-<div class="floating-couple couple-two">
-    <img src="slideshow/couple.png" alt="">
-</div>
-<!-- Floating Purple Bubbles -->
-
-<!-- CLICK BUBBLE EFFECT -->
-<div id="click-bubbles"></div>
-
-
-<script src="bubbles.js"></script>
-
-</script>
 </body>
 
 </html>

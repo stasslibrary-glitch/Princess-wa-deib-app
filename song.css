@@ -1,56 +1,60 @@
-
 /* =========================================================
-   PD — SONG PAGE
-   CLEAN PHONE + SCROLLING VERSION
+   PD — SONG OF THE DAY
+   VERSION 3
+   MIDNIGHT / VIOLET / GLASS
    ========================================================= */
 
 
 /* =========================================================
-   1. PAGE BACKGROUND
+   1. GLOBAL
    ========================================================= */
 
 html,
 body {
     margin: 0;
     padding: 0;
+
     width: 100%;
-    min-height: 100%;
+    height: 100%;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body.song-page {
-    margin: 0;
-    min-height: 100vh;
+
+    overflow: hidden;
+
+    font-family: "DM Sans", sans-serif;
+
+    color: #fff;
 
     background:
         radial-gradient(
-            circle at 50% 10%,
-            rgb(241, 0, 185),
-            transparent 38%
+            circle at 15% 10%,
+            rgba(101, 86, 255, 0.45),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 90% 85%,
+            rgba(255, 53, 182, 0.32),
+            transparent 30%
         ),
         linear-gradient(
-            145deg,
-            #5e00f5,
-            #a72ff7,
-            #7b287d
+            135deg,
+            #050512,
+            #10102c,
+            #210c31
         );
-
-    color: #eb2727;
-
-    overflow-x: hidden;
 }
 
 
 /* =========================================================
-   2. PHONE FRAME
+   2. PHONE
    ========================================================= */
 
-/*
-   IMPORTANT:
-   Do NOT use overflow:hidden here.
-   The phone itself must allow the song area to scroll.
-*/
-
-body.song-page .phone-app {
+.phone-app {
 
     position: relative;
 
@@ -58,185 +62,235 @@ body.song-page .phone-app {
     max-width: 430px;
 
     height: 100dvh;
-    min-height: 0;
 
     margin: 0 auto;
-
-    display: flex;
-    flex-direction: column;
 
     overflow: hidden;
 
     background:
-        radial-gradient(
-            circle at 85% 5%,
-            rgba(6, 255, 214, 0.534),
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 10% 90%,
-            rgba(231, 6, 141, 0.63),
-            transparent 35%
-        ),
-        linear-gradient(
-            145deg,
-            #751fff,
-            #42145f,
-            #66246e
-        );
+        rgba(4, 4, 18, 0.50);
+
+    box-shadow:
+        0 0 90px rgba(95, 75, 255, 0.18);
 }
 
 
 /* =========================================================
-   3. SONG APP — THE ACTUAL SCROLLING AREA
+   3. SONG APP
    ========================================================= */
 
-body.song-page .song-app {
+.song-app {
 
     position: relative;
 
     width: 100%;
-
-    /*
-       THIS IS THE IMPORTANT PART.
-       The song area gets all available phone height.
-    */
-
-    flex: 1 1 0;
-
-    min-height: 0;
+    height: 100%;
 
     overflow-x: hidden;
     overflow-y: auto;
-
-    /*
-       Allows smooth finger scrolling.
-    */
 
     -webkit-overflow-scrolling: touch;
 
     overscroll-behavior-y: contain;
 
-    /*
-       Prevent weird horizontal movement.
-    */
-
     touch-action: pan-y;
 
-    /*
-       Background stays inside phone.
-    */
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(99, 21, 243, 0.329),
-            rgba(177, 20, 255, 0.719)
-        ),
-        url("images/aaaa.jpg") center top / cover no-repeat;
-
-    scrollbar-width: thin;
+    isolation: isolate;
 }
 
 
 /* =========================================================
-   4. SONG BACKGROUND OVERLAY
+   4. BACKGROUND IMAGE
    ========================================================= */
 
-body.song-page .song-app::before {
+.song-app::before {
 
     content: "";
 
-    position: absolute;
+    position: fixed;
 
     inset: 0;
+
+    z-index: -10;
+
+    pointer-events: none;
 
     background:
         linear-gradient(
             180deg,
-            rgba(0, 0, 0, 0.06),
-            rgba(0, 0, 0, 0.20)
-        );
+            rgba(5,5,22,0.60),
+            rgba(12,7,32,0.92)
+        ),
+        url("images/aaaa.jpg")
+        center / cover no-repeat;
+
+    opacity: 0.75;
+}
+
+
+/* =========================================================
+   5. MOVING LIGHTS
+   ========================================================= */
+
+.background-orb {
+
+    position: fixed;
+
+    border-radius: 50%;
 
     pointer-events: none;
 
-    z-index: 0;
+    filter: blur(55px);
+
+    z-index: -5;
+
+    opacity: 0.55;
+}
+
+
+.orb-one {
+
+    width: 180px;
+    height: 180px;
+
+    top: 5%;
+    left: -70px;
+
+    background: #675cff;
+
+    animation:
+        orbMoveOne 13s ease-in-out infinite alternate;
+}
+
+
+.orb-two {
+
+    width: 210px;
+    height: 210px;
+
+    right: -100px;
+    top: 35%;
+
+    background: #f43cae;
+
+    animation:
+        orbMoveTwo 16s ease-in-out infinite alternate;
+}
+
+
+.orb-three {
+
+    width: 170px;
+    height: 170px;
+
+    left: 25%;
+    bottom: -90px;
+
+    background: #753dff;
+
+    animation:
+        orbMoveThree 18s ease-in-out infinite alternate;
+}
+
+
+@keyframes orbMoveOne {
+
+    from {
+        transform: translate(0,0);
+    }
+
+    to {
+        transform: translate(90px,120px);
+    }
+}
+
+
+@keyframes orbMoveTwo {
+
+    from {
+        transform: translate(0,0);
+    }
+
+    to {
+        transform: translate(-100px,80px);
+    }
+}
+
+
+@keyframes orbMoveThree {
+
+    from {
+        transform: translate(0,0);
+    }
+
+    to {
+        transform: translate(80px,-100px);
+    }
 }
 
 
 /* =========================================================
-   5. KEEP CONTENT ABOVE BACKGROUND
+   6. CONTAINER
    ========================================================= */
 
-body.song-page .song-app > * {
+.song-container {
 
     position: relative;
 
-    z-index: 2;
-}
-
-
-/* =========================================================
-   6. SONG CONTAINER
-   ========================================================= */
-
-body.song-page .song-container {
-
-    position: relative;
-
-    width: min(92%, 520px);
+    width: min(92%, 410px);
 
     margin: 0 auto;
 
-    /*
-       Top spacing
-    */
-
     padding-top: 20px;
-
-    /*
-       VERY IMPORTANT:
-       Extra bottom space lets you reach the play button
-       and anything underneath it.
-    */
-
-    padding-bottom: 140px;
-
-    box-sizing: border-box;
+    padding-bottom: 150px;
 }
 
+
 /* =========================================================
-   7. SONG HEADER
+   7. HEADER
    ========================================================= */
 
 .song-header {
 
     position: relative;
 
-    text-align: center;
+    padding: 21px 20px;
 
-    margin-bottom: 20px;
+    margin-bottom: 17px;
 
-    padding: 25px 15px;
+    border-radius: 24px;
 
-    border-radius: 22px;
+    overflow: hidden;
 
     background:
         linear-gradient(
-           rgba(35, 5, 65, 0.15),
-            rgba(35, 5, 65, 0.20)
-        ),
-        url("images/header-bg.jpg") center center / cover no-repeat;
+            135deg,
+            rgba(255,255,255,0.10),
+            rgba(255,255,255,0.025)
+        );
 
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border:
+        1px solid rgba(255,255,255,0.13);
 
     box-shadow:
-        0 10px 35px rgba(0, 0, 0, 0.25);
+        0 20px 50px rgba(0,0,0,0.30);
 
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
 
-    z-index: 5;
+
+.header-small {
+
+    margin-bottom: 5px;
+
+    color: #ff70c8;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 3px;
 }
 
 
@@ -246,13 +300,11 @@ body.song-page .song-container {
 
     font-family: "Playfair Display", serif;
 
-    font-size: clamp(28px, 8vw, 42px);
+    font-size: 30px;
+
+    line-height: 1.1;
 
     color: #fff;
-
-    text-shadow:
-        0 0 10px rgba(207, 126, 255, 0.8),
-        0 0 25px rgba(116, 0, 184, 0.699);
 }
 
 
@@ -260,14 +312,9 @@ body.song-page .song-container {
 
     margin: 7px 0 0;
 
-    color: rgba(255,255,255,0.85);
+    color: rgba(255,255,255,0.55);
 
-    font-size: 13px;
-
-    letter-spacing: 1px;
-
-    text-shadow:
-        0 2px 8px rgba(0,0,0,0.6);
+    font-size: 12px;
 }
 
 
@@ -279,470 +326,233 @@ body.song-page .song-container {
 
     position: relative;
 
-    width: 100%;
+    padding: 20px;
 
-    box-sizing: border-box;
-
-    padding: 22px;
-
-    border-radius: 28px;
+    border-radius: 30px;
 
     background:
         linear-gradient(
             145deg,
-            rgba(121, 3, 218, 0.88),
-            rgba(75, 10, 130, 0.82)
+            rgba(23,22,58,0.91),
+            rgba(42,14,53,0.82)
         );
 
-    border: 1px solid rgba(255,255,255,0.14);
-
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    border:
+        1px solid rgba(255,255,255,0.12);
 
     box-shadow:
-        0 20px 60px rgba(252, 15, 15, 0.20),
-        0 0 35px rgba(174, 79, 255, 0.18);
+        0 30px 75px rgba(0,0,0,0.40);
 
-    /*
-       DO NOT use overflow:hidden here.
-       It can clip controls/elements.
-    */
-
-    overflow: visible;
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
 }
 
 
 /* =========================================================
-   9. CARD GLOW
+   9. SONG TOP
    ========================================================= */
 
-.song-card::before {
+.song-top {
 
-    content: "";
+    display: flex;
 
-    position: absolute;
+    flex-direction: column;
 
-    width: 180px;
-    height: 180px;
+    align-items: center;
 
-    top: -80px;
-    right: -60px;
-
-    background: rgba(214, 103, 255, 0.25);
-
-    filter: blur(45px);
-
-    border-radius: 50%;
-
-    pointer-events: none;
-
-    z-index: 0;
+    text-align: center;
 }
 
 
 /* =========================================================
-   10. SONG COVER
+   10. COVER
    ========================================================= */
+
+.song-cover-wrap {
+
+    position: relative;
+
+    margin-bottom: 17px;
+}
+
 
 .song-cover {
 
     position: relative;
 
-    width: 170px;
-    height: 170px;
+    width: 175px;
+    height: 175px;
 
-    margin: 5px auto 18px;
+    padding: 5px;
 
     border-radius: 50%;
 
-    overflow: hidden;
-
-    border: 3px solid rgba(255,255,255,0.22);
+    background:
+        conic-gradient(
+            #7268ff00,
+            #ff58bc00,
+            #a06cff,
+            #5c7dff00,
+            #7168ff
+        );
 
     box-shadow:
-        0 0 25px rgba(205, 90, 255, 0.55),
-        0 0 70px rgba(205, 90, 255, 0.20);
+        0 0 25px rgba(111,100,255,0.50),
+        0 0 70px rgba(255,70,180,0.15);
 
-    z-index: 2;
+    animation:
+        coverGlow 8s linear infinite;
 }
+
 
 .song-cover img {
 
     width: 100%;
     height: 100%;
 
+    display: block;
+
     object-fit: cover;
 
-    display: block;
+    border-radius: 50%;
+
+    border:
+        3px solid #8301fd;
+}
+
+
+@keyframes coverGlow {
+
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* Don't rotate the actual picture */
+.song-cover img {
+
+    animation:
+        coverImageCounter 8s linear infinite;
+}
+
+
+@keyframes coverImageCounter {
+
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(-360deg);
+    }
 }
 
 
 /* =========================================================
-   11. SONG TITLE
+   11. PLAYING COVER
    ========================================================= */
+
+.song-playing .song-cover {
+
+    box-shadow:
+        0 0 30px rgba(115,105,255,0.75),
+        0 0 75px rgba(255,75,190,0.32);
+}
+
+
+/* =========================================================
+   12. SONG DETAILS
+   ========================================================= */
+
+.today-label {
+
+    display: inline-block;
+
+    padding: 5px 11px;
+
+    margin-bottom: 8px;
+
+    border-radius: 30px;
+
+    background:
+        rgba(255,91,192,0.10);
+
+    border:
+        1px solid rgba(255,100,200,0.20);
+
+    color: #ff8bd4;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
 
 .song-title {
 
-    position: relative;
-
-    text-align: center;
+    margin: 0;
 
     font-family: "Playfair Display", serif;
 
-    font-size: 25px;
+    font-size: 26px;
 
-    margin: 8px 0 4px;
+    line-height: 1.2;
 
     color: #fff;
-
-    text-shadow:
-        0 0 12px rgba(255,255,255,0.25);
-
-    z-index: 2;
 }
 
 
 .song-artist {
 
-    position: relative;
+    margin: 5px 0 0;
 
-    text-align: center;
+    color: rgba(255,255,255,0.52);
 
-    color: rgba(255,255,255,0.68);
-
-    font-size: 14px;
-
-    z-index: 2;
+    font-size: 13px;
 }
 
-
-/* =========================================================
-   12. OUR SONG
-   ========================================================= */
 
 .our-song {
 
-    position: relative;
+    margin-top: 13px;
 
-    text-align: center;
+    color: #e9dfff;
 
-    margin: 24px 0 18px;
-
-    font-family: "Playfair Display", serif;
-
-    font-size: 15px;
+    font-size: 10px;
 
     letter-spacing: 3px;
 
-    color: #ffd9f4;
-
     text-shadow:
-        0 0 8px rgba(255, 95, 200, 0.65),
-        0 0 20px rgba(255, 95, 200, 0.30);
-
-    z-index: 5;
-}
-
-.our-song::before,
-.our-song::after {
-
-    content: "♥";
-
-    margin: 0 9px;
-
-    color: #ff72c8;
-
-    text-shadow:
-        0 0 10px rgba(255, 80, 190, 0.8);
+        0 0 12px rgba(255,90,200,0.45);
 }
 
 
 /* =========================================================
-   13. LYRICS
+   13. HIDE NATIVE AUDIO UI
    ========================================================= */
 
-.lyrics-container {
+#songAudio {
 
-    position: relative;
-
-    margin-top: 15px;
-
-    padding: 20px 16px;
-
-    min-height: 180px;
-
-    box-sizing: border-box;
-
-    border-radius: 22px;
-
-    background: rgba(77, 16, 161, 0.34);
-
-    border: 1px solid rgba(255,255,255,0.10);
-
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
-    text-align: center;
-
-    overflow: visible;
-
-    z-index: 5;
-}
-
-
-.lyrics-container,
-.lyrics-container * {
-
-    font-family: "DM Sans", sans-serif;
-}
-
-
-.lyrics-container .active,
-.lyrics-container .current {
-
-    color: #ffffff;
-
-    font-size: 21px;
-
-    font-weight: 700;
-
-    text-shadow:
-        0 0 8px rgba(255,255,255,0.9),
-        0 0 20px rgba(210,100,255,0.8);
-
-    transform: scale(1.03);
-
-    transition:
-        transform 0.35s ease,
-        opacity 0.35s ease,
-        color 0.35s ease;
-}
-
-
-.lyrics-container .previous,
-.lyrics-container .next {
-
-    color: rgba(255,255,255,0.42);
-
-    font-size: 15px;
-
-    transition: all 0.35s ease;
+    display: none;
 }
 
 
 /* =========================================================
-   14. PD LYRICS SECTION
+   14. SPECTRUM
    ========================================================= */
 
-.song-app .pd-lyrics-section {
+.music-spectrum {
 
-    position: relative;
+    height: 45px;
 
-    margin-top: 16px;
-
-    padding: 16px;
-
-    border-radius: 22px;
-
-    background: rgba(15, 3, 25, 0.25);
-
-    border: 1px solid rgba(255, 255, 255, 0.13);
-
-    backdrop-filter: blur(7px);
-    -webkit-backdrop-filter: blur(7px);
-
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.20);
-
-    text-align: center;
-
-    z-index: 5;
-}
-
-
-.song-app .lyrics-label {
-
-    margin-bottom: 12px;
-
-    color: #ffffff;
-
-    font-family: "Playfair Display", serif;
-
-    font-size: 14px;
-
-    letter-spacing: 2px;
-
-    text-shadow:
-        0 0 10px rgba(255, 120, 210, 0.8);
-}
-
-
-.song-app #pdCurrentLyric {
-
-    position: relative;
-
-    color: #ffffff;
-
-    font-size: 20px;
-
-    font-weight: 600;
-
-    line-height: 1.55;
-
-    text-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.75),
-        0 0 15px rgba(255, 120, 220, 0.35);
-
-    transition: all 0.3s ease;
-
-    z-index: 10;
-}
-
-
-/* =========================================================
-   15. AUDIO PLAYER
-   ========================================================= */
-
-.song-player {
-
-    position: relative;
-
-    margin-top: 20px;
-
-    padding: 12px;
-
-    border-radius: 18px;
-
-    background: rgba(255,255,255,0.07);
-
-    border: 1px solid rgba(255,255,255,0.10);
-
-    backdrop-filter: blur(10px);
-
-    z-index: 20;
-}
-
-
-.song-player audio {
-
-    display: block;
-
-    width: 100%;
-
-    min-height: 45px;
-
-    position: relative;
-
-    z-index: 25;
-}
-
-
-/* =========================================================
-   16. MUSIC SPECTRUM
-   ========================================================= */
-
-.song-app .music-spectrum {
-
-    position: relative;
-
-    margin: 15px auto;
-
-    padding: 8px 0;
-
-    border-radius: 15px;
-
-    background: rgba(0, 0, 0, 0.18);
-
-    backdrop-filter: blur(5px);
-
-    z-index: 5;
-}
-
-
-/* =========================================================
-   17. PROGRESS AREA
-   ========================================================= */
-
-.song-app .song-progress-area {
-
-    position: relative;
-
-    padding: 10px;
-
-    border-radius: 16px;
-
-    background: rgba(0, 0, 0, 0.20);
-
-    backdrop-filter: blur(6px);
-
-    z-index: 10;
-}
-
-
-/* =========================================================
-   18. BIG PLAY BUTTON
-   ========================================================= */
-
-/*
-   THIS IS THE IMPORTANT PLAY BUTTON FIX.
-*/
-
-.song-app .big-play {
-
-    position: relative;
-
-    z-index: 100;
-
-    pointer-events: auto;
-
-    cursor: pointer;
-
-    touch-action: manipulation;
-
-    box-shadow:
-        0 0 25px rgba(205, 83, 255, 0.55),
-        0 8px 25px rgba(0, 0, 0, 0.25);
-}
-
-
-/*
-   If the button is an actual button,
-   make sure nothing blocks it.
-*/
-
-.song-app .big-play button {
-
-    position: relative;
-
-    z-index: 101;
-
-    pointer-events: auto;
-
-    cursor: pointer;
-}
-
-
-/* =========================================================
-   19. ALL SONG BUTTONS
-   ========================================================= */
-
-.song-app button {
-
-    position: relative;
-
-    z-index: 50;
-
-    pointer-events: auto;
-
-    cursor: pointer;
-
-    touch-action: manipulation;
-}
-
-
-.song-controls {
-
-    position: relative;
+    margin-top: 23px;
 
     display: flex;
 
@@ -750,43 +560,201 @@ body.song-page .song-container {
 
     justify-content: center;
 
-    gap: 12px;
+    gap: 4px;
 
-    margin-top: 15px;
+    padding: 5px 10px;
 
-    z-index: 50;
+    border-radius: 15px;
+
+    background:
+        rgba(0,0,0,0.20);
+
+    border:
+        1px solid rgba(255,255,255,0.06);
+
+    overflow: hidden;
+}
+
+
+.music-spectrum span {
+
+    width: 4px;
+
+    height: 8px;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #8d83ff,
+            #ff62bf
+        );
+
+    opacity: 0.65;
+
+    transition:
+        height 0.15s ease;
+}
+
+
+.song-playing .music-spectrum span {
+
+    animation:
+        spectrumDance 0.65s ease-in-out infinite alternate;
+}
+
+
+.music-spectrum span:nth-child(2n) {
+    animation-delay: 0.10s;
+}
+
+.music-spectrum span:nth-child(3n) {
+    animation-delay: 0.20s;
+}
+
+.music-spectrum span:nth-child(4n) {
+    animation-delay: 0.30s;
+}
+
+
+@keyframes spectrumDance {
+
+    from {
+        height: 7px;
+    }
+
+    to {
+        height: 34px;
+    }
+}
+
+
+/* =========================================================
+   15. TIME
+   ========================================================= */
+
+.time-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 8px;
+
+    padding: 0 3px;
+
+    color: rgba(255,255,255,0.45);
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   16. PROGRESS
+   ========================================================= */
+
+.progress-wrapper {
+
+    margin-top: 4px;
+}
+
+
+#songProgress {
+
+    width: 100%;
+
+    height: 5px;
+
+    appearance: none;
+
+    -webkit-appearance: none;
+
+    background:
+        rgba(255,255,255,0.12);
+
+    border-radius: 20px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+
+#songProgress::-webkit-slider-thumb {
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 14px;
+    height: 14px;
+
+    border-radius: 50%;
+
+    background: #fff;
+
+    box-shadow:
+        0 0 12px rgba(255,100,200,0.75);
+
+    cursor: pointer;
+}
+
+
+#songProgress::-moz-range-thumb {
+
+    width: 14px;
+    height: 14px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #fff;
+
+    box-shadow:
+        0 0 12px rgba(255,100,200,0.75);
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   17. CONTROLS
+   ========================================================= */
+
+.song-controls {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 20px;
+
+    margin-top: 19px;
 }
 
 
 .song-controls button {
 
-    border: none;
+    width: 45px;
+    height: 45px;
 
-    width: 46px;
-    height: 46px;
+    border: 1px solid rgba(255,255,255,0.10);
 
     border-radius: 50%;
 
     color: #fff;
 
     background:
-        linear-gradient(
-            135deg,
-            rgba(176, 83, 255, 0.85),
-            rgba(244, 70, 176, 0.85)
-        );
-
-    box-shadow:
-        0 0 20px rgba(194, 85, 255, 0.35);
+        rgba(255,255,255,0.07);
 
     cursor: pointer;
 
-    pointer-events: auto;
-
-    touch-action: manipulation;
-
     transition:
         transform 0.2s ease,
+        background 0.2s ease,
         box-shadow 0.2s ease;
 }
 
@@ -795,79 +763,262 @@ body.song-page .song-container {
 
     transform: scale(1.08);
 
-    box-shadow:
-        0 0 28px rgba(224, 88, 255, 0.65);
+    background:
+        rgba(255,255,255,0.13);
 }
 
 
 .song-controls button:active {
 
-    transform: scale(0.94);
+    transform: scale(0.92);
 }
 
+
+.song-controls .main-play {
+
+    width: 66px;
+    height: 66px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #726aff,
+            #e54ba9
+        );
+
+    border:
+        2px solid rgba(255,255,255,0.20);
+
+    box-shadow:
+        0 0 25px rgba(112,101,255,0.45),
+        0 0 50px rgba(240,75,180,0.18);
+
+    font-size: 20px;
+}
+
+
 /* =========================================================
-   20. SONG INFORMATION
+   18. LYRICS
    ========================================================= */
 
-.song-app .song-information {
+.pd-current-lyric {
 
-    position: relative;
+    min-height: 26px;
 
-    margin-top: 15px;
+    margin-top: 18px;
+
+    text-align: center;
+
+    color: #fff;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    line-height: 1.5;
+
+    opacity: 0;
+
+    transform: translateY(5px);
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
+
+    text-shadow:
+        0 0 15px rgba(180,150,255,0.45);
+}
+
+
+.pd-current-lyric.show {
+
+    opacity: 1;
+
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   19. MESSAGE
+   ========================================================= */
+
+.song-message-card {
+
+    display: flex;
+
+    gap: 13px;
+
+    margin-top: 22px;
 
     padding: 15px;
 
     border-radius: 20px;
 
-    /* IMAGE BACKGROUND */
     background:
         linear-gradient(
-            rgba(40, 5, 70, 0.35),
-            rgba(40, 5, 70, 0.45)
-        ),
-        url("images/song-info.jpg") center center / cover no-repeat;
+            135deg,
+            rgba(255,255,255,0.055),
+            rgba(255,70,180,0.045)
+        );
 
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border:
+        1px solid rgba(255,255,255,0.08);
+}
 
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
 
-    text-align: center;
+.message-icon {
+
+    flex-shrink: 0;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 50%;
+
+    color: #ff77c9;
+
+    background:
+        rgba(255,80,190,0.10);
 
     box-shadow:
-        0 8px 30px rgba(1, 93, 116, 0.2);
+        0 0 15px rgba(255,80,190,0.18);
+}
 
-    z-index: 5;
+
+.song-message-card h3 {
+
+    margin: 0 0 5px;
+
+    font-family: "Playfair Display", serif;
+
+    font-size: 15px;
+}
+
+
+.song-message {
+
+    margin: 0;
+
+    color: rgba(255,255,255,0.58);
+
+    font-size: 12px;
+
+    line-height: 1.7;
 }
 
 
 /* =========================================================
-   21. SLIDESHOW
+   20. MEMORIES
    ========================================================= */
 
-.slideshow,
-.song-slideshow,
-.song-app .pd-slideshow {
+.memories-section {
+
+    margin-top: 20px;
+}
+
+
+.section-heading {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: end;
+
+    margin-bottom: 11px;
+
+    padding: 0 4px;
+}
+
+
+.section-heading span {
+
+    font-family: "Playfair Display", serif;
+
+    font-size: 19px;
+}
+
+
+.section-heading small {
+
+    color: rgba(255,255,255,0.40);
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   21. MEDIA SHOWCASE
+   ========================================================= */
+
+.media-showcase {
 
     position: relative;
 
     width: 100%;
 
+    height: 300px;
+
     overflow: hidden;
 
-    border-radius: 22px;
+    border-radius: 26px;
+
+    background:
+        #080817;
+
+    border:
+        1px solid rgba(255,255,255,0.12);
 
     box-shadow:
-        0 15px 40px rgba(0,0,0,0.30);
-
-    z-index: 5;
+        0 25px 60px rgba(0,0,0,0.38);
 }
 
 
-.slideshow img,
-.song-slideshow img {
+/* =========================================================
+   22. SLIDES
+   ========================================================= */
+
+.media-slide {
+
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform: scale(1.04);
+
+    transition:
+        opacity 0.6s ease,
+        transform 0.8s ease,
+        visibility 0.6s ease;
+}
+
+
+.media-slide.active {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transform: scale(1);
+}
+
+
+.media-slide img,
+.media-slide video {
 
     width: 100%;
+    height: 100%;
 
     display: block;
 
@@ -876,20 +1027,441 @@ body.song-page .song-container {
 
 
 /* =========================================================
-   22. SONG MESSAGE
+   23. MEDIA DARK GRADIENT
    ========================================================= */
 
-.song-app .song-message {
+.media-slide::after {
 
-    color: #ffffff;
+    content: "";
 
-    text-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.70);
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,0.03),
+            rgba(0,0,0,0.25)
+        );
 }
 
 
 /* =========================================================
-   23. FLOATING HEARTS
+   24. VIDEO BUTTON
+   ========================================================= */
+
+.video-play {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    width: 65px;
+    height: 65px;
+
+    border: 1px solid rgba(255,255,255,0.30);
+
+    border-radius: 50%;
+
+    color: #fff;
+
+    background:
+        rgba(20,15,45,0.65);
+
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 0 30px rgba(110,95,255,0.45);
+
+    z-index: 10;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease;
+}
+
+
+.video-play:hover {
+
+    transform:
+        translate(-50%, -50%)
+        scale(1.08);
+}
+
+
+/* =========================================================
+   25. SLIDE ARROWS
+   ========================================================= */
+
+.slide-arrow {
+
+    position: absolute;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid rgba(255,255,255,0.16);
+
+    border-radius: 50%;
+
+    color: #fff;
+
+    background:
+        rgba(10,8,30,0.58);
+
+    backdrop-filter: blur(8px);
+
+    z-index: 20;
+
+    cursor: pointer;
+}
+
+
+.slide-left {
+
+    left: 12px;
+}
+
+
+.slide-right {
+
+    right: 12px;
+}
+
+
+.slide-arrow:active {
+
+    transform:
+        translateY(-50%)
+        scale(0.90);
+}
+
+
+/* =========================================================
+   26. SLIDE COUNTER
+   ========================================================= */
+
+.slide-counter {
+
+    position: absolute;
+
+    right: 13px;
+    bottom: 12px;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    color: rgba(255,255,255,0.75);
+
+    background:
+        rgba(0,0,0,0.45);
+
+    backdrop-filter: blur(8px);
+
+    font-size: 9px;
+
+    z-index: 20;
+}
+
+
+/* =========================================================
+   27. DOTS
+   ========================================================= */
+
+.slide-dots {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    margin-top: 11px;
+}
+
+
+.slide-dot {
+
+    width: 6px;
+    height: 6px;
+
+    border: none;
+
+    padding: 0;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,0.25);
+
+    cursor: pointer;
+
+    transition:
+        width 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.slide-dot.active {
+
+    width: 18px;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #776cff,
+            #ff61ba
+        );
+}
+
+
+/* =========================================================
+   28. LOVE CARD
+   ========================================================= */
+
+.love-card {
+
+    margin-top: 20px;
+
+    padding: 23px;
+
+    text-align: center;
+
+    border-radius: 25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.06),
+            rgba(255,65,180,0.05)
+        );
+
+    border:
+        1px solid rgba(255,255,255,0.09);
+}
+
+
+.love-symbol {
+
+    color: #ff68bf;
+
+    font-size: 25px;
+
+    text-shadow:
+        0 0 20px rgba(255,70,190,0.55);
+}
+
+
+.love-card h3 {
+
+    margin: 7px 0 4px;
+
+    font-family: "Playfair Display", serif;
+
+    font-size: 19px;
+}
+
+
+.love-card p {
+
+    margin: 0;
+
+    color: rgba(255,255,255,0.45);
+
+    font-size: 11px;
+}
+
+/* =========================================================
+   29. TOUCH RIPPLE
+   ========================================================= */
+
+.pd-touch-ripple {
+
+    position: fixed;
+
+    width: 14px;
+    height: 14px;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    z-index: 9999;
+
+    transform:
+        translate(-50%, -50%)
+        scale(0);
+
+    background:
+        radial-gradient(
+            circle,
+            #fff 0%,
+            rgba(145,130,255,0.80) 25%,
+            rgba(255,80,195,0.25) 55%,
+            transparent 72%
+        );
+
+    box-shadow:
+        0 0 18px rgba(135,120,255,0.9),
+        0 0 45px rgba(255,80,200,0.5);
+
+    animation:
+        touchRipple 0.8s ease-out forwards;
+}
+
+
+.pd-touch-ripple::before,
+.pd-touch-ripple::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 12px;
+    height: 12px;
+
+    border:
+        1px solid rgba(255,255,255,0.7);
+
+    border-radius: 50%;
+
+    transform:
+        translate(-50%, -50%);
+}
+
+
+.pd-touch-ripple::before {
+
+    animation:
+        rippleRing 0.8s ease-out forwards;
+}
+
+
+.pd-touch-ripple::after {
+
+    animation:
+        rippleRing 1.1s 0.08s ease-out forwards;
+}
+
+
+@keyframes touchRipple {
+
+    from {
+
+        opacity: 1;
+
+        transform:
+            translate(-50%, -50%)
+            scale(0.5);
+    }
+
+    to {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%, -50%)
+            scale(2.6);
+    }
+}
+
+
+@keyframes rippleRing {
+
+    from {
+
+        opacity: 0.9;
+
+        transform:
+            translate(-50%, -50%)
+            scale(1);
+    }
+
+    to {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%, -50%)
+            scale(12);
+    }
+}
+
+
+/* =========================================================
+   30. PARTICLES
+   ========================================================= */
+
+.pd-touch-particle {
+
+    position: fixed;
+
+    width: 4px;
+    height: 4px;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    z-index: 9999;
+
+    background: #fff;
+
+    box-shadow:
+        0 0 8px rgba(130,120,255,1),
+        0 0 17px rgba(255,80,200,0.8);
+
+    animation:
+        particleFly 0.9s ease-out forwards;
+}
+
+
+@keyframes particleFly {
+
+    from {
+
+        opacity: 1;
+
+        transform:
+            translate(0,0)
+            scale(1);
+    }
+
+    to {
+
+        opacity: 0;
+
+        transform:
+            translate(
+                var(--move-x),
+                var(--move-y)
+            )
+            scale(0);
+    }
+}
+
+
+/* =========================================================
+   31. FLOATING HEARTS
    ========================================================= */
 
 .song-heart {
@@ -898,15 +1470,15 @@ body.song-page .song-container {
 
     pointer-events: none;
 
-    color: rgba(255, 126, 214, 0.75);
+    color: #ff71c6;
 
     text-shadow:
-        0 0 12px rgba(255, 70, 190, 0.7);
+        0 0 15px rgba(255,70,190,0.8);
 
     animation:
         songHeartFloat 6s linear forwards;
 
-    z-index: 30;
+    z-index: 500;
 }
 
 
@@ -943,134 +1515,46 @@ body.song-page .song-container {
 
 
 /* =========================================================
-   24. FLOATING COUPLE
+   32. SCROLLBAR
    ========================================================= */
 
-.song-app .floating-couple {
+.song-app::-webkit-scrollbar {
 
-    position: relative;
-
-    z-index: 30;
+    width: 4px;
 }
 
 
-/* =========================================================
-   25. CLICK BUBBLES
-   ========================================================= */
-
-.song-app #click-bubbles {
-
-    position: fixed;
-
-    inset: 0;
-
-    pointer-events: none;
-
-    z-index: 40;
-}
-
-
-.bubble {
-
-    position: fixed;
-
-    border-radius: 50%;
-
-    pointer-events: none;
-
-    background:
-        radial-gradient(
-            circle at 30% 30%,
-            rgba(255,255,255,0.35),
-            rgba(202, 100, 255, 0.10)
-        );
-
-    border: 1px solid rgba(119, 27, 240, 0.12);
-
-    box-shadow:
-        0 0 18px rgba(90, 230, 255, 0.18);
-
-    backdrop-filter: blur(2px);
-
-    z-index: 40;
-}
-
-
-/* =========================================================
-   26. SCROLLBAR
-   ========================================================= */
-
-body.song-page .song-app::-webkit-scrollbar {
-
-    width: 5px;
-}
-
-
-body.song-page .song-app::-webkit-scrollbar-track {
+.song-app::-webkit-scrollbar-track {
 
     background: transparent;
 }
 
 
-body.song-page .song-app::-webkit-scrollbar-thumb {
-
-    background:
-        rgb(208, 255, 0);
+.song-app::-webkit-scrollbar-thumb {
 
     border-radius: 20px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #766bff,
+            #ff62ba
+        );
 }
 
 
 /* =========================================================
-   27. MOBILE
+   33. MOBILE
    ========================================================= */
 
 @media (max-width: 600px) {
 
-    body.song-page .phone-app {
-
-        width: 100%;
-
-        max-width: 430px;
-
-        height: 100dvh;
-
-        min-height: 0;
-
-        overflow: hidden;
-    }
-
-
-    body.song-page .song-app {
-
-        flex: 1 1 0;
-
-        min-height: 0;
-
-        height: auto;
-
-        overflow-x: hidden;
-
-        overflow-y: auto;
-
-        -webkit-overflow-scrolling: touch;
-
-        touch-action: pan-y;
-    }
-
-
-    body.song-page .song-container {
+    .song-container {
 
         width: 92%;
 
-        padding-top: 18px;
-
-        /*
-           Extra bottom room.
-           This is what makes the lowest controls reachable.
-        */
-
-        padding-bottom: 160px;
+        padding-top: 16px;
+        padding-bottom: 170px;
     }
 
 
@@ -1078,441 +1562,57 @@ body.song-page .song-app::-webkit-scrollbar-thumb {
 
         padding: 17px;
 
-        border-radius: 24px;
+        border-radius: 25px;
     }
 
 
     .song-cover {
 
-        width: 145px;
+        width: 150px;
+        height: 150px;
+    }
 
-        height: 145px;
+
+    .media-showcase {
+
+        height: 270px;
     }
 
 
     .song-title {
 
-        font-size: 22px;
-    }
-
-
-    .lyrics-container {
-
-        padding: 18px 12px;
-
-        min-height: 170px;
-    }
-
-
-    .lyrics-container .active,
-    .lyrics-container .current {
-
-        font-size: 19px;
-    }
-
-
-    .song-app #pdCurrentLyric {
-
-        font-size: 18px;
-    }
-
-
-    /*
-       Make the play button comfortably tappable.
-    */
-
-    .song-app .big-play {
-
-        min-width: 55px;
-
-        min-height: 55px;
+        font-size: 23px;
     }
 }
 
 
 /* =========================================================
-   28. VERY SMALL PHONES
+   34. SMALL PHONES
    ========================================================= */
 
 @media (max-width: 380px) {
 
-    body.song-page .song-container {
+    .song-container {
 
         width: 94%;
-
-        padding-bottom: 180px;
     }
 
 
     .song-cover {
 
-        width: 125px;
+        width: 130px;
+        height: 130px;
+    }
 
-        height: 125px;
+
+    .media-showcase {
+
+        height: 245px;
     }
 
 
     .song-card {
 
         padding: 14px;
-    }
-
-
-    .lyrics-container .active,
-    .lyrics-container .current {
-
-        font-size: 17px;
-    }
-}
-
-
-/* =========================================================
-   29. EXTRA SAFETY
-   ========================================================= */
-
-/*
-   Prevent accidental CSS elsewhere from making the
-   scrolling area impossible to use.
-*/
-
-body.song-page .song-app,
-body.song-page .song-app * {
-
-    box-sizing: border-box;
-}
-
-
-/*
-   Do NOT allow invisible overlays to steal clicks.
-*/
-
-.song-app::before,
-.song-card::before {
-
-    pointer-events: none !important;
-}
-
-
-/*
-   Play-related elements always remain interactive.
-*/
-
-body.song-page .big-play,
-body.song-page .big-play *,
-body.song-page .song-controls,
-body.song-page .song-controls *,
-body.song-page audio {
-
-    pointer-events: auto;
-}
-body.song-page .song-app {
-    background: rgb(196, 5, 5) !important;
-}
-/* =========================================================
-   REMOVE ALL LYRICS AREAS
-   ========================================================= */
-
-body.song-page .lyrics-container,
-body.song-page .pd-lyrics-section {
-    display: none !important;
-}
-/* =========================================================
-   PD — TOUCH THE MUSIC + MOVING GALAXY
-   ========================================================= */
-
-/* ---------------------------------------------------------
-   1. MOVING GALAXY BACKGROUND
-   --------------------------------------------------------- */
-
-body.song-page .song-app {
-    position: relative;
-    isolation: isolate;
-}
-
-/* Galaxy layer */
-body.song-page .song-app::after {
-    content: "";
-    position: absolute;
-    inset: -20%;
-    z-index: 0;
-    pointer-events: none;
-
-    background:
-        radial-gradient(
-            circle at 20% 20%,
-            rgba(255, 72, 207, 0.30) 0,
-            transparent 22%
-        ),
-        radial-gradient(
-            circle at 80% 30%,
-            rgba(94, 67, 255, 0.35) 0,
-            transparent 25%
-        ),
-        radial-gradient(
-            circle at 35% 80%,
-            rgba(180, 50, 255, 0.28) 0,
-            transparent 24%
-        ),
-        radial-gradient(
-            circle at 90% 90%,
-            rgba(255, 0, 170, 0.20) 0,
-            transparent 25%
-        );
-
-    filter: blur(25px);
-
-    animation: pdGalaxyMove 18s ease-in-out infinite alternate;
-}
-
-/* Slow galaxy movement */
-@keyframes pdGalaxyMove {
-
-    0% {
-        transform:
-            translate3d(-3%, -2%, 0)
-            scale(1);
-    }
-
-    50% {
-        transform:
-            translate3d(3%, 2%, 0)
-            scale(1.06);
-    }
-
-    100% {
-        transform:
-            translate3d(-1%, 4%, 0)
-            scale(1.02);
-    }
-}
-
-
-/* ---------------------------------------------------------
-   2. MOVING STAR FIELD
-   --------------------------------------------------------- */
-
-body.song-page .song-app {
-    background-image:
-        radial-gradient(
-            1px 1px at 10% 20%,
-            rgba(255,255,255,0.8),
-            transparent
-        ),
-        radial-gradient(
-            1px 1px at 25% 70%,
-            rgba(255,255,255,0.65),
-            transparent
-        ),
-        radial-gradient(
-            2px 2px at 45% 30%,
-            rgba(255,220,255,0.8),
-            transparent
-        ),
-        radial-gradient(
-            1px 1px at 65% 75%,
-            rgba(255,255,255,0.7),
-            transparent
-        ),
-        radial-gradient(
-            2px 2px at 82% 18%,
-            rgba(255,210,255,0.8),
-            transparent
-        ),
-        radial-gradient(
-            1px 1px at 92% 65%,
-            rgba(255,255,255,0.7),
-            transparent
-        );
-
-    background-size:
-        260px 260px,
-        320px 320px,
-        390px 390px,
-        300px 300px,
-        430px 430px,
-        350px 350px;
-
-    animation: pdStarsMove 35s linear infinite;
-}
-
-@keyframes pdStarsMove {
-
-    from {
-        background-position:
-            0 0,
-            0 0,
-            0 0,
-            0 0,
-            0 0,
-            0 0;
-    }
-
-    to {
-        background-position:
-            120px 180px,
-            -180px 120px,
-            160px -140px,
-            -100px 200px,
-            200px 100px,
-            -150px -180px;
-    }
-}
-
-
-/* ---------------------------------------------------------
-   3. TOUCH THE MUSIC — RIPPLE
-   --------------------------------------------------------- */
-
-.pd-touch-ripple {
-
-    position: fixed;
-
-    width: 12px;
-    height: 12px;
-
-    border-radius: 50%;
-
-    pointer-events: none;
-
-    z-index: 9999;
-
-    transform: translate(-50%, -50%) scale(0);
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,255,255,0.95) 0%,
-            rgba(214,120,255,0.75) 25%,
-            rgba(174,65,255,0.30) 55%,
-            transparent 72%
-        );
-
-    box-shadow:
-        0 0 15px rgba(221,120,255,0.9),
-        0 0 35px rgba(184,70,255,0.6),
-        0 0 70px rgba(255,80,200,0.35);
-
-    animation: pdTouchRipple 0.8s ease-out forwards;
-}
-
-
-.pd-touch-ripple::before,
-.pd-touch-ripple::after {
-
-    content: "";
-
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    width: 12px;
-    height: 12px;
-
-    border-radius: 50%;
-
-    border: 1px solid rgba(255,255,255,0.75);
-
-    transform: translate(-50%, -50%);
-}
-
-
-.pd-touch-ripple::before {
-    animation: pdRippleRing 0.8s ease-out forwards;
-}
-
-
-.pd-touch-ripple::after {
-    animation: pdRippleRing 1.1s 0.08s ease-out forwards;
-}
-
-
-@keyframes pdTouchRipple {
-
-    0% {
-        opacity: 1;
-        transform:
-            translate(-50%, -50%)
-            scale(0.5);
-    }
-
-    60% {
-        opacity: 0.8;
-    }
-
-    100% {
-        opacity: 0;
-        transform:
-            translate(-50%, -50%)
-            scale(2.5);
-    }
-}
-
-
-@keyframes pdRippleRing {
-
-    0% {
-        opacity: 0.9;
-        transform:
-            translate(-50%, -50%)
-            scale(1);
-    }
-
-    100% {
-        opacity: 0;
-        transform:
-            translate(-50%, -50%)
-            scale(12);
-    }
-}
-
-
-/* ---------------------------------------------------------
-   4. SMALL PARTICLES FROM TOUCH
-   --------------------------------------------------------- */
-
-.pd-touch-particle {
-
-    position: fixed;
-
-    width: 4px;
-    height: 4px;
-
-    border-radius: 50%;
-
-    pointer-events: none;
-
-    z-index: 9999;
-
-    background: #ffffff;
-
-    box-shadow:
-        0 0 8px rgba(225,130,255,1),
-        0 0 16px rgba(255,80,200,0.8);
-
-    animation:
-        pdParticleFly 0.9s ease-out forwards;
-}
-
-
-@keyframes pdParticleFly {
-
-    0% {
-        opacity: 1;
-
-        transform:
-            translate(0, 0)
-            scale(1);
-    }
-
-    100% {
-        opacity: 0;
-
-        transform:
-            translate(
-                var(--move-x),
-                var(--move-y)
-            )
-            scale(0);
     }
 }

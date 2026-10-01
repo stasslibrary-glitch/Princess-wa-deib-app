@@ -1,323 +1,208 @@
-
 /* =========================================================
    PD — SONG OF THE DAY
+   VERSION 3
+   CONNECTED JS
+   ========================================================= */
+
+
+/* =========================================================
+   1. SONG DATABASE
    ========================================================= */
 
 const PD_SONGS = [
-    {
-         title: "Champion Gal",
-        artist: "Fik Fameica",
-        file: "songs/Champion Gal by Fik Fameica.mp3"
-    },
-    {
-         title: "Champion Gal",
-        artist: "Fik Fameica",
-        file: "songs/Champion Gal by Fik Fameica.mp3"
-    },
-    {
-         title: "Champion Gal",
-        artist: "Fik Fameica",
-        file: "songs/Champion Gal by Fik Fameica.mp3"
-    },
+
     {
         title: "Champion Gal",
         artist: "Fik Fameica",
-        file: "songs/Champion Gal by Fik Fameica.mp3"
+        file: "songs/Champion Gal by Fik Fameica.mp3",
+        cover: "images/123.jpg"
     },
+
+    {
+        title: "Champion Gal",
+        artist: "Fik Fameica",
+        file: "songs/Champion Gal by Fik Fameica.mp3",
+        cover: "images/123.jpg"
+    },
+
+    {
+        title: "Champion Gal",
+        artist: "Fik Fameica",
+        file: "songs/Champion Gal by Fik Fameica.mp3",
+        cover: "images/123.jpg"
+    },
+
+    {
+        title: "Champion Gal",
+        artist: "Fik Fameica",
+        file: "songs/Champion Gal by Fik Fameica.mp3",
+        cover: "images/123.jpg"
+    },
+
     {
         title: "Ordinary",
         artist: "Alex Warren",
-        file: "songs/Alex Warren - Ordinary.mp3"
+        file: "songs/Alex Warren - Ordinary.mp3",
+        cover: "images/song-cover.jpg"
     },
+
     {
         title: "Champion Gal",
         artist: "Fik Fameica",
-        file: "songs/Champion Gal by Fik Fameica.mp3"
+        file: "songs/Champion Gal by Fik Fameica.mp3",
+        cover: "images/song-cover.jpg"
     },
+
     {
         title: "Champion Gal",
         artist: "Fik Fameica",
-        file: "songs/Champion Gal by Fik Fameica.mp3"
+        file: "songs/Champion Gal by Fik Fameica.mp3",
+        cover: "images/song-cover.jpg"
     },
+
     {
-         title: "Champion Gal",
+        title: "Champion Gal",
         artist: "Fik Fameica",
-        file: "songs/Champion Gal by Fik Fameica.mp3"
+        file: "songs/Champion Gal by Fik Fameica.mp3",
+        cover: "images/song-cover.jpg"
     }
-];
-
-
-
-
-/* =========================================================
-   GET LYRIC ELEMENT
-   ========================================================= */
-
-const pdCurrentLyric =
-    document.getElementById("pdCurrentLyric");
-
-
-/* =========================================================
-   GET AUDIO
-   ========================================================= */
-
-const songAudio =
-    document.getElementById("songAudio");
-
-
-
-/* =========================================================
-   PD — I WANNA GROW OLD WITH YOU
-   SYNCHRONIZED LYRICS
-   ========================================================= */
-
-const I_WANNA_GROW_OLD_LYRICS = [
-
-    /* INTRO */
-    { time: 12.0, text: "Another day without your smile" },
-    { time: 20.0, text: "Another day just passes by" },
-    { time: 27.0, text: "And now I know" },
-    { time: 30.2, text: "How much it means" },
-    { time: 34.5, text: "For you to stay right here with me" },
-
-    /* VERSE 2 */
-    { time: 40.0, text: "The time we spent apart" },
-    { time: 42.0, text: "Will make our love grow stronger" },
-    { time: 48.0, text: "But it hurts so bad" },
-    { time: 50.5, text: "I can't take it any longer" },
-
-    /* CHORUS */
-    { time: 54.0, text: "I wanna grow old with you" },
-    { time: 57.0, text: "I wanna die lying in your arms" },
-    { time: 60.0, text: "I wanna grow old with you" },
-    { time: 57.0, text: "I wanna be looking in your eyes" },
-    { time: 61.0, text: "I wanna be there for you" },
-    { time: 65.0, text: "Sharing in everything you do" },
-    { time: 69.0, text: "I wanna grow old with you" },
-
-    /* SECOND VERSE */
-    { time: 78.0, text: "A thousand miles between us now" },
-    { time: 82.0, text: "It causes me to wonder how" },
-    { time: 86.0, text: "Our love tonight remains so strong" },
-    { time: 91.0, text: "It makes our risk right all along" },
-
-    /* PRE-CHORUS */
-    { time: 96.0, text: "The time we spent apart" },
-    { time: 100.0, text: "Will make our love grow stronger" },
-    { time: 104.0, text: "But it hurts so bad" },
-    { time: 107.0, text: "I can't take it any longer" },
-
-    /* CHORUS */
-    { time: 112.0, text: "I wanna grow old with you" },
-    { time: 116.0, text: "I wanna die lying in your arms" },
-    { time: 120.0, text: "I wanna grow old with you" },
-    { time: 124.0, text: "I wanna be looking in your eyes" },
-    { time: 128.0, text: "I wanna be there for you" },
-    { time: 132.0, text: "Sharing in everything you do" },
-    { time: 136.0, text: "I wanna grow old with you" },
-
-    /* BRIDGE */
-    { time: 145.0, text: "Things can come and go" },
-    { time: 149.0, text: "I know but" },
-    { time: 151.5, text: "Baby I believe" },
-    { time: 154.5, text: "Something's burning strong between us" },
-    { time: 159.0, text: "Makes it clear to me" },
-
-    /* FINAL CHORUS */
-    { time: 165.0, text: "I wanna grow old with you" },
-    { time: 169.0, text: "I wanna die lying in your arms" },
-    { time: 173.0, text: "I wanna grow old with you" },
-    { time: 177.0, text: "I wanna be looking in your eyes" },
-    { time: 181.0, text: "I wanna be there for you" },
-    { time: 185.0, text: "Sharing in everything you do" },
-
-    /* FINAL REPEAT */
-    { time: 191.0, text: "I wanna grow old with you" },
-    { time: 195.0, text: "I wanna die lying in your arms" },
-    { time: 199.0, text: "I wanna grow old with you" },
-    { time: 203.0, text: "I wanna be looking in your eyes" },
-    { time: 207.0, text: "I wanna be there for you" },
-    { time: 211.0, text: "Sharing in everything you do" },
-    { time: 215.0, text: "I wanna grow old with you" }
 
 ];
 
 
-
-
-
-
-
-
-
-
-
-
-
-    
-
 /* =========================================================
-   FIND THE CURRENT LYRIC
-   ========================================================= */
-
-function updateGrowOldLyrics() {
-
-    if (!songAudio || !pdCurrentLyric) {
-        return;
-    }
-
-    const currentTime =
-        songAudio.currentTime;
-
-
-    /*
-       Find the LAST lyric whose starting time
-       has already been reached.
-    */
-
-    let currentLyric = null;
-
-    for (
-        let i = 0;
-        i < I_WANNA_GROW_OLD_LYRICS.length;
-        i++
-    ) {
-
-        if (
-            currentTime >=
-            I_WANNA_GROW_OLD_LYRICS[i].time
-        ) {
-
-            currentLyric =
-                I_WANNA_GROW_OLD_LYRICS[i];
-
-        } else {
-
-            break;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       DISPLAY CURRENT LYRIC
-       ===================================================== */
-
-    if (currentLyric) {
-
-        if (
-            pdCurrentLyric.textContent !==
-            currentLyric.text
-        ) {
-
-            pdCurrentLyric.style.opacity = "0";
-
-            setTimeout(() => {
-
-                pdCurrentLyric.textContent =
-                    currentLyric.text;
-
-                pdCurrentLyric.style.opacity = "1";
-
-            }, 120);
-
-        }
-
-    } else {
-
-        pdCurrentLyric.textContent =
-            "♪ Our song is playing... ♪";
-
-    }
-
-}
-
-
-/* =========================================================
-   SYNCHRONIZE WITH AUDIO
-   ========================================================= */
-
-if (songAudio) {
-
-    songAudio.addEventListener(
-        "timeupdate",
-        updateGrowOldLyrics
-    );
-
-
-    /*
-       When the user moves the progress bar,
-       immediately find the correct lyric.
-    */
-
-    songAudio.addEventListener(
-        "seeked",
-        updateGrowOldLyrics
-    );
-
-
-    /*
-       When a new song is loaded, reset the lyric.
-    */
-
-    songAudio.addEventListener(
-        "loadedmetadata",
-        () => {
-
-            pdCurrentLyric.textContent =
-                "♪ Our song is playing... ♪";
-
-        }
-    );
-
-
-    /*
-       When the song finishes.
-    */
-
-    songAudio.addEventListener(
-        "ended",
-        () => {
-
-            pdCurrentLyric.textContent =
-                "♥ I wanna grow old with you ♥";
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   LYRICS ACTIVATION DATE
-   =========================================================
-   Lyrics are completely disabled before this date.
-   They become available automatically at 12:00 AM.
+   2. LYRIC ACTIVATION
    ========================================================= */
 
 const LYRICS_START_DATE = "2026-09-28";
 
 
 /* =========================================================
-   GET TODAY'S DATE
+   3. I WANNA GROW OLD WITH YOU
+   ========================================================= */
+
+const I_WANNA_GROW_OLD_LYRICS = [
+
+    { time: 12.0, text: "Another day without your smile" },
+    { time: 20.0, text: "Another day just passes by" },
+    { time: 27.0, text: "And now I know" },
+    { time: 30.2, text: "How much it means" },
+    { time: 34.5, text: "For you to stay right here with me" },
+
+    { time: 40.0, text: "The time we spent apart" },
+    { time: 42.0, text: "Will make our love grow stronger" },
+    { time: 48.0, text: "But it hurts so bad" },
+    { time: 50.5, text: "I can't take it any longer" },
+
+    { time: 54.0, text: "I wanna grow old with you" },
+    { time: 57.0, text: "I wanna die lying in your arms" },
+    { time: 60.0, text: "I wanna grow old with you" },
+    { time: 64.0, text: "I wanna be looking in your eyes" },
+    { time: 68.0, text: "I wanna be there for you" },
+    { time: 72.0, text: "Sharing in everything you do" },
+    { time: 76.0, text: "I wanna grow old with you" },
+
+    { time: 82.0, text: "A thousand miles between us now" },
+    { time: 86.0, text: "It causes me to wonder how" },
+    { time: 90.0, text: "Our love tonight remains so strong" },
+    { time: 95.0, text: "It makes our risk right all along" },
+
+    { time: 100.0, text: "The time we spent apart" },
+    { time: 104.0, text: "Will make our love grow stronger" },
+    { time: 108.0, text: "But it hurts so bad" },
+    { time: 111.0, text: "I can't take it any longer" },
+
+    { time: 116.0, text: "I wanna grow old with you" },
+    { time: 120.0, text: "I wanna die lying in your arms" },
+    { time: 124.0, text: "I wanna grow old with you" },
+    { time: 128.0, text: "I wanna be looking in your eyes" },
+    { time: 132.0, text: "I wanna be there for you" },
+    { time: 136.0, text: "Sharing in everything you do" },
+    { time: 140.0, text: "I wanna grow old with you" },
+
+    { time: 149.0, text: "Things can come and go" },
+    { time: 153.0, text: "I know but" },
+    { time: 155.5, text: "Baby I believe" },
+    { time: 158.5, text: "Something's burning strong between us" },
+    { time: 163.0, text: "Makes it clear to me" },
+
+    { time: 169.0, text: "I wanna grow old with you" },
+    { time: 173.0, text: "I wanna die lying in your arms" },
+    { time: 177.0, text: "I wanna grow old with you" },
+    { time: 181.0, text: "I wanna be looking in your eyes" },
+    { time: 185.0, text: "I wanna be there for you" },
+    { time: 189.0, text: "Sharing in everything you do" },
+
+    { time: 195.0, text: "I wanna grow old with you" },
+    { time: 199.0, text: "I wanna die lying in your arms" },
+    { time: 203.0, text: "I wanna grow old with you" },
+    { time: 207.0, text: "I wanna be looking in your eyes" },
+    { time: 211.0, text: "I wanna be there for you" },
+    { time: 215.0, text: "Sharing in everything you do" },
+    { time: 219.0, text: "I wanna grow old with you" }
+
+];
+
+
+/* =========================================================
+   4. GET ELEMENTS
+   ========================================================= */
+
+const songAudio =
+    document.getElementById("songAudio");
+
+const songSource =
+    document.getElementById("songSource");
+
+const songTitle =
+    document.getElementById("songTitle");
+
+const songArtist =
+    document.getElementById("songArtist");
+
+const songCover =
+    document.getElementById("songCover");
+
+const songPlay =
+    document.getElementById("songPlay");
+
+const songProgress =
+    document.getElementById("songProgress");
+
+const currentTime =
+    document.getElementById("currentTime");
+
+const songDuration =
+    document.getElementById("songDuration");
+
+const lyricBox =
+    document.getElementById("pdCurrentLyric");
+
+
+/* =========================================================
+   5. DATE KEY
    ========================================================= */
 
 function getTodayDateKey() {
 
     const today = new Date();
 
-    return `${today.getFullYear()}-${String(
-        today.getMonth() + 1
-    ).padStart(2, "0")}-${String(
-        today.getDate()
-    ).padStart(2, "0")}`;
-
+    return (
+        today.getFullYear() +
+        "-" +
+        String(
+            today.getMonth() + 1
+        ).padStart(2, "0") +
+        "-" +
+        String(
+            today.getDate()
+        ).padStart(2, "0")
+    );
 }
 
 
 /* =========================================================
-   GET TODAY'S SONG
+   6. DAILY SONG
    ========================================================= */
 
 function getTodaySong() {
@@ -329,7 +214,12 @@ function getTodaySong() {
 
     let hash = 0;
 
-    for (let i = 0; i < dateKey.length; i++) {
+
+    for (
+        let i = 0;
+        i < dateKey.length;
+        i++
+    ) {
 
         hash =
             dateKey.charCodeAt(i) +
@@ -337,502 +227,996 @@ function getTodaySong() {
 
     }
 
+
     const index =
-        Math.abs(hash) % PD_SONGS.length;
+        Math.abs(hash) %
+        PD_SONGS.length;
+
 
     return PD_SONGS[index];
 }
 
 
 /* =========================================================
-   INITIALIZE
-   ========================================================= */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    const song = getTodaySong();
-
-    const todayKey = getTodayDateKey();
-
-    /*
-       Lyrics are allowed ONLY from 28 September 2026 onward.
-    */
-    const lyricsDateIsActive =
-        todayKey >= LYRICS_START_DATE;
-
-
-    const title =
-        document.getElementById("songTitle");
-
-    const artist =
-        document.getElementById("songArtist");
-
-    const audio =
-        document.getElementById("songAudio");
-
-    const lyricBox =
-        document.getElementById("pdCurrentLyric");
-
-    const source =
-        document.getElementById("songSource");
-
-    const playButton =
-        document.getElementById("songPlay");
-
-    const playIcon =
-        playButton?.querySelector("i");
-
-    const progress =
-        document.getElementById("songProgress");
-
-    const currentTime =
-        document.getElementById("currentTime");
-
-    const duration =
-        document.getElementById("songDuration");
-
-    let currentLyricIndex = -1;
-
-
-    /* =====================================================
-       SONG INFORMATION
-       ===================================================== */
-
-    if (title) {
-        title.textContent = song.title;
-    }
-
-    if (artist) {
-        artist.textContent = song.artist;
-    }
-
-
-    /* =====================================================
-       LOAD SONG
-       ===================================================== */
-
-    if (source) {
-        source.src = song.file;
-    }
-
-    if (audio) {
-        audio.load();
-    }
-
-
-    /* =====================================================
-       LYRICS ARE HIDDEN INITIALLY
-       ===================================================== */
-
-    if (lyricBox) {
-
-        lyricBox.textContent = "";
-
-        lyricBox.classList.remove("show");
-
-    }
-
-
-    /* =====================================================
-       PLAY / PAUSE
-       ===================================================== */
-
-    playButton?.addEventListener("click", async () => {
-
-        if (!audio) return;
-
-        try {
-
-            if (audio.paused) {
-
-                await audio.play();
-
-            } else {
-
-                audio.pause();
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Could not play song:",
-                error
-            );
-
-        }
-
-    });
-
-
-    /* =====================================================
-       PLAY
-       ===================================================== */
-
-    audio?.addEventListener("play", () => {
-
-        if (playIcon) {
-
-            playIcon.className =
-                "fa-solid fa-pause";
-
-        }
-
-        document.body.classList.add(
-            "song-playing"
-        );
-
-    });
-
-
-    /* =====================================================
-       PAUSE
-       ===================================================== */
-
-    audio?.addEventListener("pause", () => {
-
-        if (playIcon) {
-
-            playIcon.className =
-                "fa-solid fa-play";
-
-        }
-
-        document.body.classList.remove(
-            "song-playing"
-        );
-
-    });
-
-
-    /* =====================================================
-       DURATION
-       ===================================================== */
-
-    audio?.addEventListener(
-        "loadedmetadata",
-        () => {
-
-            if (duration) {
-
-                duration.textContent =
-                    formatTime(audio.duration);
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       TIME UPDATE
-       ===================================================== */
-
-    audio?.addEventListener(
-        "timeupdate",
-        () => {
-
-            if (!audio.duration) return;
-
-
-            /* ---------------------------------------------
-               PROGRESS
-               --------------------------------------------- */
-
-            const percent =
-                (audio.currentTime /
-                    audio.duration) * 100;
-
-            if (progress) {
-
-                progress.value = percent;
-
-            }
-
-
-            /* ---------------------------------------------
-               CURRENT TIME
-               --------------------------------------------- */
-
-            if (currentTime) {
-
-                currentTime.textContent =
-                    formatTime(
-                        audio.currentTime
-                    );
-
-            }
-
-
-            /* =================================================
-               LYRICS
-               
-               MUST MEET BOTH CONDITIONS:
-               
-               1. Today is 28 September 2026 or later
-               2. Today's song is Written in the Stars
-               ================================================= */
-
-            if (
-                lyricsDateIsActive &&
-                song.title === "Written in the Stars" &&
-                lyricBox
-            ) {
-
-                let lyricIndex = -1;
-
-
-                for (
-                    let i = 0;
-                    i < WRITTEN_IN_THE_STARS_LYRICS.length;
-                    i++
-                ) {
-
-                    if (
-                        audio.currentTime >=
-                        WRITTEN_IN_THE_STARS_LYRICS[i].time
-                    ) {
-
-                        lyricIndex = i;
-
-                    } else {
-
-                        break;
-
-                    }
-
-                }
-
-
-                /* ---------------------------------------------
-                   SHOW CURRENT LYRIC
-                   --------------------------------------------- */
-
-                if (
-                    lyricIndex !== -1 &&
-                    lyricIndex !== currentLyricIndex
-                ) {
-
-                    currentLyricIndex =
-                        lyricIndex;
-
-
-                    lyricBox.classList.remove(
-                        "show"
-                    );
-
-
-                    setTimeout(() => {
-
-                        if (
-                            currentLyricIndex ===
-                            lyricIndex
-                        ) {
-
-                            lyricBox.textContent =
-                                WRITTEN_IN_THE_STARS_LYRICS[
-                                    lyricIndex
-                                ].text;
-
-                            lyricBox.classList.add(
-                                "show"
-                            );
-
-                        }
-
-                    }, 150);
-
-                }
-
-            } else {
-
-                /* ---------------------------------------------
-                   NO LYRICS TODAY
-                   --------------------------------------------- */
-
-                if (lyricBox) {
-
-                    lyricBox.textContent = "";
-
-                    lyricBox.classList.remove(
-                        "show"
-                    );
-
-                }
-
-                currentLyricIndex = -1;
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       PROGRESS BAR
-       ===================================================== */
-
-    progress?.addEventListener(
-        "input",
-        () => {
-
-            if (!audio.duration) return;
-
-            audio.currentTime =
-                (progress.value / 100) *
-                audio.duration;
-
-        }
-    );
-
-
-    /* =====================================================
-       SONG FINISHED
-       ===================================================== */
-
-    audio?.addEventListener(
-        "ended",
-        () => {
-
-            if (playIcon) {
-
-                playIcon.className =
-                    "fa-solid fa-play";
-
-            }
-
-            document.body.classList.remove(
-                "song-playing"
-            );
-
-
-            if (progress) {
-
-                progress.value = 0;
-
-            }
-
-
-            if (currentTime) {
-
-                currentTime.textContent =
-                    "0:00";
-
-            }
-
-
-            currentLyricIndex = -1;
-
-
-            if (lyricBox) {
-
-                lyricBox.textContent = "";
-
-                lyricBox.classList.remove(
-                    "show"
-                );
-
-            }
-
-        }
-    );
-
-});
-
-
-/* =========================================================
-   FORMAT TIME
+   7. FORMAT TIME
    ========================================================= */
 
 function formatTime(seconds) {
 
-    if (!seconds || isNaN(seconds)) {
+    if (
+        !seconds ||
+        isNaN(seconds) ||
+        seconds < 0
+    ) {
 
         return "0:00";
 
     }
 
+
     const minutes =
         Math.floor(seconds / 60);
 
-    const remainingSeconds =
+
+    const secondsLeft =
         Math.floor(seconds % 60)
             .toString()
             .padStart(2, "0");
 
-    return `${minutes}:${remainingSeconds}`;
 
+    return `${minutes}:${secondsLeft}`;
 }
+
+
 /* =========================================================
-   PD — TOUCH THE MUSIC EFFECT
+   8. LYRIC LOOKUP
    ========================================================= */
 
-document.addEventListener("pointerdown", function (event) {
+function getCurrentLyric(
+    lyrics,
+    time
+) {
 
-    /* Only work inside the song page */
-    const songApp = document.querySelector(".song-app");
-
-    if (!songApp) return;
-
-    /* Create main ripple */
-    const ripple = document.createElement("div");
-
-    ripple.className = "pd-touch-ripple";
-
-    ripple.style.left = event.clientX + "px";
-    ripple.style.top = event.clientY + "px";
-
-    document.body.appendChild(ripple);
+    let current = null;
 
 
-    /* Create little glowing particles */
+    for (
+        let i = 0;
+        i < lyrics.length;
+        i++
+    ) {
 
-    const particleCount = 8;
+        if (
+            time >=
+            lyrics[i].time
+        ) {
 
-    for (let i = 0; i < particleCount; i++) {
+            current = lyrics[i];
 
-        const particle = document.createElement("div");
+        } else {
 
-        particle.className = "pd-touch-particle";
+            break;
 
-        particle.style.left = event.clientX + "px";
-        particle.style.top = event.clientY + "px";
+        }
 
-        const angle =
-            (Math.PI * 2 * i) / particleCount;
-
-        const distance =
-            25 + Math.random() * 45;
-
-        const x =
-            Math.cos(angle) * distance;
-
-        const y =
-            Math.sin(angle) * distance;
-
-        particle.style.setProperty(
-            "--move-x",
-            x + "px"
-        );
-
-        particle.style.setProperty(
-            "--move-y",
-            y + "px"
-        );
-
-        document.body.appendChild(particle);
-
-
-        /* Remove particle */
-        setTimeout(() => {
-            particle.remove();
-        }, 1000);
     }
 
 
-    /* Remove ripple */
-    setTimeout(() => {
-        ripple.remove();
-    }, 1200);
+    return current;
+}
 
-});
+
+/* =========================================================
+   9. DISPLAY LYRIC
+   ========================================================= */
+
+function displayLyric(text) {
+
+    if (!lyricBox) return;
+
+
+    lyricBox.classList.remove("show");
+
+
+    setTimeout(() => {
+
+        lyricBox.textContent =
+            text || "";
+
+
+        if (text) {
+
+            lyricBox.classList.add(
+                "show"
+            );
+
+        }
+
+    }, 120);
+}
+
+
+/* =========================================================
+   10. INITIALIZE SONG
+   ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const song =
+            getTodaySong();
+
+
+        const todayKey =
+            getTodayDateKey();
+
+
+        /* ==============================================
+           SONG INFORMATION
+           ============================================== */
+
+        if (songTitle) {
+
+            songTitle.textContent =
+                song.title;
+
+        }
+
+
+        if (songArtist) {
+
+            songArtist.textContent =
+                song.artist;
+
+        }
+
+
+        if (songCover) {
+
+            songCover.src =
+                song.cover;
+
+        }
+
+
+        /* ==============================================
+           LOAD AUDIO
+           ============================================== */
+
+        if (
+            songSource &&
+            songAudio
+        ) {
+
+            songSource.src =
+                song.file;
+
+            songAudio.load();
+
+        }
+
+
+        /* ==============================================
+           LYRICS
+           ============================================== */
+
+        let activeLyrics = [];
+
+
+        /*
+         * At the moment the supplied lyrics belong
+         * to I Wanna Grow Old With You.
+         *
+         * They will only activate when that song
+         * is actually selected.
+         */
+
+        if (
+            todayKey >=
+            LYRICS_START_DATE &&
+            song.title ===
+            "I Wanna Grow Old With You"
+        ) {
+
+            activeLyrics =
+                I_WANNA_GROW_OLD_LYRICS;
+
+        }
+
+
+        let currentLyricIndex = -1;
+
+
+        /* ==============================================
+           PLAY BUTTON
+           ============================================== */
+
+        songPlay?.addEventListener(
+            "click",
+            async () => {
+
+                if (!songAudio)
+                    return;
+
+
+                try {
+
+                    if (
+                        songAudio.paused
+                    ) {
+
+                        await songAudio.play();
+
+                    } else {
+
+                        songAudio.pause();
+
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Audio playback error:",
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* ==============================================
+           PLAY EVENT
+           ============================================== */
+
+        songAudio?.addEventListener(
+            "play",
+            () => {
+
+                document.body.classList.add(
+                    "song-playing"
+                );
+
+
+                const icon =
+                    songPlay?.querySelector("i");
+
+
+                if (icon) {
+
+                    icon.className =
+                        "fa-solid fa-pause";
+
+                }
+
+            }
+        );
+
+
+        /* ==============================================
+           PAUSE EVENT
+           ============================================== */
+
+        songAudio?.addEventListener(
+            "pause",
+            () => {
+
+                document.body.classList.remove(
+                    "song-playing"
+                );
+
+
+                const icon =
+                    songPlay?.querySelector("i");
+
+
+                if (icon) {
+
+                    icon.className =
+                        "fa-solid fa-play";
+
+                }
+
+            }
+        );
+
+
+        /* ==============================================
+           METADATA
+           ============================================== */
+
+        songAudio?.addEventListener(
+            "loadedmetadata",
+            () => {
+
+                if (songDuration) {
+
+                    songDuration.textContent =
+                        formatTime(
+                            songAudio.duration
+                        );
+
+                }
+
+            }
+        );
+
+
+        /* ==============================================
+           TIME UPDATE
+           ============================================== */
+
+        songAudio?.addEventListener(
+            "timeupdate",
+            () => {
+
+                if (!songAudio.duration)
+                    return;
+
+
+                /* --------------------------------------
+                   TIME
+                   -------------------------------------- */
+
+                if (currentTime) {
+
+                    currentTime.textContent =
+                        formatTime(
+                            songAudio.currentTime
+                        );
+
+                }
+
+
+                if (songDuration) {
+
+                    songDuration.textContent =
+                        formatTime(
+                            songAudio.duration
+                        );
+
+                }
+
+
+                /* --------------------------------------
+                   PROGRESS
+                   -------------------------------------- */
+
+                if (songProgress) {
+
+                    songProgress.value =
+                        (
+                            songAudio.currentTime /
+                            songAudio.duration
+                        ) * 100;
+
+                }
+
+
+                /* --------------------------------------
+                   LYRICS
+                   -------------------------------------- */
+
+                if (
+                    activeLyrics.length
+                ) {
+
+                    const lyric =
+                        getCurrentLyric(
+                            activeLyrics,
+                            songAudio.currentTime
+                        );
+
+
+                    const index =
+                        lyric
+                            ? activeLyrics.indexOf(lyric)
+                            : -1;
+
+
+                    if (
+                        index !==
+                        currentLyricIndex
+                    ) {
+
+                        currentLyricIndex =
+                            index;
+
+
+                        displayLyric(
+                            lyric?.text || ""
+                        );
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        /* ==============================================
+           SEEK
+           ============================================== */
+
+        songProgress?.addEventListener(
+            "input",
+            () => {
+
+                if (
+                    !songAudio ||
+                    !songAudio.duration
+                ) {
+
+                    return;
+
+                }
+
+
+                songAudio.currentTime =
+                    (
+                        songProgress.value /
+                        100
+                    ) *
+                    songAudio.duration;
+
+            }
+        );
+
+
+        /* ==============================================
+           ENDED
+           ============================================== */
+
+        songAudio?.addEventListener(
+            "ended",
+            () => {
+
+                document.body.classList.remove(
+                    "song-playing"
+                );
+
+
+                const icon =
+                    songPlay?.querySelector("i");
+
+
+                if (icon) {
+
+                    icon.className =
+                        "fa-solid fa-play";
+
+                }
+
+
+                if (songProgress) {
+
+                    songProgress.value = 0;
+
+                }
+
+
+                if (currentTime) {
+
+                    currentTime.textContent =
+                        "0:00";
+
+                }
+
+
+                currentLyricIndex =
+                    -1;
+
+
+                displayLyric("");
+
+            }
+        );
+
+
+        /* ==============================================
+           PREVIOUS / NEXT
+           
+           These cycle through PD_SONGS.
+           ============================================== */
+
+        let currentSongIndex =
+            PD_SONGS.indexOf(song);
+
+
+        function loadSongByIndex(index) {
+
+            currentSongIndex =
+                (
+                    index +
+                    PD_SONGS.length
+                ) %
+                PD_SONGS.length;
+
+
+            const newSong =
+                PD_SONGS[
+                    currentSongIndex
+                ];
+
+
+            if (songTitle) {
+
+                songTitle.textContent =
+                    newSong.title;
+
+            }
+
+
+            if (songArtist) {
+
+                songArtist.textContent =
+                    newSong.artist;
+
+            }
+
+
+            if (songCover) {
+
+                songCover.src =
+                    newSong.cover;
+
+            }
+
+
+            if (songSource) {
+
+                songSource.src =
+                    newSong.file;
+
+            }
+
+
+            if (songAudio) {
+
+                songAudio.load();
+
+                songAudio.play()
+                    .catch(() => {});
+
+            }
+
+
+            currentLyricIndex =
+                -1;
+
+
+            displayLyric("");
+
+        }
+
+
+        document
+            .getElementById("previousSong")
+            ?.addEventListener(
+                "click",
+                () => {
+
+                    loadSongByIndex(
+                        currentSongIndex - 1
+                    );
+
+                }
+            );
+
+
+        document
+            .getElementById("nextSong")
+            ?.addEventListener(
+                "click",
+                () => {
+
+                    loadSongByIndex(
+                        currentSongIndex + 1
+                    );
+
+                }
+            );
+
+
+        /* ==============================================
+           START SLIDESHOW
+           ============================================== */
+
+        initializeSlideshow();
+
+    }
+);
+
+
+/* =========================================================
+   11. PHOTO + VIDEO SLIDESHOW
+   ========================================================= */
+
+/* =========================================================
+   11. PHOTO + VIDEO SLIDESHOW
+   AUTO-PLAY VIDEOS
+   ========================================================= */
+
+function initializeSlideshow() {
+
+    const slides = Array.from(
+        document.querySelectorAll(".media-slide")
+    );
+
+    const previous = document.getElementById("previousSlide");
+    const next = document.getElementById("nextSlide");
+    const counter = document.getElementById("slideCounter");
+    const dotsContainer = document.getElementById("slideDots");
+
+    if (!slides.length) return;
+
+    let currentSlide = 0;
+    let slideshowTimer = null;
+
+
+    /* =====================================================
+       CREATE DOTS
+       ===================================================== */
+
+    slides.forEach((_, index) => {
+
+        const dot = document.createElement("button");
+
+        dot.className = "slide-dot";
+        dot.type = "button";
+
+        dot.setAttribute(
+            "aria-label",
+            `Go to slide ${index + 1}`
+        );
+
+        dot.addEventListener("click", () => {
+            showSlide(index);
+        });
+
+        dotsContainer?.appendChild(dot);
+
+    });
+
+
+    /* =====================================================
+       STOP ALL VIDEOS
+       ===================================================== */
+
+    function stopAllVideos() {
+
+        slides.forEach(slide => {
+
+            const video = slide.querySelector("video");
+
+            if (video) {
+
+                video.pause();
+                video.currentTime = 0;
+
+            }
+
+        });
+
+    }
+
+
+    /* =====================================================
+       SHOW SLIDE
+       ===================================================== */
+
+    function showSlide(index) {
+
+        /* Loop around */
+
+        if (index < 0) {
+            index = slides.length - 1;
+        }
+
+        if (index >= slides.length) {
+            index = 0;
+        }
+
+        currentSlide = index;
+
+
+        /* Stop every video first */
+
+        stopAllVideos();
+
+
+        /* Remove active */
+
+        slides.forEach((slide, i) => {
+
+            slide.classList.toggle(
+                "active",
+                i === currentSlide
+            );
+
+        });
+
+
+        /* =================================================
+           COUNTER
+           ================================================= */
+
+        if (counter) {
+
+            counter.textContent =
+                `${currentSlide + 1} / ${slides.length}`;
+
+        }
+
+
+        /* =================================================
+           DOTS
+           ================================================= */
+
+        const dots =
+            dotsContainer?.querySelectorAll(".slide-dot");
+
+        dots?.forEach((dot, i) => {
+
+            dot.classList.toggle(
+                "active",
+                i === currentSlide
+            );
+
+        });
+
+
+        /* =================================================
+           CHECK WHETHER CURRENT SLIDE IS A VIDEO
+           ================================================= */
+
+        const currentVideo =
+            slides[currentSlide].querySelector("video");
+
+
+        if (currentVideo) {
+
+            /*
+             * VIDEO SLIDE
+             *
+             * Automatically play it.
+             */
+
+            currentVideo.currentTime = 0;
+
+            currentVideo.muted = true;
+            currentVideo.playsInline = true;
+
+            currentVideo.play()
+                .then(() => {
+
+                    console.log(
+                        "🎥 PD video playing automatically"
+                    );
+
+                })
+                .catch(error => {
+
+                    console.log(
+                        "Video autoplay blocked:",
+                        error
+                    );
+
+                });
+
+
+            /*
+             * Move to next slide when video finishes.
+             */
+
+            currentVideo.onended = () => {
+
+                showSlide(
+                    currentSlide + 1
+                );
+
+            };
+
+
+        } else {
+
+            /*
+             * PHOTO SLIDE
+             *
+             * Stay on photo for 5 seconds.
+             */
+
+            clearTimeout(slideshowTimer);
+
+            slideshowTimer = setTimeout(() => {
+
+                showSlide(
+                    currentSlide + 1
+                );
+
+            }, 5000);
+
+        }
+
+    }
+
+
+    /* =====================================================
+       PREVIOUS BUTTON
+       ===================================================== */
+
+    previous?.addEventListener(
+        "click",
+        () => {
+
+            clearTimeout(slideshowTimer);
+
+            showSlide(
+                currentSlide - 1
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       NEXT BUTTON
+       ===================================================== */
+
+    next?.addEventListener(
+        "click",
+        () => {
+
+            clearTimeout(slideshowTimer);
+
+            showSlide(
+                currentSlide + 1
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       START
+       ===================================================== */
+
+    showSlide(0);
+
+}
+
+/* =========================================================
+   12. TOUCH THE MUSIC
+   ========================================================= */
+
+document.addEventListener(
+    "pointerdown",
+    function (event) {
+
+        const songApp =
+            document.querySelector(
+                ".song-app"
+            );
+
+
+        if (!songApp)
+            return;
+
+
+        /* ------------------------------------------
+           Ripple
+           ------------------------------------------ */
+
+        const ripple =
+            document.createElement(
+                "div"
+            );
+
+
+        ripple.className =
+            "pd-touch-ripple";
+
+
+        ripple.style.left =
+            event.clientX + "px";
+
+
+        ripple.style.top =
+            event.clientY + "px";
+
+
+        document.body.appendChild(
+            ripple
+        );
+
+
+        /* ------------------------------------------
+           Particles
+           ------------------------------------------ */
+
+        const particleCount = 8;
+
+
+        for (
+            let i = 0;
+            i < particleCount;
+            i++
+        ) {
+
+            const particle =
+                document.createElement(
+                    "div"
+                );
+
+
+            particle.className =
+                "pd-touch-particle";
+
+
+            particle.style.left =
+                event.clientX + "px";
+
+
+            particle.style.top =
+                event.clientY + "px";
+
+
+            const angle =
+                (
+                    Math.PI * 2 * i
+                ) /
+                particleCount;
+
+
+            const distance =
+                25 +
+                Math.random() * 45;
+
+
+            particle.style.setProperty(
+                "--move-x",
+                Math.cos(angle) *
+                distance +
+                "px"
+            );
+
+
+            particle.style.setProperty(
+                "--move-y",
+                Math.sin(angle) *
+                distance +
+                "px"
+            );
+
+
+            document.body.appendChild(
+                particle
+            );
+
+
+            setTimeout(
+                () => {
+
+                    particle.remove();
+
+                },
+                1000
+            );
+
+        }
+
+
+        setTimeout(
+            () => {
+
+                ripple.remove();
+
+            },
+            1200
+        );
+
+    }
+);
