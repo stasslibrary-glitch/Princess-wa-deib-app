@@ -1,0 +1,1621 @@
+/* =========================================================
+   PD — LOVE PIE
+   LIVE FIREBASE VERSION
+   ========================================================= */
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+html {
+    min-height: 100%;
+    background: #050008;
+}
+
+
+body {
+
+    width: 100%;
+    min-height: 100vh;
+
+    font-family: "DM Sans", sans-serif;
+
+    color: white;
+
+    background: #050008;
+
+    overflow-x: hidden;
+
+}
+
+
+/* =========================================================
+   BACKGROUND
+   ========================================================= */
+
+.love-background {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 0;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+    background:
+
+        radial-gradient(
+            circle at 50% 30%,
+            rgba(115, 30, 150, .18),
+            transparent 48%
+        ),
+
+        linear-gradient(
+            145deg,
+            #050008,
+            #100116,
+            #06000c
+        );
+
+}
+
+
+/* =========================================================
+   GLOWS
+   ========================================================= */
+
+.glow {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    filter: blur(80px);
+
+    opacity: .55;
+
+    mix-blend-mode: screen;
+
+}
+
+
+.glow-red {
+
+    width: 340px;
+    height: 340px;
+
+    top: -100px;
+    left: -120px;
+
+    background: rgba(255, 20, 80, .55);
+
+    animation:
+        redGlow 13s ease-in-out infinite alternate;
+
+}
+
+
+.glow-purple {
+
+    width: 390px;
+    height: 390px;
+
+    right: -160px;
+    top: 170px;
+
+    background: rgba(140, 40, 255, .55);
+
+    animation:
+        purpleGlow 15s ease-in-out infinite alternate;
+
+}
+
+
+.glow-pink {
+
+    width: 300px;
+    height: 300px;
+
+    left: 50%;
+    bottom: -130px;
+
+    transform: translateX(-50%);
+
+    background: rgba(240, 30, 160, .35);
+
+    animation:
+        pinkGlow 11s ease-in-out infinite alternate;
+
+}
+
+
+@keyframes redGlow {
+
+    0% {
+        transform: translate(0, 0) scale(.9);
+        background: rgba(255, 20, 75, .45);
+    }
+
+    50% {
+        transform: translate(110px, 150px) scale(1.25);
+        background: rgba(220, 20, 120, .48);
+    }
+
+    100% {
+        transform: translate(210px, 50px) scale(.95);
+        background: rgba(145, 30, 255, .45);
+    }
+
+}
+
+
+@keyframes purpleGlow {
+
+    0% {
+        transform: translate(0, 0) scale(1);
+        background: rgba(130, 30, 255, .45);
+    }
+
+    50% {
+        transform: translate(-100px, -80px) scale(1.25);
+        background: rgba(200, 30, 180, .48);
+    }
+
+    100% {
+        transform: translate(-160px, 100px) scale(1);
+        background: rgba(255, 25, 75, .42);
+    }
+
+}
+
+
+@keyframes pinkGlow {
+
+    0% {
+        transform: translateX(-50%) scale(.8);
+        opacity: .25;
+    }
+
+    100% {
+        transform: translateX(-50%) scale(1.3);
+        opacity: .55;
+    }
+
+}
+
+
+/* =========================================================
+   STARS
+   ========================================================= */
+
+.stars {
+
+    position: absolute;
+
+    inset: 0;
+
+    opacity: .55;
+
+    background-image:
+
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.8) 1px,
+            transparent 1.5px
+        ),
+
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.45) 1px,
+            transparent 1.5px
+        );
+
+    background-size:
+        90px 90px,
+        145px 145px;
+
+    background-position:
+        20px 30px,
+        70px 100px;
+
+    animation:
+        starsMove 18s linear infinite;
+
+}
+
+
+@keyframes starsMove {
+
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-90px);
+    }
+
+}
+
+
+/* =========================================================
+   PARTICLES
+   ========================================================= */
+
+#loveParticles {
+
+    position: absolute;
+
+    inset: 0;
+
+    overflow: hidden;
+
+}
+
+
+.love-particle {
+
+    position: absolute;
+
+    bottom: -30px;
+
+    opacity: 0;
+
+    animation:
+        particleRise linear forwards;
+
+    filter:
+        drop-shadow(
+            0 0 8px currentColor
+        );
+
+}
+
+
+@keyframes particleRise {
+
+    0% {
+
+        transform:
+            translateY(0)
+            translateX(0)
+            rotate(0deg)
+            scale(.5);
+
+        opacity: 0;
+
+    }
+
+    15% {
+        opacity: .75;
+    }
+
+    80% {
+        opacity: .45;
+    }
+
+    100% {
+
+        transform:
+            translateY(-110vh)
+            translateX(var(--drift))
+            rotate(360deg)
+            scale(1.1);
+
+        opacity: 0;
+
+    }
+
+}
+
+
+/* =========================================================
+   APP
+   ========================================================= */
+
+.love-app {
+
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+
+    max-width: 500px;
+
+    min-height: 100vh;
+
+    margin: auto;
+
+    padding-bottom: 50px;
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.love-header {
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 30;
+
+    height: 72px;
+
+    display: grid;
+
+    grid-template-columns:
+        50px
+        1fr
+        50px;
+
+    align-items: center;
+
+    padding: 0 16px;
+
+    background:
+
+        linear-gradient(
+            180deg,
+            rgba(5,0,12,.96),
+            rgba(5,0,12,.72)
+        );
+
+    backdrop-filter: blur(18px);
+
+    border-bottom:
+        1px solid rgba(255,255,255,.07);
+
+}
+
+
+.back-button {
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    background:
+        rgba(255,255,255,.06);
+
+    color: white;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    transition: .25s ease;
+
+}
+
+
+.back-button:hover {
+
+    transform:
+        translateX(-3px);
+
+    background:
+        rgba(255,255,255,.12);
+
+    box-shadow:
+        0 0 20px rgba(190,40,255,.30);
+
+}
+
+
+.header-title {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 9px;
+
+}
+
+
+.header-title h1 {
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 22px;
+
+    font-weight: 600;
+
+}
+
+
+.small-heart {
+
+    color: #ff3d9d;
+
+    text-shadow:
+        0 0 10px #ff2b8a,
+        0 0 20px #8f2dff;
+
+    animation:
+        miniHeart 2s ease-in-out infinite;
+
+}
+
+
+@keyframes miniHeart {
+
+    50% {
+        transform: scale(1.3);
+    }
+
+}
+
+
+.header-space {
+    width: 42px;
+}
+
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+.love-intro {
+
+    text-align: center;
+
+    padding:
+        35px
+        25px
+        12px;
+
+}
+
+
+.intro-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+        7px 13px;
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    border-radius: 30px;
+
+    background:
+        rgba(255,255,255,.045);
+
+    color:
+        rgba(255,255,255,.58);
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+}
+
+
+.intro-badge span {
+
+    color: #ff3d91;
+
+    text-shadow:
+        0 0 10px #ff287e;
+
+}
+
+
+.love-intro h2 {
+
+    margin-top: 20px;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:
+        clamp(35px, 10vw, 48px);
+
+    line-height: 1.05;
+
+}
+
+
+.love-intro h2 span {
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #ff386e,
+            #c047ff,
+            #ff386e
+        );
+
+    background-size: 200% auto;
+
+    -webkit-background-clip: text;
+
+    background-clip: text;
+
+    color: transparent;
+
+    animation:
+        gradientText 5s linear infinite;
+
+}
+
+
+@keyframes gradientText {
+
+    to {
+        background-position: 200% center;
+    }
+
+}
+
+
+.love-intro p {
+
+    max-width: 350px;
+
+    margin:
+        17px auto 0;
+
+    color:
+        rgba(255,255,255,.58);
+
+    font-size: 13px;
+
+    line-height: 1.7;
+
+}
+
+
+.love-intro strong {
+    color: white;
+}
+
+
+/* =========================================================
+   LIVE STATUS
+   ========================================================= */
+
+.live-status {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin:
+        4px auto 8px;
+
+    font-size: 9px;
+
+    color:
+        rgba(255,255,255,.38);
+
+}
+
+
+.live-dot {
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: #ff3d86;
+
+    box-shadow:
+        0 0 10px #ff3d86;
+
+    animation:
+        livePulse 1.5s infinite;
+
+}
+
+
+@keyframes livePulse {
+
+    50% {
+        opacity: .35;
+        transform: scale(.65);
+    }
+
+}
+
+
+/* =========================================================
+   PIE SECTION
+   ========================================================= */
+
+.pie-section {
+
+    position: relative;
+
+    width: 330px;
+
+    height: 350px;
+
+    margin: 0 auto;
+
+}
+
+
+.pie-aura {
+
+    position: absolute;
+
+    width: 290px;
+    height: 290px;
+
+    top: 28px;
+    left: 20px;
+
+    border-radius: 50%;
+
+    background:
+
+        radial-gradient(
+            circle,
+            rgba(255,40,110,.22),
+            rgba(150,40,255,.14),
+            transparent 68%
+        );
+
+    filter: blur(15px);
+
+    animation:
+        auraPulse 4s ease-in-out infinite;
+
+}
+
+
+@keyframes auraPulse {
+
+    50% {
+
+        transform: scale(1.13);
+
+        opacity: .75;
+
+    }
+
+}
+
+
+/* =========================================================
+   ACTUAL PIE
+   ========================================================= */
+
+.love-pie {
+
+    position: absolute;
+
+    width: 245px;
+    height: 245px;
+
+    top: 50px;
+    left: 42px;
+
+    border-radius: 50%;
+
+    background:
+        conic-gradient(
+            #ff2f68 0deg,
+            #ff2f68 180deg,
+            #9c35ff 180deg,
+            #9c35ff 360deg
+        );
+
+    box-shadow:
+
+        0 0 25px
+        rgba(255,35,105,.35),
+
+        0 0 60px
+        rgba(143,40,255,.22),
+
+        inset 0 0 35px
+        rgba(0,0,0,.35);
+
+    transform:
+        scale(.1)
+        rotate(-100deg);
+
+    opacity: 0;
+
+    animation:
+        pieAppear 1.2s
+        cubic-bezier(.17,.89,.32,1.28)
+        forwards;
+
+    transition:
+        background 1s ease,
+        filter .5s ease,
+        transform .8s ease;
+
+}
+
+
+.love-pie::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: -7px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(255,255,255,.22);
+
+    box-shadow:
+        0 0 25px rgba(255,40,140,.25);
+
+}
+
+
+.love-pie::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: 50%;
+
+    background:
+
+        linear-gradient(
+            130deg,
+            rgba(255,255,255,.30),
+            transparent 25%,
+            transparent 70%,
+            rgba(255,255,255,.08)
+        );
+
+}
+
+
+@keyframes pieAppear {
+
+    to {
+
+        transform:
+            scale(1)
+            rotate(0deg);
+
+        opacity: 1;
+
+    }
+
+}
+
+
+/* =========================================================
+   PIE CENTER
+   ========================================================= */
+
+.pie-inner {
+
+    position: absolute;
+
+    inset: 43px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    border-radius: 50%;
+
+    background:
+
+        radial-gradient(
+            circle,
+            rgba(22,5,35,.98),
+            rgba(8,1,15,.98)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.13);
+
+    box-shadow:
+        inset 0 0 25px rgba(0,0,0,.7),
+        0 0 15px rgba(0,0,0,.5);
+
+}
+
+
+.heart-core {
+
+    font-size: 38px;
+
+    line-height: 1;
+
+    color: #ff3b88;
+
+    text-shadow:
+
+        0 0 8px #ff2b83,
+        0 0 22px #ff247e,
+        0 0 45px #9b28ff;
+
+    animation:
+        coreBeat 1.5s ease-in-out infinite;
+
+}
+
+
+@keyframes coreBeat {
+
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.18);
+    }
+
+}
+
+
+.pie-center-text {
+
+    margin-top: 8px;
+
+    text-align: center;
+
+}
+
+
+.pie-center-text span {
+
+    display: block;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+}
+
+
+.pie-center-text small {
+
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 7px;
+
+    letter-spacing: 2px;
+
+    color:
+        rgba(255,255,255,.42);
+
+}
+
+
+/* =========================================================
+   PIE LABELS
+   ========================================================= */
+
+.pie-label {
+
+    position: absolute;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding:
+        7px 10px;
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    border-radius: 12px;
+
+    background:
+        rgba(10,2,18,.68);
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.25);
+
+    transition:
+        transform .5s ease;
+
+}
+
+
+.pie-label strong {
+
+    display: block;
+
+    font-size: 15px;
+
+}
+
+
+.pie-label small {
+
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 9px;
+
+    color:
+        rgba(255,255,255,.52);
+
+}
+
+
+.label-dot {
+
+    width: 9px;
+    height: 9px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 10px currentColor;
+
+}
+
+
+.label-deib {
+
+    top: 100px;
+
+    left: -3px;
+
+}
+
+
+.label-deib .label-dot {
+
+    background: #ff316b;
+
+    color: #ff316b;
+
+}
+
+
+.label-princess {
+
+    top: 200px;
+
+    right: -8px;
+
+}
+
+
+.label-princess .label-dot {
+
+    background: #a13aff;
+
+    color: #a13aff;
+
+}
+
+
+/* =========================================================
+   MESSAGE COUNTS
+   ========================================================= */
+
+.message-counts {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 10px;
+
+    padding:
+        0 18px 10px;
+
+}
+
+
+.count-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding:
+        13px;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    border-radius: 16px;
+
+    background:
+        rgba(255,255,255,.045);
+
+    backdrop-filter: blur(15px);
+
+}
+
+
+.count-icon {
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    color: #ff4b89;
+
+    background:
+        rgba(255,50,120,.10);
+
+}
+
+
+.princess-count .count-icon {
+
+    color: #ae4dff;
+
+    background:
+        rgba(160,50,255,.10);
+
+}
+
+
+.count-info {
+
+    min-width: 0;
+
+}
+
+
+.count-info span {
+
+    display: block;
+
+    font-size: 8px;
+
+    color:
+        rgba(255,255,255,.40);
+
+}
+
+
+.count-info strong {
+
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 18px;
+
+}
+
+
+/* =========================================================
+   LOVE MESSAGE
+   ========================================================= */
+
+.love-message {
+
+    padding:
+        20px 30px 0;
+
+    text-align: center;
+
+}
+
+
+.message-line {
+
+    width: 65px;
+
+    height: 1px;
+
+    margin:
+        0 auto 17px;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            transparent,
+            #d33cff,
+            #ff397e,
+            transparent
+        );
+
+}
+
+
+.love-message h3 {
+
+    min-height: 24px;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 18px;
+
+    font-weight: 500;
+
+    color:
+        rgba(255,255,255,.80);
+
+}
+
+
+.love-message p {
+
+    margin-top: 8px;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+
+    color:
+        rgba(255,255,255,.45);
+
+}
+
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.stats-section {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    padding:
+        30px 18px;
+
+}
+
+
+.stat-card {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding:
+        13px 15px;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    border-radius: 17px;
+
+    background:
+
+        linear-gradient(
+            120deg,
+            rgba(255,255,255,.055),
+            rgba(255,255,255,.018)
+        );
+
+    backdrop-filter: blur(15px);
+
+    overflow: hidden;
+
+}
+
+
+.stat-icon {
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 13px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(255,47,105,.17),
+            rgba(157,48,255,.17)
+        );
+
+    color:
+        #e26cff;
+
+}
+
+
+.heart-icon {
+
+    color:
+        #ff4b91;
+
+}
+
+
+.stat-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+}
+
+
+.stat-info strong {
+
+    font-size: 13px;
+
+}
+
+
+.stat-info span {
+
+    font-size: 10px;
+
+    color:
+        rgba(255,255,255,.40);
+
+}
+
+
+.stat-heart {
+
+    margin-left: auto;
+
+    color:
+        rgba(255,55,135,.35);
+
+}
+
+
+/* =========================================================
+   FINAL LOVE
+   ========================================================= */
+
+.final-love {
+
+    position: relative;
+
+    margin:
+        5px 18px 0;
+
+    padding:
+        45px 20px 38px;
+
+    text-align: center;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    border-radius: 28px;
+
+    overflow: hidden;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(255,35,110,.08),
+            rgba(130,40,255,.09)
+        );
+
+}
+
+
+.final-glow {
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    background:
+
+        radial-gradient(
+            circle,
+            rgba(255,40,125,.18),
+            transparent 68%
+        );
+
+    filter: blur(20px);
+
+}
+
+
+.final-top {
+
+    position: relative;
+
+    font-size: 8px;
+
+    letter-spacing: 3px;
+
+    color:
+        rgba(255,255,255,.40);
+
+}
+
+
+.final-love h2 {
+
+    position: relative;
+
+    margin-top: 12px;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 32px;
+
+}
+
+
+.final-love h2 span {
+
+    color:
+        #ff4c9d;
+
+    text-shadow:
+        0 0 15px rgba(255,40,140,.4);
+
+}
+
+
+.final-love p {
+
+    position: relative;
+
+    margin-top: 8px;
+
+    font-size: 12px;
+
+    line-height: 1.7;
+
+    color:
+        rgba(255,255,255,.48);
+
+}
+
+
+.final-heart {
+
+    position: relative;
+
+    margin:
+        22px auto 0;
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,45,130,.10);
+
+    border:
+        1px solid rgba(255,70,160,.20);
+
+    color:
+        #ff438e;
+
+    font-size: 20px;
+
+    box-shadow:
+        0 0 25px rgba(255,40,130,.18);
+
+    animation:
+        coreBeat 1.7s ease-in-out infinite;
+
+}
+
+
+/* =========================================================
+   FLOATING HEARTS
+   ========================================================= */
+
+.orbit-heart {
+
+    position: absolute;
+
+    color:
+        rgba(255,60,150,.35);
+
+    font-size: 12px;
+
+    animation:
+        orbitFloat 4s ease-in-out infinite;
+
+}
+
+
+.heart-one {
+    left: 18%;
+    top: 25%;
+}
+
+
+.heart-two {
+
+    right: 17%;
+    top: 30%;
+
+    animation-delay: 1s;
+
+}
+
+
+.heart-three {
+
+    left: 30%;
+    bottom: 18%;
+
+    animation-delay: 2s;
+
+}
+
+
+@keyframes orbitFloat {
+
+    0%,100% {
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+    50% {
+
+        transform:
+            translateY(-10px)
+            scale(1.2);
+
+    }
+
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.love-footer {
+
+    padding:
+        28px 20px 10px;
+
+    text-align: center;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+    color:
+        rgba(255,255,255,.25);
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .pie-section {
+
+        transform: scale(.92);
+
+        margin-top: -5px;
+
+        margin-bottom: -10px;
+
+    }
+
+    .love-intro {
+
+        padding-top: 25px;
+
+    }
+
+    .love-intro h2 {
+
+        font-size: 36px;
+
+    }
+
+    .message-counts {
+
+        gap: 7px;
+
+    }
+
+    .count-card {
+
+        padding: 10px;
+
+    }
+
+}

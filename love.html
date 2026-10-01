@@ -3,143 +3,498 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
 
-<title>PD | Love Pie</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
 
-<link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#07000d">
 
-<link
-href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
-rel="stylesheet">
+    <title>PD | Love Pie</title>
 
-<link
-rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- FONT AWESOME -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <!-- LOVE PIE CSS -->
+    <link rel="stylesheet" href="love.css">
 
 </head>
 
-<body class="phone-page">
 
-<div class="phone-app">
-
-<header class="simple-header">
-
-<a href="home.html">
-<i class="fa-solid fa-arrow-left"></i>
-</a>
-
-<h2>
-Love Pie ♥
-</h2>
-
-</header>
+<body>
 
 
-<main class="love-page">
+<!-- =====================================================
+     BACKGROUND
+     ===================================================== -->
 
-<h3>
-Who loves who more?
-</h3>
+<div class="love-background">
 
-<p class="love-intro">
-Based on our texts, reactions,<br>
-attention, and little things...
-</p>
+    <div class="glow glow-red"></div>
 
+    <div class="glow glow-purple"></div>
 
-<div class="love-pie" id="lovePie">
+    <div class="glow glow-pink"></div>
 
-    <div class="pie-label princess-label">
-        <span data-princess-percent>50%</span>
-        <small>Her</small>
-    </div>
+    <div class="stars"></div>
 
-    <div class="pie-label deib-label">
-        <span data-deib-percent>50%</span>
-        <small>You</small>
-    </div>
+    <div id="loveParticles"></div>
 
 </div>
 
 
-<div class="love-names">
 
-<div>
-<span class="purple-dot"></span>
-Him (Ernest)
-</div>
+<!-- =====================================================
+     MAIN APP
+     ===================================================== -->
 
-<div>
-<span class="pink-dot"></span>
-You (Jose💜)
-</div>
-
-</div>
+<main class="love-app">
 
 
-<div class="why-card">
+    <!-- =================================================
+         HEADER
+         ================================================= -->
 
-<div>
+    <header class="love-header">
 
-<h4>
-Why?
-</h4>
-
-<p>
-You text more<br>
-You are more caring<br>
-You always show up<br>
-You love deeply
-</p>
-
-</div>
-
-<div>
-
-<h4>
-She wins because:
-</h4>
-
-<p>
-She's amazing<br>
-She makes you smile<br>
-She's your peace<br>
-She's your future
-</p>
-
-</div>
-
-</div>
+        <button
+            class="back-button"
+            id="backHome"
+            aria-label="Back to home"
+        >
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
 
 
-<p class="perfect-balance">
-♥ Perfect balance... like us ♥
-</p>
+        <div class="header-title">
+
+            <span class="small-heart">♥</span>
+
+            <h1>Love Pie</h1>
+
+            <span class="small-heart">♥</span>
+
+        </div>
+
+
+        <div class="header-space"></div>
+
+    </header>
+
+
+
+    <!-- =================================================
+         INTRO
+         ================================================= -->
+
+    <section class="love-intro">
+
+        <div class="intro-badge">
+
+            <span>♥</span>
+
+            OUR LITTLE UNIVERSE
+
+            <span>♥</span>
+
+        </div>
+
+
+        <h2>
+
+            Who talks<br>
+
+            <span>more?</span>
+
+        </h2>
+
+
+        <p>
+
+            Based on the messages we've shared,
+            our little Love Pie keeps changing
+            as our story grows.
+
+        </p>
+
+    </section>
+
+
+
+    <!-- =================================================
+         LIVE STATUS
+         ================================================= -->
+
+    <section class="live-status">
+
+        <span class="live-dot"></span>
+
+        <span id="firebaseStatus">
+            Connecting to our messages...
+        </span>
+
+    </section>
+
+
+
+    <!-- =================================================
+         PIE
+         ================================================= -->
+
+    <section class="pie-section">
+
+
+        <div class="pie-aura"></div>
+
+
+        <div
+            class="love-pie"
+            id="lovePie"
+        >
+
+            <div class="pie-inner">
+
+                <div
+                    class="heart-core"
+                    id="heartCore"
+                >
+                    ♥
+                </div>
+
+
+                <div class="pie-center-text">
+
+                    <span id="totalMessages">
+                        0
+                    </span>
+
+                    <small>
+                        MESSAGES
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- DEIB LABEL -->
+
+        <div class="pie-label label-deib">
+
+            <span class="label-dot"></span>
+
+            <div>
+
+                <strong id="deibPercent">
+                    0%
+                </strong>
+
+                <small>
+                    Princess
+                </small>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- PRINCESS LABEL -->
+
+        <div class="pie-label label-princess">
+
+            <span class="label-dot"></span>
+
+            <div>
+
+                <strong id="princessPercent">
+                    0%
+                </strong>
+
+                <small>
+                    Deib
+                </small>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         MESSAGE COUNTS
+         ================================================= -->
+
+    <section class="message-counts">
+
+
+        <div class="count-card deib-count">
+
+            <div class="count-icon">
+                <i class="fa-solid fa-heart"></i>
+            </div>
+
+            <div class="count-info">
+
+                <span>Princess's messages</span>
+
+                <strong id="deibMessages">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="count-card princess-count">
+
+            <div class="count-icon">
+                <i class="fa-solid fa-heart"></i>
+            </div>
+
+            <div class="count-info">
+
+                <span>Deib's messages</span>
+
+                <strong id="princessMessages">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         MESSAGE
+         ================================================= -->
+
+    <section class="love-message">
+
+        <div class="message-line"></div>
+
+
+        <h3 id="loveMessage">
+            Counting our little conversations...
+        </h3>
+
+
+        <p id="messageSubtext">
+
+            Every message becomes
+            another little piece of our story. ♥
+
+        </p>
+
+
+        <div class="message-line"></div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         LIVE STATS
+         ================================================= -->
+
+    <section class="stats-section">
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+
+                <i class="fa-solid fa-comments"></i>
+
+            </div>
+
+
+            <div class="stat-info">
+
+                <strong>
+                    Messages
+                </strong>
+
+                <span id="statMessages">
+                    0 messages together
+                </span>
+
+            </div>
+
+
+            <div class="stat-heart">
+                ♥
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon heart-icon">
+
+                <i class="fa-solid fa-heart"></i>
+
+            </div>
+
+
+            <div class="stat-info">
+
+                <strong>
+                    Our Conversation
+                </strong>
+
+                <span>
+                    Growing one message at a time
+                </span>
+
+            </div>
+
+
+            <div class="stat-heart">
+                ♥
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+            </div>
+
+
+            <div class="stat-info">
+
+                <strong>
+                    Live Love Pie
+                </strong>
+
+                <span>
+                    Updates automatically
+                </span>
+
+            </div>
+
+
+            <div class="stat-heart">
+                ♥
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         FINAL MESSAGE
+         ================================================= -->
+
+    <section class="final-love">
+
+
+        <div class="orbit-heart heart-one">
+            ♥
+        </div>
+
+        <div class="orbit-heart heart-two">
+            ♥
+        </div>
+
+        <div class="orbit-heart heart-three">
+            ♥
+        </div>
+
+
+        <div class="final-glow"></div>
+
+
+        <span class="final-top">
+            NO MATTER THE NUMBERS
+        </span>
+
+
+        <h2>
+
+            It's still
+
+            <span>
+                us.
+            </span>
+
+        </h2>
+
+
+        <p>
+
+            Because the sweetest part
+            <br>
+            isn't who has more.
+
+        </p>
+
+
+        <div class="final-heart">
+            ♥
+        </div>
+
+
+    </section>
+
+
+
+    <!-- FOOTER -->
+
+    <footer class="love-footer">
+
+        Made with love · PD ♥
+
+    </footer>
+
 
 </main>
 
-</div>
-<div class="love-message-counts">
 
-    <div>
-        <strong data-deib-messages>0</strong>
-        <span>You sent</span>
-    </div>
 
-    <div>
-        <strong data-princess-messages>0</strong>
-        <span>She sent</span>
-    </div>
+<!-- =====================================================
+     LOVE PIE JAVASCRIPT
+     ===================================================== -->
 
-</div>
-<script
-    type="module"
-    src="auth-guard.js"
-></script>
+<script type="module" src="love.js"></script>
 
-<script type="module" src="firebase.js"></script>
-<script type="module" src="script.js"></script>
 </body>
+
 </html>
