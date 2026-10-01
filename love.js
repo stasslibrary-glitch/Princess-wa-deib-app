@@ -747,7 +747,7 @@ function updateLoveMessage() {
     if (deib > princess) {
 
         loveMessage.textContent =
-            "Deib has been doing a little more talking... ♥";
+            "Princess has been doing a little more talking... ♥";
 
 
         if (messageSubtext) {
@@ -769,7 +769,7 @@ function updateLoveMessage() {
     if (princess > deib) {
 
         loveMessage.textContent =
-            "Princess has been doing a little more talking... ♥";
+            "Deib has been doing a little more talking... ♥";
 
 
         if (messageSubtext) {

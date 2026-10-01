@@ -12,134 +12,60 @@
 const PD_SONGS = [
 
     {
-        title: "Champion Gal",
-        artist: "Fik Fameica",
-        file: "songs/Champion Gal by Fik Fameica.mp3",
-        cover: "images/123.jpg"
+        title: "_Emiliana",
+        artist: "CKay_",
+        file: "songs/CKay_-_Emiliana.mp3",
+        cover: "images/1 (1).jpeg"
     },
 
     {
-        title: "Champion Gal",
-        artist: "Fik Fameica",
-        file: "songs/Champion Gal by Fik Fameica.mp3",
-        cover: "images/123.jpg"
+        title: "Running__To_You",
+        artist: "Chiké___Simi",
+        file: "songs/Chiké___Simi_–_Running__To_You.mp3",
+        cover: "images/1 (2).jpeg"
     },
 
     {
-        title: "Champion Gal",
-        artist: "Fik Fameica",
+        title: " Champion Gal",
+        artist: "Fik Fameica ",
         file: "songs/Champion Gal by Fik Fameica.mp3",
-        cover: "images/123.jpg"
+        cover: "images/1 (3).jpeg"
     },
 
     {
-        title: "Champion Gal",
-        artist: "Fik Fameica",
-        file: "songs/Champion Gal by Fik Fameica.mp3",
-        cover: "images/123.jpg"
+        title: "Mr_Man",
+        artist: "Fave",
+        file: "songs/Fave_-_Mr_Man__Visualizer.mp3",
+        cover: "images/1 (4).jpeg"
     },
 
     {
-        title: "Ordinary",
-        artist: "Alex Warren",
-        file: "songs/Alex Warren - Ordinary.mp3",
-        cover: "images/song-cover.jpg"
+        title: "_Forever",
+        artist: "Gyakie Omah_Lay",
+        file: "songs/Gyakie___Omah_Lay_-_Forever.mp3",
+        cover: "images/1 (5).jpeg"
     },
 
     {
-        title: "Champion Gal",
-        artist: "Fik Fameica",
-        file: "songs/Champion Gal by Fik Fameica.mp3",
-        cover: "images/song-cover.jpg"
+        title: "Queen of my Heart",
+        artist: "Westlife",
+        file: "songs/queen of my heart by westlife.mp3",
+        cover: "images/1 (6).jpeg"
     },
 
     {
-        title: "Champion Gal",
-        artist: "Fik Fameica",
-        file: "songs/Champion Gal by Fik Fameica.mp3",
-        cover: "images/song-cover.jpg"
+        title: "World of Our Own",
+        artist: "Westlife",
+        file: "songs/Westlife - World of Our Own.mp3",
+        cover: "images/1 (7).jpeg"
     },
 
     {
-        title: "Champion Gal",
-        artist: "Fik Fameica",
-        file: "songs/Champion Gal by Fik Fameica.mp3",
-        cover: "images/song-cover.jpg"
+        title: "Your Love Amazes Me",
+        artist: "Westlife",
+        file: "songs/Westlife - Your Love Amazes Me.mp3",
+        cover: "images/1 (8).jpeg"
     }
-
-];
-
-
-/* =========================================================
-   2. LYRIC ACTIVATION
-   ========================================================= */
-
-const LYRICS_START_DATE = "2026-09-28";
-
-
-/* =========================================================
-   3. I WANNA GROW OLD WITH YOU
-   ========================================================= */
-
-const I_WANNA_GROW_OLD_LYRICS = [
-
-    { time: 12.0, text: "Another day without your smile" },
-    { time: 20.0, text: "Another day just passes by" },
-    { time: 27.0, text: "And now I know" },
-    { time: 30.2, text: "How much it means" },
-    { time: 34.5, text: "For you to stay right here with me" },
-
-    { time: 40.0, text: "The time we spent apart" },
-    { time: 42.0, text: "Will make our love grow stronger" },
-    { time: 48.0, text: "But it hurts so bad" },
-    { time: 50.5, text: "I can't take it any longer" },
-
-    { time: 54.0, text: "I wanna grow old with you" },
-    { time: 57.0, text: "I wanna die lying in your arms" },
-    { time: 60.0, text: "I wanna grow old with you" },
-    { time: 64.0, text: "I wanna be looking in your eyes" },
-    { time: 68.0, text: "I wanna be there for you" },
-    { time: 72.0, text: "Sharing in everything you do" },
-    { time: 76.0, text: "I wanna grow old with you" },
-
-    { time: 82.0, text: "A thousand miles between us now" },
-    { time: 86.0, text: "It causes me to wonder how" },
-    { time: 90.0, text: "Our love tonight remains so strong" },
-    { time: 95.0, text: "It makes our risk right all along" },
-
-    { time: 100.0, text: "The time we spent apart" },
-    { time: 104.0, text: "Will make our love grow stronger" },
-    { time: 108.0, text: "But it hurts so bad" },
-    { time: 111.0, text: "I can't take it any longer" },
-
-    { time: 116.0, text: "I wanna grow old with you" },
-    { time: 120.0, text: "I wanna die lying in your arms" },
-    { time: 124.0, text: "I wanna grow old with you" },
-    { time: 128.0, text: "I wanna be looking in your eyes" },
-    { time: 132.0, text: "I wanna be there for you" },
-    { time: 136.0, text: "Sharing in everything you do" },
-    { time: 140.0, text: "I wanna grow old with you" },
-
-    { time: 149.0, text: "Things can come and go" },
-    { time: 153.0, text: "I know but" },
-    { time: 155.5, text: "Baby I believe" },
-    { time: 158.5, text: "Something's burning strong between us" },
-    { time: 163.0, text: "Makes it clear to me" },
-
-    { time: 169.0, text: "I wanna grow old with you" },
-    { time: 173.0, text: "I wanna die lying in your arms" },
-    { time: 177.0, text: "I wanna grow old with you" },
-    { time: 181.0, text: "I wanna be looking in your eyes" },
-    { time: 185.0, text: "I wanna be there for you" },
-    { time: 189.0, text: "Sharing in everything you do" },
-
-    { time: 195.0, text: "I wanna grow old with you" },
-    { time: 199.0, text: "I wanna die lying in your arms" },
-    { time: 203.0, text: "I wanna grow old with you" },
-    { time: 207.0, text: "I wanna be looking in your eyes" },
-    { time: 211.0, text: "I wanna be there for you" },
-    { time: 215.0, text: "Sharing in everything you do" },
-    { time: 219.0, text: "I wanna grow old with you" }
 
 ];
 

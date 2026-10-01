@@ -1,0 +1,1207 @@
+
+/* =========================================================
+   PRINCESS WA DEIB — CHAT PAGE
+   chat.css
+   ---------------------------------------------------------
+   Visual design for the Firebase chat.
+   Header + input stay fixed.
+   Only messages scroll.
+   ========================================================= */
+
+
+/* =========================================================
+   1. PAGE RESET
+   ========================================================= */
+
+.chat-app,
+.chat-app * {
+    box-sizing: border-box;
+}
+
+.chat-app {
+    position: relative;
+    height: 100dvh;
+    min-height: 100dvh;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    isolation: isolate;
+
+    color: #fff;
+
+    background:
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(255, 40, 130, 0.20),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 85% 25%,
+            rgba(145, 50, 255, 0.22),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 50% 100%,
+            rgba(255, 35, 95, 0.16),
+            transparent 35%
+        ),
+        linear-gradient(
+            145deg,
+            #090513 0%,
+            #14081d 45%,
+            #080512 100%
+        );
+}
+
+
+/* =========================================================
+   2. ANIMATED ROMANTIC GLOW
+   ========================================================= */
+
+.chat-app::before {
+    content: "";
+
+    position: absolute;
+    inset: -30%;
+
+    z-index: -2;
+
+    background:
+        radial-gradient(
+            circle at 25% 30%,
+            rgba(255, 35, 120, 0.18),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 75% 65%,
+            rgba(145, 55, 255, 0.20),
+            transparent 28%
+        );
+
+    filter: blur(45px);
+
+    animation: pdChatGlow 12s ease-in-out infinite alternate;
+}
+
+@keyframes pdChatGlow {
+
+    0% {
+        transform: translate(
+            -5%,
+            -3%
+        ) scale(1);
+    }
+
+    50% {
+        transform: translate(
+            5%,
+            4%
+        ) scale(1.08);
+    }
+
+    100% {
+        transform: translate(
+            -2%,
+            6%
+        ) scale(1.03);
+    }
+}
+
+
+/* =========================================================
+   3. SMALL BACKGROUND STARS / LIGHTS
+   ========================================================= */
+
+.chat-app::after {
+    content: "✦   ·      ✧        ·   ♥       ·        ✦";
+
+    position: absolute;
+
+    top: 15%;
+    left: 0;
+
+    width: 100%;
+
+    z-index: -1;
+
+    color: rgba(255, 255, 255, 0.13);
+
+    font-size: 13px;
+
+    letter-spacing: 15px;
+
+    pointer-events: none;
+
+    animation: pdStars 8s ease-in-out infinite alternate;
+}
+
+@keyframes pdStars {
+
+    from {
+        opacity: 0.35;
+        transform: translateX(-8px);
+    }
+
+    to {
+        opacity: 0.75;
+        transform: translateX(8px);
+    }
+}
+
+
+/* =========================================================
+   4. CHAT HEADER
+   ========================================================= */
+
+.chat-header {
+    position: relative;
+
+    flex: 0 0 72px;
+
+    width: 100%;
+
+    min-height: 72px;
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+
+    padding:
+        10px
+        13px;
+
+    gap: 12px;
+
+    z-index: 50;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(14, 8, 25, 0.97),
+            rgba(32, 10, 32, 0.94)
+        );
+
+    border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.09);
+
+    box-shadow:
+        0 8px 25px
+        rgba(0, 0, 0, 0.30),
+
+        0 1px 0
+        rgba(255, 65, 150, 0.12);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+
+/* =========================================================
+   5. BACK ARROW
+   ========================================================= */
+
+.chat-header > a {
+    flex: 0 0 38px;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #fff;
+
+    text-decoration: none;
+
+    background:
+        rgba(255, 255, 255, 0.07);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.chat-header > a:hover {
+    background:
+        rgba(255, 55, 140, 0.20);
+
+    box-shadow:
+        0 0 18px
+        rgba(255, 50, 140, 0.25);
+
+    transform: translateX(-2px);
+}
+
+.chat-header > a:active {
+    transform: scale(0.90);
+}
+
+.chat-header > a i {
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   6. PERSON AREA
+   ========================================================= */
+
+.chat-person {
+    min-width: 0;
+
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+/* =========================================================
+   7. PROFILE PHOTO
+   ========================================================= */
+
+.person-avatar {
+    position: relative;
+
+    flex: 0 0 45px;
+
+    width: 45px;
+    height: 45px;
+
+    padding: 2px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff3c8d,
+            #a85cff,
+            #ff3c8d
+        );
+
+    box-shadow:
+        0 0 12px
+        rgba(255, 45, 135, 0.35);
+}
+
+.person-avatar::after {
+    content: "";
+
+    position: absolute;
+
+    right: 1px;
+    bottom: 1px;
+
+    width: 11px;
+    height: 11px;
+
+    border-radius: 50%;
+
+    background: #48ef91;
+
+    border:
+        2px solid
+        #160a1e;
+
+    box-shadow:
+        0 0 8px
+        rgba(72, 239, 145, 0.7);
+}
+
+.person-avatar img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   8. PERSON NAME
+   ========================================================= */
+
+.chat-person > div:last-child {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+
+    gap: 2px;
+}
+
+.chat-person strong {
+    display: block;
+
+    max-width: 150px;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    color: #fff;
+
+    font-family:
+        "DM Sans",
+        sans-serif;
+
+    font-size: 15px;
+
+    font-weight: 700;
+}
+
+.online-status {
+    display: block;
+
+    color: #a7f5c8;
+
+    font-family:
+        "DM Sans",
+        sans-serif;
+
+    font-size: 11px;
+
+    font-weight: 500;
+
+    letter-spacing: 0.2px;
+}
+
+
+/* =========================================================
+   9. HEADER ACTIONS
+   ========================================================= */
+
+.chat-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+}
+
+.chat-actions i {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: rgba(255, 255, 255, 0.86);
+
+    font-size: 15px;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.chat-actions i:hover {
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    transform: scale(1.05);
+}
+
+
+/* =========================================================
+   10. MESSAGE AREA
+   ---------------------------------------------------------
+   THIS IS THE ONLY SCROLLING AREA.
+   ========================================================= */
+
+.chat-messages {
+    position: relative;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    width: 100%;
+
+    padding:
+        14px
+        10px
+        16px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    overscroll-behavior: contain;
+
+    scroll-behavior: smooth;
+
+    -webkit-overflow-scrolling: touch;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* scrollbar */
+
+.chat-messages::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background:
+        rgba(255, 80, 160, 0.30);
+
+    border-radius: 20px;
+}
+
+
+/* =========================================================
+   11. DATE SEPARATOR
+   ========================================================= */
+
+.chat-date-separator {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin:
+        12px
+        0
+        15px;
+}
+
+.chat-date-separator span {
+    padding:
+        6px
+        12px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(255, 255, 255, 0.07);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.07);
+
+    color:
+        rgba(255, 255, 255, 0.58);
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.3px;
+
+    backdrop-filter: blur(8px);
+}
+
+
+/* =========================================================
+   12. MESSAGE
+   ========================================================= */
+
+.message {
+    position: relative;
+
+    max-width: 78%;
+
+    margin-bottom: 7px;
+
+    padding:
+        9px
+        11px
+        7px;
+
+    border-radius: 17px;
+
+    animation:
+        pdMessageIn
+        0.25s
+        ease-out;
+}
+
+@keyframes pdMessageIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* =========================================================
+   13. RECEIVED MESSAGE
+   ========================================================= */
+
+.message.received {
+    align-self: flex-start;
+
+    margin-right: auto;
+
+    border-top-left-radius: 5px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.095),
+            rgba(255, 255, 255, 0.055)
+        );
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.07);
+
+    box-shadow:
+        0 5px 16px
+        rgba(0, 0, 0, 0.16);
+}
+
+
+/* =========================================================
+   14. SENT MESSAGE
+   ========================================================= */
+
+.message.sent {
+    align-self: flex-end;
+
+    margin-left: auto;
+
+    border-top-right-radius: 5px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(173, 62, 255, 0.78),
+            rgba(255, 46, 139, 0.76)
+        );
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.10);
+
+    box-shadow:
+        0 6px 20px
+        rgba(190, 44, 145, 0.22);
+}
+
+
+/* =========================================================
+   15. MESSAGE TEXT
+   ========================================================= */
+
+.message-text {
+    color: #fff;
+
+    font-family:
+        "DM Sans",
+        sans-serif;
+
+    font-size: 14px;
+
+    line-height: 1.45;
+
+    word-break: break-word;
+
+    white-space: pre-wrap;
+
+    padding-right: 3px;
+}
+
+
+/* =========================================================
+   16. MESSAGE TIME
+   ========================================================= */
+
+.message-time {
+    display: block;
+
+    margin-top: 3px;
+
+    text-align: right;
+
+    color:
+        rgba(255, 255, 255, 0.48);
+
+    font-size: 9px;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   17. VOICE MESSAGE
+   ========================================================= */
+
+.voice-message {
+    padding: 6px;
+}
+
+.voice-message-box {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+.voice-icon {
+    flex: 0 0 30px;
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    color: #fff;
+
+    font-size: 12px;
+}
+
+.voice-message audio {
+    width: 170px;
+
+    max-width: 100%;
+
+    height: 35px;
+}
+
+
+/* =========================================================
+   18. BOTTOM INPUT BAR
+   ---------------------------------------------------------
+   IMPORTANT:
+   flex-shrink: 0 keeps this visible.
+   ========================================================= */
+
+.chat-input {
+    position: relative;
+
+    flex: 0 0 auto;
+
+    width: 100%;
+
+    min-height: 68px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding:
+        9px
+        9px
+        calc(9px + env(safe-area-inset-bottom));
+
+    z-index: 60;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(11, 7, 20, 0.98),
+            rgba(28, 8, 27, 0.97)
+        );
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    box-shadow:
+        0 -8px 28px
+        rgba(0, 0, 0, 0.30);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+
+/* =========================================================
+   19. MESSAGE INPUT
+   ========================================================= */
+
+#messageInput {
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    height: 45px;
+
+    padding:
+        0
+        14px;
+
+    border: none;
+    outline: none;
+
+    border-radius: 24px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    color: #fff;
+
+    font-family:
+        "DM Sans",
+        sans-serif;
+
+    font-size: 13px;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#messageInput::placeholder {
+    color:
+        rgba(255, 255, 255, 0.40);
+}
+
+#messageInput:focus {
+    background:
+        rgba(255, 255, 255, 0.105);
+
+    border-color:
+        rgba(207, 87, 255, 0.50);
+
+    box-shadow:
+        0 0 14px
+        rgba(180, 70, 255, 0.12);
+}
+
+
+/* =========================================================
+   20. BOTTOM BUTTONS
+   ========================================================= */
+
+.attach-button,
+.send-message {
+    flex: 0 0 42px;
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    color: rgba(255, 255, 255, 0.82);
+
+    background:
+        rgba(255, 255, 255, 0.07);
+
+    transition:
+        transform 0.18s ease,
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.attach-button:hover {
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    transform: scale(1.05);
+}
+
+.attach-button:active,
+.send-message:active {
+    transform: scale(0.90);
+}
+
+
+/* =========================================================
+   21. VOICE BUTTON
+   ========================================================= */
+
+#voiceButton {
+    color: #ff83ba;
+}
+
+#voiceButton.recording {
+    color: #fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff2d78,
+            #ff4ba2
+        );
+
+    box-shadow:
+        0 0 18px
+        rgba(255, 45, 120, 0.55);
+
+    animation:
+        pdRecordingPulse
+        1s
+        infinite;
+}
+
+@keyframes pdRecordingPulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 8px
+            rgba(255, 45, 120, 0.35);
+    }
+
+    50% {
+        box-shadow:
+            0 0 22px
+            rgba(255, 45, 120, 0.70);
+    }
+}
+
+
+/* =========================================================
+   22. UPLOADING VOICE
+   ========================================================= */
+
+#voiceButton.uploading {
+    opacity: 0.55;
+
+    pointer-events: none;
+
+    animation:
+        pdUploading
+        0.8s
+        linear
+        infinite;
+}
+
+@keyframes pdUploading {
+
+    50% {
+        transform: scale(0.92);
+    }
+}
+
+
+/* =========================================================
+   23. SEND BUTTON
+   ========================================================= */
+
+.send-message {
+    color: #fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #a64dff,
+            #f22c8c
+        );
+
+    box-shadow:
+        0 5px 16px
+        rgba(213, 48, 145, 0.30);
+}
+
+.send-message:hover {
+    box-shadow:
+        0 0 22px
+        rgba(213, 48, 145, 0.50);
+
+    transform: scale(1.05);
+}
+
+.send-message:disabled {
+    opacity: 0.45;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   24. LOADING SCREEN
+   ========================================================= */
+
+#pd-chat-loader {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 100;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(125, 36, 150, 0.30),
+            transparent 45%
+        ),
+        linear-gradient(
+            145deg,
+            #09040f,
+            #19071c
+        );
+
+    transition:
+        opacity 0.18s ease,
+        visibility 0.18s ease;
+}
+
+#pd-chat-loader.pd-loaded {
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+}
+
+.pd-loader-heart {
+    font-size: 43px;
+
+    color: #ff3d91;
+
+    text-shadow:
+        0 0 10px #ff3d91,
+        0 0 28px rgba(255, 61, 145, 0.65);
+
+    animation:
+        pdLoaderHeart
+        1.2s
+        ease-in-out
+        infinite;
+}
+
+@keyframes pdLoaderHeart {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+.pd-loader-title {
+    margin-top: 10px;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 22px;
+
+    color: #fff;
+}
+
+.pd-loader-text {
+    margin-top: 5px;
+
+    color:
+        rgba(255, 255, 255, 0.55);
+
+    font-size: 11px;
+}
+
+.pd-loader-dots {
+    display: flex;
+
+    gap: 5px;
+
+    margin-top: 14px;
+}
+
+.pd-loader-dots span {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #ff4c9d;
+
+    animation:
+        pdLoaderDot
+        1s
+        infinite;
+}
+
+.pd-loader-dots span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.pd-loader-dots span:nth-child(3) {
+    animation-delay: 0.30s;
+}
+
+@keyframes pdLoaderDot {
+
+    0%,
+    100% {
+        opacity: 0.25;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(-4px);
+    }
+}
+
+
+/* =========================================================
+   25. SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .chat-header {
+        flex-basis: 67px;
+        height: 67px;
+        min-height: 67px;
+
+        padding:
+            8px
+            9px;
+    }
+
+    .person-avatar {
+        width: 41px;
+        height: 41px;
+
+        flex-basis: 41px;
+    }
+
+    .chat-person strong {
+        font-size: 14px;
+    }
+
+    .chat-actions i {
+        width: 32px;
+        height: 32px;
+    }
+
+    .message {
+        max-width: 83%;
+    }
+
+    .chat-input {
+        min-height: 64px;
+
+        gap: 5px;
+
+        padding:
+            7px
+            6px
+            calc(7px + env(safe-area-inset-bottom));
+    }
+
+    #messageInput {
+        height: 42px;
+
+        padding:
+            0
+            12px;
+
+        font-size: 12px;
+    }
+
+    .attach-button,
+    .send-message {
+        width: 39px;
+        height: 39px;
+
+        flex-basis: 39px;
+    }
+}
+
+
+/* =========================================================
+   26. TALL / DESKTOP PHONE FRAME
+   ========================================================= */
+
+@media (min-width: 600px) {
+
+    .chat-header {
+        border-radius:
+            20px
+            20px
+            0
+            0;
+    }
+
+    .chat-input {
+        border-radius:
+            0
+            0
+            20px
+            20px;
+    }
+}
+
+
+/* =========================================================
+   27. ACCESSIBILITY
+   ========================================================= */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+    outline:
+        2px solid
+        rgba(210, 110, 255, 0.75);
+
+    outline-offset: 2px;
+}
