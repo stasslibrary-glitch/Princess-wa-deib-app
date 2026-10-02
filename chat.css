@@ -1,4 +1,5 @@
 
+
 /* =========================================================
    PRINCESS WA DEIB — CHAT PAGE
    chat.css
@@ -599,12 +600,10 @@ body.phone-page {
 
     max-width: 78%;
 
-    margin-bottom: 7px;
-
-    padding:
-        9px
-        11px
-        7px;
+    .message {
+    margin-bottom: 4px !important;
+    padding: 6px 9px 5px !important;
+}
 
     border-radius: 17px;
 
@@ -1660,6 +1659,66 @@ body.phone-page {
     }
 
     #messageInput {
+        height: 40px !important;
+        min-height: 40px !important;
+    }
+}
+/* =========================================================
+   PD CHAT — GIVE BOTTOM INPUT MORE SPACE
+   ========================================================= */
+
+.chat-messages {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+
+    /* Reduce the space used by the message area */
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+
+/* Make the bottom input area slightly taller */
+.chat-input {
+    flex: 0 0 76px !important;
+    height: 76px !important;
+    min-height: 76px !important;
+
+    padding: 8px !important;
+
+    box-sizing: border-box !important;
+}
+
+/* Keep typing field and buttons comfortably inside */
+#messageInput {
+    height: 46px !important;
+    min-height: 46px !important;
+}
+
+.chat-input button {
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+}
+
+/* Smaller phones */
+@media (max-width: 380px) {
+
+    .chat-input {
+        flex-basis: 70px !important;
+        height: 70px !important;
+        min-height: 70px !important;
+
+        padding: 6px !important;
+    }
+
+    #messageInput {
+        height: 42px !important;
+        min-height: 42px !important;
+    }
+
+    .chat-input button {
+        width: 40px !important;
+        min-width: 40px !important;
         height: 40px !important;
         min-height: 40px !important;
     }
