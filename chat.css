@@ -1,5 +1,4 @@
 
-
 /* =========================================================
    PRINCESS WA DEIB — CHAT PAGE
    chat.css
@@ -600,10 +599,12 @@ body.phone-page {
 
     max-width: 78%;
 
-    .message {
-    margin-bottom: 4px !important;
-    padding: 6px 9px 5px !important;
-}
+    margin-bottom: 7px;
+
+    padding:
+        9px
+        11px
+        7px;
 
     border-radius: 17px;
 
@@ -1664,62 +1665,1027 @@ body.phone-page {
     }
 }
 /* =========================================================
-   PD CHAT — GIVE BOTTOM INPUT MORE SPACE
+   PD VOICE CALL
    ========================================================= */
 
-.chat-messages {
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
-
-    /* Reduce the space used by the message area */
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
+.chat-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
-/* Make the bottom input area slightly taller */
-.chat-input {
-    flex: 0 0 76px !important;
-    height: 76px !important;
-    min-height: 76px !important;
+.chat-actions button {
+    width: 38px;
+    height: 38px;
 
-    padding: 8px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    box-sizing: border-box !important;
+    border: none;
+    border-radius: 50%;
+
+    color: rgba(255,255,255,.88);
+
+    background: transparent;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
 }
 
-/* Keep typing field and buttons comfortably inside */
-#messageInput {
-    height: 46px !important;
-    min-height: 46px !important;
+.chat-actions button:hover {
+    background: rgba(255,255,255,.09);
+
+    transform: scale(1.05);
 }
 
-.chat-input button {
-    width: 44px !important;
-    min-width: 44px !important;
-    height: 44px !important;
-    min-height: 44px !important;
+.chat-actions button:active {
+    transform: scale(.9);
 }
 
-/* Smaller phones */
+.chat-call-button i {
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   CALL OVERLAY
+   ========================================================= */
+
+.pd-call-overlay {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 500;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 25px;
+
+    background:
+        radial-gradient(
+            circle at 50% 25%,
+            rgba(173, 65, 255, .35),
+            transparent 38%
+        ),
+
+        radial-gradient(
+            circle at 50% 80%,
+            rgba(255, 35, 130, .22),
+            transparent 40%
+        ),
+
+        rgba(7, 3, 15, .97);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.pd-call-overlay.active {
+    display: flex;
+}
+
+
+/* =========================================================
+   CALL CARD
+   ========================================================= */
+
+.pd-call-card {
+
+    width: 100%;
+    max-width: 330px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   CALL AVATAR
+   ========================================================= */
+
+.pd-call-avatar {
+
+    position: relative;
+
+    width: 105px;
+    height: 105px;
+
+    padding: 4px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff3c8d,
+            #a85cff,
+            #ff3c8d
+        );
+
+    box-shadow:
+        0 0 25px rgba(255,55,145,.35),
+        0 0 60px rgba(155,70,255,.20);
+
+    animation: pdCallPulse 2s ease-in-out infinite;
+}
+
+.pd-call-avatar img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+}
+
+.pd-call-online {
+
+    position: absolute;
+
+    right: 5px;
+    bottom: 7px;
+
+    width: 18px;
+    height: 18px;
+
+    border-radius: 50%;
+
+    background: #48ef91;
+
+    border: 3px solid #16091e;
+
+    box-shadow:
+        0 0 12px rgba(72,239,145,.8);
+}
+
+@keyframes pdCallPulse {
+
+    0%,100% {
+        transform: scale(1);
+        box-shadow:
+            0 0 25px rgba(255,55,145,.35),
+            0 0 60px rgba(155,70,255,.20);
+    }
+
+    50% {
+        transform: scale(1.04);
+        box-shadow:
+            0 0 35px rgba(255,55,145,.55),
+            0 0 80px rgba(155,70,255,.30);
+    }
+}
+
+
+/* =========================================================
+   CALL NAME
+   ========================================================= */
+
+.pd-call-name {
+
+    margin-top: 22px;
+
+    color: white;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 24px;
+}
+
+
+/* =========================================================
+   CALL STATUS
+   ========================================================= */
+
+.pd-call-status {
+
+    margin-top: 6px;
+
+    color:
+        rgba(255,255,255,.60);
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   TIMER
+   ========================================================= */
+
+.pd-call-timer {
+
+    margin-top: 8px;
+
+    color:
+        rgba(255,255,255,.42);
+
+    font-size: 12px;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   CALL CONTROLS
+   ========================================================= */
+
+.pd-call-controls {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 25px;
+
+    margin-top: 45px;
+}
+
+.pd-call-controls.incoming {
+    margin-top: 40px;
+}
+
+
+/* =========================================================
+   CONTROL BUTTON
+   ========================================================= */
+
+.pd-call-control {
+
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 50%;
+
+    color: white;
+
+    background:
+        rgba(255,255,255,.10);
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.25);
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+.pd-call-control:hover {
+    transform: scale(1.08);
+}
+
+.pd-call-control:active {
+    transform: scale(.92);
+}
+
+.pd-call-control i {
+    font-size: 18px;
+}
+
+
+/* ACCEPT */
+
+.pd-call-control.accept {
+
+    background:
+        linear-gradient(
+            135deg,
+            #27d979,
+            #18b866
+        );
+
+    box-shadow:
+        0 0 25px rgba(39,217,121,.35);
+}
+
+
+/* DECLINE */
+
+.pd-call-control.decline {
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff315f,
+            #e91448
+        );
+
+    box-shadow:
+        0 0 25px rgba(255,49,95,.30);
+}
+
+
+/* MUTE */
+
+.pd-call-control.muted {
+
+    background:
+        rgba(255,255,255,.22);
+
+    color: #ff77aa;
+}
+
+
+/* =========================================================
+   HIDE ACTIVE/INCOMING CONTROLS
+   ========================================================= */
+
+#pdActiveControls {
+    display: none;
+}
+
+#pdIncomingControls {
+    display: none;
+}
+
+.pd-call-overlay.calling #pdActiveControls {
+    display: flex;
+}
+
+.pd-call-overlay.incoming #pdIncomingControls {
+    display: flex;
+}
+
+.pd-call-overlay.incoming #pdActiveControls {
+    display: none;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
 @media (max-width: 380px) {
 
-    .chat-input {
-        flex-basis: 70px !important;
-        height: 70px !important;
-        min-height: 70px !important;
-
-        padding: 6px !important;
+    .pd-call-avatar {
+        width: 92px;
+        height: 92px;
     }
 
-    #messageInput {
-        height: 42px !important;
-        min-height: 42px !important;
+    .pd-call-name {
+        font-size: 22px;
     }
 
-    .chat-input button {
-        width: 40px !important;
-        min-width: 40px !important;
-        height: 40px !important;
-        min-height: 40px !important;
+    .pd-call-controls {
+        margin-top: 35px;
     }
+
+}
+/* =========================================================
+PD CHAT — REALISTIC PHONE FRAME
+Samsung Galaxy / Redmi 9A style
+-------------------------------
+
+The ENTIRE chat stays inside the phone.
+Header + messages + bottom input are all contained.
+The bottom frame border remains visible.
+========================================================= */
+
+/* =========================================================
+
+1. DESKTOP — PHONE FRAME
+   ========================================================= */
+
+@media (min-width: 601px) {
+
+```
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #321347 0%,
+            #100719 45%,
+            #05030a 100%
+        );
+
+    overflow: hidden;
+}
+
+
+body.phone-page {
+
+    width: 100%;
+    height: 100vh;
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   PHONE BODY
+   ===================================================== */
+
+.phone-app.chat-app {
+
+    position: relative;
+
+    width: min(
+        390px,
+        92vw
+    );
+
+    /*
+       Samsung / Redmi style portrait height.
+
+       844px gives enough room for:
+       header
+       messages
+       input
+       bottom frame
+    */
+    height: min(
+        844px,
+        94vh
+    );
+
+    min-height: 0;
+    max-height: 94vh;
+
+    margin: 0;
+
+    padding: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    border-radius: 34px;
+
+    /*
+       THIS is the visible phone border.
+    */
+    border:
+        7px solid
+        #19151d;
+
+    background:
+        linear-gradient(
+            145deg,
+            #090513,
+            #16091e,
+            #080512
+        );
+
+    box-shadow:
+
+        /* outer shadow */
+        0 35px 90px
+        rgba(0,0,0,.65),
+
+        /* purple glow */
+        0 0 45px
+        rgba(168,92,255,.18),
+
+        /* pink glow */
+        0 0 100px
+        rgba(255,45,135,.10),
+
+        /* inner edge */
+        inset 0 0 0 1px
+        rgba(255,255,255,.12);
+
+    isolation: isolate;
+}
+
+
+/* =====================================================
+   INNER SCREEN
+   ===================================================== */
+
+.phone-app.chat-app::before {
+
+    border-radius: 27px;
+
+    pointer-events: none;
+}
+
+
+.phone-app.chat-app::after {
+
+    pointer-events: none;
+
+    border-radius: 27px;
+}
+
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+
+.phone-app.chat-app .chat-header {
+
+    flex:
+        0 0 70px;
+
+    width: 100%;
+
+    height: 70px;
+
+    min-height: 70px;
+
+    flex-shrink: 0;
+
+    border-radius:
+        27px
+        27px
+        0
+        0;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   MESSAGE AREA
+   ===================================================== */
+
+.phone-app.chat-app .chat-messages {
+
+    flex:
+        1 1 0;
+
+    width: 100%;
+
+    min-height: 0;
+
+    height: auto;
+
+    max-height: none;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    box-sizing: border-box;
+
+    padding:
+        12px
+        10px
+        10px;
+
+    flex-shrink: 1;
+}
+
+
+/* =====================================================
+   BOTTOM INPUT
+   ===================================================== */
+
+.phone-app.chat-app .chat-input {
+
+    flex:
+        0 0 64px;
+
+    width: 100%;
+
+    height: 64px;
+
+    min-height: 64px;
+
+    max-height: 64px;
+
+    flex-shrink: 0;
+
+    box-sizing: border-box;
+
+    padding:
+        7px
+        8px;
+
+    margin: 0;
+
+    border-radius:
+        0
+        0
+        27px
+        27px;
+
+    z-index: 100;
+}
+
+
+/* =====================================================
+   INPUT
+   ===================================================== */
+
+.phone-app.chat-app #messageInput {
+
+    flex:
+        1 1 auto;
+
+    min-width: 0;
+
+    width: auto;
+
+    height: 42px;
+
+    min-height: 42px;
+    max-height: 42px;
+
+    box-sizing: border-box;
+}
+
+
+/* =====================================================
+   BOTTOM BUTTONS
+   ===================================================== */
+
+.phone-app.chat-app .chat-input button {
+
+    flex:
+        0 0 42px;
+
+    width: 42px;
+    min-width: 42px;
+    max-width: 42px;
+
+    height: 42px;
+    min-height: 42px;
+    max-height: 42px;
+
+    box-sizing: border-box;
+
+    position: relative;
+
+    z-index: 200;
+}
+
+
+/* =====================================================
+   PHONE INNER SCREEN EDGE
+   ===================================================== */
+
+.phone-app.chat-app {
+
+    box-shadow:
+
+        0 35px 90px
+        rgba(0,0,0,.65),
+
+        0 0 45px
+        rgba(168,92,255,.18),
+
+        inset 0 0 0 2px
+        rgba(255,255,255,.06);
+}
+
+
+/* =====================================================
+   SMALL DESKTOP / LAPTOP
+   ===================================================== */
+
+@media (max-height: 850px) {
+
+    .phone-app.chat-app {
+
+        height: 92vh;
+
+        max-height: 92vh;
+
+        width: min(
+            380px,
+            90vw
+        );
+    }
+}
+
+
+/* =====================================================
+   VERY SHORT LAPTOP
+   ===================================================== */
+
+@media (max-height: 720px) {
+
+    body.phone-page {
+
+        padding:
+            10px;
+    }
+
+    .phone-app.chat-app {
+
+        height: 96vh;
+
+        max-height: 96vh;
+
+        border-width: 6px;
+
+        border-radius: 28px;
+    }
+
+    .phone-app.chat-app .chat-header {
+
+        flex-basis: 62px;
+
+        height: 62px;
+
+        min-height: 62px;
+    }
+
+    .phone-app.chat-app .chat-input {
+
+        flex-basis: 58px;
+
+        height: 58px;
+
+        min-height: 58px;
+
+        max-height: 58px;
+    }
+
+    .phone-app.chat-app #messageInput {
+
+        height: 38px;
+
+        min-height: 38px;
+
+        max-height: 38px;
+    }
+
+    .phone-app.chat-app .chat-input button {
+
+        width: 38px;
+
+        min-width: 38px;
+
+        max-width: 38px;
+
+        height: 38px;
+
+        min-height: 38px;
+
+        max-height: 38px;
+    }
+}
+
+
+}
+
+/* =========================================================
+2. REAL MOBILE PHONE
+--------------------
+
+On an actual phone, DON'T show an artificial frame
+around the browser viewport. The chat uses the whole
+available screen.
+========================================================= */
+
+@media (max-width: 600px) {
+
+
+html,
+body {
+
+    width: 100%;
+
+    height: 100%;
+
+    margin: 0;
+
+    padding: 0;
+
+    overflow: hidden;
+}
+
+
+body.phone-page {
+
+    width: 100%;
+
+    height: 100dvh;
+
+    min-height: 100dvh;
+
+    padding: 0;
+
+    margin: 0;
+
+    display: block;
+
+    overflow: hidden;
+}
+
+
+.phone-app.chat-app {
+
+    width: 100% !important;
+
+    height: 100dvh !important;
+
+    min-height: 0 !important;
+
+    max-height: 100dvh !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    border: none;
+
+    border-radius: 0;
+
+    box-shadow: none;
+
+    overflow: hidden;
+}
+
+
+/* HEADER */
+
+.phone-app.chat-app .chat-header {
+
+    flex:
+        0 0 68px;
+
+    height: 68px;
+
+    min-height: 68px;
+
+    border-radius: 0;
+}
+
+
+/* MESSAGES */
+
+.phone-app.chat-app .chat-messages {
+
+    flex:
+        1 1 0;
+
+    min-height: 0;
+
+    height: auto;
+
+    overflow-x: hidden;
+
+    overflow-y: auto;
+
+    padding:
+        10px
+        9px
+        8px;
+}
+
+
+/* INPUT */
+
+.phone-app.chat-app .chat-input {
+
+    flex:
+        0 0 64px;
+
+    height: 64px;
+
+    min-height: 64px;
+
+    max-height: 64px;
+
+    padding:
+        6px;
+
+    border-radius: 0;
+}
+
+}
+
+/* =========================================================
+3. REDMI 9A / SMALL PHONE
+========================================================= */
+
+@media (max-width: 380px) {
+
+
+.phone-app.chat-app .chat-header {
+
+    flex-basis: 63px;
+
+    height: 63px;
+
+    min-height: 63px;
+}
+
+
+.phone-app.chat-app .chat-input {
+
+    flex-basis: 61px;
+
+    height: 61px;
+
+    min-height: 61px;
+
+    max-height: 61px;
+
+    padding:
+        5px;
+}
+
+
+.phone-app.chat-app #messageInput {
+
+    height: 40px;
+
+    min-height: 40px;
+
+    max-height: 40px;
+}
+
+
+.phone-app.chat-app .chat-input button {
+
+    width: 39px;
+
+    min-width: 39px;
+
+    max-width: 39px;
+
+    height: 39px;
+
+    min-height: 39px;
+
+    max-height: 39px;
+}
+
+
+}
+
+/* =========================================================
+4. CALL OVERLAY MUST STAY INSIDE PHONE
+========================================================= */
+
+.phone-app.chat-app .pd-call-overlay {
+
+
+position: absolute;
+
+inset: 0;
+
+width: 100%;
+height: 100%;
+
+border-radius: inherit;
+
+overflow: hidden;
+
+z-index: 500;
+```
+
+}
+
+/* =========================================================
+5. LOADING SCREEN MUST STAY INSIDE PHONE
+========================================================= */
+
+.phone-app.chat-app #pd-chat-loader {
+
+```
+position: absolute;
+
+inset: 0;
+
+width: 100%;
+height: 100%;
+
+border-radius: inherit;
+
+overflow: hidden;
+
+
 }
