@@ -40,10 +40,13 @@ body.phone-page {
 .phone-app.chat-app {
     position: relative;
 
-    width: 100%;
-    height: 100dvh;
-    min-width: 0;
-    min-height: 100dvh;
+    width: 390px !important;
+height: 844px !important;
+min-height: 0 !important;
+max-height: 844px !important;
+
+border: 7px solid #222 !important;
+border-radius: 35px !important;
 
     margin: 0;
     padding: 0;
@@ -1524,9 +1527,13 @@ body.phone-page {
    ========================================================= */
 
 .phone-app.chat-app {
-    width: 100% !important;
-    height: 100dvh !important;
-    min-height: 100dvh !important;
+    width: 390px !important;
+height: 844px !important;
+min-height: 0 !important;
+max-height: 844px !important;
+
+border: 7px solid #222 !important;
+border-radius: 35px !important;
 
     margin: 0 !important;
     padding: 0 !important;
@@ -1580,6 +1587,7 @@ body.phone-page {
     width: 100% !important;
     height: 64px !important;
     min-height: 64px !important;
+    max-height: 64px !important;
 
     margin: 0 !important;
 
@@ -2054,14 +2062,7 @@ body.phone-page {
     }
 
 }
-/* =========================================================
-PD CHAT — REALISTIC PHONE FRAME
-Samsung Galaxy / Redmi 9A style
--------------------------------
 
-The ENTIRE chat stays inside the phone.
-Header + messages + bottom input are all contained.
-The bottom frame border remains visible.
 ========================================================= */
 
 /* =========================================================
@@ -2455,7 +2456,7 @@ body.phone-page {
         max-height: 38px;
     }
 }
-
+```
 
 }
 
@@ -2470,7 +2471,7 @@ available screen.
 
 @media (max-width: 600px) {
 
-
+```
 html,
 body {
 
@@ -2583,6 +2584,7 @@ body.phone-page {
 
     border-radius: 0;
 }
+```
 
 }
 
@@ -2592,7 +2594,7 @@ body.phone-page {
 
 @media (max-width: 380px) {
 
-
+```
 .phone-app.chat-app .chat-header {
 
     flex-basis: 63px;
@@ -2642,7 +2644,7 @@ body.phone-page {
 
     max-height: 39px;
 }
-
+```
 
 }
 
@@ -2652,7 +2654,7 @@ body.phone-page {
 
 .phone-app.chat-app .pd-call-overlay {
 
-
+```
 position: absolute;
 
 inset: 0;
@@ -2686,6 +2688,6 @@ height: 100%;
 border-radius: inherit;
 
 overflow: hidden;
-
+```
 
 }
