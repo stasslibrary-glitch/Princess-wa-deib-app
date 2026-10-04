@@ -501,8 +501,8 @@ button {
     background:
         linear-gradient(
             135deg,
-            #7900db,
-            #d83c9d
+            #db0000,
+            #42f0f0
         );
 
     box-shadow:
@@ -519,7 +519,7 @@ button {
     background:
         radial-gradient(
             circle at 85% 50%,
-            rgba(192, 1, 1, 0.37),
+            rgba(1, 132, 192, 0.87),
             transparent 30%
         );
 }
@@ -532,7 +532,7 @@ button {
     background:
         linear-gradient(
             90deg,
-            rgba(23, 6, 44, 0.849),
+            rgba(115, 0, 255, 0.849),
             rgba(23, 6, 44, 0.25)
         );
 }
@@ -583,7 +583,7 @@ button {
     background:
         linear-gradient(
             145deg,
-            rgba(18, 13, 55, 0.96),
+            rgba(33, 161, 235, 0.96),
             rgba(113, 17, 223, 0.96)
         );
 
@@ -6869,4 +6869,135 @@ textarea {
     z-index: 5;
 
     box-sizing: border-box;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =====================================================
+   100 DAYS — SECRET BUTTON
+   ===================================================== */
+
+.hundred-days-button {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 85%;
+    max-width: 320px;
+
+    margin: 18px auto;
+
+    padding: 15px 22px;
+
+    border-radius: 30px;
+
+    text-decoration: none;
+
+    color: #fff;
+
+    font-family: "DM Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8e44ff,
+            #ff3d9a,
+            #a84dff
+        );
+
+    border:
+        1px solid rgba(255,255,255,.25);
+
+    box-shadow:
+        0 8px 25px rgba(190,50,170,.35),
+        0 0 25px rgba(168,76,255,.20);
+
+    overflow: hidden;
+
+    animation: dontClickFloat 2.5s ease-in-out infinite;
+}
+
+/* moving shine */
+.hundred-days-button::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -120%;
+
+    width: 70%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.35),
+            transparent
+        );
+
+    transform: skewX(-20deg);
+
+    animation: dontClickShine 3s infinite;
+}
+
+.hundred-days-button span,
+.hundred-days-button i {
+    position: relative;
+    z-index: 2;
+}
+
+.hundred-days-button i {
+    margin-left: 9px;
+    font-size: 15px;
+}
+
+.hundred-days-button:hover {
+    transform: scale(1.04);
+
+    box-shadow:
+        0 10px 35px rgba(190,50,170,.50),
+        0 0 35px rgba(168,76,255,.30);
+}
+
+.hundred-days-button:active {
+    transform: scale(.96);
+}
+
+@keyframes dontClickFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes dontClickShine {
+    0% {
+        left: -120%;
+    }
+
+    45%, 100% {
+        left: 140%;
+    }
 }

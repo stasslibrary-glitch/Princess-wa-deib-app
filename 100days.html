@@ -1,0 +1,1135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <meta name="theme-color" content="#090312">
+
+    <title>100 Days of Us ❤️</title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <style>
+
+        /* =====================================================
+           PD — 100 DAYS OF US
+           EVERYTHING IN ONE FILE ❤️
+           ===================================================== */
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 20% 15%,
+                    rgba(185, 76, 255, .18),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 85% 80%,
+                    rgba(255, 35, 135, .18),
+                    transparent 32%
+                ),
+                linear-gradient(
+                    145deg,
+                    #07030d,
+                    #14051d,
+                    #08030e
+                );
+
+            color: white;
+
+            font-family:
+                "DM Sans",
+                sans-serif;
+        }
+
+
+        /* =====================================================
+           MAIN PAGE
+           ===================================================== */
+
+        .celebration {
+
+            position: relative;
+
+            width: 100%;
+            height: 100dvh;
+
+            min-height: 100dvh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+
+            isolation: isolate;
+        }
+
+
+        /* =====================================================
+           BACKGROUND GLOW
+           ===================================================== */
+
+        .glow {
+
+            position: absolute;
+
+            width: 350px;
+            height: 350px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(179, 72, 255, .25),
+                    transparent 68%
+                );
+
+            filter: blur(20px);
+
+            animation:
+                glowMove
+                8s
+                ease-in-out
+                infinite alternate;
+
+            z-index: -3;
+        }
+
+        .glow.one {
+            top: -130px;
+            left: -120px;
+        }
+
+        .glow.two {
+            bottom: -140px;
+            right: -120px;
+
+            animation-delay: 2s;
+        }
+
+        @keyframes glowMove {
+
+            from {
+                transform:
+                    scale(1)
+                    translate(0, 0);
+            }
+
+            to {
+                transform:
+                    scale(1.25)
+                    translate(30px, -20px);
+            }
+        }
+
+
+        /* =====================================================
+           STARS
+           ===================================================== */
+
+        .stars {
+
+            position: absolute;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            z-index: -1;
+        }
+
+        .star {
+
+            position: absolute;
+
+            color:
+                rgba(255,255,255,.55);
+
+            font-size: 10px;
+
+            animation:
+                twinkle
+                2s
+                ease-in-out
+                infinite alternate;
+        }
+
+        @keyframes twinkle {
+
+            from {
+                opacity: .15;
+                transform: scale(.7);
+            }
+
+            to {
+                opacity: .9;
+                transform: scale(1.25);
+            }
+        }
+
+
+        /* =====================================================
+           CONTENT
+           ===================================================== */
+
+        .content {
+
+            width: min(
+                92%,
+                430px
+            );
+
+            text-align: center;
+
+            padding:
+                25px
+                18px;
+
+            animation:
+                pageEnter
+                1s
+                ease;
+        }
+
+        @keyframes pageEnter {
+
+            from {
+                opacity: 0;
+                transform:
+                    translateY(25px)
+                    scale(.96);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+        }
+
+
+        /* =====================================================
+           LITTLE TOP TEXT
+           ===================================================== */
+
+        .tiny {
+
+            margin-bottom: 8px;
+
+            color:
+                rgba(255,255,255,.55);
+
+            font-size: 10px;
+
+            letter-spacing: 4px;
+
+            text-transform: uppercase;
+        }
+
+
+        /* =====================================================
+           MAIN TITLE
+           ===================================================== */
+
+        h1 {
+
+            margin: 0;
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size:
+                clamp(
+                    29px,
+                    8vw,
+                    43px
+                );
+
+            line-height: 1.15;
+
+            font-weight: 600;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #fff,
+                    #f8b6ff,
+                    #ff6db4,
+                    #fff
+                );
+
+            background-size: 250% auto;
+
+            -webkit-background-clip: text;
+            background-clip: text;
+
+            color: transparent;
+
+            animation:
+                titleShine
+                4s
+                linear
+                infinite;
+        }
+
+        @keyframes titleShine {
+
+            to {
+                background-position: 250% center;
+            }
+        }
+
+
+        /* =====================================================
+           SUBTITLE
+           ===================================================== */
+
+        .subtitle {
+
+            margin:
+                12px
+                auto
+                0;
+
+            max-width: 330px;
+
+            color:
+                rgba(255,255,255,.68);
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           COUNTER
+           ===================================================== */
+
+        .counter-wrap {
+
+            position: relative;
+
+            width: 205px;
+            height: 205px;
+
+            margin:
+                27px
+                auto
+                22px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        /* rotating ring */
+
+        .counter-wrap::before {
+
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            border-radius: 50%;
+
+            background:
+                conic-gradient(
+                    from 0deg,
+                    #a84cff,
+                    #ff3f9b,
+                    #ff8ac8,
+                    #a84cff
+                );
+
+            animation:
+                rotateRing
+                5s
+                linear
+                infinite;
+
+            filter:
+                drop-shadow(
+                    0 0 18px
+                    rgba(207,72,255,.45)
+                );
+        }
+
+        .counter-wrap::after {
+
+            content: "";
+
+            position: absolute;
+
+            inset: 5px;
+
+            border-radius: 50%;
+
+            background:
+                #100719;
+        }
+
+        @keyframes rotateRing {
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        /* =====================================================
+           COUNTER NUMBER
+           ===================================================== */
+
+        .counter {
+
+            position: relative;
+
+            z-index: 2;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+        }
+
+        #number {
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size: 76px;
+
+            line-height: .9;
+
+            font-weight: 700;
+
+            color: white;
+
+            text-shadow:
+                0 0 15px
+                rgba(255,255,255,.25),
+
+                0 0 35px
+                rgba(194,66,255,.45);
+        }
+
+        .days {
+
+            margin-top: 9px;
+
+            font-size: 11px;
+
+            letter-spacing: 4px;
+
+            color:
+                rgba(255,255,255,.55);
+
+            text-transform: uppercase;
+        }
+
+
+        /* =====================================================
+           MESSAGE
+           ===================================================== */
+
+        .message {
+
+            max-width: 350px;
+
+            margin:
+                0
+                auto;
+
+            color:
+                rgba(255,255,255,.72);
+
+            font-size: 13px;
+
+            line-height: 1.7;
+        }
+
+        .message strong {
+
+            color: #ff83bd;
+        }
+
+
+        /* =====================================================
+           FINAL CELEBRATION
+           ===================================================== */
+
+        .final {
+
+            margin-top: 20px;
+
+            opacity: 0;
+
+            transform:
+                translateY(12px)
+                scale(.95);
+
+            transition:
+                opacity .8s ease,
+                transform .8s ease;
+        }
+
+        .final.show {
+
+            opacity: 1;
+
+            transform:
+                translateY(0)
+                scale(1);
+        }
+
+        .final-title {
+
+            font-family:
+                "Playfair Display",
+                serif;
+
+            font-size: 22px;
+
+            color: #fff;
+
+            text-shadow:
+                0 0 18px
+                rgba(255,60,150,.45);
+        }
+
+        .final-text {
+
+            margin-top: 5px;
+
+            color:
+                rgba(255,255,255,.55);
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           HEART
+           ===================================================== */
+
+        .heart {
+
+            display: inline-block;
+
+            color: #ff4b9a;
+
+            animation:
+                heartbeat
+                1.2s
+                ease-in-out
+                infinite;
+        }
+
+        @keyframes heartbeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.25);
+            }
+        }
+
+
+        /* =====================================================
+           BACK HOME BUTTON
+           ===================================================== */
+
+        .back-home {
+
+            margin-top: 18px;
+
+            padding:
+                10px
+                18px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.13);
+
+            border-radius: 30px;
+
+            color:
+                rgba(255,255,255,.78);
+
+            background:
+                rgba(255,255,255,.06);
+
+            backdrop-filter:
+                blur(12px);
+
+            -webkit-backdrop-filter:
+                blur(12px);
+
+            text-decoration: none;
+
+            font-size: 11px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            transition:
+                transform .2s ease,
+                background .2s ease;
+        }
+
+        .back-home:hover {
+
+            background:
+                rgba(255,255,255,.11);
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        /* =====================================================
+           FLOATING HEARTS
+           ===================================================== */
+
+        .floating-heart {
+
+            position: absolute;
+
+            bottom: -30px;
+
+            color:
+                rgba(255,76,160,.45);
+
+            font-size:
+                var(--size);
+
+            animation:
+                floatHeart
+                var(--duration)
+                linear
+                forwards;
+
+            pointer-events: none;
+        }
+
+        @keyframes floatHeart {
+
+            0% {
+                opacity: 0;
+                transform:
+                    translateY(0)
+                    rotate(0deg)
+                    scale(.6);
+            }
+
+            15% {
+                opacity: .8;
+            }
+
+            100% {
+                opacity: 0;
+
+                transform:
+                    translateY(-110vh)
+                    translateX(var(--move))
+                    rotate(35deg)
+                    scale(1.2);
+            }
+        }
+
+
+        /* =====================================================
+           CONFETTI
+           ===================================================== */
+
+        .confetti {
+
+            position: absolute;
+
+            top: -20px;
+
+            width: 6px;
+            height: 10px;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            animation:
+                confettiFall
+                var(--fall)
+                linear
+                forwards;
+        }
+
+        @keyframes confettiFall {
+
+            0% {
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    rotate(0deg);
+            }
+
+            100% {
+                opacity: 0;
+
+                transform:
+                    translateY(110vh)
+                    translateX(var(--drift))
+                    rotate(720deg);
+            }
+        }
+
+
+        /* =====================================================
+           SMALL PHONES
+           ===================================================== */
+
+        @media (max-height: 700px) {
+
+            .content {
+                padding-top: 10px;
+            }
+
+            .counter-wrap {
+
+                width: 165px;
+                height: 165px;
+
+                margin:
+                    18px
+                    auto
+                    15px;
+            }
+
+            #number {
+                font-size: 61px;
+            }
+
+            .message {
+                font-size: 12px;
+            }
+
+            .final {
+                margin-top: 12px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<div class="celebration" id="celebration">
+
+    <div class="glow one"></div>
+    <div class="glow two"></div>
+
+    <div class="stars" id="stars"></div>
+
+
+    <main class="content">
+
+        <div class="tiny">
+            Princess wa Deib
+        </div>
+
+
+        <h1>
+            Happy 100 Days
+            <span class="heart">♥</span>
+        </h1>
+
+
+        <p class="subtitle">
+            100 beautiful days of choosing each other,
+            loving each other and creating memories together.
+        </p>
+
+
+        <div class="counter-wrap">
+
+            <div class="counter">
+
+                <div id="number">
+                    0
+                </div>
+
+                <div class="days">
+                    Days Together
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <p class="message">
+
+            <strong>100 days.</strong>
+
+            <br>
+
+            Days filled with love, happiness, laughter,
+            joy, beautiful memories, silly moments,
+            little arguments, sweet conversations
+            and countless reasons to smile.
+
+            <br><br>
+
+            And somehow...
+
+            <strong>
+                I'd still choose you all over again.
+            </strong>
+
+        </p>
+
+
+        <div class="final" id="final">
+
+            <div class="final-title">
+                100 Days of Us
+                <span class="heart">♥</span>
+            </div>
+
+            <div class="final-text">
+                And this is only the beginning...
+            </div>
+
+            <a
+                href="home.html"
+                class="back-home"
+            >
+                <i class="fa-solid fa-house"></i>
+                Back to our home
+            </a>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    /* =====================================================
+       STAR FIELD
+       ===================================================== */
+
+    const stars =
+        document.getElementById("stars");
+
+    for (
+        let i = 0;
+        i < 35;
+        i++
+    ) {
+
+        const star =
+            document.createElement("span");
+
+        star.className =
+            "star";
+
+        star.textContent =
+            Math.random() > .5
+                ? "✦"
+                : "·";
+
+        star.style.left =
+            Math.random() * 100 + "%";
+
+        star.style.top =
+            Math.random() * 100 + "%";
+
+        star.style.fontSize =
+            (Math.random() * 8 + 5) + "px";
+
+        star.style.animationDelay =
+            (Math.random() * 3) + "s";
+
+        stars.appendChild(star);
+    }
+
+
+    /* =====================================================
+       COUNTER
+       0 → 100
+       ===================================================== */
+
+    const number =
+        document.getElementById("number");
+
+    const final =
+        document.getElementById("final");
+
+
+    let current = 0;
+
+    const target = 100;
+
+
+    /*
+       Fast at first,
+       then slows near 100.
+    */
+
+    function countUp() {
+
+        if (current < target) {
+
+            current++;
+
+            number.textContent =
+                current;
+
+            let delay;
+
+            if (current < 50) {
+
+                delay = 12;
+
+            } else if (current < 80) {
+
+                delay = 25;
+
+            } else if (current < 95) {
+
+                delay = 55;
+
+            } else {
+
+                delay = 120;
+
+            }
+
+            setTimeout(
+                countUp,
+                delay
+            );
+
+        } else {
+
+            number.textContent =
+                "100";
+
+            celebrate();
+        }
+    }
+
+
+    /* =====================================================
+       FLOATING HEARTS
+       ===================================================== */
+
+    function createHeart() {
+
+        const heart =
+            document.createElement("div");
+
+        heart.className =
+            "floating-heart";
+
+        heart.textContent =
+            Math.random() > .5
+                ? "♥"
+                : "♡";
+
+        heart.style.left =
+            Math.random() * 100 + "%";
+
+        heart.style.setProperty(
+            "--size",
+            (Math.random() * 16 + 8) + "px"
+        );
+
+        heart.style.setProperty(
+            "--duration",
+            (Math.random() * 6 + 5) + "s"
+        );
+
+        heart.style.setProperty(
+            "--move",
+            (Math.random() * 120 - 60) + "px"
+        );
+
+        document
+            .getElementById("celebration")
+            .appendChild(heart);
+
+        setTimeout(
+            () => heart.remove(),
+            12000
+        );
+    }
+
+
+    setInterval(
+        createHeart,
+        650
+    );
+
+
+    /* =====================================================
+       CONFETTI
+       ===================================================== */
+
+    function createConfetti() {
+
+        for (
+            let i = 0;
+            i < 90;
+            i++
+        ) {
+
+            setTimeout(() => {
+
+                const piece =
+                    document.createElement("div");
+
+                piece.className =
+                    "confetti";
+
+                piece.style.left =
+                    Math.random() * 100 + "%";
+
+                piece.style.width =
+                    (Math.random() * 5 + 3) + "px";
+
+                piece.style.height =
+                    (Math.random() * 8 + 5) + "px";
+
+                piece.style.background =
+                    [
+                        "#ff4b9a",
+                        "#b55cff",
+                        "#ff8fc9",
+                        "#ffffff",
+                        "#d88cff"
+                    ][
+                        Math.floor(
+                            Math.random() * 5
+                        )
+                    ];
+
+                piece.style.setProperty(
+                    "--fall",
+                    (Math.random() * 3 + 3) + "s"
+                );
+
+                piece.style.setProperty(
+                    "--drift",
+                    (Math.random() * 240 - 120) + "px"
+                );
+
+                document
+                    .getElementById("celebration")
+                    .appendChild(piece);
+
+                setTimeout(
+                    () => piece.remove(),
+                    7000
+                );
+
+            }, i * 18);
+        }
+    }
+
+
+    /* =====================================================
+       FINAL CELEBRATION
+       ===================================================== */
+
+    function celebrate() {
+
+        final.classList.add("show");
+
+        createConfetti();
+
+        /*
+           Extra heart burst
+        */
+
+        for (
+            let i = 0;
+            i < 20;
+            i++
+        ) {
+
+            setTimeout(
+                createHeart,
+                i * 100
+            );
+        }
+    }
+
+
+    /* =====================================================
+       START
+       ===================================================== */
+
+    setTimeout(
+        countUp,
+        700
+    );
+
+</script>
+
+</body>
+</html>
