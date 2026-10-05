@@ -1,238 +1,330 @@
 /* =========================================================
-   PD — OUR STATS
+   PRINCESS WA DEIB — OUR STATS
    stats.js
    ========================================================= */
 
-import { auth, db } from "./firebase.js";
-import {
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-
-import {
-    collection,
-    getDocs,
-    query,
-    orderBy
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-
 
 /* =========================================================
-   PD SETTINGS
+   1. RELATIONSHIP START DATE
    ========================================================= */
 
-const RELATIONSHIP_START = new Date("2026-06-26T00:00:00");
+const relationshipStart = new Date("2026-06-26T00:00:00");
 
 
 /* =========================================================
-   DAYS TOGETHER
+   2. CALCULATE DAYS TOGETHER
+   ========================================================= */
+
+function calculateDaysTogether() {
+
+    const today = new Date();
+
+    const difference =
+        today.getTime() -
+        relationshipStart.getTime();
+
+    const days =
+        Math.floor(
+            difference /
+            (1000 * 60 * 60 * 24)
+        );
+
+    return Math.max(days, 0);
+}
+
+
+/* =========================================================
+   3. ANIMATE NUMBER
+   ========================================================= */
+
+function animateNumber(
+    element,
+    target,
+    duration = 1600
+) {
+
+    if (!element)
+        return;
+
+    const startTime = performance.now();
+
+    function update(currentTime) {
+
+        const elapsed =
+            currentTime - startTime;
+
+        const progress =
+            Math.min(
+                elapsed / duration,
+                1
+            );
+
+        /* Smooth easing */
+
+        const eased =
+            1 -
+            Math.pow(
+                1 - progress,
+                3
+            );
+
+        const currentValue =
+            Math.floor(
+                eased * target
+            );
+
+        element.textContent =
+            currentValue.toLocaleString();
+
+        if (progress < 1) {
+
+            requestAnimationFrame(
+                update
+            );
+
+        } else {
+
+            element.textContent =
+                target.toLocaleString();
+
+        }
+
+    }
+
+    requestAnimationFrame(
+        update
+    );
+}
+
+
+/* =========================================================
+   4. UPDATE DAYS
    ========================================================= */
 
 function updateDaysTogether() {
 
-    const today = new Date();
+    const days =
+        calculateDaysTogether();
 
-    const start = new Date(RELATIONSHIP_START);
+    const element =
+        document.getElementById(
+            "daysTogether"
+        );
 
-    start.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
-
-    const difference = today - start;
-
-    const days = Math.floor(
-        difference / (1000 * 60 * 60 * 24)
+    animateNumber(
+        element,
+        days,
+        1800
     );
 
-    const element = document.getElementById("daysTogether");
-
-    if (element) {
-        element.textContent = Math.max(days, 0);
-    }
-
-    /* Update Today in the journey */
-
-    const todayJourney =
-        document.getElementById("todayJourney");
-
-    if (todayJourney) {
-
-        todayJourney.textContent =
-            today.toLocaleDateString(
-                "en-GB",
-                {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric"
-                }
-            );
-    }
+    return days;
 }
 
 
 /* =========================================================
-   LOAD SPECIAL MEMORIES
+   5. UPDATE TODAY JOURNEY
    ========================================================= */
 
-async function loadMemoryCount() {
+function updateTodayJourney(days) {
 
-    const memoryElement =
-        document.getElementById("memoryCount");
-
-    if (!memoryElement) return;
-
-    try {
-
-        const memoriesRef =
-            collection(db, "memories");
-
-        const snapshot =
-            await getDocs(memoriesRef);
-
-        memoryElement.textContent =
-            snapshot.size;
-
-    } catch (error) {
-
-        console.error(
-            "Could not load memories:",
-            error
+    const element =
+        document.getElementById(
+            "todayJourney"
         );
 
-        memoryElement.textContent = "0";
-    }
-}
+    if (!element)
+        return;
 
 
-/* =========================================================
-   LOAD MESSAGE COUNT
-   ========================================================= */
+    if (days === 0) {
 
-async function loadMessageCount() {
-
-    const messageElement =
-        document.getElementById("messageCount");
-
-    if (!messageElement) return;
-
-    try {
-
-        const messagesRef =
-            collection(db, "messages");
-
-        const snapshot =
-            await getDocs(messagesRef);
-
-        messageElement.textContent =
-            snapshot.size;
-
-    } catch (error) {
-
-        console.error(
-            "Could not load messages:",
-            error
-        );
-
-        messageElement.textContent = "0";
-    }
-}
-
-
-/* =========================================================
-   SONG OF THE DAY
-   ========================================================= */
-
-const songs = [
-
-    "Your Love Amazes Me — John Berry",
-
-    "Perfect — Ed Sheeran",
-
-    "A Thousand Years — Christina Perri",
-
-    "All of Me — John Legend",
-
-    "Until I Found You — Stephen Sanchez",
-
-    "Adore You — Harry Styles",
-
-    "Die With A Smile — Lady Gaga & Bruno Mars",
-
-    "Just the Way You Are — Bruno Mars",
-
-    "At Last — Etta James",
-
-    "I Won’t Give Up — Jason Mraz"
-
-];
-
-
-function loadSongOfTheDay() {
-
-    const songElement =
-        document.getElementById("songTitle");
-
-    if (!songElement) return;
-
-    const today = new Date();
-
-    const dateNumber =
-        today.getFullYear() * 10000 +
-        (today.getMonth() + 1) * 100 +
-        today.getDate();
-
-    const index =
-        dateNumber % songs.length;
-
-    songElement.textContent =
-        songs[index];
-}
-
-
-/* =========================================================
-   INITIALISE STATS
-   ========================================================= */
-
-async function initialiseStats() {
-
-    updateDaysTogether();
-
-    loadSongOfTheDay();
-
-    await loadMemoryCount();
-
-    await loadMessageCount();
-}
-
-
-/* =========================================================
-   AUTH
-   ========================================================= */
-
-onAuthStateChanged(auth, (user) => {
-
-    if (!user) {
-
-        console.log(
-            "PD Stats: No authenticated user."
-        );
+        element.textContent =
+            "Our story begins today... ♥";
 
         return;
+
     }
 
-    console.log(
-        "❤️ PD Stats loaded for:",
-        user.email
-    );
 
-    initialiseStats();
+    if (days === 1) {
 
-});
+        element.textContent =
+            "Our first day together... ♥";
+
+        return;
+
+    }
+
+
+    element.textContent =
+        `${days} days into our beautiful story... ♥`;
+
+}
 
 
 /* =========================================================
-   UPDATE DAYS EVERY MINUTE
+   6. SPECIAL MEMORY COUNT
    ========================================================= */
 
-setInterval(
-    updateDaysTogether,
-    60000
-);
+function updateMemoryCount() {
+
+    const element =
+        document.getElementById(
+            "memoryCount"
+        );
+
+    if (!element)
+        return;
+
+
+    /*
+       For now this is a simple
+       romantic placeholder.
+
+       Later we can connect this
+       directly to Firebase memories.
+    */
+
+    const memories = 8;
+
+
+    animateNumber(
+        element,
+        memories,
+        1200
+    );
+
+}
+
+
+/* =========================================================
+   7. SONG OF THE DAY
+   ========================================================= */
+
+function updateSongOfTheDay() {
+
+    const songElement =
+        document.getElementById(
+            "songTitle"
+        );
+
+    if (!songElement)
+        return;
+
+
+    const songs = [
+
+        "Your Love Amazes Me",
+
+        "Queen of My Heart",
+
+        "My Love",
+
+        "Written in the Stars",
+
+        "Beautiful in White",
+
+        "Puzzle of My Heart",
+
+        "I Wanna Grow Old with You"
+
+    ];
+
+
+    const today =
+        new Date();
+
+    const dayNumber =
+        Math.floor(
+            today.getTime() /
+            (1000 * 60 * 60 * 24)
+        );
+
+
+    const songIndex =
+        dayNumber %
+        songs.length;
+
+
+    songElement.textContent =
+        songs[songIndex];
+
+}
+
+
+/* =========================================================
+   8. CURRENT DATE
+   ========================================================= */
+
+function updateCurrentDate() {
+
+    const today =
+        new Date();
+
+    console.log(
+        "PD Stats loaded:",
+        today.toLocaleDateString()
+    );
+
+}
+
+
+/* =========================================================
+   9. START STATS
+   ========================================================= */
+
+function initializeStats() {
+
+    const days =
+        updateDaysTogether();
+
+    updateTodayJourney(days);
+
+    updateMemoryCount();
+
+    updateSongOfTheDay();
+
+    updateCurrentDate();
+
+}
+
+
+/* =========================================================
+   10. PAGE READY
+   ========================================================= */
+
+if (
+    document.readyState ===
+    "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeStats
+    );
+
+} else {
+
+    initializeStats();
+
+}
+
+
+/* =========================================================
+   11. REFRESH DAYS AUTOMATICALLY
+   ========================================================= */
+
+/*
+   Check every minute so the page
+   doesn't need to be refreshed
+   when a new day begins.
+*/
+
+setInterval(() => {
+
+    const days =
+        updateDaysTogether();
+
+    updateTodayJourney(days);
+
+}, 60000);

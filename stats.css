@@ -1,290 +1,1271 @@
+
 /* =========================================================
-   PD — OUR STATS — FINAL DESIGN
+   PRINCESS WA DEIB
+   OUR STATS — stats.css
    ========================================================= */
 
-.stats-page {
-    width: 100%;
-    padding: 18px 15px 35px;
 
-    min-height: calc(100vh - 70px);
-    overflow-y: auto;
+/* =========================================================
+   1. RESET
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "DM Sans", sans-serif;
+    color: #fff;
 
     background:
         radial-gradient(
-            circle at 90% 0%,
-            rgba(180, 50, 255, 0.14),
-            transparent 30%
+            circle at 15% 10%,
+            rgba(170, 75, 255, .25),
+            transparent 28%
         ),
         radial-gradient(
-            circle at 0% 70%,
-            rgba(255, 40, 190, 0.08),
+            circle at 90% 20%,
+            rgba(255, 55, 155, .20),
             transparent 30%
+        ),
+        linear-gradient(
+            145deg,
+            #080410,
+            #13071c 45%,
+            #080510
         );
+
+    overflow-x: hidden;
 }
 
 
-/* STAT CARD */
+/* =========================================================
+   2. MAIN APP
+   ========================================================= */
 
-.stats-page .stat-card {
+.stats-app {
+    position: relative;
+
     width: 100%;
-    min-height: 88px;
+    max-width: 480px;
 
-    margin-bottom: 12px;
-    padding: 15px;
+    min-height: 100dvh;
+
+    margin: 0 auto;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% -10%,
+            rgba(180, 75, 255, .18),
+            transparent 35%
+        ),
+        linear-gradient(
+            160deg,
+            #0a0511,
+            #17091f 50%,
+            #090511
+        );
+
+    box-shadow:
+        0 0 80px rgba(130, 50, 220, .12);
+}
+
+
+/* =========================================================
+   3. BACKGROUND GLOW
+   ========================================================= */
+
+.stats-app::before {
+    content: "";
+
+    position: fixed;
+
+    width: 260px;
+    height: 260px;
+
+    top: -90px;
+    right: -90px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(187, 83, 255, .32),
+            transparent 70%
+        );
+
+    filter: blur(25px);
+
+    pointer-events: none;
+}
+
+.stats-app::after {
+    content: "";
+
+    position: fixed;
+
+    width: 220px;
+    height: 220px;
+
+    bottom: -80px;
+    left: -80px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 45, 145, .22),
+            transparent 70%
+        );
+
+    filter: blur(25px);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   4. HEADER
+   ========================================================= */
+
+.stats-header {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 50;
+
+    height: 72px;
 
     display: flex;
     align-items: center;
 
-    position: relative;
-
-    border-radius: 18px;
-
-    border: 1px solid rgba(173, 70, 230, 0.35);
+    padding: 10px 14px;
 
     background:
         linear-gradient(
-            145deg,
-            rgba(28, 18, 66, 0.98),
-            rgba(10, 9, 36, 0.98)
+            135deg,
+            rgba(13, 7, 24, .94),
+            rgba(35, 9, 38, .90)
         );
 
-    box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.25),
-        inset 0 0 30px rgba(130, 40, 210, 0.06);
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.08);
 
-    transition: 0.25s ease;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 8px 30px
+        rgba(0,0,0,.25);
 }
 
 
-.stats-page .stat-card:hover {
-    transform: translateY(-2px);
+/* =========================================================
+   5. BACK BUTTON
+   ========================================================= */
 
-    border-color: rgba(240, 80, 215, 0.6);
+.back-btn {
+    width: 40px;
+    height: 40px;
 
-    box-shadow:
-        0 10px 30px rgba(135, 40, 200, 0.22);
-}
-
-
-/* ICON */
-
-.stats-page .stat-icon {
-    width: 50px;
-    height: 50px;
-    min-width: 50px;
-
-    margin-right: 14px;
-
-    border-radius: 15px;
+    flex: 0 0 40px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    color: #ff66d8;
+    border-radius: 50%;
 
-    font-size: 21px;
+    color: #fff;
+
+    text-decoration: none;
+
+    background:
+        rgba(255,255,255,.07);
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    transition:
+        .25s ease;
+}
+
+.back-btn:hover {
+    background:
+        rgba(180,75,255,.25);
+
+    box-shadow:
+        0 0 20px
+        rgba(180,75,255,.30);
+
+    transform: translateX(-2px);
+}
+
+.back-btn:active {
+    transform: scale(.90);
+}
+
+
+/* =========================================================
+   6. HEADER TITLE
+   ========================================================= */
+
+.header-title {
+    flex: 1;
+
+    text-align: center;
+
+    line-height: 1;
+}
+
+.header-title span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color:
+        rgba(255,255,255,.48);
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+}
+
+.header-title h1 {
+    margin: 0;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 22px;
+
+    font-weight: 600;
+
+    background:
+        linear-gradient(
+            90deg,
+            #fff,
+            #df9cff,
+            #ff83c5
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+}
+
+
+/* =========================================================
+   7. HEADER HEART
+   ========================================================= */
+
+.header-heart {
+    width: 40px;
+    height: 40px;
+
+    flex: 0 0 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ff65ae;
+
+    font-size: 17px;
+
+    animation:
+        statsHeart
+        1.8s
+        ease-in-out
+        infinite;
+}
+
+@keyframes statsHeart {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.18);
+    }
+}
+
+
+/* =========================================================
+   8. MAIN CONTENT
+   ========================================================= */
+
+.stats-content {
+    position: relative;
+
+    padding:
+        22px
+        14px
+        35px;
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   9. INTRO
+   ========================================================= */
+
+.stats-intro {
+    text-align: center;
+
+    padding:
+        8px
+        12px
+        20px;
+}
+
+.intro-heart {
+    width: 54px;
+    height: 54px;
+
+    margin: 0 auto 13px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #fff;
+
+    font-size: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8d43ff,
+            #f53b9b
+        );
+
+    box-shadow:
+        0 0 20px
+        rgba(194,65,255,.35),
+
+        0 0 50px
+        rgba(255,55,150,.18);
+
+    animation:
+        introPulse
+        3s
+        ease-in-out
+        infinite;
+}
+
+@keyframes introPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.06);
+    }
+}
+
+.stats-intro h2 {
+    margin: 0;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 25px;
+
+    font-weight: 600;
+}
+
+.stats-intro p {
+    max-width: 310px;
+
+    margin:
+        8px
+        auto
+        0;
+
+    color:
+        rgba(255,255,255,.55);
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   10. MAIN DAYS CARD
+   ========================================================= */
+
+.main-stat-card {
+    position: relative;
+
+    min-height: 190px;
+
+    padding:
+        25px
+        20px
+        18px;
+
+    margin-bottom: 14px;
+
+    overflow: hidden;
+
+    text-align: center;
+
+    border-radius: 25px;
 
     background:
         linear-gradient(
             145deg,
-            rgba(156, 53, 229, 0.25),
-            rgba(235, 53, 185, 0.12)
+            rgba(143,63,255,.22),
+            rgba(255,54,148,.13)
         );
 
-    border: 1px solid rgba(210, 75, 230, 0.25);
+    border:
+        1px solid
+        rgba(255,255,255,.11);
 
     box-shadow:
-        0 0 20px rgba(204, 52, 220, 0.15);
+        0 15px 40px
+        rgba(0,0,0,.28),
+
+        inset 0 1px 0
+        rgba(255,255,255,.08);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
 
-/* TEXT */
+/* glowing background */
 
-.stats-page .stat-card span {
-    display: block;
+.main-stat-glow {
+    position: absolute;
 
-    color: #aaa7c4;
+    width: 180px;
+    height: 180px;
+
+    top: -100px;
+    right: -70px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(203,80,255,.30),
+            transparent 70%
+        );
+
+    filter: blur(8px);
+
+    pointer-events: none;
+}
+
+
+/* icon */
+
+.main-stat-icon {
+    position: relative;
+
+    width: 50px;
+    height: 50px;
+
+    margin: 0 auto 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 16px;
+
+    color: #fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8e45ff,
+            #e83d9c
+        );
+
+    box-shadow:
+        0 8px 25px
+        rgba(181,60,255,.30);
+}
+
+.main-stat-icon i {
+    font-size: 20px;
+}
+
+
+/* text */
+
+.main-stat-text {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-stat-text span {
+    color:
+        rgba(255,255,255,.60);
+
+    font-size: 11px;
+
+    letter-spacing: .4px;
+}
+
+.main-stat-text strong {
+    margin-top: 2px;
+
+    font-size: 48px;
+
+    line-height: 1;
+
+    font-weight: 700;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff,
+            #d997ff,
+            #ff75bb
+        );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+
+    text-shadow:
+        0 0 25px
+        rgba(199,80,255,.20);
+}
+
+.main-stat-text small {
+    margin-top: 5px;
+
+    color:
+        rgba(255,255,255,.50);
 
     font-size: 11px;
 }
 
+.since-date {
+    position: relative;
 
-.stats-page .stat-card strong {
-    display: block;
+    margin-top: 14px;
 
-    margin-top: 3px;
+    color:
+        rgba(255,255,255,.38);
 
-    color: #ffffff;
+    font-size: 9px;
 
-    font-size: 25px;
-
-    line-height: 1.1;
-
-    font-weight: 700;
+    letter-spacing: .5px;
 }
 
 
-.stats-page .stat-card small {
-    display: block;
+/* =========================================================
+   11. SMALL STATS GRID
+   ========================================================= */
 
-    margin-top: 4px;
+.stats-grid {
+    display: grid;
 
-    color: #777493;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-bottom: 15px;
+}
+
+
+/* =========================================================
+   12. SMALL STAT CARD
+   ========================================================= */
+
+.small-stat-card {
+    position: relative;
+
+    min-width: 0;
+
+    min-height: 160px;
+
+    padding: 17px 13px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+
+    overflow: hidden;
+
+    border-radius: 21px;
+
+    background:
+        rgba(255,255,255,.055);
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    box-shadow:
+        0 12px 30px
+        rgba(0,0,0,.22),
+
+        inset 0 1px 0
+        rgba(255,255,255,.05);
+
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+.small-stat-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 18px 35px
+        rgba(0,0,0,.28),
+
+        0 0 25px
+        rgba(180,70,255,.12);
+}
+
+
+/* icon */
+
+.small-stat-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    margin-bottom: 9px;
+
+    color: #fff;
+}
+
+.memory-icon {
+    background:
+        linear-gradient(
+            135deg,
+            #ff438f,
+            #b146ff
+        );
+
+    box-shadow:
+        0 7px 20px
+        rgba(255,55,145,.25);
+}
+
+.song-icon {
+    background:
+        linear-gradient(
+            135deg,
+            #7247ff,
+            #c63fff
+        );
+
+    box-shadow:
+        0 7px 20px
+        rgba(130,65,255,.25);
+}
+
+.small-stat-card > span {
+    color:
+        rgba(255,255,255,.55);
+
+    font-size: 9px;
+
+    letter-spacing: .3px;
+}
+
+.small-stat-card > strong {
+    margin-top: 5px;
+
+    max-width: 100%;
+
+    overflow: hidden;
+
+    color: #fff;
+
+    font-size: 24px;
+
+    line-height: 1.2;
+
+    text-overflow: ellipsis;
+}
+
+.small-stat-card > small {
+    margin-top: 5px;
+
+    color:
+        rgba(255,255,255,.38);
 
     font-size: 9px;
 }
 
 
-/* SONG */
+/* song title */
 
-.stats-page .stat-song {
-    min-width: 0;
+.song-card > strong {
+    font-family:
+        "Playfair Display",
+        serif;
 
-    padding-right: 45px;
-}
-
-
-.stats-page .stat-song strong {
     font-size: 14px;
 
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 
-.stats-page .stat-song small {
-    line-height: 1.4;
-}
+/* =========================================================
+   13. SONG PLAY BUTTON
+   ========================================================= */
 
+.song-play {
+    width: 34px;
+    height: 34px;
 
-/* PLAY BUTTON */
-
-.stats-page .small-play {
-    position: absolute;
-
-    right: 15px;
-
-    width: 38px;
-    height: 38px;
-
-    border-radius: 50%;
+    margin-top: 9px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    color: white;
+    border-radius: 50%;
+
+    color: #fff;
+
+    text-decoration: none;
 
     background:
         linear-gradient(
             135deg,
-            #9c34e9,
-            #dd36b7
+            #9c4dff,
+            #ed3e9d
         );
 
     box-shadow:
-        0 0 18px rgba(216, 46, 197, 0.35);
+        0 5px 18px
+        rgba(194,55,155,.30);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.song-play:hover {
+    transform: scale(1.1);
+
+    box-shadow:
+        0 0 25px
+        rgba(194,55,155,.50);
+}
+
+.song-play i {
+    font-size: 10px;
+
+    margin-left: 2px;
 }
 
 
-/* JOURNEY */
+/* =========================================================
+   14. JOURNEY CARD
+   ========================================================= */
 
-.stats-page .journey-card {
-    width: 100%;
+.journey-card {
+    position: relative;
 
-    margin-top: 15px;
+    padding:
+        19px
+        16px
+        20px;
 
-    padding: 18px;
+    margin-bottom: 15px;
 
-    border-radius: 18px;
-
-    border: 1px solid rgba(150, 60, 220, 0.30);
+    border-radius: 24px;
 
     background:
         linear-gradient(
             145deg,
-            rgba(24, 16, 57, 0.98),
-            rgba(9, 8, 33, 0.98)
+            rgba(255,255,255,.065),
+            rgba(255,255,255,.035)
         );
 
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
     box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.20);
+        0 15px 35px
+        rgba(0,0,0,.25);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
 
-.stats-page .journey-card h3 {
-    margin-bottom: 15px;
+/* =========================================================
+   15. SECTION HEADING
+   ========================================================= */
 
-    font-family: "Playfair Display", serif;
+.section-heading {
+    display: flex;
 
-    font-size: 17px;
+    align-items: center;
+    justify-content: space-between;
 
-    font-weight: 500;
-
-    color: #f2d8f2;
+    margin-bottom: 20px;
 }
 
+.section-heading span {
+    color:
+        #c57aff;
 
-.stats-page .journey-item {
-    min-height: 43px;
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+.section-heading h2 {
+    margin: 3px 0 0;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 21px;
+}
+
+.section-heading > i {
+    width: 39px;
+    height: 39px;
 
     display: flex;
     align-items: center;
+    justify-content: center;
 
-    border-bottom:
-        1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+
+    color: #ff67ad;
+
+    background:
+        rgba(255,65,155,.10);
+
+    box-shadow:
+        0 0 18px
+        rgba(255,65,155,.12);
 }
 
 
-.stats-page .journey-item:last-child {
-    border-bottom: none;
+/* =========================================================
+   16. TIMELINE
+   ========================================================= */
+
+.timeline {
+    position: relative;
+
+    padding-left: 4px;
 }
 
 
-.stats-page .journey-item i {
+/* =========================================================
+   17. TIMELINE ITEM
+   ========================================================= */
+
+.timeline-item {
+    position: relative;
+
+    min-height: 66px;
+
+    display: flex;
+
+    gap: 13px;
+}
+
+
+/* =========================================================
+   18. TIMELINE DOT
+   ========================================================= */
+
+.timeline-dot {
+    position: relative;
+
+    z-index: 3;
+
+    flex: 0 0 30px;
+
     width: 30px;
+    height: 30px;
 
-    color: #ff61d6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    font-size: 11px;
+    margin-top: 1px;
 
-    text-shadow:
-        0 0 10px rgba(255, 67, 208, 0.5);
+    border-radius: 50%;
+
+    color: #fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8944ff,
+            #ec3e9d
+        );
+
+    box-shadow:
+        0 0 15px
+        rgba(179,65,255,.30);
 }
 
-
-.stats-page .journey-item span {
-    color: #e7e4f1;
-
-    font-size: 11px;
-}
-
-
-.stats-page .journey-item small {
-    margin-left: auto;
-
-    color: #918da8;
-
+.timeline-dot i {
     font-size: 10px;
 }
 
 
-/* QUOTE */
+/* =========================================================
+   19. TIMELINE LINE
+   ========================================================= */
 
-.stats-page .quote-card {
-    padding: 25px 10px 30px;
+.timeline-line {
+    position: absolute;
+
+    left: 14px;
+    top: 30px;
+
+    width: 1px;
+    height: 50px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(186,82,255,.60),
+            rgba(186,82,255,.05)
+        );
+}
+
+
+/* =========================================================
+   20. TIMELINE CONTENT
+   ========================================================= */
+
+.timeline-content {
+    padding-top: 1px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.timeline-content strong {
+    color: #fff;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.timeline-content span {
+    color:
+        rgba(255,255,255,.40);
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   21. TODAY
+   ========================================================= */
+
+.today-item {
+    min-height: 48px;
+}
+
+.today-item .timeline-dot {
+    background:
+        linear-gradient(
+            135deg,
+            #ff3c89,
+            #ff9d4a
+        );
+
+    box-shadow:
+        0 0 18px
+        rgba(255,65,130,.45);
+
+    animation:
+        todayPulse
+        1.8s
+        ease-in-out
+        infinite;
+}
+
+@keyframes todayPulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 10px
+            rgba(255,65,130,.25);
+    }
+
+    50% {
+        box-shadow:
+            0 0 25px
+            rgba(255,65,130,.65);
+    }
+}
+
+.today-item strong {
+    color: #ff85bd;
+}
+
+
+/* =========================================================
+   22. QUOTE CARD
+   ========================================================= */
+
+.quote-card {
+    position: relative;
+
+    padding:
+        25px
+        18px;
 
     text-align: center;
 
-    color: #aaa6c0;
+    border-radius: 24px;
 
-    font-family: "Playfair Display", serif;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(145,61,255,.16),
+            rgba(255,55,145,.11)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    box-shadow:
+        0 15px 35px
+        rgba(0,0,0,.22);
+}
+
+.quote-card > i {
+    color:
+        rgba(199,116,255,.55);
+
+    font-size: 18px;
+}
+
+.quote-card p {
+    margin:
+        10px
+        0
+        8px;
+
+    color:
+        rgba(255,255,255,.68);
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 15px;
+
+    line-height: 1.6;
+}
+
+.quote-card p strong {
+    color: #fff;
 
     font-style: italic;
+}
 
-    font-size: 14px;
+.quote-card > span {
+    color:
+        #c779ff;
 
-    line-height: 1.7;
+    font-size: 10px;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   23. SCROLLBAR
+   ========================================================= */
+
+.stats-app::-webkit-scrollbar {
+    width: 4px;
+}
+
+.stats-app::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.stats-app::-webkit-scrollbar-thumb {
+    background:
+        rgba(191,76,255,.35);
+
+    border-radius: 20px;
+}
+
+
+/* =========================================================
+   24. MOBILE
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .stats-content {
+        padding:
+            18px
+            11px
+            25px;
+    }
+
+    .stats-header {
+        height: 66px;
+    }
+
+    .stats-intro h2 {
+        font-size: 22px;
+    }
+
+    .main-stat-card {
+        min-height: 180px;
+
+        padding-top: 21px;
+    }
+
+    .main-stat-text strong {
+        font-size: 43px;
+    }
+
+    .small-stat-card {
+        min-height: 150px;
+
+        padding:
+            14px
+            10px;
+    }
+
+    .journey-card {
+        padding:
+            17px
+            13px;
+        }
+}
+
+
+/* =========================================================
+   25. TABLET / DESKTOP
+   ========================================================= */
+
+@media (min-width: 600px) {
+
+    body {
+        padding:
+            25px 0;
+    }
+
+    .stats-app {
+        min-height: calc(100dvh - 50px);
+
+        max-width: 430px;
+
+        border-radius: 30px;
+
+        border:
+            1px solid
+            rgba(255,255,255,.10);
+
+        box-shadow:
+            0 25px 80px
+            rgba(0,0,0,.50),
+
+            0 0 50px
+            rgba(140,55,255,.10);
+    }
+
+    .stats-header {
+        border-radius:
+            30px
+            30px
+            0
+            0;
+    }
+}
+
+
+/* =========================================================
+   26. TOUCH FEEDBACK
+   ========================================================= */
+
+.back-btn:active,
+.song-play:active {
+    transform: scale(.90);
+}
+
+
+/* =========================================================
+   27. REDUCE MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
 }

@@ -6880,124 +6880,378 @@ textarea {
 
 
 
-
-
-
-
-/* =====================================================
-   100 DAYS — SECRET BUTTON
-   ===================================================== */
+/* =========================================================
+   PD — DON'T CLICK ME
+   SECRET SURPRISE BUTTON
+   ========================================================= */
 
 .hundred-days-button {
+
     position: relative;
+
+    width: 88%;
+    max-width: 330px;
+
+    min-height: 58px;
+
+    margin: 12px auto;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    width: 85%;
-    max-width: 320px;
-
-    margin: 18px auto;
+    gap: 9px;
 
     padding: 15px 22px;
 
-    border-radius: 30px;
+    border-radius: 22px;
 
     text-decoration: none;
 
     color: #fff;
 
-    font-family: "DM Sans", sans-serif;
+    font-family:
+        "DM Sans",
+        sans-serif;
+
     font-size: 13px;
+
     font-weight: 700;
 
-    letter-spacing: 1px;
+    letter-spacing: .8px;
 
     background:
         linear-gradient(
             135deg,
-            #8e44ff,
-            #ff3d9a,
-            #a84dff
+            rgba(142, 68, 255, .88),
+            rgba(255, 55, 145, .88)
         );
 
     border:
-        1px solid rgba(255,255,255,.25);
+        1px solid
+        rgba(255,255,255,.20);
 
     box-shadow:
-        0 8px 25px rgba(190,50,170,.35),
-        0 0 25px rgba(168,76,255,.20);
+
+        0 8px 25px
+        rgba(173,70,255,.25),
+
+        0 0 35px
+        rgba(255,55,145,.15),
+
+        inset 0 1px 0
+        rgba(255,255,255,.20);
 
     overflow: hidden;
 
-    animation: dontClickFloat 2.5s ease-in-out infinite;
+    opacity: 0;
+
+    /*
+       Starts slightly above the final position
+    */
+    transform:
+        translateY(-90px)
+        scale(.75)
+        rotate(-3deg);
+
+    /*
+       The entrance happens once
+    */
+    animation:
+        pdSecretButtonEntrance
+        1.6s
+        cubic-bezier(.16,1.35,.35,1)
+        .7s
+        forwards;
 }
 
-/* moving shine */
-.hundred-days-button::before {
+
+/* =========================================================
+   SECRET GLOW
+   ========================================================= */
+
+.hundred-days-button::after {
+
     content: "";
 
     position: absolute;
 
-    top: 0;
-    left: -120%;
+    inset: -3px;
 
-    width: 70%;
-    height: 100%;
+    border-radius: inherit;
 
     background:
         linear-gradient(
             90deg,
             transparent,
-            rgba(255,255,255,.35),
+            rgba(255,255,255,.28),
             transparent
         );
 
-    transform: skewX(-20deg);
+    transform:
+        translateX(-120%);
 
-    animation: dontClickShine 3s infinite;
+    animation:
+        pdSecretShine
+        3.5s
+        ease-in-out
+        2s
+        infinite;
+
+    pointer-events: none;
 }
+
+
+/* =========================================================
+   BUTTON TEXT
+   ========================================================= */
 
 .hundred-days-button span,
 .hundred-days-button i {
+
     position: relative;
-    z-index: 2;
+
+    z-index: 3;
 }
+
+
+/* =========================================================
+   HEART
+   ========================================================= */
 
 .hundred-days-button i {
-    margin-left: 9px;
-    font-size: 15px;
+
+    font-size: 14px;
+
+    color: #ffd1e7;
+
+    text-shadow:
+        0 0 8px
+        rgba(255,180,220,.9);
+
+    animation:
+        pdSecretHeart
+        1.4s
+        ease-in-out
+        infinite;
 }
 
-.hundred-days-button:hover {
-    transform: scale(1.04);
 
-    box-shadow:
-        0 10px 35px rgba(190,50,170,.50),
-        0 0 35px rgba(168,76,255,.30);
+/* =========================================================
+   ENTRANCE
+   ========================================================= */
+
+@keyframes pdSecretButtonEntrance {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translateY(-110px)
+            scale(.65)
+            rotate(-8deg);
+
+        filter:
+            blur(5px);
+
+    }
+
+    35% {
+
+        opacity: 1;
+
+        transform:
+            translateY(25px)
+            scale(1.08)
+            rotate(3deg);
+
+        filter:
+            blur(0);
+
+    }
+
+    55% {
+
+        transform:
+            translateY(-10px)
+            scale(.98)
+            rotate(-1deg);
+
+    }
+
+    72% {
+
+        transform:
+            translateY(5px)
+            scale(1.02)
+            rotate(.5deg);
+
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1)
+            rotate(0);
+
+        filter:
+            blur(0);
+
+    }
 }
 
-.hundred-days-button:active {
-    transform: scale(.96);
+
+/* =========================================================
+   AFTER ARRIVING — LITTLE FLOAT
+   ========================================================= */
+
+.hundred-days-button {
+
+    animation:
+        pdSecretButtonEntrance
+        1.6s
+        cubic-bezier(.16,1.35,.35,1)
+        .7s
+        forwards,
+        pdSecretFloat
+        3.8s
+        ease-in-out
+        2.5s
+        infinite;
 }
 
-@keyframes dontClickFloat {
-    0%, 100% {
-        transform: translateY(0);
+
+@keyframes pdSecretFloat {
+
+    0%,
+    100% {
+
+        transform:
+            translateY(0);
+
     }
 
     50% {
-        transform: translateY(-5px);
+
+        transform:
+            translateY(-5px);
+
     }
 }
 
-@keyframes dontClickShine {
+
+/* =========================================================
+   MOVING SHINE
+   ========================================================= */
+
+@keyframes pdSecretShine {
+
     0% {
-        left: -120%;
+
+        transform:
+            translateX(-120%);
+
     }
 
-    45%, 100% {
-        left: 140%;
+    35%,
+    100% {
+
+        transform:
+            translateX(120%);
+
     }
+}
+
+
+/* =========================================================
+   HEART PULSE
+   ========================================================= */
+
+@keyframes pdSecretHeart {
+
+    0%,
+    100% {
+
+        transform:
+            scale(1)
+            rotate(0);
+
+    }
+
+    50% {
+
+        transform:
+            scale(1.25)
+            rotate(-8deg);
+
+    }
+}
+
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+.hundred-days-button:hover {
+
+    transform:
+        translateY(-3px)
+        scale(1.025);
+
+    box-shadow:
+
+        0 12px 35px
+        rgba(173,70,255,.38),
+
+        0 0 40px
+        rgba(255,55,145,.25),
+
+        inset 0 1px 0
+        rgba(255,255,255,.25);
+
+}
+
+
+/* =========================================================
+   CLICK
+   ========================================================= */
+
+.hundred-days-button:active {
+
+    transform:
+        scale(.94);
+
+    box-shadow:
+        0 4px 12px
+        rgba(0,0,0,.3);
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .hundred-days-button {
+
+        width: 91%;
+
+        min-height: 54px;
+
+        margin: 10px auto;
+
+        padding: 13px 17px;
+
+        font-size: 12px;
+
+        border-radius: 20px;
+
+    }
+
 }
