@@ -447,14 +447,15 @@ function handleNewMessage(
        Popup.
     */
 
-    showPopup(
-        data.senderDisplayName ||
-        data.senderName ||
-        "My Love",
+    const notificationName =
+    currentUser.email?.toLowerCase() === "deib@gmail.com"
+        ? "Ernest ❤️"
+        : "Jaris ❤️";
 
-        messageText
-    );
-
+showPopup(
+    notificationName,
+    messageText
+);
 
     /*
        Sound.

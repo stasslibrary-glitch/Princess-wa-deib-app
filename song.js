@@ -13,51 +13,51 @@
 const PD_SONGS = [
 
     {
-        title: "_Emiliana",
-        artist: "CKay_",
-        file: "songs/CKay_-_Emiliana.mp3",
+        title: "Me too",
+        artist: "Abigail Chams, Harmonize",
+        file: "songs/Abigail Chams, Harmonize - Me too.mp3",
         cover: "images/1 (1).jpeg"
     },
 
     {
-        title: "Running__To_You",
-        artist: "Chiké___Simi",
-        file: "songs/Chiké___Simi_–_Running__To_You.mp3",
+        title: "Mutima",
+        artist: "An-known",
+        file: "songs/An-known - Mutima .mp3",
         cover: "images/1 (2).jpeg"
     },
 
     {
-        title: " Champion Gal",
-        artist: "Fik Fameica ",
-        file: "songs/Champion Gal by Fik Fameica.mp3",
+        title: " Good Idea",
+        artist: "Elijah KItaka ft Dax VIbes",
+        file: "songs/Good Idea Elijah KItaka ft Dax VIbes.mp3",
         cover: "images/1 (3).jpeg"
     },
 
     {
-        title: "Mr_Man",
-        artist: "Fave",
-        file: "songs/Fave_-_Mr_Man__Visualizer.mp3",
+        title: "Intentions",
+        artist: "Justin Bieber ft. Quavo",
+        file: "songs/Justin Bieber - Intentions ft. Quavo.mp3",
         cover: "images/1 (4).jpeg"
     },
 
     {
-        title: "_Forever",
-        artist: "Gyakie Omah_Lay",
-        file: "songs/Gyakie___Omah_Lay_-_Forever.mp3",
+        title: "Eddalu",
+        artist: "Laty Wizy",
+        file: "songs/Laty Wizy - Eddalu .mp3",
         cover: "images/1 (5).jpeg"
     },
 
     {
-        title: "Queen of my Heart",
-        artist: "Westlife",
-        file: "songs/queen of my heart by westlife.mp3",
+        title: "Yandalula",
+        artist: "Pawaboy AB",
+        file: "songs/Yandalula - Pawaboy AB.mp3",
         cover: "images/1 (6).jpeg"
     },
 
     {
-        title: "World of Our Own",
-        artist: "Westlife",
-        file: "songs/Westlife - World of Our Own.mp3",
+        title: "Mpeke",
+        artist: "Ankwon Prosper ft Aroma Music",
+        file: "songs/Mpeke by Ankwon Prosper ft Aroma Music .mp3",
         cover: "images/1 (7).jpeg"
     },
 
@@ -102,31 +102,46 @@ const currentTime =
 const songDuration =
     document.getElementById("songDuration");
 
-
 /* =========================================================
-   3. TODAY'S DATE KEY
+   3. SHARED PD DATE — UGANDA TIME
    ========================================================= */
 
 function getTodayDateKey() {
 
-    const today = new Date();
+    const now = new Date();
 
-    return (
-        today.getFullYear() +
-        "-" +
-        String(today.getMonth() + 1).padStart(2, "0") +
-        "-" +
-        String(today.getDate()).padStart(2, "0")
-    );
+    const parts = new Intl.DateTimeFormat(
+        "en-GB",
+        {
+            timeZone: "Africa/Kampala",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+        }
+    ).formatToParts(now);
 
+    const year =
+        parts.find(p => p.type === "year").value;
+
+    const month =
+        parts.find(p => p.type === "month").value;
+
+    const day =
+        parts.find(p => p.type === "day").value;
+
+    return `${year}-${month}-${day}`;
 }
-
-
 /* =========================================================
-   4. GET SONG OF THE DAY
+   4. GET SHARED PD SONG OF THE DAY
    ========================================================= */
 
 function getTodaySong() {
+
+    /*
+     * IMPORTANT:
+     * Both Deib and Princess use the SAME
+     * Kampala/Uganda date.
+     */
 
     const dateKey =
         getTodayDateKey();
@@ -150,9 +165,7 @@ function getTodaySong() {
         PD_SONGS.length;
 
     return PD_SONGS[index];
-
 }
-
 
 /* =========================================================
    5. FORMAT TIME

@@ -9,7 +9,6 @@
 
 <title>PD | Chat</title>
 
-
 <link rel="stylesheet" href="chat.css">
 
 <link
@@ -82,11 +81,26 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
         <div class="chat-actions">
 
-            <i class="fa-solid fa-phone"></i>
+    <button
+        type="button"
+        class="chat-call-button"
+        id="voiceCallButton"
+        title="Voice call"
+        aria-label="Voice call"
+    >
+        <i class="fa-solid fa-phone"></i>
+    </button>
 
-            <i class="fa-solid fa-ellipsis-vertical"></i>
+    <button
+        type="button"
+        class="chat-more-button"
+        title="More"
+        aria-label="More"
+    >
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+    </button>
 
-        </div>
+</div>
 
     </header>
 
@@ -146,7 +160,113 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 </div>
 
+<!-- =====================================================
+     PD VOICE CALL OVERLAY
+     ===================================================== -->
 
+<div
+    id="pdCallOverlay"
+    class="pd-call-overlay"
+>
+
+    <div class="pd-call-card">
+
+        <div class="pd-call-avatar">
+
+            <img
+                src="slideshow/photo2.jpg"
+                alt="Princess"
+            >
+
+            <span class="pd-call-online"></span>
+
+        </div>
+
+        <div
+            id="pdCallName"
+            class="pd-call-name"
+        >
+            My Princess ❤️
+        </div>
+
+        <div
+            id="pdCallStatus"
+            class="pd-call-status"
+        >
+            Calling...
+        </div>
+
+        <div
+            id="pdCallTimer"
+            class="pd-call-timer"
+        >
+            00:00
+        </div>
+
+
+        <!-- Incoming call buttons -->
+
+        <div
+            id="pdIncomingControls"
+            class="pd-call-controls incoming"
+        >
+
+            <button
+                id="pdDeclineIncoming"
+                class="pd-call-control decline"
+                type="button"
+            >
+                <i class="fa-solid fa-phone-slash"></i>
+            </button>
+
+            <button
+                id="pdAcceptIncoming"
+                class="pd-call-control accept"
+                type="button"
+            >
+                <i class="fa-solid fa-phone"></i>
+            </button>
+
+        </div>
+
+
+        <!-- Active call buttons -->
+
+        <div
+            id="pdActiveControls"
+            class="pd-call-controls"
+        >
+
+            <button
+                id="pdMuteButton"
+                class="pd-call-control"
+                type="button"
+            >
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+
+            <button
+                id="pdEndCall"
+                class="pd-call-control decline"
+                type="button"
+            >
+                <i class="fa-solid fa-phone-slash"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Hidden audio element used for remote voice -->
+
+<audio
+    id="pdRemoteAudio"
+    autoplay
+    playsinline
+></audio>
 <script
     type="module"
     src="auth-guard.js"
@@ -156,10 +276,14 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     type="module"
     src="chat.js"
 ></script>
-<script type="module" src="notification.js"></script>
-</body>
 
-</html>
+<script
+    type="module"
+    src="call.js"
+></script>
 
-
+<script
+    type="module"
+    src="notification.js"
+></script>
 

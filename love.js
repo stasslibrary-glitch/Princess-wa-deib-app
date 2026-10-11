@@ -1,3 +1,5 @@
+
+
 /* =========================================================
    PRINCESS WA DEIB — LOVE PIE
    LIVE FIREBASE MESSAGE COUNTER
@@ -29,6 +31,9 @@ import {
 /* =========================================================
    ELEMENTS
    ========================================================= */
+const deibWater = document.getElementById("deibWater");
+const princessWater = document.getElementById("princessWater");
+
 
 const lovePie =
     document.getElementById("lovePie");
@@ -122,7 +127,8 @@ let previousPrincess = 0;
 
 let previousTotal = 0;
 
-
+let previousDeibPercent = 0;
+let previousPrincessPercent = 0;
 
 /* =========================================================
    AUTHENTICATION
@@ -354,137 +360,67 @@ function calculateLoveData(snapshot) {
    ========================================================= */
 
 function updateLovePie() {
+const total = loveData.total;
 
-    const total =
-        loveData.total;
+let deibPercentage = 0;
+let princessPercentage = 0;
 
+if (total > 0) {
+    deibPercentage = (loveData.deib / total) * 100;
+    princessPercentage = (loveData.princess / total) * 100;
+}
 
-    let deibPercentage = 0;
+const deibRounded = Math.round(deibPercentage);
+const princessRounded = 100 - deibRounded;
 
-    let princessPercentage = 0;
+// Animate the actual water levels.
+if (deibWater) {
+    deibWater.style.setProperty(
+        "--water-level",
+        `${deibPercentage}%`
+    );
+}
 
+if (princessWater) {
+    princessWater.style.setProperty(
+        "--water-level",
+        `${princessPercentage}%`
+    );
+}
 
-    /*
-       Prevent division by zero.
-    */
-
-    if (total > 0) {
-
-        deibPercentage =
-            (
-                loveData.deib /
-                total
-            ) * 100;
-
-
-        princessPercentage =
-            (
-                loveData.princess /
-                total
-            ) * 100;
-
-    }
-
-
-    /*
-       Round for display.
-    */
-
-    const deibRounded =
-        Math.round(
-            deibPercentage
-        );
-
-
-    const princessRounded =
-        100 - deibRounded;
-
-
-    /*
-       Convert Deib's percentage
-       into degrees.
-
-       100% = 360 degrees
-    */
-
-    const deibDegrees =
-        deibPercentage * 3.6;
-
-
-    /*
-       Change the actual pie.
-    */
-
-    if (lovePie) {
-
-        lovePie.style.background = `
-
-            conic-gradient(
-
-                #ff2f68 0deg,
-
-                #ff2f68
-                ${deibDegrees}deg,
-
-                #9c35ff
-                ${deibDegrees}deg,
-
-                #9c35ff
-                360deg
-
-            )
-
-        `;
-
-
-        /*
-           Small glow whenever
-           the pie changes.
-        */
-
-        lovePie.style.filter =
-            "brightness(1.18) saturate(1.15)";
-
-
-        setTimeout(
-            () => {
-
-                lovePie.style.filter =
-                    "brightness(1) saturate(1)";
-
-            },
-            700
-        );
-
-    }
-
-
-    /*
-       Animate percentages.
-    */
-
-    animateNumber(
-        deibPercent,
-        previousDeib,
-        deibRounded
+// Also expose percentages on the main container.
+if (lovePie) {
+    lovePie.style.setProperty(
+        "--deib-level",
+        `${deibPercentage}%`
     );
 
-
-    animateNumber(
-        princessPercent,
-        previousPrincess,
-        princessRounded
+    lovePie.style.setProperty(
+        "--princess-level",
+        `${princessPercentage}%`
     );
+}
 
+// Animate the percentage labels independently
+// of the message counters.
+animateNumber(
+    deibPercent,
+    previousDeibPercent,
+    deibRounded
+);
 
-    previousDeib =
-        deibRounded;
+animateNumber(
+    princessPercent,
+    previousPrincessPercent,
+    princessRounded
+);
 
+previousDeibPercent = deibRounded;
+previousPrincessPercent = princessRounded;
 
-    previousPrincess =
-        princessRounded;
 
 }
+
 
 
 

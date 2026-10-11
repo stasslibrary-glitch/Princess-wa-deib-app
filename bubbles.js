@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (event) => {
 
         // Create MANY small bubbles
-        for (let i = 0; i < 25; i++) {
+        for (let i = 0; i < 185; i++) {
 
             const bubble = document.createElement("span");
 
@@ -67,3 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+
+
+

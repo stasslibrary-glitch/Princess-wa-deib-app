@@ -2072,7 +2072,7 @@ border-radius: 35px !important;
 
 @media (min-width: 601px) {
 
-```
+
 html,
 body {
     width: 100%;
@@ -2456,7 +2456,7 @@ body.phone-page {
         max-height: 38px;
     }
 }
-```
+
 
 }
 
@@ -2471,7 +2471,7 @@ available screen.
 
 @media (max-width: 600px) {
 
-```
+
 html,
 body {
 
@@ -2584,7 +2584,7 @@ body.phone-page {
 
     border-radius: 0;
 }
-```
+
 
 }
 
@@ -2594,7 +2594,7 @@ body.phone-page {
 
 @media (max-width: 380px) {
 
-```
+
 .phone-app.chat-app .chat-header {
 
     flex-basis: 63px;
@@ -2644,7 +2644,7 @@ body.phone-page {
 
     max-height: 39px;
 }
-```
+
 
 }
 
@@ -2654,7 +2654,7 @@ body.phone-page {
 
 .phone-app.chat-app .pd-call-overlay {
 
-```
+
 position: absolute;
 
 inset: 0;
@@ -2667,7 +2667,7 @@ border-radius: inherit;
 overflow: hidden;
 
 z-index: 500;
-```
+
 
 }
 
@@ -2688,6 +2688,6 @@ height: 100%;
 border-radius: inherit;
 
 overflow: hidden;
-```
+
 
 }

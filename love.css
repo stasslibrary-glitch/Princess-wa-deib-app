@@ -1619,3 +1619,188 @@ body {
     }
 
 }
+
+/* =========================================
+   PD LOVE PIE — REALISTIC LIQUID WATER
+   No glass effect
+   ========================================= */
+
+.pie-water-side {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 50%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Two water colours */
+.water-deib {
+    background: #a90850;
+    clip-path: inset(0 50% 0 0);
+}
+
+.water-princess {
+    background: #8834f7;
+    clip-path: inset(0 0 0 50%);
+}
+
+/* Liquid body */
+.water-fill {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: var(--water-level, 50%);
+    overflow: hidden;
+    transition: height 1.8s cubic-bezier(.22, 1, .36, 1);
+    will-change: height;
+}
+
+/* Deep red water */
+.water-deib .water-fill {
+    background:
+        radial-gradient(ellipse at 30% 15%,
+            rgba(255, 130, 190, .65), transparent 42%),
+        linear-gradient(
+            180deg,
+            #ff398f 0%,
+            #ed0870 35%,
+            #b60055 72%,
+            #71002f 100%
+        );
+}
+
+/* Deep purple water */
+.water-princess .water-fill {
+    background:
+        radial-gradient(ellipse at 65% 15%,
+            rgba(220, 175, 255, .65), transparent 42%),
+        linear-gradient(
+            180deg,
+            #ce91ff 0%,
+            #a344f5 35%,
+            #7620ce 72%,
+            #400b80 100%
+        );
+}
+
+/* Natural uneven water surface */
+.water-wave {
+    position: absolute;
+    top: -13px;
+    left: -50%;
+    width: 200%;
+    height: 26px;
+    border-radius: 42% 48% 40% 50%;
+    animation: liquidWave 4s linear infinite;
+}
+
+.water-deib .water-wave {
+    background: #ff7fba;
+}
+
+.water-princess .water-wave {
+    background: #d4a1ff;
+}
+
+.water-wave.wave-two {
+    top: -9px;
+    opacity: .65;
+    animation: liquidWave 5.5s linear infinite reverse;
+}
+
+.water-deib .water-wave.wave-two {
+    background: #f52891;
+}
+
+.water-princess .water-wave.wave-two {
+    background: #9a4be9;
+}
+
+/* Moving light reflections on the water */
+.water-shimmer {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        110deg,
+        transparent 0%,
+        transparent 20%,
+        rgba(255,255,255,.12) 22%,
+        transparent 25%,
+        transparent 44%
+    );
+    background-size: 220% 100%;
+    animation: liquidReflection 5s linear infinite;
+}
+
+/* Tiny rising bubbles */
+.water-fill::before,
+.water-fill::after {
+    content: "";
+    position: absolute;
+    bottom: -20px;
+    width: 7px;
+    height: 7px;
+    border: 1px solid rgba(255,255,255,.6);
+    border-radius: 50%;
+    box-shadow:
+        25px -35px 0 -2px rgba(255,255,255,.45),
+        55px -12px 0 -1px rgba(255,255,255,.35),
+        80px -55px 0 -2px rgba(255,255,255,.4);
+    animation: waterBubbles 5s linear infinite;
+}
+
+.water-fill::after {
+    left: 65%;
+    animation-delay: -2.5s;
+    transform: scale(.7);
+}
+
+/* Water movement */
+@keyframes liquidWave {
+    0% {
+        transform: translateX(0) rotate(0deg);
+    }
+    50% {
+        transform: translateX(10%) rotate(180deg);
+    }
+    100% {
+        transform: translateX(0) rotate(360deg);
+    }
+}
+
+@keyframes liquidReflection {
+    from {
+        background-position: 100% 0;
+    }
+    to {
+        background-position: -120% 0;
+    }
+}
+
+@keyframes waterBubbles {
+    0% {
+        transform: translateY(0);
+        opacity: 0;
+    }
+    15% {
+        opacity: .8;
+    }
+    100% {
+        transform: translateY(-180px);
+        opacity: 0;
+    }
+}
+
+/* Keep the heart and percentage readable */
+.pie-inner {
+    position: absolute;
+    z-index: 10;
+}
+
+/* Remove the old glass overlay completely */
+.pie-glass {
+    display: none !important;
+}
