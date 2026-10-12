@@ -1,0 +1,596 @@
+
+/* ============================================================
+   PRINCESS WA DEIB 💜
+   HOME.CSS — LAVENDER DREAM EDITION
+   Romantic • Premium • Soft Glow • Glassmorphism
+   No moon • No stars • No sky
+============================================================ */
+
+:root {
+    --pd-deep: #160923;
+    --pd-purple: #542582;
+    --pd-violet: #8b4bd1;
+    --pd-lavender: #d8b8ff;
+    --pd-pink: #ff9bd8;
+    --pd-white: #fff8ff;
+    --pd-muted: #d9c8e8;
+
+    --pd-glass: rgba(255, 255, 255, 0.075);
+    --pd-glass-hover: rgba(255, 255, 255, 0.12);
+    --pd-glass-border: rgba(239, 212, 255, 0.18);
+}
+
+/* =========================
+   GLOBAL BASE
+========================= */
+
+body.phone-page {
+    margin: 0;
+    min-height: 100vh;
+    padding: 22px 12px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    background: #090510;
+    color: var(--pd-white);
+
+    font-family: "DM Sans", sans-serif;
+    overflow-x: hidden;
+}
+
+body.phone-page *,
+body.phone-page *::before,
+body.phone-page *::after {
+    box-sizing: border-box;
+}
+
+/* =========================
+   PHONE FRAME
+========================= */
+
+.phone-container {
+    display: none;
+}
+
+.phone-app {
+    position: relative;
+    isolation: isolate;
+
+    width: 100%;
+    max-width: 420px;
+    min-height: 850px;
+
+    margin: 0 auto;
+    padding: 23px 18px 34px;
+
+    overflow: hidden;
+    border-radius: 38px;
+
+    border: 1px solid rgba(226, 183, 255, 0.38);
+
+    background:
+        radial-gradient(
+            ellipse at 0% 10%,
+            rgba(179, 112, 255, 0.19),
+            transparent 38%
+        ),
+        radial-gradient(
+            ellipse at 100% 23%,
+            rgba(255, 117, 207, 0.15),
+            transparent 34%
+        ),
+        radial-gradient(
+            ellipse at 45% 100%,
+            rgba(115, 55, 174, 0.22),
+            transparent 43%
+        ),
+        linear-gradient(
+            150deg,
+            #251039 0%,
+            #170a27 43%,
+            #10071c 100%
+        );
+
+    box-shadow:
+        0 0 0 5px rgba(178, 113, 255, 0.035),
+        0 25px 75px rgba(0, 0, 0, 0.55),
+        0 0 42px rgba(157, 84, 255, 0.13),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* =========================
+   SOFT AMBIENT LIGHT
+========================= */
+
+/* Decorative lights stay inside the phone frame */
+.phone-app::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+
+    top: 95px;
+    right: -100px;
+
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+
+    background: rgba(211, 123, 255, 0.12);
+    filter: blur(75px);
+
+    pointer-events: none;
+    animation: pdAmbientGlow 9s ease-in-out infinite alternate;
+}
+
+.phone-app::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+
+    top: 390px;
+    left: -120px;
+
+    width: 260px;
+    height: 300px;
+    border-radius: 50%;
+
+    background: rgba(255, 105, 198, 0.10);
+    filter: blur(85px);
+
+    pointer-events: none;
+    animation: pdAmbientGlow 12s ease-in-out infinite alternate-reverse;
+}
+
+/* =========================
+   FLOATING HEART DECORATIONS
+========================= */
+
+/* Optional decorative layer.
+   Add the matching HTML inside .phone-app if desired. */
+
+#pd-atmosphere {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+
+    overflow: hidden;
+    border-radius: inherit;
+
+    pointer-events: none;
+}
+
+#pd-atmosphere::before,
+#pd-atmosphere::after {
+    position: absolute;
+    display: block;
+
+    color: rgba(255, 174, 225, 0.22);
+    font-family: Georgia, serif;
+    line-height: 1;
+
+    white-space: pre;
+    pointer-events: none;
+}
+
+#pd-atmosphere::before {
+    content: "♡          ♥\A      ♡\A                ♡\A   ♥\A             ♡";
+
+    top: 115px;
+    right: 7px;
+
+    font-size: 22px;
+    line-height: 100px;
+
+    animation: pdHeartFloat 13s ease-in-out infinite;
+}
+
+#pd-atmosphere::after {
+    content: "♥\A           ♡\A    ♡\A              ♥";
+
+    top: 360px;
+    left: 5px;
+
+    font-size: 17px;
+    line-height: 115px;
+    color: rgba(211, 164, 255, 0.17);
+
+    animation: pdHeartFloat 16s ease-in-out infinite reverse;
+}
+
+/* Keep home content above decorative hearts */
+.phone-app > *:not(#pd-atmosphere) {
+    position: relative;
+}
+
+/* =========================
+   APP HEADER
+========================= */
+
+.app-header {
+    z-index: 2;
+
+    border: 1px solid rgba(239, 213, 255, 0.15);
+    border-radius: 23px;
+
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.09),
+        rgba(255, 255, 255, 0.035)
+    );
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.13),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+/* =========================
+   PREMIUM GLASS CARDS
+========================= */
+
+.home-cover,
+.days-card,
+.song-card,
+.menu-grid a,
+.menu-grid button {
+    position: relative;
+
+    border: 1px solid var(--pd-glass-border);
+
+    background: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.09),
+        rgba(255, 255, 255, 0.035)
+    );
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    transition:
+        transform 0.28s ease,
+        background 0.28s ease,
+        border-color 0.28s ease,
+        box-shadow 0.28s ease;
+}
+
+/* Delicate shine across cards */
+.home-cover::before,
+.days-card::before,
+.song-card::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: 14px;
+    right: 14px;
+
+    height: 1px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.30),
+        transparent
+    );
+
+    pointer-events: none;
+}
+
+/* Hover and desktop pointer interaction */
+@media (hover: hover) {
+    .home-cover:hover,
+    .days-card:hover,
+    .song-card:hover,
+    .menu-grid a:hover,
+    .menu-grid button:hover {
+        transform: translateY(-4px);
+
+        background: var(--pd-glass-hover);
+        border-color: rgba(230, 188, 255, 0.38);
+
+        box-shadow:
+            0 16px 35px rgba(93, 39, 144, 0.19),
+            0 0 20px rgba(190, 121, 255, 0.07);
+    }
+}
+
+/* A gentle tap response on phones */
+.home-cover:active,
+.days-card:active,
+.song-card:active,
+.menu-grid a:active,
+.menu-grid button:active {
+    transform: scale(0.985);
+}
+
+/* =========================
+   ROMANTIC TYPOGRAPHY
+========================= */
+
+.home-cover h1,
+.home-cover h2,
+.app-header h1,
+.app-header h2 {
+    color: var(--pd-white);
+
+    text-shadow:
+        0 2px 16px rgba(205, 151, 255, 0.17);
+}
+
+.home-cover p,
+.days-card p,
+.song-card p {
+    color: var(--pd-muted);
+}
+
+/* Use this class for selected accent words */
+.pd-accent {
+    color: var(--pd-lavender);
+
+    text-shadow:
+        0 0 18px rgba(204, 151, 255, 0.22);
+}
+
+/* =========================
+   BUTTON FINISH
+========================= */
+
+.phone-app button {
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.phone-app a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Optional accent button class */
+.pd-love-button {
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.17);
+    border-radius: 15px;
+
+    background: linear-gradient(
+        120deg,
+        #8f4cce,
+        #bd62c5,
+        #e67ab9
+    );
+
+    box-shadow:
+        0 8px 22px rgba(174, 83, 202, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+    transition:
+        transform 0.25s ease,
+        filter 0.25s ease;
+}
+
+.pd-love-button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+.phone-app {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(194, 146, 235, 0.35) transparent;
+}
+
+.phone-app::-webkit-scrollbar {
+    width: 4px;
+}
+
+.phone-app::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+    background: rgba(194, 146, 235, 0.35);
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes pdAmbientGlow {
+    0% {
+        opacity: 0.55;
+        transform: translate3d(0, 0, 0) scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate3d(10px, -14px, 0) scale(1.08);
+    }
+}
+
+@keyframes pdHeartFloat {
+    0% {
+        transform: translateY(15px);
+        opacity: 0.45;
+    }
+
+    50% {
+        transform: translateY(-12px);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(15px);
+        opacity: 0.45;
+    }
+}
+
+/* =========================
+   RESPONSIVE PHONE FRAME
+========================= */
+
+@media (max-width: 480px) {
+    body.phone-page {
+        padding: 0;
+        background: #10071c;
+    }
+
+    .phone-app {
+        width: 100%;
+        max-width: 100%;
+        min-height: 100vh;
+
+        margin: 0;
+        padding: 22px 17px 32px;
+
+        border: none;
+        border-radius: 0;
+
+        box-shadow: none;
+    }
+}
+
+/* =========================
+   ACCESSIBILITY
+========================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .phone-app::before,
+    .phone-app::after,
+    #pd-atmosphere::before,
+    #pd-atmosphere::after {
+        animation: none !important;
+    }
+
+    .home-cover,
+    .days-card,
+    .song-card,
+    .menu-grid a,
+    .menu-grid button,
+    .pd-love-button {
+        transition: none;
+    }
+}
+
+.little-world-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  overflow: hidden;
+  padding: 18px;
+  border: 1px solid rgba(214, 174, 255, .3);
+  border-radius: 20px;
+  color: #fff4ff;
+  text-decoration: none;
+  background:
+    radial-gradient(circle at 100% 0%, #f18acb35, transparent 48%),
+    linear-gradient(135deg, #5b3478, #382044 75%);
+  box-shadow: 0 9px 25px rgba(17, 7, 29, .2);
+  transition: transform .25s, box-shadow .25s;
+}
+
+.little-world-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(170, 104, 225, .2);
+}
+
+.little-world-card .home-card-icon {
+  display: grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, .12);
+  font-size: 23px;
+}
+
+.little-world-card .home-card-title {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.little-world-card .home-card-description {
+  color: #e5ccef;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.little-world-card .home-card-arrow {
+  position: absolute;
+  top: 18px;
+  right: 17px;
+  color: #ffc5e7;
+  font-size: 20px;
+}
+/* OUR LITTLE WORLD — inside the phone homepage */
+.little-world-card {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+
+  padding: 18px;
+  margin: 0;
+
+  border: 1px solid rgba(214, 174, 255, 0.35);
+  border-radius: 20px;
+
+  color: #fff4ff;
+  text-decoration: none;
+
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(241, 138, 203, 0.22),
+      transparent 48%
+    ),
+    linear-gradient(135deg, #654083, #382044 75%);
+
+  box-shadow: 0 8px 22px rgba(17, 7, 29, 0.18);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.little-world-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(170, 104, 225, 0.25);
+}
+
+.little-world-card .home-card-icon {
+  display: grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 23px;
+}
+
+.little-world-card .home-card-title {
+  color: #fff4ff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.little-world-card .home-card-description {
+  color: #e5ccef;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.little-world-card .home-card-arrow {
+  position: absolute;
+  top: 18px;
+  right: 17px;
+  color: #ffc5e7;
+  font-size: 20px;
+}

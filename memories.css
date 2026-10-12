@@ -1,0 +1,440 @@
+
+/* ============================================
+   PRINCESS WA DEIB — OUR MEMORIES
+   Independent romantic page styling
+   ============================================ */
+
+.memories-page {
+    --memory-pink: #ff5ba7;
+    --memory-purple: #a855f7;
+    --memory-deep: #26113d;
+    --memory-muted: #927f9f;
+
+    width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    height: auto;
+    padding: 22px 18px 45px;
+    box-sizing: border-box;
+    overflow: visible;
+    color: #fff;
+    font-family: "DM Sans", sans-serif;
+    background:
+        radial-gradient(
+            ellipse at 10% 0%,
+            rgba(168, 85, 247, .20),
+            transparent 45%
+        ),
+        radial-gradient(
+            ellipse at 100% 45%,
+            rgba(255, 91, 167, .13),
+            transparent 42%
+        ),
+        linear-gradient(160deg, #180c27, #251138 55%, #160b22);
+}
+
+/* Page header */
+.phone-app:has(.memories-page) .simple-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 66px;
+    padding: 12px 18px;
+    box-sizing: border-box;
+    background: rgba(29, 13, 44, .94);
+    border-bottom: 1px solid rgba(255, 255, 255, .09);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.phone-app:has(.memories-page) .simple-header h2 {
+    flex: 1;
+    margin: 0;
+    text-align: center;
+    font-family: "Playfair Display", serif;
+    font-size: 21px;
+    font-weight: 600;
+    color: #fff0fa;
+}
+
+.phone-app:has(.memories-page) .simple-header a {
+    display: grid;
+    place-items: center;
+    width: 39px;
+    height: 39px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    color: white;
+    text-decoration: none;
+    background: rgba(255, 255, 255, .08);
+    transition: .25s ease;
+}
+
+.phone-app:has(.memories-page) .simple-header a:hover {
+    background: var(--memory-purple);
+    transform: translateX(-3px);
+}
+
+.phone-app:has(.memories-page) .simple-header .icon-btn {
+    width: 39px;
+    height: 39px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ff5ba7, #a855f7);
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Romantic introduction */
+.memory-intro {
+    position: relative;
+    padding: 28px 4px 27px;
+    animation: memoryAppear .7s ease both;
+}
+
+.memory-intro > span {
+    display: inline-block;
+    margin-bottom: 13px;
+    padding: 7px 12px;
+    border: 1px solid rgba(255, 145, 207, .25);
+    border-radius: 30px;
+    background: rgba(255, 91, 167, .09);
+    color: #ff9dce;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+}
+
+.memory-intro h1 {
+    margin: 0 0 13px;
+    color: #fff;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(30px, 8vw, 42px);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -.7px;
+}
+
+.memory-intro h1::first-line {
+    color: #ffe8f4;
+}
+
+.memory-intro p {
+    max-width: 280px;
+    margin: 0;
+    color: #c6b3d3;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* Memory cards grid */
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 15px;
+    width: 100%;
+    padding-bottom: 12px;
+}
+
+.memory-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .10);
+    border-radius: 22px;
+    background: linear-gradient(
+        145deg,
+        rgba(255, 255, 255, .095),
+        rgba(255, 255, 255, .035)
+    );
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .16);
+    transition:
+        transform .3s ease,
+        border-color .3s ease,
+        box-shadow .3s ease;
+    animation: memoryAppear .65s ease both;
+}
+
+.memory-card:nth-child(2) {
+    animation-delay: .08s;
+}
+
+.memory-card:nth-child(3) {
+    animation-delay: .16s;
+}
+
+.memory-card:nth-child(4) {
+    animation-delay: .24s;
+}
+
+.memory-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 91, 167, .45);
+    box-shadow: 0 15px 30px rgba(168, 85, 247, .15);
+}
+
+/* Memory image placeholders */
+.memory-placeholder {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 145px;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+        radial-gradient(
+            circle at 25% 20%,
+            rgba(255, 255, 255, .17),
+            transparent 35%
+        ),
+        linear-gradient(145deg, #713b99, #db559f);
+}
+
+.memory-placeholder::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    z-index: -1;
+    background: linear-gradient(
+        120deg,
+        transparent 35%,
+        rgba(255, 255, 255, .13) 50%,
+        transparent 65%
+    );
+    transform: translateX(-65%);
+    animation: memoryShine 6s ease-in-out infinite;
+}
+
+.memory-placeholder i {
+    display: grid;
+    place-items: center;
+    width: 57px;
+    height: 57px;
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .14);
+    color: #fff;
+    font-size: 23px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, .12);
+}
+
+/* Featured first memory */
+.memory-card.large {
+    grid-column: 1 / -1;
+}
+
+.memory-card.large .memory-placeholder {
+    min-height: 220px;
+    background:
+        radial-gradient(
+            circle at 20% 25%,
+            rgba(255, 255, 255, .20),
+            transparent 35%
+        ),
+        linear-gradient(135deg, #652d91, #e34f9c 60%, #8739c9);
+}
+
+.memory-card.large .memory-placeholder i {
+    width: 75px;
+    height: 75px;
+    font-size: 31px;
+    animation: heartBeat 2.5s ease-in-out infinite;
+}
+
+/* Card captions */
+.memory-caption {
+    padding: 13px 12px 15px;
+    color: #fff3fa;
+    font-family: "Playfair Display", serif;
+    font-size: 14px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.memory-caption span {
+    display: block;
+    margin-top: 6px;
+    color: #c7afd7;
+    font-family: "DM Sans", sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+/* Add memory card */
+.add-memory {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 190px;
+    padding: 15px;
+    box-sizing: border-box;
+    border: 1.5px dashed rgba(255, 145, 207, .42);
+    border-radius: 22px;
+    background: rgba(255, 91, 167, .045);
+    color: #ffb0d6;
+    text-align: center;
+    cursor: pointer;
+    transition: .3s ease;
+}
+
+.add-memory i {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff5ba7, #a855f7);
+    color: white;
+    font-size: 18px;
+    box-shadow: 0 6px 20px rgba(168, 85, 247, .25);
+}
+
+.add-memory span {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.add-memory:hover {
+    border-color: #ff7cba;
+    background: rgba(255, 91, 167, .12);
+    transform: translateY(-4px);
+}
+
+/* Animations */
+@keyframes memoryAppear {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes memoryShine {
+    0%, 30% {
+        transform: translateX(-65%);
+    }
+    70%, 100% {
+        transform: translateX(65%);
+    }
+}
+
+@keyframes heartBeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.09);
+    }
+}
+
+/* ============================================
+   SCROLLING FIX
+   Override shared phone layout restrictions
+   ============================================ */
+
+html:has(.memories-page) {
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #a855f7 #21112f;
+}
+
+body.phone-page:has(.memories-page) {
+    display: block;
+    width: 100%;
+    min-height: 100vh;
+    height: auto;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+.phone-app:has(.memories-page) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    height: auto;
+    margin: 0 auto;
+    overflow: visible;
+    border-radius: 0;
+}
+
+.phone-app:has(.memories-page) .memories-page {
+    display: block;
+    flex: 0 0 auto;
+    min-height: 0;
+    height: auto;
+    overflow: visible;
+}
+
+/* Wider screens */
+@media (min-width: 700px) {
+    .phone-app:has(.memories-page) {
+        max-width: 520px;
+        margin: 25px auto;
+        min-height: calc(100vh - 50px);
+        border: 1px solid rgba(255, 255, 255, .10);
+        border-radius: 28px;
+        overflow: visible;
+        box-shadow: 0 20px 80px rgba(0, 0, 0, .3);
+    }
+
+    .phone-app:has(.memories-page) .simple-header {
+        border-radius: 28px 28px 0 0;
+    }
+
+    .memories-page {
+        padding: 25px 22px 50px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 360px) {
+    .memories-page {
+        padding: 18px 12px 35px;
+    }
+
+    .memory-grid {
+        gap: 10px;
+    }
+
+    .memory-placeholder {
+        min-height: 125px;
+    }
+
+    .memory-card.large .memory-placeholder {
+        min-height: 190px;
+    }
+
+    .memory-caption {
+        padding: 11px 9px 13px;
+        font-size: 13px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .memories-page *,
+    .memories-page *::before,
+    .memories-page *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+    }
+}

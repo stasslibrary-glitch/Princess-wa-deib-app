@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#241334">
+  <title>Our Little World 💜 | Princess wa Deib</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="little-world.css">
+</head>
+<body>
+  <main class="phone">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <header class="topbar">
+      <a class="back-button" href="index.html" aria-label="Back to home">←</a>
+      <div class="brand">
+        <span class="brand-icon">♥</span>
+        <span>PRINCESS WA DEIB</span>
+      </div>
+      <span class="top-heart">♡</span>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow"><span></span> OUR PRIVATE LITTLE CORNER <span></span></div>
+      <h1>Our Little<br><em>World</em></h1>
+      <p>Two hearts, one little world.<br>A place for everything we feel. 💜</p>
+      <div class="hero-decoration" aria-hidden="true">
+        <span class="orbit orbit-one"></span>
+        <span class="orbit orbit-two"></span>
+        <span class="hero-heart">♥</span>
+        <span class="tiny-heart heart-one">♥</span>
+        <span class="tiny-heart heart-two">♡</span>
+        <span class="tiny-heart heart-three">✦</span>
+      </div>
+      <div class="couple-pill">
+        <span>💜</span> DEIB <i>×</i> PRINCESS <span>💗</span>
+      </div>
+    </section>
+
+    <section class="welcome-card">
+      <div class="welcome-icon">💌</div>
+      <div>
+        <p class="mini-label">A LITTLE REMINDER</p>
+        <h2>This space belongs to us.</h2>
+        <p>Leave a thought, make a wish, or remind each other of something beautiful.</p>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="Noticeboard sections">
+      <button class="tab active" data-tab="board">✦ The board</button>
+      <button class="tab" data-tab="notes">💌 Love notes</button>
+      <button class="tab" data-tab="reminders">♡ Reminders</button>
+      <button class="tab" data-tab="wishes">✨ Wishes</button>
+    </nav>
+
+    <section class="section-heading">
+      <div>
+        <p class="mini-label" id="section-kicker">OUR LITTLE COLLECTION</p>
+        <h2 id="section-title">Pinned with love</h2>
+      </div>
+      <span class="count-pill" id="item-count">03 NOTES</span>
+    </section>
+
+    <section id="notice-list" class="notice-list" aria-live="polite">
+      <!-- Demo cards are created by little-world.js -->
+    </section>
+
+    <button class="create-button" id="open-create">
+      <span class="create-plus">＋</span>
+      <span>Leave something special</span>
+      <span class="create-sparkle">✧</span>
+    </button>
+
+    <p class="privacy-note">Made with love, just for the two of us. ♡</p>
+
+    <footer class="bottom-nav">
+      <a href="index.html"><span>⌂</span>Home</a>
+      <a href="#notice-list" class="selected"><span>♡</span>Our world</a>
+      <button id="footer-create"><span>＋</span>Create</button>
+    </footer>
+  </main>
+
+  <dialog id="create-dialog" class="create-dialog">
+    <form id="create-form">
+      <div class="dialog-top">
+        <div>
+          <p class="mini-label">A LITTLE SOMETHING</p>
+          <h2>Leave a little love 💜</h2>
+        </div>
+        <button type="button" id="close-dialog" class="close-button" aria-label="Close">×</button>
+      </div>
+
+      <label for="entry-type">What would you like to create?</label>
+      <select id="entry-type" required>
+        <option value="note">💌 Love note</option>
+        <option value="reminder">🗓️ Shared reminder</option>
+        <option value="wish">✨ A wish for us</option>
+        <option value="notice">📌 Noticeboard message</option>
+      </select>
+
+      <label for="entry-title">Give it a title</label>
+      <input id="entry-title" maxlength="90" placeholder="Something sweet..." required>
+
+      <label for="entry-body">Your message</label>
+      <textarea id="entry-body" maxlength="1500" rows="4" placeholder="Write from your heart..." required></textarea>
+
+      <div id="recipient-wrap">
+        <label for="entry-recipient">Who is it for?</label>
+        <select id="entry-recipient">
+          <option value="private">My partner — private surprise</option>
+          <option value="shared">Both of us — shared note</option>
+        </select>
+      </div>
+
+      <div id="reminder-wrap" hidden>
+        <label for="entry-date">Reminder date and time</label>
+        <input id="entry-date" type="datetime-local">
+      </div>
+
+      <button type="submit" class="save-button">Pin it to our world ♥</button>
+      <p class="demo-warning">Preview mode: entries are saved only in this browser until Firebase is connected.</p>
+    </form>
+  </dialog>
+
+  <script src="little-world.js"></script>
+</body>
+</html>
