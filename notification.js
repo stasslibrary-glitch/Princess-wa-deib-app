@@ -4,10 +4,7 @@
    WhatsApp-style unread count + popup + sound
    ========================================================= */
 
-import {
-    auth,
-    db
-} from "./firebase.js";
+import { app, auth, db } from "./firebase.js";
 
 import {
     onAuthStateChanged
@@ -18,6 +15,17 @@ import {
     query,
     orderBy,
     onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import {
+    getMessaging,
+    getToken,
+    isSupported
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging.js";
+
+import {
+    doc,
+    setDoc,
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 
@@ -634,3 +642,53 @@ onAuthStateChanged(
 
     }
 );
+export async function enablePDBackgroundNotifications() {
+    if (!auth.currentUser) {
+        throw new Error("Please sign in to PD first.");
+    }
+
+    if (!("Notification" in window) ||
+        !("serviceWorker" in navigator) ||
+        !(await isSupported())) {
+        throw new Error("This browser does not support PD push notifications.");
+    }
+
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+        throw new Error("Please allow notifications for PD.");
+    }
+
+    const registration = await navigator.serviceWorker.register(
+        "./firebase-messaging-sw.js"
+    );
+
+    const messaging = getMessaging(app);
+
+    const token = await getToken(messaging, {
+        vapidKey: "BIXOKrV58L1gLD618OUPv9Qq0AddRv-O5mhtOlGQQPDzhueRa-PczLbbM2GwUuT23Lw0cdAOJIHeMjg6c9nsGqg",
+        serviceWorkerRegistration: registration
+    });
+
+    if (!token) {
+        throw new Error("Firebase could not register this phone.");
+    }
+
+    await setDoc(
+        doc(
+            db,
+            "users",
+            auth.currentUser.uid,
+            "fcmTokens",
+            encodeURIComponent(token)
+        ),
+        {
+            token,
+            platform: "android-chrome",
+            updatedAt: serverTimestamp()
+        },
+        { merge: true }
+    );
+
+    console.log("💜 PD background notifications enabled.");
+}

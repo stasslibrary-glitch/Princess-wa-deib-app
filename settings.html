@@ -77,6 +77,32 @@ Our private space... Just us ♥
 
 <i class="fa-solid fa-bell"></i>
 
+
+
+<p id="pd-notification-status" aria-live="polite"></p>
+
+<script type="module">
+    import { enablePDNotifications } from "./notifications.js";
+
+    const button = document.getElementById("enable-pd-notifications");
+    const status = document.getElementById("pd-notification-status");
+
+    button.addEventListener("click", async () => {
+        button.disabled = true;
+        status.textContent = "Enabling notifications…";
+
+        try {
+            await enablePDNotifications();
+            status.textContent = "PD notifications are enabled 💜";
+        } catch (error) {
+            console.error(error);
+            status.textContent = error.message;
+        } finally {
+            button.disabled = false;
+        }
+    });
+</script>
+
 <div>
 <strong>Notifications</strong>
 <span>On</span>
@@ -88,7 +114,7 @@ Our private space... Just us ♥
 </label>
 
 </div>
-
+<input type="checkbox" id="pd-notifications-toggle" checked>
 
 <div class="setting-row">
 
@@ -151,6 +177,7 @@ Made with <span>♥</span> for us
     src="auth-guard.js"
 ></script>
 <script type="module" src="firebase.js"></script>
-<script type="module" src="script.js"></script>
+
+<script type="module" src="settings.js"></script>
 </body>
 </html>
