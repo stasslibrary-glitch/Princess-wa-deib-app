@@ -82,14 +82,16 @@ const savedBySelect = document.getElementById("saved-by");
    ACCOUNT NAME
 ----------------------------------------- */
 
+
 function getAccountName() {
   const email = (currentUser?.email || "").toLowerCase();
 
-  if (email === "deib@gmail.com") return "Deib";
-  if (email === "princess@gmail.com") return "Princess";
+  if (email === "princess@gmail.com") return "Deib";
+  if (email === "deib@gmail.com") return "Princess";
 
   return currentUser?.displayName || "PD Member";
 }
+
 
 /* -----------------------------------------
    HELPERS
@@ -702,7 +704,7 @@ renderEntries();
 onAuthStateChanged(auth, user => {
   currentUser = user;
 
-  if (!user) {
+  if (!user) {;
     unsubscribeListeners.forEach(unsubscribe => unsubscribe());
     unsubscribeListeners = [];
     entries = [];

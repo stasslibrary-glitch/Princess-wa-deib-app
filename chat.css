@@ -2063,7 +2063,7 @@ border-radius: 35px !important;
 
 }
 
-========================================================= */
+/*========================================================= */
 
 /* =========================================================
 
@@ -2677,7 +2677,7 @@ z-index: 500;
 
 .phone-app.chat-app #pd-chat-loader {
 
-```
+
 position: absolute;
 
 inset: 0;
@@ -2690,4 +2690,43 @@ border-radius: inherit;
 overflow: hidden;
 
 
+}
+/* ================================================
+   PD CHAT — MULTILINE MESSAGE COMPOSER
+================================================ */
+
+.phone-app.chat-app .chat-input {
+    height: auto !important;
+    min-height: 64px;
+    max-height: 190px !important;
+    flex: 0 0 auto !important;
+    align-items: flex-end;
+    gap: 8px;
+    padding: 10px 12px;
+}
+
+.phone-app.chat-app #messageInput {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 42px;
+    max-height: 120px;
+    height: 42px;
+    resize: none;
+    overflow-y: hidden;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-family: "DM Sans", sans-serif;
+}
+
+.phone-app.chat-app #messageInput:focus {
+    outline: none;
+}
+
+.phone-app.chat-app .chat-input .send-message,
+.phone-app.chat-app .chat-input .attach-button {
+    flex-shrink: 0;
+    align-self: flex-end;
 }
