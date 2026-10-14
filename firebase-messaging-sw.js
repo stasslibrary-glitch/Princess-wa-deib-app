@@ -35,94 +35,63 @@ const messaging = firebase.messaging();
 
 
 /* =========================================================
-   BACKGROUND MESSAGE
+   BACKGROUND MESSAGE — PD
    ========================================================= */
 
-messaging.onBackgroundMessage(payload => {
+messaging.onBackgroundMessage(async (payload) => {
+    console.log("💌 PD background message received:", payload);
 
-    console.log(
-        "💌 PD background message received:",
-        payload
-    );
+    // Notification payloads may already be displayed by FCM.
+    // Only manually display data-only messages here.
+    if (payload.notification) {
+        return;
+    }
 
+    const data = payload.data || {};
 
-    const title =
-        payload.notification?.title ||
-        "Princess wa Deib ❤️";
-
+    const title = data.title || "Princess wa Deib ❤️";
 
     const options = {
-
-        body:
-            payload.notification?.body ||
-            "You have a new message 💕",
-
-        icon: "./icon-192.png",
-
-        badge: "./icon-192.png",
-
+        body: data.body || "You have a new message 💕",
+        icon: new URL("./icon-192.png", self.registration.scope).href,
+        badge: new URL("./icon-192.png", self.registration.scope).href,
         vibrate: [200, 100, 200],
-
+        tag: data.tag || "pd-chat-message",
+        renotify: true,
         data: {
-            url: "./chat.html"
+            url: data.url || "./chat.html"
         }
-
     };
 
-
-    self.registration.showNotification(
-        title,
-        options
-    );
-
+    await self.registration.showNotification(title, options);
 });
 
 
 /* =========================================================
-   OPEN CHAT WHEN NOTIFICATION IS TAPPED
+   OPEN PD CHAT WHEN NOTIFICATION IS TAPPED
    ========================================================= */
 
-self.addEventListener(
-    "notificationclick",
-    event => {
+self.addEventListener("notificationclick", event => {
+    event.notification.close();
 
-        event.notification.close();
+    event.waitUntil((async () => {
+        const targetUrl = new URL(
+            event.notification.data?.url || "chat.html",
+            self.registration.scope
+        ).href;
 
+        const windows = await clients.matchAll({
+            type: "window",
+            includeUncontrolled: true
+        });
 
-        event.waitUntil(
+        for (const client of windows) {
+            if (client.url.startsWith(self.registration.scope)) {
+                await client.navigate(targetUrl);
+                return client.focus();
+            }
+        }
 
-            clients.matchAll({
-                type: "window",
-                includeUncontrolled: true
-            })
-
-            .then(clientList => {
-
-                for (const client of clientList) {
-
-                    if (
-                        client.url.includes("chat.html") &&
-                        "focus" in client
-                    ) {
-
-                        return client.focus();
-
-                    }
-
-                }
-
-
-                if (clients.openWindow) {
-
-                    return clients.openWindow(
-                        "./chat.html"
-                    );
-
-                }
-
-            })
-
-        );
-
-    }
-);
+        return clients.openWindow(targetUrl);
+    })());
+});

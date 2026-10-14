@@ -1,4 +1,30 @@
 
+/* =========================================================
+   PD — LITTLE WORLD
+   Firebase Firestore • Live sync • Shared entries
+   ========================================================= */
+
+import { auth, db } from "./firebase.js";
+
+import {
+  collection,
+  addDoc,
+  doc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  onSnapshot,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+import { onAuthStateChanged } from
+  "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+/* -----------------------------------------
+   PAGE ELEMENTS
+----------------------------------------- */
+
 const noticeList = document.getElementById("notice-list");
 const tabs = [...document.querySelectorAll(".tab")];
 const sectionTitle = document.getElementById("section-title");
@@ -15,54 +41,15 @@ const recipientWrap = document.getElementById("recipient-wrap");
 const reminderWrap = document.getElementById("reminder-wrap");
 const entryDate = document.getElementById("entry-date");
 
-const STORAGE_KEY = "pdLittleWorldDemo";
+const ENTRIES_COLLECTION = "littleWorldEntries";
 
-const demoEntries = [
-  {
-    id: "demo-1",
-    type: "note",
-    title: "A little reminder for my Princess 💗",
-    body: "No matter how busy life gets, never forget that you have someone who is proud of you, believes in you, and is always happy to call you his Princess. You make my world softer and sweeter.",
-    author: "Deib",
-    visibility: "private",
-    pinned: true,
-    createdAt: Date.now() - 1000 * 60 * 40,
-    read: false,
-    demo: true
-  },
-  {
-    id: "demo-2",
-    type: "reminder",
-    title: "Our next little moment 🗓️",
-    body: "Let's make time for a proper call, put our phones aside, and enjoy each other's company. Even the simplest moments with you mean a lot to me.",
-    author: "Princess",
-    visibility: "shared",
-    pinned: true,
-    createdAt: Date.now() - 1000 * 60 * 60 * 5,
-    reminderAt: "",
-    read: true,
-    demo: true
-  },
-  {
-    id: "demo-3",
-    type: "wish",
-    title: "One of our little dreams ✨",
-    body: "More laughter, more memories, more honest conversations, more adventures, and a love that keeps growing as we grow together.",
-    author: "Deib",
-    visibility: "shared",
-    pinned: false,
-    createdAt: Date.now() - 1000 * 60 * 60 * 24,
-    read: true,
-    demo: true
-  }
-];
-
-let entries = loadEntries();
+let currentUser = null;
+let entries = [];
 let currentTab = "board";
+let unsubscribeListeners = [];
 
 /* -----------------------------------------
    SPECIAL MESSAGE SAVER SELECTOR
-   This is inserted automatically into the form.
 ----------------------------------------- */
 
 const savedByWrap = document.createElement("div");
@@ -92,30 +79,16 @@ if (submitButton) {
 const savedBySelect = document.getElementById("saved-by");
 
 /* -----------------------------------------
-   STORAGE
+   ACCOUNT NAME
 ----------------------------------------- */
 
-function loadEntries() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) return parsed;
-    }
-  } catch (error) {
-    console.warn("Could not load demo entries:", error);
-  }
+function getAccountName() {
+  const email = (currentUser?.email || "").toLowerCase();
 
-  return demoEntries;
-}
+  if (email === "deib@gmail.com") return "Deib";
+  if (email === "princess@gmail.com") return "Princess";
 
-function saveEntries() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-  } catch (error) {
-    console.error("Could not save Little World entries:", error);
-    alert("This item could not be saved in this browser.");
-  }
+  return currentUser?.displayName || "PD Member";
 }
 
 /* -----------------------------------------
@@ -153,7 +126,17 @@ function relativeDate(timestamp) {
 function savedDate(timestamp) {
   if (!timestamp) return "Date not available";
 
-  const date = new Date(timestamp);
+  let date;
+
+  if (typeof timestamp === "string") {
+    date = new Date(timestamp);
+  } else if (typeof timestamp === "number") {
+    date = new Date(timestamp);
+  } else if (typeof timestamp.toDate === "function") {
+    date = timestamp.toDate();
+  } else {
+    return "Date not available";
+  }
 
   if (Number.isNaN(date.getTime())) {
     return "Date not available";
@@ -199,6 +182,98 @@ function typeInfo(type) {
 }
 
 /* -----------------------------------------
+   LIVE FIRESTORE SYNC
+----------------------------------------- */
+
+function startEntriesListener() {
+  unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+  unsubscribeListeners = [];
+
+  if (!currentUser) return;
+
+  const entriesRef = collection(db, ENTRIES_COLLECTION);
+
+  // Shared entries: visible to both signed-in accounts.
+  const sharedQuery = query(
+    entriesRef,
+    where("visibility", "==", "shared")
+  );
+
+  // Personal entries: fetch only this account's entries.
+  const ownQuery = query(
+    entriesRef,
+    where("authorUID", "==", currentUser.uid)
+  );
+
+  const sharedEntries = new Map();
+  const ownEntries = new Map();
+
+  function refreshEntries() {
+    const combined = new Map([
+      ...sharedEntries,
+      ...ownEntries
+    ]);
+
+    entries = [...combined.values()].map(entry => ({
+      ...entry,
+      // Convert Firestore timestamps into numbers for display.
+      createdAt:
+        Number(entry.createdAtMs) ||
+        (typeof entry.createdAt?.toMillis === "function"
+          ? entry.createdAt.toMillis()
+          : Date.now())
+    }));
+
+    renderEntries();
+  }
+
+  function convertSnapshot(snapshot, destination) {
+    destination.clear();
+
+    snapshot.forEach(documentSnapshot => {
+      const data = documentSnapshot.data();
+
+      destination.set(documentSnapshot.id, {
+        ...data,
+        id: documentSnapshot.id
+      });
+    });
+
+    refreshEntries();
+  }
+
+  const stopShared = onSnapshot(
+    sharedQuery,
+    snapshot => convertSnapshot(snapshot, sharedEntries),
+    error => {
+      console.error("Little World shared entries error:", error);
+      showFirebaseError(error);
+    }
+  );
+
+  const stopOwn = onSnapshot(
+    ownQuery,
+    snapshot => convertSnapshot(snapshot, ownEntries),
+    error => {
+      console.error("Little World personal entries error:", error);
+      showFirebaseError(error);
+    }
+  );
+
+  unsubscribeListeners.push(stopShared, stopOwn);
+}
+
+function showFirebaseError(error) {
+  if (error.code === "permission-denied") {
+    console.error(
+      "Check your Firestore security rules for littleWorldEntries."
+    );
+  } else {
+    console.error("Could not sync Little World with Firebase.");
+  }
+}
+
+/* -----------------------------------------
    FILTER ENTRIES
 ----------------------------------------- */
 
@@ -220,7 +295,8 @@ function getVisibleEntries() {
       return Number(b.pinned) - Number(a.pinned);
     }
 
-    return (Number(b.createdAt) || 0) - (Number(a.createdAt) || 0);
+    return (Number(b.createdAt) || 0) -
+           (Number(a.createdAt) || 0);
   });
 }
 
@@ -235,21 +311,19 @@ function renderSpecialMessage(entry) {
   return `
     <article class="special-message-card">
       <div class="special-message-top">
-          <div class="special-message-label">
-            👑 For Remeberance
-          </div>
+        <div class="special-message-label">
+          👑 Special Messages
+        </div>
 
         <div class="note-actions">
-          <button
-            type="button"
+          <button type="button"
             class="note-pin"
             data-pin="${escapeHTML(entry.id)}"
             aria-label="${entry.pinned ? "Unpin" : "Pin"} special message"
             title="${entry.pinned ? "Unpin message" : "Pin message"}"
           >${entry.pinned ? "📌" : "♡"}</button>
 
-          <button
-            type="button"
+          <button type="button"
             class="note-delete"
             data-delete="${escapeHTML(entry.id)}"
             aria-label="Delete special message"
@@ -364,16 +438,14 @@ function renderEntries() {
           </span>
 
           <div class="note-actions">
-            <button
-              type="button"
+            <button type="button"
               class="note-pin"
               data-pin="${escapeHTML(entry.id)}"
               aria-label="${entry.pinned ? "Unpin" : "Pin"} note"
               title="${entry.pinned ? "Unpin note" : "Pin note"}"
             >${entry.pinned ? "📌" : "♡"}</button>
 
-            <button
-              type="button"
+            <button type="button"
               class="note-delete"
               data-delete="${escapeHTML(entry.id)}"
               aria-label="Delete ${escapeHTML(entry.title)}"
@@ -382,15 +454,15 @@ function renderEntries() {
           </div>
         </div>
 
-        <h3>${escapeHTML(entry.title)}</h3>
-        <p class="note-body">${escapeHTML(entry.body)}</p>
+        <h3>${escapeHTML(entry.title || "")}</h3>
+        <p class="note-body">${escapeHTML(entry.body || "")}</p>
 
         ${reminderText}
 
         <div class="note-meta">
-          <span>♡ ${escapeHTML(entry.author || "Us")} · ${
-            escapeHTML(relativeDate(entry.createdAt))
-          }</span>
+          <span>♡ ${escapeHTML(entry.author || "Us")} ·
+            ${escapeHTML(relativeDate(entry.createdAt))}
+          </span>
           <span class="note-tag">${escapeHTML(visibilityLabel)}</span>
         </div>
       </article>
@@ -403,6 +475,11 @@ function renderEntries() {
 ----------------------------------------- */
 
 function openCreateForm() {
+  if (!currentUser) {
+    alert("Please sign in to your PD account first. 💜");
+    return;
+  }
+
   createForm.reset();
   updateFormOptions();
   dialog.showModal();
@@ -445,17 +522,17 @@ tabs.forEach(tab => {
    OPEN AND CLOSE DIALOG
 ----------------------------------------- */
 
-document.getElementById("open-create").addEventListener(
+document.getElementById("open-create")?.addEventListener(
   "click",
   openCreateForm
 );
 
-document.getElementById("footer-create").addEventListener(
+document.getElementById("footer-create")?.addEventListener(
   "click",
   openCreateForm
 );
 
-document.getElementById("close-dialog").addEventListener(
+document.getElementById("close-dialog")?.addEventListener(
   "click",
   () => dialog.close()
 );
@@ -463,54 +540,68 @@ document.getElementById("close-dialog").addEventListener(
 entryType.addEventListener("change", updateFormOptions);
 
 /* -----------------------------------------
-   PIN AND DELETE
+   PIN AND DELETE IN FIRESTORE
 ----------------------------------------- */
 
-noticeList.addEventListener("click", event => {
+noticeList.addEventListener("click", async event => {
   const deleteButton = event.target.closest("[data-delete]");
+  const pinButton = event.target.closest("[data-pin]");
 
   if (deleteButton) {
     const id = deleteButton.dataset.delete;
-    const entry = entries.find(item => String(item.id) === String(id));
+    const entry = entries.find(item => item.id === id);
 
-    if (!entry) return;
+    if (!entry || !currentUser) return;
 
-    const confirmed = window.confirm(
-      `Delete "${entry.title}"? This cannot be undone.`
-    );
+    // Only the creator may delete their entry.
+    if (entry.authorUID !== currentUser.uid) {
+      alert("Only the person who saved this item can delete it. 💜");
+      return;
+    }
 
-    if (!confirmed) return;
+    if (!window.confirm(`Delete "${entry.title}"? This cannot be undone.`)) {
+      return;
+    }
 
-    entries = entries.filter(
-      item => String(item.id) !== String(id)
-    );
+    try {
+      await deleteDoc(doc(db, ENTRIES_COLLECTION, id));
+    } catch (error) {
+      console.error("Could not delete Little World entry:", error);
+      alert("Could not delete this item. Check your connection and Firebase rules.");
+    }
 
-    saveEntries();
-    renderEntries();
     return;
   }
 
-  const pinButton = event.target.closest("[data-pin]");
-
   if (pinButton) {
     const id = pinButton.dataset.pin;
-    const entry = entries.find(item => String(item.id) === String(id));
+    const entry = entries.find(item => item.id === id);
 
-    if (!entry) return;
+    if (!entry || !currentUser) return;
 
-    entry.pinned = !entry.pinned;
-
-    saveEntries();
-    renderEntries();
+    try {
+      await updateDoc(doc(db, ENTRIES_COLLECTION, id), {
+        pinned: !entry.pinned,
+        updatedAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error("Could not update pin:", error);
+      alert("Could not update the pin. Check your Firebase rules.");
+    }
   }
 });
 
 /* -----------------------------------------
-   SAVE NEW ENTRIES
+   SAVE NEW ENTRIES TO FIRESTORE
 ----------------------------------------- */
 
-createForm.addEventListener("submit", event => {
+createForm.addEventListener("submit", async event => {
   event.preventDefault();
+
+  if (!currentUser) {
+    alert("Please sign in to PD before saving. 💜");
+    return;
+  }
 
   const type = entryType.value;
   const title = entryTitle.value.trim();
@@ -519,56 +610,106 @@ createForm.addEventListener("submit", event => {
   if (!title || !body) return;
 
   const now = Date.now();
+  const author = getAccountName();
 
   const newEntry = {
-    id: `local-${now}-${Math.random().toString(36).slice(2, 8)}`,
     type,
     title,
     body,
 
-    author: type === "special" ? savedBySelect.value : "You",
-    savedBy: type === "special" ? savedBySelect.value : "You",
+    // Identity comes from the signed-in Firebase account.
+    author,
+    authorUID: currentUser.uid,
+
+    // Retains your special-message saver selector.
+    savedBy: type === "special" ? savedBySelect.value : author,
     savedAt: new Date(now).toISOString(),
 
-    visibility: type === "note" ? entryRecipient.value : "shared",
+    visibility: type === "note"
+      ? entryRecipient.value
+      : "shared",
+
     pinned: false,
-    createdAt: now,
+    createdAt: serverTimestamp(),
+    createdAtMs: now,
     reminderAt: type === "reminder" ? entryDate.value : "",
     read: false,
-    demo: false
+    updatedAt: serverTimestamp()
   };
 
-  entries.push(newEntry);
-  saveEntries();
+  const originalButton = createForm.querySelector(
+    'button[type="submit"], button:not([type])'
+  );
 
-  if (type === "special") {
-    currentTab = "special";
-  } else if (type === "note") {
-    currentTab = "notes";
-  } else if (type === "reminder") {
-    currentTab = "reminders";
-  } else if (type === "wish") {
-    currentTab = "wishes";
-  } else {
-    currentTab = "board";
+  try {
+    if (originalButton) {
+      originalButton.disabled = true;
+      originalButton.textContent = "Saving… 💜";
+    }
+
+    await addDoc(collection(db, ENTRIES_COLLECTION), newEntry);
+
+    if (type === "special") {
+      currentTab = "special";
+    } else if (type === "note") {
+      currentTab = "notes";
+    } else if (type === "reminder") {
+      currentTab = "reminders";
+    } else if (type === "wish") {
+      currentTab = "wishes";
+    } else {
+      currentTab = "board";
+    }
+
+    tabs.forEach(tab => {
+      tab.classList.toggle("active", tab.dataset.tab === currentTab);
+    });
+
+    dialog.close();
+    createForm.reset();
+    updateFormOptions();
+
+    // Firestore's real-time listener refreshes both accounts.
+    noticeList.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  } catch (error) {
+    console.error("Could not save Little World entry:", error);
+
+    alert(
+      error.code === "permission-denied"
+        ? "Firebase blocked this save. Check your Firestore security rules."
+        : "Your entry could not be saved. Check your internet connection and try again."
+    );
+
+  } finally {
+    if (originalButton) {
+      originalButton.disabled = false;
+      originalButton.textContent = "Save";
+    }
   }
-
-  tabs.forEach(tab => {
-    tab.classList.toggle("active", tab.dataset.tab === currentTab);
-  });
-
-  renderEntries();
-  dialog.close();
-
-  noticeList.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
 });
 
 /* -----------------------------------------
-   START
+   START PD LITTLE WORLD
 ----------------------------------------- */
 
 updateFormOptions();
 renderEntries();
+
+onAuthStateChanged(auth, user => {
+  currentUser = user;
+
+  if (!user) {
+    unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+    unsubscribeListeners = [];
+    entries = [];
+    renderEntries();
+    return;
+  }
+
+  console.log("💜 Little World connected:", user.email);
+  startEntriesListener();
+});
