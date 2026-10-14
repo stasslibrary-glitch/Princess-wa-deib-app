@@ -1485,3 +1485,24 @@ if (document.readyState === "loading") {
 } else {
     startPDChat();
 }
+
+/* PD Chat — Scroll to Latest Message */
+function setupScrollToBottomButton() {
+    const button = document.getElementById("scrollToBottomBtn");
+    const messages = document.getElementById("chatMessages");
+
+    if (!button || !messages) return;
+
+    button.addEventListener("click", () => {
+        messages.scrollTo({
+            top: messages.scrollHeight,
+            behavior: "smooth"
+        });
+    });
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupScrollToBottomButton);
+} else {
+    setupScrollToBottomButton();
+}
