@@ -1,44 +1,472 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>PD | Chat</title>
+    <meta name="theme-color" content="#190e27">
+    <meta name="description" content="A little private world for Princess wa Deib.">
+
+    <title>PD | Our Little Chat ❤️</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <link rel="stylesheet" href="chat.css">
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
-        rel="stylesheet">
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
     <style>
-        /* PD ONLINE / LAST SEEN */
+        :root {
+            --pd-bg: #190e27;
+            --pd-panel: #21132f;
+            --pd-purple: #a85cff;
+            --pd-pink: #f238a9;
+            --pd-text: #fff8ff;
+            --pd-muted: #c8b7d5;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        body.phone-page {
+            background: var(--pd-bg);
+            color: var(--pd-text);
+            font-family: "DM Sans", sans-serif;
+        }
+
+        .chat-app {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            width: 100%;
+            height: 100dvh;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* HEADER */
+
+        .chat-header {
+            position: relative;
+            z-index: 5;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 76px;
+            padding: 12px 15px;
+            background: rgba(33, 19, 47, .97);
+            border-bottom: 1px solid rgba(203, 155, 255, .15);
+        }
+
+        .chat-header > a {
+            flex: 0 0 auto;
+            width: 34px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            color: white;
+            text-decoration: none;
+        }
+
+        .chat-person {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .person-avatar {
+            width: 45px;
+            height: 45px;
+            flex: 0 0 45px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--pd-purple);
+            box-shadow: 0 0 14px rgba(168, 92, 255, .2);
+        }
+
+        .person-avatar img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .chat-person-details {
+            min-width: 0;
+        }
+
+        .chat-person-details strong {
+            display: block;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
         .chat-person .pd-presence-status {
             display: block;
             margin-top: 3px;
-            font-family: "DM Sans", sans-serif;
+            color: var(--pd-muted);
             font-size: 11px;
             line-height: 1.4;
             font-weight: 600;
-            color: #cbbbd8;
-            transition: color .25s ease, opacity .25s ease;
         }
 
         .chat-person .pd-presence-status.is-online {
-            color: #dca6ff;
+            color: #ddaaff;
             text-shadow: 0 0 8px rgba(192, 115, 255, .25);
         }
 
         .chat-person .pd-presence-status.is-offline {
             color: #c1b6cc;
-            text-shadow: none;
+        }
+
+        .chat-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-actions button {
+            width: 35px;
+            height: 35px;
+            display: grid;
+            place-items: center;
+            color: #f5e9ff;
+            background: transparent;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .chat-actions button:hover {
+            background: rgba(168, 92, 255, .15);
+        }
+
+        /* MESSAGES */
+
+        .chat-messages {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            padding: 18px 12px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+            background:
+                radial-gradient(ellipse at 15% 10%,
+                    rgba(122, 54, 164, .10), transparent 48%),
+                radial-gradient(ellipse at 90% 80%,
+                    rgba(242, 56, 169, .06), transparent 45%),
+                var(--pd-bg);
+        }
+
+        .chat-messages > * {
+            max-width: 100%;
+        }
+
+        /* Date separators */
+        .pd-date-separator {
+            align-self: center;
+            max-width: 90%;
+            padding: 6px 12px;
+            border: 1px solid rgba(220, 184, 255, .12);
+            border-radius: 20px;
+            background: #2a1b38;
+            color: #d8c6e5;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        /* Composer */
+
+        .chat-input {
+            position: relative;
+            z-index: 5;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: flex-end;
+            gap: 7px;
+            width: 100%;
+            padding: 10px 10px;
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
+            background: #21132f;
+            border-top: 1px solid rgba(203, 155, 255, .15);
+        }
+
+        .chat-input textarea {
+            flex: 1 1 auto;
+            width: 0;
+            min-width: 0;
+            min-height: 42px;
+            max-height: 150px;
+            padding: 12px 13px;
+            resize: none;
+            overflow-y: auto;
+            border: 1px solid rgba(207, 171, 241, .15);
+            border-radius: 20px;
+            outline: none;
+            background: #30213e;
+            color: white;
+            font: 14px/1.45 "DM Sans", sans-serif;
+        }
+
+        .chat-input textarea::placeholder {
+            color: #bca9cb;
+        }
+
+        .chat-input textarea:focus {
+            border-color: rgba(168, 92, 255, .7);
+        }
+
+        .chat-input button {
+            flex: 0 0 40px;
+            width: 40px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border: none;
+            cursor: pointer;
+        }
+
+        .chat-input .attach-button {
+            background: transparent;
+            color: #d5b8f3;
+            border-radius: 50%;
+        }
+
+        .chat-input .send-message {
+            background: linear-gradient(135deg, var(--pd-purple), var(--pd-pink));
+            color: white;
+            border-radius: 50%;
+            box-shadow: 0 3px 12px rgba(168, 92, 255, .2);
+        }
+
+        .chat-input button:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+        }
+
+        /* Loading screen */
+
+        #pd-chat-loader {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: var(--pd-bg);
+            text-align: center;
+        }
+
+        #pd-chat-loader[hidden] {
+            display: none !important;
+        }
+
+        .pd-loader-heart {
+            color: #f238a9;
+            font-size: 42px;
+            animation: pd-heartbeat 1.2s infinite;
+        }
+
+        .pd-loader-title {
+            font-family: "Playfair Display", serif;
+            font-size: 24px;
+        }
+
+        .pd-loader-text {
+            color: var(--pd-muted);
+            font-size: 12px;
+        }
+
+        .pd-loader-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .pd-loader-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--pd-purple);
+            animation: pd-dot 1s infinite alternate;
+        }
+
+        .pd-loader-dots span:nth-child(2) {
+            animation-delay: .2s;
+        }
+
+        .pd-loader-dots span:nth-child(3) {
+            animation-delay: .4s;
+        }
+
+        @keyframes pd-heartbeat {
+            50% { transform: scale(1.18); }
+        }
+
+        @keyframes pd-dot {
+            to { opacity: .25; transform: translateY(-4px); }
+        }
+
+        /* Voice call overlay */
+
+        .pd-call-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(12, 5, 19, .88);
+            backdrop-filter: blur(12px);
+        }
+
+        .pd-call-overlay.active,
+        .pd-call-overlay.show {
+            display: flex;
+        }
+
+        .pd-call-card {
+            width: min(100%, 350px);
+            padding: 35px 24px;
+            text-align: center;
+            border: 1px solid rgba(209, 162, 255, .2);
+            border-radius: 28px;
+            background: linear-gradient(160deg, #322044, #1d1129);
+            box-shadow: 0 20px 80px rgba(0, 0, 0, .35);
+        }
+
+        .pd-call-avatar {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+        }
+
+        .pd-call-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--pd-purple);
+        }
+
+        .pd-call-online {
+            position: absolute;
+            right: 4px;
+            bottom: 6px;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #251631;
+            border-radius: 50%;
+            background: #68e8a2;
+        }
+
+        .pd-call-name {
+            font-family: "Playfair Display", serif;
+            font-size: 23px;
+        }
+
+        .pd-call-status {
+            margin-top: 8px;
+            color: #d7c4e5;
+            font-size: 13px;
+        }
+
+        .pd-call-timer {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .pd-call-controls {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 30px;
+        }
+
+        .pd-call-control {
+            width: 54px;
+            height: 54px;
+            border: none;
+            border-radius: 50%;
+            background: #493357;
+            color: white;
+            cursor: pointer;
+        }
+
+        .pd-call-control.decline {
+            background: #f04468;
+        }
+
+        .pd-call-control.accept {
+            background: #35bd79;
+        }
+
+        .pd-call-controls.incoming {
+            display: flex;
+        }
+
+        .pd-call-controls:not(.incoming) {
+            display: flex;
+        }
+
+        .pd-call-controls[hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 380px) {
+            .chat-header {
+                gap: 7px;
+                padding-inline: 9px;
+            }
+
+            .chat-actions {
+                gap: 2px;
+            }
+
+            .chat-input {
+                gap: 4px;
+                padding-inline: 6px;
+            }
+
+            .chat-input button {
+                flex-basis: 35px;
+                width: 35px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                scroll-behavior: auto !important;
+                transition-duration: .01ms !important;
+            }
         }
     </style>
 </head>
@@ -47,28 +475,19 @@
 
     <div class="phone-app chat-app">
 
-        <!-- PD CHAT LOADING SCREEN -->
-        <div id="pd-chat-loader">
-
+        <!-- Loading screen -->
+        <div id="pd-chat-loader" role="status" aria-live="polite">
             <div class="pd-loader-heart">♥</div>
-
-            <div class="pd-loader-title">
-                Princess wa Deib
-            </div>
-
-            <div class="pd-loader-text">
-                Opening our conversation...
-            </div>
-
-            <div class="pd-loader-dots">
+            <div class="pd-loader-title">Princess wa Deib</div>
+            <div class="pd-loader-text">Opening our conversation...</div>
+            <div class="pd-loader-dots" aria-hidden="true">
                 <span></span>
                 <span></span>
                 <span></span>
             </div>
-
         </div>
 
-        <!-- CHAT HEADER -->
+        <!-- Header -->
         <header class="chat-header">
 
             <a href="home.html" aria-label="Back to home">
@@ -78,48 +497,38 @@
             <div class="chat-person">
 
                 <div class="person-avatar">
-                    <img
-                        src="slideshow/photo2.jpg"
-                        alt="My Princess">
+                    <img src="slideshow/photo2.jpg" alt="PD chat profile">
                 </div>
 
                 <div class="chat-person-details">
-
                     <strong>
-                        <span data-user-name>
-                            My Princess ❤️
-                        </span>
+                        <span data-user-name>My Princess ❤️</span>
                     </strong>
 
-                    <!-- Firebase presence updates this element -->
-                    <span
-                        id="pd-presence-status"
-                        class="pd-presence-status"
-                        role="status"
-                        aria-live="polite">
+                    <span id="pd-presence-status"
+                          class="pd-presence-status"
+                          role="status"
+                          aria-live="polite">
                         Connecting to PD... 💜
                     </span>
-
                 </div>
 
             </div>
 
             <div class="chat-actions">
 
-                <button
-                    type="button"
-                    class="chat-call-button"
-                    id="voiceCallButton"
-                    title="Voice call"
-                    aria-label="Voice call">
+                <button type="button"
+                        class="chat-call-button"
+                        id="voiceCallButton"
+                        title="Voice call"
+                        aria-label="Voice call">
                     <i class="fa-solid fa-phone"></i>
                 </button>
 
-                <button
-                    type="button"
-                    class="chat-more-button"
-                    title="More"
-                    aria-label="More">
+                <button type="button"
+                        class="chat-more-button"
+                        title="More"
+                        aria-label="More options">
                     <i class="fa-solid fa-ellipsis-vertical"></i>
                 </button>
 
@@ -127,48 +536,49 @@
 
         </header>
 
-        <!-- MESSAGES -->
-        <main
-            class="chat-messages"
-            id="chatMessages">
-
-            <!-- Firebase messages appear here -->
-
+        <!-- Firebase renders messages into this container -->
+        <main class="chat-messages"
+              id="chatMessages"
+              aria-label="Conversation"
+              aria-live="polite"
+              aria-relevant="additions text">
         </main>
 
-        <!-- MESSAGE INPUT -->
-        <form
-            class="chat-input"
-            id="chatForm">
+        <!--
+          The existing chat.js may create the reply preview dynamically.
+          Do not add a second reply composer in this HTML.
+        -->
 
-            <button
-                type="button"
-                class="attach-button"
-                id="voiceButton"
-                title="Record voice note"
-                aria-label="Record voice note">
+        <!-- Message composer -->
+        <form class="chat-input" id="chatForm" autocomplete="off">
+
+            <button type="button"
+                    class="attach-button"
+                    id="voiceButton"
+                    title="Record voice note"
+                    aria-label="Record voice note">
                 <i class="fa-solid fa-microphone"></i>
             </button>
 
-            <textarea
-    id="messageInput"
-    placeholder="Type a message..."
-    autocomplete="off"
-    aria-label="Type a message"
-    rows="1"
-></textarea>
-            <button
-                type="button"
-                class="attach-button"
-                title="Attach file"
-                aria-label="Attach file">
+            <textarea id="messageInput"
+                      name="message"
+                      placeholder="Write something sweet..."
+                      autocomplete="off"
+                      aria-label="Type a message"
+                      rows="1"></textarea>
+
+            <button type="button"
+                    class="attach-button"
+                    id="attachButton"
+                    title="Attach file"
+                    aria-label="Attach file">
                 <i class="fa-solid fa-paperclip"></i>
             </button>
 
-            <button
-                class="send-message"
-                type="submit"
-                aria-label="Send message">
+            <button class="send-message"
+                    type="submit"
+                    aria-label="Send message"
+                    title="Send message">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
 
@@ -176,82 +586,55 @@
 
     </div>
 
-    <!-- PD VOICE CALL OVERLAY -->
-    <div
-        id="pdCallOverlay"
-        class="pd-call-overlay">
+    <!-- Voice call overlay -->
+    <div id="pdCallOverlay"
+         class="pd-call-overlay"
+         role="dialog"
+         aria-modal="true"
+         aria-label="Voice call">
 
         <div class="pd-call-card">
 
             <div class="pd-call-avatar">
-
-                <img
-                    src="slideshow/photo2.jpg"
-                    alt="Princess">
-
+                <img src="slideshow/photo2.jpg" alt="PD chat partner">
                 <span class="pd-call-online"></span>
-
             </div>
 
-            <div
-                id="pdCallName"
-                class="pd-call-name">
-                My Princess ❤️
-            </div>
+            <div id="pdCallName" class="pd-call-name">My Princess ❤️</div>
+            <div id="pdCallStatus" class="pd-call-status">Calling...</div>
+            <div id="pdCallTimer" class="pd-call-timer">00:00</div>
 
-            <div
-                id="pdCallStatus"
-                class="pd-call-status">
-                Calling...
-            </div>
+            <div id="pdIncomingControls" class="pd-call-controls incoming">
 
-            <div
-                id="pdCallTimer"
-                class="pd-call-timer">
-                00:00
-            </div>
-
-            <!-- Incoming call buttons -->
-            <div
-                id="pdIncomingControls"
-                class="pd-call-controls incoming">
-
-                <button
-                    id="pdDeclineIncoming"
-                    class="pd-call-control decline"
-                    type="button"
-                    aria-label="Decline incoming call">
+                <button id="pdDeclineIncoming"
+                        class="pd-call-control decline"
+                        type="button"
+                        aria-label="Decline incoming call">
                     <i class="fa-solid fa-phone-slash"></i>
                 </button>
 
-                <button
-                    id="pdAcceptIncoming"
-                    class="pd-call-control accept"
-                    type="button"
-                    aria-label="Accept incoming call">
+                <button id="pdAcceptIncoming"
+                        class="pd-call-control accept"
+                        type="button"
+                        aria-label="Accept incoming call">
                     <i class="fa-solid fa-phone"></i>
                 </button>
 
             </div>
 
-            <!-- Active call buttons -->
-            <div
-                id="pdActiveControls"
-                class="pd-call-controls">
+            <div id="pdActiveControls" class="pd-call-controls">
 
-                <button
-                    id="pdMuteButton"
-                    class="pd-call-control"
-                    type="button"
-                    aria-label="Mute microphone">
+                <button id="pdMuteButton"
+                        class="pd-call-control"
+                        type="button"
+                        aria-label="Mute microphone">
                     <i class="fa-solid fa-microphone"></i>
                 </button>
 
-                <button
-                    id="pdEndCall"
-                    class="pd-call-control decline"
-                    type="button"
-                    aria-label="End call">
+                <button id="pdEndCall"
+                        class="pd-call-control decline"
+                        type="button"
+                        aria-label="End call">
                     <i class="fa-solid fa-phone-slash"></i>
                 </button>
 
@@ -261,12 +644,7 @@
 
     </div>
 
-    <!-- Remote voice audio -->
-    <audio
-        id="pdRemoteAudio"
-        autoplay
-        playsinline>
-    </audio>
+    <audio id="pdRemoteAudio" autoplay playsinline></audio>
 
     <!-- Existing PD scripts -->
     <script type="module" src="auth-guard.js"></script>

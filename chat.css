@@ -2730,3 +2730,144 @@ overflow: hidden;
     flex-shrink: 0;
     align-self: flex-end;
 }
+
+/* =========================================
+   PD CHAT — CLEAN REPLY LAYOUT
+========================================= */
+
+#chatMessages {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Each message row */
+.pd-message-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Sent messages on the LEFT */
+.pd-message-row.sent {
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+/* Received messages on the RIGHT */
+.pd-message-row.received {
+  justify-content: flex-end;
+  flex-direction: row;
+}
+
+/* Keep the message bubble independent of reply controls */
+.pd-message-bubble {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  max-width: min(78%, 340px);
+  min-width: 0;
+  padding: 10px 13px;
+  border-radius: 17px;
+  overflow-wrap: anywhere;
+  box-sizing: border-box;
+}
+
+/* Reply icon stays OUTSIDE the bubble */
+.pd-reply-icon {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #bd91ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background .2s, transform .2s;
+}
+
+.pd-reply-icon:hover {
+  background: rgba(189, 145, 255, .15);
+  transform: scale(1.08);
+}
+
+/* Different bubble colours */
+.pd-message-row.sent .pd-message-bubble {
+  background: linear-gradient(135deg, #7628bd, #a443dc);
+  color: #fff;
+  border-bottom-left-radius: 5px;
+}
+
+.pd-message-row.received .pd-message-bubble {
+  background: #30243e;
+  color: #fff;
+  border-bottom-right-radius: 5px;
+}
+
+/* Replied-to message preview */
+.pd-reply-quote {
+  margin-bottom: 7px;
+  padding: 7px 10px;
+  border-left: 3px solid #e8a5ff;
+  border-radius: 7px;
+  background: rgba(15, 8, 25, .35);
+  min-width: 0;
+}
+
+.pd-reply-quote strong {
+  display: block;
+  color: #f0b5ff;
+  font-size: 11px;
+  margin-bottom: 3px;
+}
+
+.pd-reply-quote p {
+  margin: 0;
+  color: #e7ddec;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* Main message text */
+.pd-message-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Mobile sizing */
+@media (max-width: 480px) {
+  .pd-message-bubble {
+    max-width: 78%;
+    padding: 9px 11px;
+  }
+
+  .pd-reply-icon {
+    flex-basis: 25px;
+    width: 25px;
+    height: 25px;
+  }
+}
+
+/* PD romantic heart message receipts */
+#chatMessages .pd-message-receipt {
+    color: #ff8acb !important;
+    font-size: 13px;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+#chatMessages .pd-message-receipt.is-read {
+    color: #e8a1ff !important;
+    text-shadow: 0 0 7px rgba(232, 161, 255, 0.65);
+}
