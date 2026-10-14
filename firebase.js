@@ -14,6 +14,10 @@ import {
 import { getStorage } from
     "https://www.gstatic.com/firebasejs/12.19.0/firebase-storage.js";
 
+// NEW: Realtime Database for online status and last seen
+import { getDatabase } from
+    "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyBqmqVQCvgPpary3GOCLks3IBsoeerqGHs",
@@ -21,31 +25,42 @@ const firebaseConfig = {
     projectId: "princess-wa-deib",
     storageBucket: "princess-wa-deib.firebasestorage.app",
     messagingSenderId: "802098476214",
-    appId: "1:802098476214:web:80f8ed04a82bd53e236217"
+    appId: "1:802098476214:web:80f8ed04a82bd53e236217",
+
+    // NEW: Your Realtime Database URL
+    databaseURL: "https://princess-wa-deib-default-rtdb.firebaseio.com"
 };
 
 
-const app =
-    initializeApp(firebaseConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
 
-const auth =
-    getAuth(app);
+// Existing Authentication — unchanged
+const auth = getAuth(app);
 
 
+// Existing Firestore — unchanged
 const db = initializeFirestore(app, {
     localCache: persistentLocalCache({
         tabManager: persistentMultipleTabManager()
     })
 });
 
-const storage =
-    getStorage(app);
+
+// Existing Storage — unchanged
+const storage = getStorage(app);
 
 
+// NEW: Realtime Database
+const presenceDB = getDatabase(app);
+
+
+// Export everything
 export {
     app,
     auth,
     db,
-    storage
+    storage,
+    presenceDB
 };

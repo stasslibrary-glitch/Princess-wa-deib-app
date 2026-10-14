@@ -3,287 +3,276 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PD | Chat</title>
 
-<title>PD | Chat</title>
+    <link rel="stylesheet" href="chat.css">
 
-<link rel="stylesheet" href="chat.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
+        rel="stylesheet">
 
-<link
-href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
-rel="stylesheet">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-<link
-rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        /* PD ONLINE / LAST SEEN */
+        .chat-person .pd-presence-status {
+            display: block;
+            margin-top: 3px;
+            font-family: "DM Sans", sans-serif;
+            font-size: 11px;
+            line-height: 1.4;
+            font-weight: 600;
+            color: #cbbbd8;
+            transition: color .25s ease, opacity .25s ease;
+        }
 
+        .chat-person .pd-presence-status.is-online {
+            color: #dca6ff;
+            text-shadow: 0 0 8px rgba(192, 115, 255, .25);
+        }
+
+        .chat-person .pd-presence-status.is-offline {
+            color: #c1b6cc;
+            text-shadow: none;
+        }
+    </style>
 </head>
 
 <body class="phone-page">
 
-<div class="phone-app chat-app">
-<!-- PD CHAT LOADING SCREEN -->
-<div id="pd-chat-loader">
+    <div class="phone-app chat-app">
 
-    <div class="pd-loader-heart">
-        ♥
-    </div>
+        <!-- PD CHAT LOADING SCREEN -->
+        <div id="pd-chat-loader">
 
-    <div class="pd-loader-title">
-        Princess wa Deib
-    </div>
+            <div class="pd-loader-heart">♥</div>
 
-    <div class="pd-loader-text">
-        Opening our conversation...
-    </div>
+            <div class="pd-loader-title">
+                Princess wa Deib
+            </div>
 
-    <div class="pd-loader-dots">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
+            <div class="pd-loader-text">
+                Opening our conversation...
+            </div>
 
-</div>
-    <!-- CHAT HEADER -->
+            <div class="pd-loader-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
 
-    <header class="chat-header">
-
-        <a href="home.html">
-            <i class="fa-solid fa-arrow-left"></i>
-        </a>
-
-        <div class="chat-person">
-
-           <div class="person-avatar">
-    <img
-        src="slideshow/photo2.jpg"
-        alt="My Princess"
-    >
         </div>
 
-            <div>
+        <!-- CHAT HEADER -->
+        <header class="chat-header">
 
-                <strong>
-                    <span data-user-name>
-                        My Princess ❤️
+            <a href="home.html" aria-label="Back to home">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+
+            <div class="chat-person">
+
+                <div class="person-avatar">
+                    <img
+                        src="slideshow/photo2.jpg"
+                        alt="My Princess">
+                </div>
+
+                <div class="chat-person-details">
+
+                    <strong>
+                        <span data-user-name>
+                            My Princess ❤️
+                        </span>
+                    </strong>
+
+                    <!-- Firebase presence updates this element -->
+                    <span
+                        id="pd-presence-status"
+                        class="pd-presence-status"
+                        role="status"
+                        aria-live="polite">
+                        Connecting to PD... 💜
                     </span>
-                </strong>
 
-                <span class="online-status">
-                    online
-                </span>
+                </div>
+
+            </div>
+
+            <div class="chat-actions">
+
+                <button
+                    type="button"
+                    class="chat-call-button"
+                    id="voiceCallButton"
+                    title="Voice call"
+                    aria-label="Voice call">
+                    <i class="fa-solid fa-phone"></i>
+                </button>
+
+                <button
+                    type="button"
+                    class="chat-more-button"
+                    title="More"
+                    aria-label="More">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+
+            </div>
+
+        </header>
+
+        <!-- MESSAGES -->
+        <main
+            class="chat-messages"
+            id="chatMessages">
+
+            <!-- Firebase messages appear here -->
+
+        </main>
+
+        <!-- MESSAGE INPUT -->
+        <form
+            class="chat-input"
+            id="chatForm">
+
+            <button
+                type="button"
+                class="attach-button"
+                id="voiceButton"
+                title="Record voice note"
+                aria-label="Record voice note">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+
+            <input
+                type="text"
+                id="messageInput"
+                placeholder="Type a message..."
+                autocomplete="off"
+                aria-label="Type a message">
+
+            <button
+                type="button"
+                class="attach-button"
+                title="Attach file"
+                aria-label="Attach file">
+                <i class="fa-solid fa-paperclip"></i>
+            </button>
+
+            <button
+                class="send-message"
+                type="submit"
+                aria-label="Send message">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- PD VOICE CALL OVERLAY -->
+    <div
+        id="pdCallOverlay"
+        class="pd-call-overlay">
+
+        <div class="pd-call-card">
+
+            <div class="pd-call-avatar">
+
+                <img
+                    src="slideshow/photo2.jpg"
+                    alt="Princess">
+
+                <span class="pd-call-online"></span>
+
+            </div>
+
+            <div
+                id="pdCallName"
+                class="pd-call-name">
+                My Princess ❤️
+            </div>
+
+            <div
+                id="pdCallStatus"
+                class="pd-call-status">
+                Calling...
+            </div>
+
+            <div
+                id="pdCallTimer"
+                class="pd-call-timer">
+                00:00
+            </div>
+
+            <!-- Incoming call buttons -->
+            <div
+                id="pdIncomingControls"
+                class="pd-call-controls incoming">
+
+                <button
+                    id="pdDeclineIncoming"
+                    class="pd-call-control decline"
+                    type="button"
+                    aria-label="Decline incoming call">
+                    <i class="fa-solid fa-phone-slash"></i>
+                </button>
+
+                <button
+                    id="pdAcceptIncoming"
+                    class="pd-call-control accept"
+                    type="button"
+                    aria-label="Accept incoming call">
+                    <i class="fa-solid fa-phone"></i>
+                </button>
+
+            </div>
+
+            <!-- Active call buttons -->
+            <div
+                id="pdActiveControls"
+                class="pd-call-controls">
+
+                <button
+                    id="pdMuteButton"
+                    class="pd-call-control"
+                    type="button"
+                    aria-label="Mute microphone">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+
+                <button
+                    id="pdEndCall"
+                    class="pd-call-control decline"
+                    type="button"
+                    aria-label="End call">
+                    <i class="fa-solid fa-phone-slash"></i>
+                </button>
 
             </div>
 
         </div>
 
-        <div class="chat-actions">
-
-    <button
-        type="button"
-        class="chat-call-button"
-        id="voiceCallButton"
-        title="Voice call"
-        aria-label="Voice call"
-    >
-        <i class="fa-solid fa-phone"></i>
-    </button>
-
-    <button
-        type="button"
-        class="chat-more-button"
-        title="More"
-        aria-label="More"
-    >
-        <i class="fa-solid fa-ellipsis-vertical"></i>
-    </button>
-
-</div>
-
-    </header>
-
-
-    <!-- MESSAGES -->
-
-    <main
-        class="chat-messages"
-        id="chatMessages"
-    >
-
-        <!-- Firebase messages appear here -->
-
-    </main>
-
-
-    <!-- MESSAGE INPUT -->
-
-    <form
-        class="chat-input"
-        id="chatForm"
-    >
-
-      <button
-    type="button"
-    class="attach-button"
-    id="voiceButton"
-    title="Record voice note"
->
-    <i class="fa-solid fa-microphone"></i>
-</button>
-
-        <input
-            type="text"
-            id="messageInput"
-            placeholder="Type a message..."
-            autocomplete="off"
-        >
-
-
-        <button
-            type="button"
-            class="attach-button"
-        >
-            <i class="fa-solid fa-paperclip"></i>
-        </button>
-
-
-        <button
-            class="send-message"
-            type="submit"
-        >
-            <i class="fa-solid fa-paper-plane"></i>
-        </button>
-
-    </form>
-
-</div>
-
-<!-- =====================================================
-     PD VOICE CALL OVERLAY
-     ===================================================== -->
-
-<div
-    id="pdCallOverlay"
-    class="pd-call-overlay"
->
-
-    <div class="pd-call-card">
-
-        <div class="pd-call-avatar">
-
-            <img
-                src="slideshow/photo2.jpg"
-                alt="Princess"
-            >
-
-            <span class="pd-call-online"></span>
-
-        </div>
-
-        <div
-            id="pdCallName"
-            class="pd-call-name"
-        >
-            My Princess ❤️
-        </div>
-
-        <div
-            id="pdCallStatus"
-            class="pd-call-status"
-        >
-            Calling...
-        </div>
-
-        <div
-            id="pdCallTimer"
-            class="pd-call-timer"
-        >
-            00:00
-        </div>
-
-
-        <!-- Incoming call buttons -->
-
-        <div
-            id="pdIncomingControls"
-            class="pd-call-controls incoming"
-        >
-
-            <button
-                id="pdDeclineIncoming"
-                class="pd-call-control decline"
-                type="button"
-            >
-                <i class="fa-solid fa-phone-slash"></i>
-            </button>
-
-            <button
-                id="pdAcceptIncoming"
-                class="pd-call-control accept"
-                type="button"
-            >
-                <i class="fa-solid fa-phone"></i>
-            </button>
-
-        </div>
-
-
-        <!-- Active call buttons -->
-
-        <div
-            id="pdActiveControls"
-            class="pd-call-controls"
-        >
-
-            <button
-                id="pdMuteButton"
-                class="pd-call-control"
-                type="button"
-            >
-                <i class="fa-solid fa-microphone"></i>
-            </button>
-
-            <button
-                id="pdEndCall"
-                class="pd-call-control decline"
-                type="button"
-            >
-                <i class="fa-solid fa-phone-slash"></i>
-            </button>
-
-        </div>
-
     </div>
 
-</div>
+    <!-- Remote voice audio -->
+    <audio
+        id="pdRemoteAudio"
+        autoplay
+        playsinline>
+    </audio>
 
+    <!-- Existing PD scripts -->
+    <script type="module" src="auth-guard.js"></script>
+    <script type="module" src="chat.js"></script>
+    <script type="module" src="call.js"></script>
+    <script type="module" src="notification.js"></script>
 
-<!-- Hidden audio element used for remote voice -->
-
-<audio
-    id="pdRemoteAudio"
-    autoplay
-    playsinline
-></audio>
-<script
-    type="module"
-    src="auth-guard.js"
-></script>
-
-<script
-    type="module"
-    src="chat.js"
-></script>
-
-<script
-    type="module"
-    src="call.js"
-></script>
-
-<script
-    type="module"
-    src="notification.js"
-></script>
-
+</body>
+</html>
