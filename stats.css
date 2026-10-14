@@ -1269,3 +1269,166 @@ body {
         transition-duration: .01ms !important;
     }
 }
+
+/* ======================================
+   PD — 200 DAYS ANNIVERSARY COUNTDOWN
+====================================== */
+
+.pd-anniversary-card {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 27px 18px;
+    border-radius: 25px;
+    text-align: center;
+    color: #fff;
+    font-family: "DM Sans", sans-serif;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(255, 114, 196, .30),
+            transparent 42%
+        ),
+        linear-gradient(
+            145deg,
+            #35105e 0%,
+            #63269a 48%,
+            #a52e83 100%
+        );
+
+    border: 1px solid rgba(255, 255, 255, .20);
+
+    box-shadow:
+        0 15px 35px rgba(77, 22, 112, .25),
+        inset 0 1px 0 rgba(255, 255, 255, .15);
+}
+
+.pd-anniversary-card::before {
+    content: "♥";
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 35px;
+    color: rgba(255, 255, 255, .10);
+    transform: rotate(18deg);
+}
+
+.pd-anniversary-card .anniversary-hearts {
+    font-size: 23px;
+    margin-bottom: 12px;
+    animation: pdHeartFloat 2.5s ease-in-out infinite;
+}
+
+.pd-anniversary-card .anniversary-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    color: #f8c8ff;
+    margin-bottom: 8px;
+}
+
+.pd-anniversary-card h2 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(24px, 6vw, 33px);
+    margin: 0 0 10px;
+    color: #fff;
+}
+
+.pd-anniversary-card .anniversary-message {
+    font-size: 12px;
+    line-height: 1.7;
+    color: #f8e9ff;
+    margin: 0 auto 15px;
+}
+
+.pd-anniversary-card .anniversary-date {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 14px;
+    margin-bottom: 22px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    background: rgba(255, 255, 255, .12);
+    border: 1px solid rgba(255, 255, 255, .17);
+}
+
+.pd-anniversary-countdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(4px, 1.5vw, 10px);
+    margin: 0 auto 20px;
+}
+
+.pd-anniversary-countdown .countdown-unit {
+    flex: 1;
+    min-width: 0;
+    padding: 14px 3px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, .12);
+    border: 1px solid rgba(255, 255, 255, .17);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10);
+}
+
+.pd-anniversary-countdown .countdown-unit strong {
+    display: block;
+    font-size: clamp(20px, 5vw, 30px);
+    line-height: 1.2;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+}
+
+.pd-anniversary-countdown .countdown-unit span {
+    display: block;
+    margin-top: 7px;
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: #f4d9ff;
+    font-weight: 700;
+}
+
+.pd-anniversary-countdown .countdown-colon {
+    font-size: 18px;
+    color: #ffc8f1;
+    font-weight: 700;
+}
+
+.pd-anniversary-card .anniversary-footer {
+    font-size: 11px;
+    line-height: 1.6;
+    color: #f8dfff;
+}
+
+@keyframes pdHeartFloat {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-4px) scale(1.08);
+    }
+}
+
+@media (max-width: 360px) {
+    .pd-anniversary-card {
+        padding: 23px 12px;
+    }
+
+    .pd-anniversary-countdown .countdown-unit {
+        padding: 12px 2px;
+        border-radius: 11px;
+    }
+
+    .pd-anniversary-countdown .countdown-unit span {
+        font-size: 7px;
+        letter-spacing: .5px;
+    }
+}

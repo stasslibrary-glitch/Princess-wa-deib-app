@@ -328,3 +328,73 @@ setInterval(() => {
     updateTodayJourney(days);
 
 }, 60000);
+
+// ======================================
+// PD — 200 DAYS TOGETHER COUNTDOWN
+// ======================================
+
+function initPDAnniversaryCountdown() {
+    const daysEl = document.getElementById("pdDaysLeft");
+    const hoursEl = document.getElementById("pdHoursLeft");
+    const minutesEl = document.getElementById("pdMinutesLeft");
+    const secondsEl = document.getElementById("pdSecondsLeft");
+
+    if (!daysEl || !hoursEl || !minutesEl || !secondsEl) {
+        return;
+    }
+
+    // 26 June 2026 = Day 1.
+    // Day 200 = 11 January 2027.
+    // Use local midnight to avoid UTC date-boundary surprises.
+    const anniversaryDate = new Date(2027, 0, 11, 0, 0, 0);
+
+    function updateCountdown() {
+        const now = new Date();
+        const difference = anniversaryDate.getTime() - now.getTime();
+
+        if (difference <= 0) {
+            daysEl.textContent = "00";
+            hoursEl.textContent = "00";
+            minutesEl.textContent = "00";
+            secondsEl.textContent = "00";
+
+            const card = document.querySelector(".pd-anniversary-card");
+
+            if (card) {
+                const title = card.querySelector("h2");
+                const message = card.querySelector(".anniversary-footer");
+
+                if (title) title.textContent = "Happy 200 Days, My Love! ❤️";
+                if (message) message.textContent =
+                    "200 beautiful days together, and many more to come. 💜";
+            }
+
+            return;
+        }
+
+        const totalSeconds = Math.floor(difference / 1000);
+
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        daysEl.textContent = String(days).padStart(2, "0");
+        hoursEl.textContent = String(hours).padStart(2, "0");
+        minutesEl.textContent = String(minutes).padStart(2, "0");
+        secondsEl.textContent = String(seconds).padStart(2, "0");
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener(
+        "DOMContentLoaded",
+        initPDAnniversaryCountdown,
+        { once: true }
+    );
+} else {
+    initPDAnniversaryCountdown();
+}
