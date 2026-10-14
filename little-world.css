@@ -749,3 +749,293 @@ button {
 .note-actions .note-delete:hover {
   background: #ffc5d5;
 }
+
+/* ==========================================
+   SPECIAL MESSAGES — ROMANTIC MEMORY CARDS
+========================================== */
+
+.special-message-card {
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(221, 177, 255, 0.3);
+  border-radius: 23px;
+  color: #fff2ff;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(255, 139, 207, 0.2),
+      transparent 42%
+    ),
+    linear-gradient(145deg, #513064, #2c193b 80%);
+  box-shadow: 0 12px 28px rgba(20, 8, 33, 0.22);
+}
+
+.special-message-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.special-message-label {
+  color: #ffc2e7;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+  line-height: 1.6;
+}
+
+.special-message-title {
+  margin: 0 0 13px;
+  color: #ffe2f3;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 21px;
+  line-height: 1.45;
+}
+
+.special-message-text {
+  margin: 0;
+  color: #f6eafa;
+  font-size: 14px;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.special-message-footer {
+  margin-top: 19px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.special-saved-by {
+  color: #e5cce9;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.special-saved-by strong {
+  display: block;
+  color: #ffbde3;
+  font-size: 13px;
+}
+
+.special-message-card .note-actions {
+  flex-shrink: 0;
+}
+
+.special-empty {
+  padding: 28px 20px;
+  border: 1px dashed rgba(218, 172, 255, 0.4);
+  border-radius: 22px;
+  color: #ead8f3;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.special-empty .empty-heart {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 34px;
+}
+
+.special-empty strong {
+  display: block;
+  color: #ffd4ee;
+}
+
+.special-empty p {
+  margin: 8px 0 0;
+}
+
+/* Saver dropdown */
+#saved-by-wrap {
+  margin-top: 15px;
+}
+
+#saved-by-wrap[hidden] {
+  display: none !important;
+}
+
+#saved-by-wrap label {
+  display: block;
+  margin-bottom: 8px;
+  color: #f5ddff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#saved-by {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid rgba(210, 165, 255, 0.4);
+  border-radius: 13px;
+  background: #352143;
+  color: #fff2ff;
+  font: inherit;
+}
+
+#saved-by-wrap small {
+  display: block;
+  margin-top: 7px;
+  color: #d8c0e7;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* SPECIAL MESSAGES TAB */
+.special-tab {
+  border-color: rgba(255, 157, 206, 0.25);
+  color: #ffd3ed;
+}
+
+.special-tab.active {
+  color: #281332;
+  background: linear-gradient(110deg, #e6baff, #ffb6d8);
+}
+
+/* SPECIAL MESSAGE CARDS */
+.special-message-card {
+  padding: 19px;
+  border: 1px solid rgba(221, 177, 255, .3);
+  border-radius: 22px;
+  color: #fff2ff;
+  background:
+    radial-gradient(circle at top right, #ff8bcf30, transparent 43%),
+    linear-gradient(145deg, #513064, #2c193b);
+  box-shadow: 0 12px 28px rgba(20, 8, 33, .22);
+}
+
+.special-message-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.special-message-label {
+  color: #ffc2e7;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.special-message-title {
+  margin: 0 0 12px;
+  color: #ffe2f3;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 21px;
+  line-height: 1.45;
+}
+
+.special-message-text {
+  margin: 0;
+  color: #f6eafa;
+  font-size: 13px;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.special-message-footer {
+  margin-top: 18px;
+  padding-top: 13px;
+  border-top: 1px solid #ffffff20;
+}
+
+.special-saved-by {
+  color: #e5cce9;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.special-saved-by strong {
+  display: block;
+  color: #ffbde3;
+  font-size: 13px;
+}
+
+#saved-by-wrap[hidden] {
+  display: none !important;
+}
+
+#saved-by-wrap small {
+  display: block;
+  margin-top: 7px;
+  color: #d8c0e7;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.special-empty {
+  padding: 28px 20px;
+  border: 1px dashed rgba(218, 172, 255, .4);
+  border-radius: 22px;
+  color: #ead8f3;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.special-empty .empty-heart {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 34px;
+}
+
+.special-empty strong {
+  display: block;
+  color: #ffd4ee;
+}
+
+.special-empty p {
+  margin: 8px 0 0;
+}
+
+/* ===== PD TABS — COMPACT PHONE-FRAME FIT ===== */
+.tabs {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.tabs .tab {
+    min-width: 0;
+    width: 100%;
+    padding: 9px 2px;
+    font-size: 9px;
+    line-height: 1.25;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: center;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+/* Keep Special Messages the same size as the other tabs */
+.tabs .special-tab {
+    min-width: 0;
+    width: 100%;
+    padding: 9px 2px;
+    font-size: 9px;
+}
+
+/* Slightly larger on wider screens */
+@media (min-width: 420px) {
+    .tabs {
+        gap: 5px;
+    }
+
+    .tabs .tab {
+        font-size: 10px;
+        padding: 10px 3px;
+    }
+}

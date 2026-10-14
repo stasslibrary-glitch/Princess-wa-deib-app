@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="little-world.css">
 </head>
 <body>
@@ -30,6 +31,7 @@
       <div class="eyebrow"><span></span> OUR PRIVATE LITTLE CORNER <span></span></div>
       <h1>Our Little<br><em>World</em></h1>
       <p>Two hearts, one little world.<br>A place for everything we feel. 💜</p>
+
       <div class="hero-decoration" aria-hidden="true">
         <span class="orbit orbit-one"></span>
         <span class="orbit orbit-two"></span>
@@ -38,6 +40,7 @@
         <span class="tiny-heart heart-two">♡</span>
         <span class="tiny-heart heart-three">✦</span>
       </div>
+
       <div class="couple-pill">
         <span>💜</span> DEIB <i>×</i> PRINCESS <span>💗</span>
       </div>
@@ -53,10 +56,11 @@
     </section>
 
     <nav class="tabs" aria-label="Noticeboard sections">
-      <button class="tab active" data-tab="board">✦ The board</button>
-      <button class="tab" data-tab="notes">💌 Love notes</button>
-      <button class="tab" data-tab="reminders">♡ Reminders</button>
-      <button class="tab" data-tab="wishes">✨ Wishes</button>
+      <button type="button" class="tab active" data-tab="board">✦ The board</button>
+      <button type="button" class="tab" data-tab="notes">💌 Love notes</button>
+      <button type="button" class="tab" data-tab="reminders">♡ Reminders</button>
+      <button type="button" class="tab" data-tab="wishes">✨ Wishes</button>
+      <button type="button" class="tab special-tab" data-tab="special">💗 Special Messages</button>
     </nav>
 
     <section class="section-heading">
@@ -64,14 +68,14 @@
         <p class="mini-label" id="section-kicker">OUR LITTLE COLLECTION</p>
         <h2 id="section-title">Pinned with love</h2>
       </div>
-      <span class="count-pill" id="item-count">03 NOTES</span>
+      <span class="count-pill" id="item-count">03 ITEMS</span>
     </section>
 
     <section id="notice-list" class="notice-list" aria-live="polite">
-      <!-- Demo cards are created by little-world.js -->
+      <!-- Cards are rendered by little-world.js -->
     </section>
 
-    <button class="create-button" id="open-create">
+    <button type="button" class="create-button" id="open-create">
       <span class="create-plus">＋</span>
       <span>Leave something special</span>
       <span class="create-sparkle">✧</span>
@@ -82,7 +86,7 @@
     <footer class="bottom-nav">
       <a href="index.html"><span>⌂</span>Home</a>
       <a href="#notice-list" class="selected"><span>♡</span>Our world</a>
-      <button id="footer-create"><span>＋</span>Create</button>
+      <button type="button" id="footer-create"><span>＋</span>Create</button>
     </footer>
   </main>
 
@@ -102,6 +106,7 @@
         <option value="reminder">🗓️ Shared reminder</option>
         <option value="wish">✨ A wish for us</option>
         <option value="notice">📌 Noticeboard message</option>
+        <option value="special">💗 Special Message</option>
       </select>
 
       <label for="entry-title">Give it a title</label>
@@ -123,7 +128,16 @@
         <input id="entry-date" type="datetime-local">
       </div>
 
-      <button type="submit" class="save-button">Pin it to our world ♥</button>
+      <div id="saved-by-wrap" hidden>
+        <label for="saved-by">Who saved this special message?</label>
+        <select id="saved-by">
+          <option value="Deib">Deib ❤️</option>
+          <option value="Princess">Princess 💜</option>
+        </select>
+        <small>Choose whose collection this memory belongs to.</small>
+      </div>
+
+      <button type="submit" class="save-button">Save to our world ♥</button>
       <p class="demo-warning">Preview mode: entries are saved only in this browser until Firebase is connected.</p>
     </form>
   </dialog>
