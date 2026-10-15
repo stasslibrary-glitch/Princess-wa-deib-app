@@ -2784,7 +2784,7 @@ overflow: hidden;
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: #bd91ff;
+  color: #66fcd600;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2806,7 +2806,7 @@ overflow: hidden;
 }
 
 .pd-message-row.received .pd-message-bubble {
-  background: #30243e;
+  background: #d4eee746;
   color: #fff;
   border-bottom-right-radius: 5px;
 }
@@ -2815,9 +2815,9 @@ overflow: hidden;
 .pd-reply-quote {
   margin-bottom: 7px;
   padding: 7px 10px;
-  border-left: 3px solid #e8a5ff;
+  border-left: 3px solid #ffffff;
   border-radius: 7px;
-  background: rgba(15, 8, 25, .35);
+  background: rgba(255, 132, 132, 0.35);
   min-width: 0;
 }
 
@@ -2987,4 +2987,39 @@ overflow: hidden;
     position: relative;
     z-index: 101;
     pointer-events: auto !important;
+}
+
+/* =====================================
+   PD CHAT — GLASS MESSAGE BUBBLES 💜
+===================================== */
+
+/* Received messages — left */
+#chatMessages .message.received .message-content {
+    background: rgba(255, 255, 255, 0.12) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Sent messages — right */
+#chatMessages .message.sent .message-content {
+    background: rgba(180, 90, 255, 0.20) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(230, 190, 255, 0.28);
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Keep message text readable */
+#chatMessages .message-content p,
+#chatMessages .message-content .message-text {
+    color: #ffffff !important;
+}
+
+/* Heart ticks */
+#chatMessages .message-footer {
+    background: transparent !important;
 }

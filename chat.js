@@ -1196,102 +1196,188 @@ async function uploadVoiceMessage(blob, duration) {
    ONLINE PRESENCE
    ========================================================= */
 
-function startOwnPresence() {
-    if (!currentUser || !presenceDB) return;
+/* =========================================================
+   ONLINE PRESENCE — FIXED
+   Firebase Realtime Database
+   ========================================================= */
 
-    const statusReference = databaseRef(
+let unsubscribeConnection = null;
+let unsubscribePartnerStatus = null;
+let ownStatusReference = null;
+let pageHidePresenceHandler = null;
+
+function startOwnPresence() {
+    if (!currentUser || !presenceDB) {
+        console.warn("[PD Presence] Firebase Realtime Database unavailable.");
+        return;
+    }
+
+    const uid = currentUser.uid;
+
+    ownStatusReference = databaseRef(presenceDB, `status/${uid}`);
+
+    const connectedReference = databaseRef(
         presenceDB,
-        `status/${currentUser.uid}`
+        ".info/connected"
     );
 
+    if (unsubscribeConnection) {
+        unsubscribeConnection();
+        unsubscribeConnection = null;
+    }
+
+    if (pageHidePresenceHandler) {
+        window.removeEventListener("pagehide", pageHidePresenceHandler);
+        pageHidePresenceHandler = null;
+    }
+
+    // Mark this user offline when the Firebase connection disconnects.
     const offlineData = {
         state: "offline",
         lastChanged: databaseTimestamp()
     };
 
-    const onlineData = {
-        state: "online",
-        lastChanged: databaseTimestamp()
+    unsubscribeConnection = onValue(
+        connectedReference,
+        async snapshot => {
+            if (snapshot.val() !== true) return;
+
+            // Ignore stale callbacks after an account change.
+            if (!currentUser || currentUser.uid !== uid) return;
+
+            try {
+                // Register disconnect handling BEFORE marking online.
+                await onDisconnect(ownStatusReference).set(offlineData);
+
+                if (!currentUser || currentUser.uid !== uid) return;
+
+                await set(ownStatusReference, {
+                    state: "online",
+                    lastChanged: databaseTimestamp()
+                });
+
+                console.log("[PD Presence] Online.");
+            } catch (error) {
+                console.error(
+                    "[PD Presence] Could not update presence:",
+                    error
+                );
+            }
+        },
+        error => {
+            console.error("[PD Presence] Connection error:", error);
+        }
+    );
+
+    // Update offline status when the page is closed or navigated away from.
+    pageHidePresenceHandler = () => {
+        if (currentUser?.uid !== uid || !ownStatusReference) return;
+
+        set(ownStatusReference, offlineData).catch(() => {});
     };
 
-    set(statusReference, onlineData).catch(error => {
-        console.warn("[PD Chat] Presence update failed:", error);
-    });
-
-    onDisconnect(statusReference)
-        .set(offlineData)
-        .catch(error => {
-            console.warn("[PD Chat] Could not register offline status:", error);
-        });
-
-    const setOffline = () => {
-        set(statusReference, offlineData).catch(() => {});
-    };
-
-    window.addEventListener("pagehide", setOffline);
+    window.addEventListener("pagehide", pageHidePresenceHandler);
 }
 
-function watchPartnerPresence() {
-    if (!currentUser || !presenceDB) return;
 
-    const partnerEmail = Object.keys(PD_PROFILES).find(
-        email => email !== currentProfile.email
+function watchPartnerPresence(partnerUid) {
+    const statusElement = document.getElementById("pd-presence-status");
+
+    if (!statusElement) return;
+
+    if (!presenceDB) {
+        statusElement.textContent = "Presence unavailable 💜";
+        return;
+    }
+
+    if (!partnerUid || partnerUid === currentUser?.uid) {
+        statusElement.textContent = "Waiting for your love 💜";
+        statusElement.classList.remove("is-online");
+        statusElement.classList.add("is-offline");
+        return;
+    }
+
+    // Stop listening to a previous partner, if any.
+    if (unsubscribePartnerStatus) {
+        unsubscribePartnerStatus();
+        unsubscribePartnerStatus = null;
+    }
+
+    const partnerStatusReference = databaseRef(
+        presenceDB,
+        `status/${partnerUid}`
     );
 
-    const presence = getChatElements().presence;
+    unsubscribePartnerStatus = onValue(
+        partnerStatusReference,
+        snapshot => {
+            const status = snapshot.val();
 
-    if (!presence) return;
+            // This matches the "state" written by startOwnPresence().
+            const isOnline = status?.state === "online";
 
-    presence.textContent = "Connected";
+            statusElement.classList.toggle("is-online", isOnline);
+            statusElement.classList.toggle("is-offline", !isOnline);
 
-    /*
-       Resolve the other user's UID from their existing
-       authenticated account record in Firestore, if present.
-    */
-
-    const partnerUIDDocument = doc(
-        db,
-        "users",
-        partnerEmail || "partner"
-    );
-
-    import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js")
-        .then(({ getDoc }) => getDoc(partnerUIDDocument))
-        .then(userSnapshot => {
-            if (!userSnapshot.exists()) {
-                presence.textContent = "Together in PD ❤️";
+            if (isOnline) {
+                statusElement.textContent = "Together in PD ❤️";
                 return;
             }
 
-            const partnerUID = userSnapshot.data().uid;
+            const lastChanged = Number(status?.lastChanged);
 
-            if (!partnerUID) {
-                presence.textContent = "Together in PD ❤️";
+            if (!Number.isFinite(lastChanged) || lastChanged <= 0) {
+                statusElement.textContent = "Offline 💜";
                 return;
             }
 
-            const partnerStatus = databaseRef(
-                presenceDB,
-                `status/${partnerUID}`
-            );
+            const lastSeenDate = new Date(lastChanged);
 
-            unsubscribePresence = onValue(partnerStatus, snapshot => {
-                const data = snapshot.val();
+            if (Number.isNaN(lastSeenDate.getTime())) {
+                statusElement.textContent = "Offline 💜";
+                return;
+            }
 
-                presence.textContent =
-                    data?.state === "online"
-                        ? "Online now 💜"
-                        : "Offline";
-            }, error => {
-                console.warn("[PD Chat] Presence listener failed:", error);
-                presence.textContent = "Together in PD ❤️";
+            const now = new Date();
+
+            const time = lastSeenDate.toLocaleTimeString([], {
+                hour: "numeric",
+                minute: "2-digit"
             });
-        })
-        .catch(error => {
-            console.warn("[PD Chat] Could not load partner presence:", error);
-            presence.textContent = "Together in PD ❤️";
-        });
+
+            if (lastSeenDate.toDateString() === now.toDateString()) {
+                statusElement.textContent = `Last seen today at ${time}`;
+                return;
+            }
+
+            const yesterday = new Date(now);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (lastSeenDate.toDateString() === yesterday.toDateString()) {
+                statusElement.textContent = `Last seen yesterday at ${time}`;
+                return;
+            }
+
+            const date = lastSeenDate.toLocaleDateString([], {
+                day: "numeric",
+                month: "short",
+                year: lastSeenDate.getFullYear() === now.getFullYear()
+                    ? undefined
+                    : "numeric"
+            });
+
+            statusElement.textContent = `Last seen ${date} at ${time}`;
+        },
+        error => {
+            console.error("[PD Presence] Partner status error:", error);
+            statusElement.textContent = "Presence unavailable 💜";
+        }
+    );
+
+    // Keep the existing cleanup variable working.
+    unsubscribePresence = unsubscribePartnerStatus;
 }
+
 
 
 /* =========================================================
@@ -1319,10 +1405,27 @@ function startChat() {
     unsubscribeMessages = onSnapshot(
         messagesQuery,
         snapshot => {
-            clearChatError();
-            renderMessages(snapshot);
-            hideChatLoader();
-        },
+    clearChatError();
+    renderMessages(snapshot);
+    hideChatLoader();
+
+    // Find a message sent by the other person to discover their UID.
+    const partnerMessage = snapshot.docs.find(message => {
+        const data = message.data();
+
+        return data.senderUID &&
+               data.senderUID !== currentUser.uid;
+    });
+
+    if (partnerMessage) {
+        const partnerUid = partnerMessage.data().senderUID;
+
+        if (window.pdWatchedPartnerUid !== partnerUid) {
+            window.pdWatchedPartnerUid = partnerUid;
+            watchPartnerPresence(partnerUid);
+        }
+    }
+},
         error => {
             console.error("[PD Chat] Realtime listener failed:", error);
 
@@ -1452,9 +1555,17 @@ function startPDChat() {
         }
 
         setupProfile();
-        startOwnPresence();
-        watchPartnerPresence();
-        startChat();
+
+const presenceElement = document.getElementById("pd-presence-status");
+
+if (presenceElement) {
+    presenceElement.textContent = "Connecting to PD... 💜";
+}
+
+window.pdWatchedPartnerUid = null;
+
+startOwnPresence();
+startChat();
     }, error => {
         console.error("[PD Chat] Authentication listener failed:", error);
 
