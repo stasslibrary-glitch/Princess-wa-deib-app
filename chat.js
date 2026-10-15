@@ -1,55 +1,34 @@
 
 /* =========================================================
    PRINCESS WA DEIB — COMPLETE CHAT SYSTEM
-   Text + Multiline Typing + Reply to Message
-   Voice Notes + Dates + Online + Last Seen
-   Sent + Delivered + Read Receipts
+   Text • Replies • Voice Notes • Dates • Presence
+   Sent / Delivered / Read Receipts
    ========================================================= */
 
-import {
-    auth,
-    db,
-    storage,
-    presenceDB
-} from "./firebase.js";
+import { auth, db, storage, presenceDB } from "./firebase.js";
 
 import {
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
 import {
-    doc,
-    setDoc,
-    collection,
-    addDoc,
-    query,
-    orderBy,
-    onSnapshot,
-    serverTimestamp,
-    getDocs,
-    where,
-    limit,
+    doc, setDoc, collection, addDoc, query, orderBy,
+    onSnapshot, serverTimestamp, getDocs, where, limit,
     updateDoc
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 import {
-    ref as storageRef,
-    uploadBytes,
-    getDownloadURL
+    ref as storageRef, uploadBytes, getDownloadURL
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-storage.js";
 
 import {
-    ref as databaseRef,
-    onValue,
-    onDisconnect,
-    set,
-    push,
+    ref as databaseRef, onValue, onDisconnect, set, push,
     serverTimestamp as databaseServerTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 
 /* =========================================================
-   PROFILES — PRESERVED FROM YOUR CODE
+   PROFILES
    ========================================================= */
 
 let currentProfile = null;
@@ -60,7 +39,6 @@ const PD_PROFILES = {
         name: "Baby",
         displayName: "Baby ❤️"
     },
-
     "deib@gmail.com": {
         name: "Hubby",
         displayName: "Hubby 💜"
@@ -75,7 +53,6 @@ const PD_PROFILES = {
 let chatUnsubscribe = null;
 let partnerPresenceUnsubscribe = null;
 let connectedUnsubscribe = null;
-let lastChangedUnsubscribe = null;
 
 let activePresenceUID = null;
 let activePartnerUID = null;
@@ -92,7 +69,7 @@ const receiptUpdatesInFlight = new Set();
 
 
 /* =========================================================
-   EXTRA STYLES
+   CHAT STYLES
    ========================================================= */
 
 function installChatStyles() {
@@ -144,51 +121,114 @@ function installChatStyles() {
             color: #b9a8d9;
         }
 
-        /* Message action area */
-        .message {
+        /* Each message group contains a quote and a message row. */
+        .pd-message-group {
+            display: flex;
+            flex-direction: column;
+            width: fit-content;
+            max-width: 94%;
+            min-width: 0;
+            margin: 7px 0;
+            box-sizing: border-box;
+        }
+
+        .pd-message-group.sent {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .pd-message-group.received {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        /* Bubble and reply button share the same horizontal row. */
+        .pd-message-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: fit-content;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        /*
+         * Sent: bubble on the right, reply button on the left.
+         * Received: bubble on the left, reply button on the right.
+         */
+        .pd-message-group.sent .pd-message-row {
+            flex-direction: row-reverse;
+        }
+
+        .pd-message-group.received .pd-message-row {
+            flex-direction: row;
+        }
+
+        .pd-message-group .message {
             position: relative;
+            flex: 0 1 auto;
+            min-width: 0;
+            max-width: calc(100% - 36px);
+            box-sizing: border-box;
             overflow-wrap: anywhere;
         }
 
+        .pd-message-group .message-text {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        /* Reply controls sit OUTSIDE the message bubble. */
         .pd-message-actions {
             display: flex;
-            justify-content: flex-end;
-            margin-top: 5px;
+            flex: 0 0 auto;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
         }
 
         .pd-reply-trigger {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
-            min-width: 30px;
-            min-height: 27px;
-            padding: 4px 9px;
-            border: 1px solid rgba(180, 130, 255, .25);
+            gap: 4px;
+            min-width: 29px;
+            min-height: 28px;
+            padding: 4px 6px;
+            border: 1px solid rgba(180, 130, 255, .22);
             border-radius: 14px;
             background: rgba(130, 80, 180, .12);
             color: inherit;
             font: inherit;
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
-            opacity: .8;
-            transition: background .2s, opacity .2s, transform .2s;
+            opacity: .82;
+            transition: background .2s, opacity .2s;
         }
 
         .pd-reply-trigger:hover,
         .pd-reply-trigger:focus-visible {
             opacity: 1;
             background: rgba(180, 100, 255, .22);
-            transform: translateY(-1px);
             outline: none;
         }
 
-        /* Quoted message inside a reply */
+        .pd-reply-trigger i {
+            font-size: 12px;
+        }
+
+        .pd-reply-trigger span {
+            font-size: 10px;
+        }
+
+        /* Original message quoted ABOVE the bubble and reply row. */
         .pd-message-quote {
             display: block;
             width: 100%;
+            max-width: 100%;
+            min-width: 0;
             box-sizing: border-box;
-            margin: 0 0 8px;
+            margin: 0 0 5px;
             padding: 8px 10px;
             border: 0;
             border-left: 3px solid #c16cff;
@@ -227,10 +267,9 @@ function installChatStyles() {
         .pd-message-highlight {
             outline: 2px solid rgba(206, 130, 255, .9);
             box-shadow: 0 0 18px rgba(185, 90, 255, .35);
-            transition: outline .2s, box-shadow .2s;
         }
 
-        /* Reply preview above the typing area */
+        /* Reply preview above the typing controls. */
         .pd-reply-composer {
             display: none;
             flex: 0 0 100%;
@@ -274,7 +313,6 @@ function installChatStyles() {
 
         .pd-reply-text {
             overflow: hidden;
-            color: inherit;
             font-size: 12px;
             line-height: 1.4;
             text-overflow: ellipsis;
@@ -299,7 +337,7 @@ function installChatStyles() {
             background: rgba(220, 80, 140, .22);
         }
 
-        /* Multiline typing */
+        /* Multiline typing — preserve the phone layout. */
         .phone-app.chat-app .chat-input {
             height: auto !important;
             max-height: 200px !important;
@@ -341,6 +379,25 @@ function installChatStyles() {
             color: inherit;
             font-size: 11px;
         }
+
+        @media (max-width: 380px) {
+            .pd-message-group {
+                max-width: 97%;
+            }
+
+            .pd-reply-trigger {
+                min-width: 27px;
+                padding: 4px;
+            }
+
+            .pd-reply-trigger span {
+                font-size: 9px;
+            }
+
+            .pd-message-row {
+                gap: 4px;
+            }
+        }
     `;
 
     document.head.appendChild(style);
@@ -368,20 +425,15 @@ async function setupProfile(user) {
     };
 
     recipientUID = null;
-
     updatePDInterface();
 
-    setDoc(
-        doc(db, "users", user.uid),
-        {
-            uid: user.uid,
-            email,
-            name: profile.name,
-            displayName: profile.displayName,
-            updatedAt: serverTimestamp()
-        },
-        { merge: true }
-    ).catch(error => {
+    setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        email,
+        name: profile.name,
+        displayName: profile.displayName,
+        updatedAt: serverTimestamp()
+    }, { merge: true }).catch(error => {
         console.error("PD profile update error:", error);
     });
 
@@ -423,6 +475,7 @@ async function findPartnerUID() {
     if (!currentProfile) return null;
 
     const partnerEmail = getPartnerEmail();
+
     if (!partnerEmail) return null;
 
     try {
@@ -458,9 +511,7 @@ function ensurePresenceElement() {
 
     if (element) return element;
 
-    const nameElement = document.querySelector(
-        "[data-chat-person-name]"
-    );
+    const nameElement = document.querySelector("[data-chat-person-name]");
 
     if (!nameElement) return null;
 
@@ -477,6 +528,7 @@ function ensurePresenceElement() {
 
 function showPartnerStatus(text, online = false) {
     const element = ensurePresenceElement();
+
     if (!element) return;
 
     element.textContent = text;
@@ -498,12 +550,10 @@ function formatLastSeen(timestamp) {
 
     const difference = Math.max(0, Date.now() - date.getTime());
 
-    if (difference < 60_000) {
-        return "Last seen just now";
-    }
+    if (difference < 60000) return "Last seen just now";
 
-    if (difference < 3_600_000) {
-        return `Last seen ${Math.floor(difference / 60_000)} min ago`;
+    if (difference < 3600000) {
+        return `Last seen ${Math.floor(difference / 60000)} min ago`;
     }
 
     const time = date.toLocaleTimeString([], {
@@ -512,7 +562,7 @@ function formatLastSeen(timestamp) {
         hour12: true
     });
 
-    if (difference < 86_400_000) {
+    if (difference < 86400000) {
         return `Last seen today at ${time}`;
     }
 
@@ -532,11 +582,6 @@ function watchPartnerPresence(uid) {
         partnerPresenceUnsubscribe = null;
     }
 
-    if (lastChangedUnsubscribe) {
-        lastChangedUnsubscribe();
-        lastChangedUnsubscribe = null;
-    }
-
     activePartnerUID = uid;
 
     const statusRef = databaseRef(presenceDB, `status/${uid}`);
@@ -551,10 +596,7 @@ function watchPartnerPresence(uid) {
             if (online) {
                 showPartnerStatus("● Online", true);
             } else {
-                showPartnerStatus(
-                    formatLastSeen(status.lastChanged),
-                    false
-                );
+                showPartnerStatus(formatLastSeen(status.lastChanged), false);
             }
         },
         error => {
@@ -576,14 +618,8 @@ function startOwnPresence(uid) {
     activePresenceUID = uid;
 
     const connectedRef = databaseRef(presenceDB, ".info/connected");
-    const connectionsRef = databaseRef(
-        presenceDB,
-        `status/${uid}/connections`
-    );
-    const lastChangedRef = databaseRef(
-        presenceDB,
-        `status/${uid}/lastChanged`
-    );
+    const connectionsRef = databaseRef(presenceDB, `status/${uid}/connections`);
+    const lastChangedRef = databaseRef(presenceDB, `status/${uid}/lastChanged`);
 
     connectedUnsubscribe = onValue(
         connectedRef,
@@ -617,15 +653,19 @@ async function initializePresence() {
 
     ensurePresenceElement();
     showPartnerStatus("Checking status…");
-
     startOwnPresence(currentProfile.uid);
 
-    const partnerUID = await findPartnerUID();
+    try {
+        const partnerUID = await findPartnerUID();
 
-    if (partnerUID) {
-        watchPartnerPresence(partnerUID);
-    } else {
-        showPartnerStatus("Waiting for partner 💜");
+        if (partnerUID) {
+            watchPartnerPresence(partnerUID);
+        } else {
+            showPartnerStatus("Waiting for partner 💜");
+        }
+    } catch (error) {
+        console.error("PD presence initialization error:", error);
+        showPartnerStatus("Status unavailable", false);
     }
 }
 
@@ -692,10 +732,7 @@ async function updateIncomingReceipts(messageDocs) {
                 changes.readAt = serverTimestamp();
             }
 
-            await updateDoc(
-                doc(db, "messages", messageDoc.id),
-                changes
-            );
+            await updateDoc(doc(db, "messages", messageDoc.id), changes);
 
         } catch (error) {
             console.error("PD receipt update failed:", error);
@@ -707,17 +744,21 @@ async function updateIncomingReceipts(messageDocs) {
 
 
 /* =========================================================
-   MULTILINE INPUT — ENTER ADDS A NEW LINE
+   MULTILINE INPUT
    ========================================================= */
 
 function resizeMessageInput() {
     const input = document.getElementById("messageInput");
+
     if (!input) return;
 
     input.style.height = "auto";
 
     const maxHeight = 120;
-    input.style.height = Math.min(input.scrollHeight, maxHeight) + "px";
+
+    input.style.height =
+        Math.min(input.scrollHeight, maxHeight) + "px";
+
     input.style.overflowY =
         input.scrollHeight > maxHeight ? "auto" : "hidden";
 }
@@ -725,15 +766,13 @@ function resizeMessageInput() {
 
 function setupMultilineInput() {
     const input = document.getElementById("messageInput");
+
     if (!input || input.dataset.pdMultilineBound === "true") return;
 
     input.dataset.pdMultilineBound = "true";
 
     input.addEventListener("input", resizeMessageInput);
 
-    // Do not prevent Enter's default behavior:
-    // Enter inserts a newline in a textarea.
-    // Sending happens only from the Send button/form submit.
     input.addEventListener("keydown", event => {
         if (event.key === "Enter") {
             event.stopPropagation();
@@ -750,9 +789,11 @@ function setupMultilineInput() {
 
 function ensureReplyComposer() {
     const form = document.getElementById("chatForm");
+
     if (!form) return null;
 
     let composer = document.getElementById("pdReplyComposer");
+
     if (composer) return composer;
 
     composer = document.createElement("div");
@@ -785,7 +826,6 @@ function ensureReplyComposer() {
     content.append(label, preview);
     composer.append(accent, content, cancel);
 
-    // Place the preview above the typing controls.
     form.insertBefore(composer, form.firstChild);
 
     cancel.addEventListener("click", clearReplyMode);
@@ -806,9 +846,7 @@ function setReplyMode(messageId, data) {
             data.senderDisplayName ||
             data.senderName ||
             "My love",
-        text: isVoice
-            ? "🎙️ Voice message"
-            : String(data.text || ""),
+        text: isVoice ? "🎙️ Voice message" : String(data.text || ""),
         type: data.type || "text"
     };
 
@@ -829,11 +867,10 @@ function setReplyMode(messageId, data) {
                 : `Replying to ${currentReply.senderName}`;
     }
 
-    if (preview) {
-        preview.textContent = currentReply.text || "Message";
-    }
+    if (preview) preview.textContent = currentReply.text || "Message";
 
     const input = document.getElementById("messageInput");
+
     if (input) input.focus();
 }
 
@@ -842,6 +879,7 @@ function clearReplyMode() {
     currentReply = null;
 
     const form = document.getElementById("chatForm");
+
     if (form) form.classList.remove("is-replying");
 
     const label = document.getElementById("pdReplyLabel");
@@ -922,12 +960,13 @@ function createReplyButton(messageId, data) {
     });
 
     actions.appendChild(button);
+
     return actions;
 }
 
 
 /* =========================================================
-   SEND TEXT MESSAGE — INCLUDES REPLY METADATA
+   SEND TEXT MESSAGE
    ========================================================= */
 
 async function sendMessage() {
@@ -939,6 +978,7 @@ async function sendMessage() {
     if (!input) return;
 
     const text = input.value.trim();
+
     if (!text) return;
 
     if (button) button.disabled = true;
@@ -965,7 +1005,6 @@ async function sendMessage() {
             senderDisplayName: currentProfile.displayName,
 
             recipientUID: partnerUID,
-
             replyTo,
 
             status: "sent",
@@ -1054,6 +1093,7 @@ function makeMessageFooter(data, date, mine) {
     footer.appendChild(time);
 
     const receipt = createReceipt(data, mine);
+
     if (receipt) footer.appendChild(receipt);
 
     return footer;
@@ -1061,53 +1101,79 @@ function makeMessageFooter(data, date, mine) {
 
 
 /* =========================================================
-   DISPLAY TEXT MESSAGE — REPLY QUOTES INCLUDED
+   DISPLAY TEXT MESSAGE
    ========================================================= */
 
 function displayTextMessage(container, data, date, messageId) {
-    const message = document.createElement("div");
-
     const mine = data.senderUID === currentProfile.uid;
 
+    const group = document.createElement("div");
+    group.className = mine
+        ? "pd-message-group sent"
+        : "pd-message-group received";
+
+    const quote = createQuotedMessage(data.replyTo);
+
+    // Quote sits above the message row.
+    if (quote) group.appendChild(quote);
+
+    const row = document.createElement("div");
+    row.className = "pd-message-row";
+
+    const message = document.createElement("div");
     message.id = `pd-message-${messageId}`;
     message.dataset.messageId = messageId;
     message.className = mine ? "message sent" : "message received";
 
-    const quote = createQuotedMessage(data.replyTo);
-    if (quote) message.appendChild(quote);
-
     const text = document.createElement("div");
     text.className = "message-text";
-
-    // textContent keeps user-sent messages safe and preserves line breaks.
     text.textContent = data.text || "";
 
     message.appendChild(text);
     message.appendChild(makeMessageFooter(data, date, mine));
-    message.appendChild(createReplyButton(messageId, data));
 
-    container.appendChild(message);
+    const replyButton = createReplyButton(messageId, data);
+
+    if (mine) {
+        // Sent message: bubble right, reply control left.
+        row.append(replyButton, message);
+    } else {
+        // Received message: bubble left, reply control right.
+        row.append(message, replyButton);
+    }
+
+    group.appendChild(row);
+    container.appendChild(group);
 }
 
 
 /* =========================================================
-   DISPLAY VOICE MESSAGE — CAN ALSO BE REPLIED TO
+   DISPLAY VOICE MESSAGE
    ========================================================= */
 
 function displayVoiceMessage(container, data, date, messageId) {
     if (!data.audioURL) return;
 
-    const message = document.createElement("div");
     const mine = data.senderUID === currentProfile.uid;
 
+    const group = document.createElement("div");
+    group.className = mine
+        ? "pd-message-group sent"
+        : "pd-message-group received";
+
+    const quote = createQuotedMessage(data.replyTo);
+
+    if (quote) group.appendChild(quote);
+
+    const row = document.createElement("div");
+    row.className = "pd-message-row";
+
+    const message = document.createElement("div");
     message.id = `pd-message-${messageId}`;
     message.dataset.messageId = messageId;
     message.className = mine
         ? "message sent voice-message"
         : "message received voice-message";
-
-    const quote = createQuotedMessage(data.replyTo);
-    if (quote) message.appendChild(quote);
 
     const box = document.createElement("div");
     box.className = "voice-message-box";
@@ -1122,12 +1188,19 @@ function displayVoiceMessage(container, data, date, messageId) {
     audio.src = data.audioURL;
 
     box.append(icon, audio);
-
     message.appendChild(box);
     message.appendChild(makeMessageFooter(data, date, mine));
-    message.appendChild(createReplyButton(messageId, data));
 
-    container.appendChild(message);
+    const replyButton = createReplyButton(messageId, data);
+
+    if (mine) {
+        row.append(replyButton, message);
+    } else {
+        row.append(message, replyButton);
+    }
+
+    group.appendChild(row);
+    container.appendChild(group);
 }
 
 
@@ -1137,15 +1210,17 @@ function displayVoiceMessage(container, data, date, messageId) {
 
 function removeChatLoader() {
     const loader = document.getElementById("pd-chat-loader");
+
     if (!loader) return;
 
     loader.classList.add("pd-loaded");
+
     setTimeout(() => loader.remove(), 150);
 }
 
 
 /* =========================================================
-   START CHAT — SINGLE FIRESTORE LISTENER
+   START CHAT — FIRESTORE REALTIME LISTENER
    ========================================================= */
 
 function startChat() {
@@ -1274,7 +1349,9 @@ async function startRecording() {
         recording = true;
 
         mediaRecorder.ondataavailable = event => {
-            if (event.data.size > 0) audioChunks.push(event.data);
+            if (event.data.size > 0) {
+                audioChunks.push(event.data);
+            }
         };
 
         mediaRecorder.onstop = async () => {
@@ -1284,7 +1361,9 @@ async function startRecording() {
                 type: mediaRecorder.mimeType || "audio/webm"
             });
 
-            if (blob.size > 0) await uploadVoice(blob);
+            if (blob.size > 0) {
+                await uploadVoice(blob);
+            }
         };
 
         mediaRecorder.start();
@@ -1314,6 +1393,7 @@ async function uploadVoice(audioBlob) {
     if (!currentProfile) return;
 
     const button = document.getElementById("voiceButton");
+
     if (button) button.classList.add("uploading");
 
     try {
@@ -1340,7 +1420,6 @@ async function uploadVoice(audioBlob) {
             senderDisplayName: currentProfile.displayName,
 
             recipientUID: partnerUID,
-
             replyTo: null,
 
             status: "sent",
@@ -1361,6 +1440,7 @@ async function uploadVoice(audioBlob) {
 
 function updateVoiceButton(active) {
     const button = document.getElementById("voiceButton");
+
     if (!button) return;
 
     if (active) {
@@ -1377,6 +1457,7 @@ function updateVoiceButton(active) {
 
 function setupVoiceButton() {
     const button = document.getElementById("voiceButton");
+
     if (!button || button.dataset.pdBound === "true") return;
 
     button.dataset.pdBound = "true";
@@ -1449,8 +1530,13 @@ function initializePage() {
             return;
         }
 
-        await initializePresence();
+        // Start receiving messages immediately.
+        // Do not wait for online-status initialization.
         startChat();
+
+        initializePresence().catch(error => {
+            console.error("PD presence initialization error:", error);
+        });
     });
 }
 

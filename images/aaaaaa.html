@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Happy Birthday Zonia 💗</title>
+
+<style>
+
+/* =====================================================
+   GENERAL
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: "Trebuchet MS", Arial, sans-serif;
+
+    background:
+        radial-gradient(circle at 20% 20%, rgba(63, 5, 199, 0.541), transparent 25%),
+        radial-gradient(circle at 80% 10%, rgba(0, 241, 12, 0.5), transparent 25%),
+        linear-gradient(135deg, #2e1821, #cc1068, #8500b9, #00c288);
+
+    color: #6e2850;
+}
+
+
+/* =====================================================
+   BACKGROUND GLOW
+===================================================== */
+
+body::before {
+    content: "";
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.25);
+    filter: blur(100px);
+    top: -180px;
+    left: -180px;
+    z-index: -2;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: rgba(255, 51, 153, 0.301);
+    filter: blur(100px);
+    bottom: -200px;
+    right: -150px;
+    z-index: -2;
+}
+
+
+/* =====================================================
+   MAIN CONTAINER
+===================================================== */
+
+.page {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+
+/* =====================================================
+   BIRTHDAY CARD
+===================================================== */
+
+.card {
+
+    width: min(850px, 94vw);
+
+    padding: 60px 35px;
+
+    text-align: center;
+
+    border-radius: 35px;
+
+    background: rgba(255,255,255,.38);
+
+    border: 2px solid rgba(255,255,255,.65);
+
+    backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 30px 80px rgba(133,48,103,.22),
+        inset 0 1px 0 rgba(255, 238, 1, 0.8);
+
+    position: relative;
+
+    overflow: hidden;
+
+    animation: cardAppear 1.5s ease;
+}
+
+@keyframes cardAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+
+/* =====================================================
+   TOP DECORATION
+===================================================== */
+
+.small-title {
+
+    font-size: 15px;
+
+    letter-spacing: 5px;
+
+    text-transform: uppercase;
+
+    color: #a94375;
+
+    margin-bottom: 15px;
+
+    font-weight: bold;
+}
+
+
+/* =====================================================
+   MAIN TITLE
+===================================================== */
+
+h1 {
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: clamp(48px, 9vw, 95px);
+
+    line-height: .95;
+
+    color: #c52d72;
+
+    text-shadow:
+        0 5px 0 rgba(255,255,255,.6),
+        0 12px 25px rgba(140,37,91,.2);
+
+    margin-bottom: 20px;
+
+    animation: titleGlow 3s infinite alternate;
+}
+
+@keyframes titleGlow {
+
+    from {
+        text-shadow:
+            0 5px 0 rgba(255,255,255,.6),
+            0 12px 25px rgba(140,37,91,.2);
+    }
+
+    to {
+        text-shadow:
+            0 5px 0 rgba(255,255,255,.8),
+            0 0 25px rgba(255,71,160,.5),
+            0 15px 35px rgba(140,37,91,.2);
+    }
+
+}
+
+
+/* =====================================================
+   NAME
+===================================================== */
+
+.name {
+
+    font-family: Georgia, serif;
+
+    font-size: clamp(40px, 7vw, 70px);
+
+    color: #8d2761;
+
+    margin-bottom: 15px;
+}
+
+
+/* =====================================================
+   AGE
+===================================================== */
+
+.age {
+
+    display: inline-block;
+
+    padding: 12px 28px;
+
+    border-radius: 50px;
+
+    background: linear-gradient(
+        135deg,
+        #ff5fa2,
+        #d84aa4
+    );
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    box-shadow:
+        0 10px 25px rgba(211,61,135,.3);
+
+    margin-bottom: 25px;
+
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    50% {
+        transform: scale(1.05);
+    }
+
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+.message {
+
+    max-width: 650px;
+
+    margin: auto;
+
+    font-size: 19px;
+
+    line-height: 1.8;
+
+    color: #713655;
+}
+
+
+/* =====================================================
+   FLOWER DECORATIONS
+===================================================== */
+
+.flower {
+
+    position: absolute;
+
+    font-size: 55px;
+
+    filter: drop-shadow(
+        0 8px 8px rgba(120,30,80,.15)
+    );
+
+    animation: flowerFloat 5s ease-in-out infinite;
+}
+
+.flower1 {
+    left: 20px;
+    top: 20px;
+}
+
+.flower2 {
+    right: 20px;
+    top: 30px;
+    animation-delay: 1s;
+}
+
+.flower3 {
+    left: 25px;
+    bottom: 25px;
+    animation-delay: 2s;
+}
+
+.flower4 {
+    right: 25px;
+    bottom: 20px;
+    animation-delay: 3s;
+}
+
+@keyframes flowerFloat {
+
+    0%,100% {
+        transform: translateY(0) rotate(-5deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(8deg);
+    }
+}
+
+
+/* =====================================================
+   BIRTHDAY CAKE
+===================================================== */
+
+.cake {
+
+    font-size: 90px;
+
+    margin: 25px 0 10px;
+
+    animation: cakeBounce 2s ease-in-out infinite;
+}
+
+@keyframes cakeBounce {
+
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+
+/* =====================================================
+   BUTTON
+===================================================== */
+
+button {
+
+    margin-top: 25px;
+
+    padding: 16px 32px;
+
+    border: none;
+
+    border-radius: 50px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff4f9a,
+            #c746a4
+        );
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 12px 25px rgba(180,42,116,.3);
+
+    transition: .3s ease;
+}
+
+button:hover {
+
+    transform: translateY(-4px) scale(1.04);
+
+    box-shadow:
+        0 18px 35px rgba(180,42,116,.4);
+}
+
+
+/* =====================================================
+   SECRET MESSAGE
+===================================================== */
+
+#surprise {
+
+    max-width: 600px;
+
+    margin: 25px auto 0;
+
+    padding: 25px;
+
+    border-radius: 25px;
+
+    background: rgba(255,255,255,.55);
+
+    border: 1px solid rgba(255,255,255,.7);
+
+    display: none;
+
+    animation: reveal .8s ease;
+}
+
+#surprise.show {
+    display: block;
+}
+
+#surprise h2 {
+
+    color: #c52d72;
+
+    margin-bottom: 12px;
+
+    font-family: Georgia, serif;
+}
+
+#surprise p {
+
+    line-height: 1.8;
+
+    font-size: 17px;
+}
+
+@keyframes reveal {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* =====================================================
+   FLOATING HEARTS
+===================================================== */
+
+.heart {
+
+    position: fixed;
+
+    bottom: -40px;
+
+    font-size: 20px;
+
+    pointer-events: none;
+
+    animation: floatHeart linear forwards;
+
+    z-index: 20;
+}
+
+@keyframes floatHeart {
+
+    from {
+        transform: translateY(0) rotate(0);
+        opacity: 1;
+    }
+
+    to {
+        transform:
+            translateY(-110vh)
+            rotate(360deg);
+
+        opacity: 0;
+    }
+}
+
+
+/* =====================================================
+   SPARKLES
+===================================================== */
+
+.sparkle {
+
+    position: fixed;
+
+    pointer-events: none;
+
+    color: white;
+
+    font-size: 15px;
+
+    animation: sparkle 2s ease forwards;
+
+    z-index: 30;
+}
+
+@keyframes sparkle {
+
+    0% {
+        opacity: 0;
+        transform: scale(.2);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.5);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(.3);
+    }
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.footer {
+
+    margin-top: 30px;
+
+    font-size: 14px;
+
+    color: #8a496c;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:600px) {
+
+    .page {
+        padding: 20px 12px;
+    }
+
+    .card {
+        padding: 50px 20px;
+        border-radius: 28px;
+    }
+
+    .flower {
+        font-size: 38px;
+    }
+
+    .flower1 {
+        left: 8px;
+        top: 10px;
+    }
+
+    .flower2 {
+        right: 8px;
+        top: 10px;
+    }
+
+    .flower3 {
+        left: 8px;
+        bottom: 10px;
+    }
+
+    .flower4 {
+        right: 8px;
+        bottom: 10px;
+    }
+
+    .message {
+        font-size: 17px;
+    }
+
+    .cake {
+        font-size: 70px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+    <div class="card">
+
+        <!-- FLOWERS -->
+        <div class="flower flower1">🌸</div>
+        <div class="flower flower2">🌷</div>
+        <div class="flower flower3">🌺</div>
+        <div class="flower flower4">🌸</div>
+
+
+        <div class="small-title">
+            A Special Day For A Special Girl
+        </div>
+
+
+        <h1>
+            Happy Birthday
+        </h1>
+
+
+        <div class="name">
+            Zonia 💗
+        </div>
+
+
+        <div class="age">
+            ✨ Wishing You 27 Beautiful Years ✨
+        </div>
+
+
+        <div class="cake">
+            🎂
+        </div>
+
+
+        <p class="message">
+
+            Today is all about celebrating <strong>YOU</strong> —
+            your beautiful journey, your wonderful memories,
+            and all the amazing moments still waiting for you. 💕
+
+            <br><br>
+
+            May your 27th year be filled with
+            <strong>love, happiness, peace, success and countless reasons to smile.</strong>
+
+            <br><br>
+
+            May every dream in your heart find its way
+            into reality. 🌸
+
+        </p>
+
+
+        <button onclick="showSurprise()">
+            💌 Open Your Birthday Surprise
+        </button>
+
+
+        <div id="surprise">
+
+            <h2>
+                For You, Zonia 💗
+            </h2>
+
+            <p>
+
+                Happy 16th Birthday! 🥳🌸
+
+                <br><br>
+
+                May this new chapter of your life be
+                softer, brighter, happier and more beautiful
+                than the ones before it.
+
+                <br><br>
+
+                May you always have people who love you,
+                moments that make you laugh,
+                dreams that excite you,
+                and memories that you will treasure forever.
+
+                <br><br>
+
+                <strong>
+                    Keep shining, keep smiling,
+                    and keep being wonderfully YOU. 💕
+                </strong>
+
+                <br><br>
+
+                Happy Birthday, Zonia! 🎀🌷✨
+
+            </p>
+
+        </div>
+
+
+        <div class="footer">
+            Made with 💗 especially for Zonia
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   SURPRISE BUTTON
+===================================================== */
+
+function showSurprise() {
+
+    const surprise =
+        document.getElementById("surprise");
+
+    surprise.classList.toggle("show");
+
+    if (surprise.classList.contains("show")) {
+
+        createHearts(25);
+
+        createSparkles(30);
+
+    }
+
+}
+
+
+/* =====================================================
+   FLOATING HEARTS
+===================================================== */
+
+function createHeart() {
+
+    const heart =
+        document.createElement("div");
+
+    heart.className = "heart";
+
+    const hearts = [
+        "💗",
+        "💕",
+        "💖",
+        "💞",
+        "🌸",
+        "🌷",
+        "✨"
+    ];
+
+    heart.innerHTML =
+        hearts[Math.floor(Math.random() * hearts.length)];
+
+    heart.style.left =
+        Math.random() * 100 + "vw";
+
+    heart.style.fontSize =
+        (15 + Math.random() * 22) + "px";
+
+    heart.style.animationDuration =
+        (5 + Math.random() * 5) + "s";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 10000);
+}
+
+
+function createHearts(amount) {
+
+    for (let i = 0; i < amount; i++) {
+
+        setTimeout(
+            createHeart,
+            i * 100
+        );
+
+    }
+}
+
+
+/* =====================================================
+   AUTOMATIC HEARTS
+===================================================== */
+
+setInterval(() => {
+
+    createHeart();
+
+}, 1000);
+
+
+/* =====================================================
+   SPARKLES
+===================================================== */
+
+function createSparkle(x, y) {
+
+    const sparkle =
+        document.createElement("div");
+
+    sparkle.className = "sparkle";
+
+    sparkle.innerHTML = "✦";
+
+    sparkle.style.left = x + "px";
+
+    sparkle.style.top = y + "px";
+
+    sparkle.style.fontSize =
+        (10 + Math.random() * 18) + "px";
+
+    document.body.appendChild(sparkle);
+
+    setTimeout(() => {
+        sparkle.remove();
+    }, 2000);
+}
+
+
+function createSparkles(amount) {
+
+    for (let i = 0; i < amount; i++) {
+
+        setTimeout(() => {
+
+            createSparkle(
+                Math.random() * window.innerWidth,
+                Math.random() * window.innerHeight
+            );
+
+        }, i * 60);
+
+    }
+
+}
+
+
+/* =====================================================
+   CLICK SPARKLES
+===================================================== */
+
+document.addEventListener("click", function(e) {
+
+    for (let i = 0; i < 5; i++) {
+
+        setTimeout(() => {
+
+            createSparkle(
+                e.clientX + (Math.random() * 60 - 30),
+                e.clientY + (Math.random() * 60 - 30)
+            );
+
+        }, i * 80);
+
+    }
+
+});
+
+
+/* =====================================================
+   INITIAL EFFECT
+===================================================== */
+
+window.addEventListener("load", () => {
+
+    createHearts(10);
+
+    createSparkles(20);
+
+});
+
+</script>
+
+</body>
+</html>
