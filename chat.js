@@ -1,25 +1,35 @@
 
 /* =========================================================
-   PRINCESS WA DEIB 💜 — REALTIME CHAT
-   Text • Replies • Voice Notes • Receipts • Presence
+   PRINCESS WA DEIB — COMPLETE CHAT SYSTEM
+   Text + Multiline Typing + Reply to Message
+   Voice Notes + Dates + Online + Last Seen
+   Sent + Delivered + Read Receipts
    ========================================================= */
 
-import { auth, db, storage, presenceDB } from "./firebase.js";
+import {
+    auth,
+    db,
+    storage,
+    presenceDB
+} from "./firebase.js";
 
 import {
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
 import {
+    doc,
+    setDoc,
     collection,
     addDoc,
     query,
     orderBy,
     onSnapshot,
     serverTimestamp,
-    doc,
-    updateDoc,
-    arrayUnion
+    getDocs,
+    where,
+    limit,
+    updateDoc
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 import {
@@ -29,611 +39,1219 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-storage.js";
 
 import {
-    ref as dbRef,
+    ref as databaseRef,
     onValue,
     onDisconnect,
     set,
-    serverTimestamp as dbTimestamp
+    push,
+    serverTimestamp as databaseServerTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 
-/* ================= CONFIG ================= */
+/* =========================================================
+   PROFILES — PRESERVED FROM YOUR CODE
+   ========================================================= */
 
-const CHAT_COLLECTION = "messages";
+let currentProfile = null;
+let recipientUID = null;
 
-const PROFILES = {
+const PD_PROFILES = {
     "princess@gmail.com": {
         name: "Baby",
         displayName: "Baby ❤️"
     },
+
     "deib@gmail.com": {
         name: "Hubby",
         displayName: "Hubby 💜"
     }
 };
 
-const DEFAULT_PROFILE = {
-    name: "My Love",
-    displayName: "My Love ❤️"
-};
 
-let currentUser = null;
-let currentProfile = null;
-let stopMessages = null;
-let stopConnection = null;
-let stopPartnerPresence = null;
-let replyTarget = null;
+/* =========================================================
+   GLOBAL STATE
+   ========================================================= */
+
+let chatUnsubscribe = null;
+let partnerPresenceUnsubscribe = null;
+let connectedUnsubscribe = null;
+let lastChangedUnsubscribe = null;
+
+let activePresenceUID = null;
+let activePartnerUID = null;
+
+let latestMessageDocs = [];
+let firstMessagesLoaded = false;
+
+let currentReply = null;
 let mediaRecorder = null;
-let recordingChunks = [];
-let recordingStartedAt = 0;
-let isRecording = false;
-let isSending = false;
-let isUploadingVoice = false;
-let watchedPartnerUid = null;
+let recording = false;
+let audioChunks = [];
 
-const receiptsInFlight = new Set();
-
-const $ = (selector, parent = document) =>
-    parent.querySelector(selector);
+const receiptUpdatesInFlight = new Set();
 
 
-/* ================= DOM ================= */
+/* =========================================================
+   EXTRA STYLES
+   ========================================================= */
 
-function elements() {
-    return {
-        messages: $("#chatMessages"),
-        form: $("#chatForm"),
-        input: $("#messageInput"),
-        send: $(".send-message"),
-        voice: $("#voiceButton"),
-        loader: $("#pd-chat-loader"),
-        presence: $("#pd-presence-status")
-    };
-}
+function installChatStyles() {
+    if (document.getElementById("pd-chat-extra-styles")) return;
 
-function hideLoader() {
-    const loader = elements().loader;
-    if (!loader) return;
+    const style = document.createElement("style");
+    style.id = "pd-chat-extra-styles";
 
-    loader.style.display = "none";
-    loader.style.opacity = "0";
-    loader.style.pointerEvents = "none";
-    loader.setAttribute("aria-hidden", "true");
-}
-
-function showLoader() {
-    const loader = elements().loader;
-    if (!loader) return;
-
-    loader.style.display = "flex";
-    loader.style.opacity = "1";
-    loader.style.pointerEvents = "auto";
-    loader.setAttribute("aria-hidden", "false");
-}
-
-function showError(message) {
-    console.error("[PD Chat]", message);
-
-    let notice = $("#pd-chat-error");
-
-    if (!notice) {
-        notice = document.createElement("div");
-        notice.id = "pd-chat-error";
-        notice.setAttribute("role", "alert");
-
-        Object.assign(notice.style, {
-            padding: "10px",
-            margin: "8px",
-            borderRadius: "10px",
-            background: "rgba(255,60,100,.16)",
-            color: "#ffdbe5",
-            fontSize: "12px",
-            overflowWrap: "anywhere"
-        });
-
-        const messages = elements().messages;
-
-        if (messages?.parentElement) {
-            messages.parentElement.insertBefore(notice, messages);
-        } else {
-            document.body.appendChild(notice);
+    style.textContent = `
+        .pd-presence-status {
+            display: block;
+            margin-top: 3px;
+            font-size: 11px;
+            line-height: 1.4;
+            font-weight: 500;
+            color: #b9a8d9;
         }
-    }
 
-    notice.textContent = message;
+        .pd-presence-status.is-online {
+            color: #42df91;
+        }
+
+        .pd-presence-status.is-offline {
+            color: #b9a8d9;
+        }
+
+        .pd-message-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 5px;
+            margin-top: 4px;
+            font-size: 10px;
+            line-height: 1.2;
+        }
+
+        .pd-message-receipt {
+            display: inline-block;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .pd-message-receipt.receipt-read {
+            color: #42c8ff;
+        }
+
+        .pd-message-receipt.receipt-delivered,
+        .pd-message-receipt.receipt-sent {
+            color: #b9a8d9;
+        }
+
+        /* Message action area */
+        .message {
+            position: relative;
+            overflow-wrap: anywhere;
+        }
+
+        .pd-message-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 5px;
+        }
+
+        .pd-reply-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-width: 30px;
+            min-height: 27px;
+            padding: 4px 9px;
+            border: 1px solid rgba(180, 130, 255, .25);
+            border-radius: 14px;
+            background: rgba(130, 80, 180, .12);
+            color: inherit;
+            font: inherit;
+            font-size: 11px;
+            cursor: pointer;
+            opacity: .8;
+            transition: background .2s, opacity .2s, transform .2s;
+        }
+
+        .pd-reply-trigger:hover,
+        .pd-reply-trigger:focus-visible {
+            opacity: 1;
+            background: rgba(180, 100, 255, .22);
+            transform: translateY(-1px);
+            outline: none;
+        }
+
+        /* Quoted message inside a reply */
+        .pd-message-quote {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0 0 8px;
+            padding: 8px 10px;
+            border: 0;
+            border-left: 3px solid #c16cff;
+            border-radius: 8px;
+            background: rgba(120, 70, 160, .13);
+            color: inherit;
+            text-align: left;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .pd-message-quote:hover {
+            background: rgba(150, 90, 200, .2);
+        }
+
+        .pd-message-quote-sender {
+            display: block;
+            margin-bottom: 3px;
+            color: #d9a1ff;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .pd-message-quote-text {
+            display: -webkit-box;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            font-size: 12px;
+            line-height: 1.4;
+            opacity: .9;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .pd-message-highlight {
+            outline: 2px solid rgba(206, 130, 255, .9);
+            box-shadow: 0 0 18px rgba(185, 90, 255, .35);
+            transition: outline .2s, box-shadow .2s;
+        }
+
+        /* Reply preview above the typing area */
+        .pd-reply-composer {
+            display: none;
+            flex: 0 0 100%;
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding: 8px 10px;
+            border: 1px solid rgba(190, 130, 255, .24);
+            border-radius: 12px;
+            background: rgba(100, 55, 140, .12);
+        }
+
+        .chat-input.is-replying .pd-reply-composer {
+            display: flex;
+        }
+
+        .pd-reply-accent {
+            width: 3px;
+            min-width: 3px;
+            align-self: stretch;
+            border-radius: 5px;
+            background: linear-gradient(180deg, #f238a9, #a85cff);
+        }
+
+        .pd-reply-content {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .pd-reply-label {
+            color: #d9a1ff;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .pd-reply-text {
+            overflow: hidden;
+            color: inherit;
+            font-size: 12px;
+            line-height: 1.4;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .pd-reply-cancel {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 30px;
+            width: 30px;
+            height: 30px;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(160, 100, 200, .16);
+            color: inherit;
+            cursor: pointer;
+        }
+
+        .pd-reply-cancel:hover {
+            background: rgba(220, 80, 140, .22);
+        }
+
+        /* Multiline typing */
+        .phone-app.chat-app .chat-input {
+            height: auto !important;
+            max-height: 200px !important;
+            flex: 0 0 auto !important;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .phone-app.chat-app #messageInput {
+            min-width: 0;
+            min-height: 42px;
+            max-height: 120px;
+            height: 42px;
+            resize: none;
+            overflow-y: hidden;
+            box-sizing: border-box;
+            line-height: 1.45;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .phone-app.chat-app .chat-input .send-message,
+        .phone-app.chat-app .chat-input .attach-button {
+            flex-shrink: 0;
+            align-self: flex-end;
+        }
+
+        .chat-date-separator {
+            display: flex;
+            justify-content: center;
+            margin: 14px auto;
+            width: 100%;
+        }
+
+        .chat-date-separator span {
+            padding: 5px 12px;
+            border-radius: 14px;
+            background: rgba(100, 60, 130, .16);
+            color: inherit;
+            font-size: 11px;
+        }
+    `;
+
+    document.head.appendChild(style);
 }
 
-function clearError() {
-    $("#pd-chat-error")?.remove();
-}
 
-function explainError(error) {
-    console.error("[PD Chat] Firebase error:", error);
+/* =========================================================
+   PROFILE SETUP
+   ========================================================= */
 
-    const code = error?.code || "";
+async function setupProfile(user) {
+    const email = user.email?.toLowerCase();
+    const profile = PD_PROFILES[email];
 
-    if (code.includes("permission-denied")) {
-        return "Firebase access was denied. Check your Firestore or Storage security rules.";
+    if (!profile) {
+        console.error("PD: No profile configured for:", email);
+        return false;
     }
-
-    if (code.includes("resource-exhausted")) {
-        return "A Firebase quota or resource limit was reached. Please try again later.";
-    }
-
-    if (
-        code.includes("unavailable") ||
-        code.includes("deadline-exceeded") ||
-        code.includes("network-request-failed")
-    ) {
-        return "Connection problem. Check your internet and try again.";
-    }
-
-    return error?.message || "Something went wrong. Please try again.";
-}
-
-
-/* ================= PROFILE ================= */
-
-function setupProfile(user) {
-    const email = (user.email || "").toLowerCase();
-    const profile = PROFILES[email] || {};
 
     currentProfile = {
         uid: user.uid,
         email,
-        name: profile.name || user.displayName || DEFAULT_PROFILE.name,
-        displayName:
-            profile.displayName ||
-            user.displayName ||
-            DEFAULT_PROFILE.displayName
+        name: profile.name,
+        displayName: profile.displayName
     };
 
-    document.querySelectorAll("[data-user-name]").forEach(el => {
-        el.textContent = currentProfile.name;
+    recipientUID = null;
+
+    updatePDInterface();
+
+    setDoc(
+        doc(db, "users", user.uid),
+        {
+            uid: user.uid,
+            email,
+            name: profile.name,
+            displayName: profile.displayName,
+            updatedAt: serverTimestamp()
+        },
+        { merge: true }
+    ).catch(error => {
+        console.error("PD profile update error:", error);
     });
 
-    document.querySelectorAll("[data-chat-person-name]").forEach(el => {
-        el.textContent = currentProfile.name;
-    });
-
-    document.querySelectorAll("[data-chat-display-name]").forEach(el => {
-        el.textContent = currentProfile.displayName;
-    });
-
-    document.title = `${currentProfile.name} ❤️ | PD Chat`;
+    return true;
 }
 
 
-/* ================= DATES ================= */
+function updatePDInterface() {
+    if (!currentProfile) return;
 
-function toDate(timestamp) {
-    if (!timestamp) return null;
+    document.querySelectorAll("[data-user-name]").forEach(element => {
+        element.textContent = currentProfile.displayName;
+    });
 
-    const date = typeof timestamp.toDate === "function"
-        ? timestamp.toDate()
-        : new Date(timestamp);
-
-    return Number.isNaN(date.getTime()) ? null : date;
-}
-
-function dayKey(timestamp) {
-    const date = toDate(timestamp) || new Date();
-
-    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-}
-
-function formatTime(timestamp) {
-    const date = toDate(timestamp);
-
-    if (!date) return "Sending…";
-
-    return date.toLocaleTimeString([], {
-        hour: "numeric",
-        minute: "2-digit"
+    document.querySelectorAll("[data-chat-person-name]").forEach(element => {
+        element.textContent =
+            currentProfile.name === "Deib"
+                ? "My Princess 💜"
+                : "My Deib ❤️";
     });
 }
 
-function formatDay(timestamp) {
-    const date = toDate(timestamp) || new Date();
-    const today = new Date();
-    const yesterday = new Date();
 
-    yesterday.setDate(yesterday.getDate() - 1);
+/* =========================================================
+   PARTNER ACCOUNT LOOKUP
+   ========================================================= */
 
-    if (dayKey(date) === dayKey(today)) return "Today";
-    if (dayKey(date) === dayKey(yesterday)) return "Yesterday";
+function getPartnerEmail() {
+    if (!currentProfile) return null;
 
-    return date.toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "long",
-        year: date.getFullYear() === today.getFullYear()
-            ? undefined
-            : "numeric"
-    });
-}
-
-function durationText(seconds) {
-    seconds = Math.max(0, Math.floor(Number(seconds) || 0));
-
-    return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+    return currentProfile.email === "princess@gmail.com"
+        ? "deib@gmail.com"
+        : "princess@gmail.com";
 }
 
 
-/* ================= REPLIES ================= */
+async function findPartnerUID() {
+    if (recipientUID) return recipientUID;
+    if (!currentProfile) return null;
 
-function clearReply() {
-    replyTarget = null;
-    $("#pd-reply-preview")?.remove();
+    const partnerEmail = getPartnerEmail();
+    if (!partnerEmail) return null;
+
+    try {
+        const partnerQuery = query(
+            collection(db, "users"),
+            where("email", "==", partnerEmail),
+            limit(1)
+        );
+
+        const result = await getDocs(partnerQuery);
+
+        if (result.empty) {
+            console.warn("PD: Partner profile not found yet.");
+            return null;
+        }
+
+        recipientUID = result.docs[0].id;
+        return recipientUID;
+
+    } catch (error) {
+        console.error("PD: Partner lookup failed:", error);
+        return null;
+    }
 }
 
-function beginReply(id, data) {
-    replyTarget = {
-        messageId: id,
-        senderUID: data.senderUID || "",
-        senderName: data.senderName || "My Love",
-        type: data.type || "text",
-        text: data.type === "voice"
-            ? "🎤 Voice message"
-            : String(data.text || "")
-    };
 
-    let preview = $("#pd-reply-preview");
+/* =========================================================
+   PRESENCE — ONLINE / LAST SEEN
+   ========================================================= */
 
-    if (!preview) {
-        preview = document.createElement("div");
-        preview.id = "pd-reply-preview";
+function ensurePresenceElement() {
+    let element = document.getElementById("pd-presence-status");
 
-        Object.assign(preview.style, {
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            margin: "6px 10px",
-            padding: "10px",
-            borderLeft: "3px solid #d9a2ff",
-            borderRadius: "8px",
-            background: "rgba(104,56,132,.25)",
-            color: "white"
-        });
+    if (element) return element;
 
-        const textBox = document.createElement("div");
-        textBox.style.flex = "1";
-        textBox.style.minWidth = "0";
+    const nameElement = document.querySelector(
+        "[data-chat-person-name]"
+    );
 
-        const name = document.createElement("strong");
-        name.dataset.replyName = "true";
-        name.style.display = "block";
+    if (!nameElement) return null;
 
-        const text = document.createElement("div");
-        text.dataset.replyText = "true";
-        text.style.fontSize = "12px";
-        text.style.overflowWrap = "anywhere";
+    element = document.createElement("div");
+    element.id = "pd-presence-status";
+    element.className = "pd-presence-status";
+    element.textContent = "Checking status…";
 
-        textBox.append(name, text);
+    nameElement.insertAdjacentElement("afterend", element);
 
-        const cancel = document.createElement("button");
-        cancel.type = "button";
-        cancel.textContent = "×";
-        cancel.setAttribute("aria-label", "Cancel reply");
+    return element;
+}
 
-        Object.assign(cancel.style, {
-            fontSize: "22px",
-            background: "transparent",
-            color: "white",
-            border: "0",
-            cursor: "pointer"
-        });
 
-        cancel.addEventListener("click", clearReply);
+function showPartnerStatus(text, online = false) {
+    const element = ensurePresenceElement();
+    if (!element) return;
 
-        preview.append(textBox, cancel);
+    element.textContent = text;
+    element.classList.toggle("is-online", online);
+    element.classList.toggle("is-offline", !online);
+}
 
-        const form = elements().form;
-        form?.parentElement?.insertBefore(preview, form);
+
+function formatLastSeen(timestamp) {
+    if (timestamp === null || timestamp === undefined) {
+        return "Last seen unavailable";
     }
 
-    $("[data-reply-name]", preview).textContent =
-        `Replying to ${replyTarget.senderName}`;
+    const date = new Date(Number(timestamp));
 
-    $("[data-reply-text]", preview).textContent =
-        replyTarget.text || "Message";
+    if (Number.isNaN(date.getTime())) {
+        return "Last seen unavailable";
+    }
 
-    elements().input?.focus();
+    const difference = Math.max(0, Date.now() - date.getTime());
+
+    if (difference < 60_000) {
+        return "Last seen just now";
+    }
+
+    if (difference < 3_600_000) {
+        return `Last seen ${Math.floor(difference / 60_000)} min ago`;
+    }
+
+    const time = date.toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+    });
+
+    if (difference < 86_400_000) {
+        return `Last seen today at ${time}`;
+    }
+
+    return `Last seen ${date.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    })} at ${time}`;
 }
 
-function makeQuote(reply) {
-    if (!reply) return null;
 
-    const quote = document.createElement("div");
-    quote.className = "message-reply-quote";
+function watchPartnerPresence(uid) {
+    if (activePartnerUID === uid && partnerPresenceUnsubscribe) return;
 
-    const name = document.createElement("strong");
-    name.textContent = reply.senderName || "Message";
+    if (partnerPresenceUnsubscribe) {
+        partnerPresenceUnsubscribe();
+        partnerPresenceUnsubscribe = null;
+    }
+
+    if (lastChangedUnsubscribe) {
+        lastChangedUnsubscribe();
+        lastChangedUnsubscribe = null;
+    }
+
+    activePartnerUID = uid;
+
+    const statusRef = databaseRef(presenceDB, `status/${uid}`);
+
+    partnerPresenceUnsubscribe = onValue(
+        statusRef,
+        snapshot => {
+            const status = snapshot.val() || {};
+            const connections = status.connections || {};
+            const online = Object.keys(connections).length > 0;
+
+            if (online) {
+                showPartnerStatus("● Online", true);
+            } else {
+                showPartnerStatus(
+                    formatLastSeen(status.lastChanged),
+                    false
+                );
+            }
+        },
+        error => {
+            console.error("PD presence read error:", error);
+            showPartnerStatus("Status unavailable", false);
+        }
+    );
+}
+
+
+function startOwnPresence(uid) {
+    if (activePresenceUID === uid && connectedUnsubscribe) return;
+
+    if (connectedUnsubscribe) {
+        connectedUnsubscribe();
+        connectedUnsubscribe = null;
+    }
+
+    activePresenceUID = uid;
+
+    const connectedRef = databaseRef(presenceDB, ".info/connected");
+    const connectionsRef = databaseRef(
+        presenceDB,
+        `status/${uid}/connections`
+    );
+    const lastChangedRef = databaseRef(
+        presenceDB,
+        `status/${uid}/lastChanged`
+    );
+
+    connectedUnsubscribe = onValue(
+        connectedRef,
+        async snapshot => {
+            if (snapshot.val() !== true) return;
+
+            try {
+                const connectionRef = push(connectionsRef);
+
+                await onDisconnect(connectionRef).remove();
+                await onDisconnect(lastChangedRef).set(
+                    databaseServerTimestamp()
+                );
+
+                await set(connectionRef, true);
+                await set(lastChangedRef, databaseServerTimestamp());
+
+            } catch (error) {
+                console.error("PD presence setup failed:", error);
+            }
+        },
+        error => {
+            console.error("PD connection monitor error:", error);
+        }
+    );
+}
+
+
+async function initializePresence() {
+    if (!currentProfile) return;
+
+    ensurePresenceElement();
+    showPartnerStatus("Checking status…");
+
+    startOwnPresence(currentProfile.uid);
+
+    const partnerUID = await findPartnerUID();
+
+    if (partnerUID) {
+        watchPartnerPresence(partnerUID);
+    } else {
+        showPartnerStatus("Waiting for partner 💜");
+    }
+}
+
+
+/* =========================================================
+   MESSAGE RECEIPTS
+   ========================================================= */
+
+function createReceipt(data, mine) {
+    if (!mine) return null;
+
+    const receipt = document.createElement("span");
+    receipt.className = "pd-message-receipt";
+
+    const status = data.status || "sent";
+
+    if (status === "read") {
+        receipt.textContent = "💜";
+        receipt.classList.add("receipt-read");
+        receipt.title = "Read";
+    } else if (status === "delivered") {
+        receipt.textContent = "🤍";
+        receipt.classList.add("receipt-delivered");
+        receipt.title = "Delivered";
+    } else {
+        receipt.textContent = "💘";
+        receipt.classList.add("receipt-sent");
+        receipt.title = "Sent";
+    }
+
+    return receipt;
+}
+
+
+async function updateIncomingReceipts(messageDocs) {
+    if (!currentProfile) return;
+
+    const visible = document.visibilityState === "visible";
+
+    for (const messageDoc of messageDocs) {
+        const data = messageDoc.data();
+
+        if (data.senderUID === currentProfile.uid) continue;
+        if (data.recipientUID !== currentProfile.uid) continue;
+
+        const status = data.status || "sent";
+
+        if (status === "read") continue;
+        if (status === "delivered" && !visible) continue;
+
+        if (receiptUpdatesInFlight.has(messageDoc.id)) continue;
+
+        receiptUpdatesInFlight.add(messageDoc.id);
+
+        try {
+            const nextStatus = visible ? "read" : "delivered";
+            const changes = { status: nextStatus };
+
+            if (!data.deliveredAt) {
+                changes.deliveredAt = serverTimestamp();
+            }
+
+            if (nextStatus === "read" && !data.readAt) {
+                changes.readAt = serverTimestamp();
+            }
+
+            await updateDoc(
+                doc(db, "messages", messageDoc.id),
+                changes
+            );
+
+        } catch (error) {
+            console.error("PD receipt update failed:", error);
+        } finally {
+            receiptUpdatesInFlight.delete(messageDoc.id);
+        }
+    }
+}
+
+
+/* =========================================================
+   MULTILINE INPUT — ENTER ADDS A NEW LINE
+   ========================================================= */
+
+function resizeMessageInput() {
+    const input = document.getElementById("messageInput");
+    if (!input) return;
+
+    input.style.height = "auto";
+
+    const maxHeight = 120;
+    input.style.height = Math.min(input.scrollHeight, maxHeight) + "px";
+    input.style.overflowY =
+        input.scrollHeight > maxHeight ? "auto" : "hidden";
+}
+
+
+function setupMultilineInput() {
+    const input = document.getElementById("messageInput");
+    if (!input || input.dataset.pdMultilineBound === "true") return;
+
+    input.dataset.pdMultilineBound = "true";
+
+    input.addEventListener("input", resizeMessageInput);
+
+    // Do not prevent Enter's default behavior:
+    // Enter inserts a newline in a textarea.
+    // Sending happens only from the Send button/form submit.
+    input.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+            event.stopPropagation();
+        }
+    });
+
+    resizeMessageInput();
+}
+
+
+/* =========================================================
+   REPLY-TO-MESSAGE FEATURE
+   ========================================================= */
+
+function ensureReplyComposer() {
+    const form = document.getElementById("chatForm");
+    if (!form) return null;
+
+    let composer = document.getElementById("pdReplyComposer");
+    if (composer) return composer;
+
+    composer = document.createElement("div");
+    composer.className = "pd-reply-composer";
+    composer.id = "pdReplyComposer";
+    composer.setAttribute("aria-live", "polite");
+
+    const accent = document.createElement("div");
+    accent.className = "pd-reply-accent";
+
+    const content = document.createElement("div");
+    content.className = "pd-reply-content";
+
+    const label = document.createElement("span");
+    label.className = "pd-reply-label";
+    label.id = "pdReplyLabel";
+    label.textContent = "Replying to";
+
+    const preview = document.createElement("span");
+    preview.className = "pd-reply-text";
+    preview.id = "pdReplyText";
+
+    const cancel = document.createElement("button");
+    cancel.type = "button";
+    cancel.className = "pd-reply-cancel";
+    cancel.id = "pdCancelReply";
+    cancel.setAttribute("aria-label", "Cancel reply");
+    cancel.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+
+    content.append(label, preview);
+    composer.append(accent, content, cancel);
+
+    // Place the preview above the typing controls.
+    form.insertBefore(composer, form.firstChild);
+
+    cancel.addEventListener("click", clearReplyMode);
+
+    return composer;
+}
+
+
+function setReplyMode(messageId, data) {
+    if (!messageId || !data || !currentProfile) return;
+
+    const isVoice = data.type === "voice";
+
+    currentReply = {
+        messageId,
+        senderUID: data.senderUID || null,
+        senderName:
+            data.senderDisplayName ||
+            data.senderName ||
+            "My love",
+        text: isVoice
+            ? "🎙️ Voice message"
+            : String(data.text || ""),
+        type: data.type || "text"
+    };
+
+    const form = document.getElementById("chatForm");
+    const composer = ensureReplyComposer();
+
+    if (!composer || !form) return;
+
+    form.classList.add("is-replying");
+
+    const label = document.getElementById("pdReplyLabel");
+    const preview = document.getElementById("pdReplyText");
+
+    if (label) {
+        label.textContent =
+            currentReply.senderUID === currentProfile.uid
+                ? "Replying to yourself"
+                : `Replying to ${currentReply.senderName}`;
+    }
+
+    if (preview) {
+        preview.textContent = currentReply.text || "Message";
+    }
+
+    const input = document.getElementById("messageInput");
+    if (input) input.focus();
+}
+
+
+function clearReplyMode() {
+    currentReply = null;
+
+    const form = document.getElementById("chatForm");
+    if (form) form.classList.remove("is-replying");
+
+    const label = document.getElementById("pdReplyLabel");
+    const preview = document.getElementById("pdReplyText");
+
+    if (label) label.textContent = "Replying to";
+    if (preview) preview.textContent = "";
+}
+
+
+function jumpToMessage(messageId) {
+    if (!messageId) return;
+
+    const original = document.getElementById(`pd-message-${messageId}`);
+
+    if (!original) {
+        console.warn("PD: Original message is not loaded.");
+        return;
+    }
+
+    original.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+    original.classList.add("pd-message-highlight");
+
+    setTimeout(() => {
+        original.classList.remove("pd-message-highlight");
+    }, 1800);
+}
+
+
+function createQuotedMessage(replyTo) {
+    if (!replyTo || !replyTo.messageId) return null;
+
+    const quote = document.createElement("button");
+    quote.type = "button";
+    quote.className = "pd-message-quote";
+    quote.setAttribute("aria-label", "Jump to original message");
+
+    const sender = document.createElement("span");
+    sender.className = "pd-message-quote-sender";
+    sender.textContent = replyTo.senderName || "Message";
 
     const text = document.createElement("span");
-    text.textContent = reply.type === "voice"
-        ? "🎤 Voice message"
-        : String(reply.text || "Original message");
+    text.className = "pd-message-quote-text";
+    text.textContent =
+        replyTo.text ||
+        (replyTo.type === "voice" ? "🎙️ Voice message" : "Message");
 
-    quote.append(name, text);
+    quote.append(sender, text);
 
-    quote.addEventListener("click", () => {
-        document.getElementById(`pd-message-${reply.messageId}`)
-            ?.scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-            });
+    quote.addEventListener("click", event => {
+        event.stopPropagation();
+        jumpToMessage(replyTo.messageId);
     });
 
     return quote;
 }
 
 
-/* ================= RECEIPTS ================= */
+function createReplyButton(messageId, data) {
+    const actions = document.createElement("div");
+    actions.className = "pd-message-actions";
 
-async function updateReceipts(messageId, data) {
-    if (!currentUser || !messageId) return;
-    if (data.senderUID === currentUser.uid) return;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "pd-reply-trigger";
+    button.setAttribute("aria-label", "Reply to this message");
+    button.title = "Reply to this message";
+    button.innerHTML =
+        '<i class="fa-solid fa-reply"></i><span>Reply</span>';
 
-    const readBy = Array.isArray(data.readBy) ? data.readBy : [];
-    const deliveredTo = Array.isArray(data.deliveredTo)
-        ? data.deliveredTo
-        : [];
+    button.addEventListener("click", event => {
+        event.stopPropagation();
+        setReplyMode(messageId, data);
+    });
 
-    const needsDelivery = !deliveredTo.includes(currentUser.uid);
-    const needsRead =
-        document.visibilityState === "visible" &&
-        !readBy.includes(currentUser.uid);
+    actions.appendChild(button);
+    return actions;
+}
 
-    if (!needsDelivery && !needsRead) return;
 
-    const key = `${messageId}:${currentUser.uid}`;
+/* =========================================================
+   SEND TEXT MESSAGE — INCLUDES REPLY METADATA
+   ========================================================= */
 
-    if (receiptsInFlight.has(key)) return;
-    receiptsInFlight.add(key);
+async function sendMessage() {
+    if (!currentProfile) return;
+
+    const input = document.getElementById("messageInput");
+    const button = document.querySelector(".send-message");
+
+    if (!input) return;
+
+    const text = input.value.trim();
+    if (!text) return;
+
+    if (button) button.disabled = true;
 
     try {
-        const changes = {};
+        const partnerUID = await findPartnerUID();
 
-        if (needsDelivery) {
-            changes.deliveredTo = arrayUnion(currentUser.uid);
-        }
+        const replyTo = currentReply
+            ? {
+                messageId: currentReply.messageId,
+                senderUID: currentReply.senderUID,
+                senderName: currentReply.senderName,
+                text: currentReply.text,
+                type: currentReply.type
+            }
+            : null;
 
-        if (needsRead) {
-            changes.readBy = arrayUnion(currentUser.uid);
-        }
+        await addDoc(collection(db, "messages"), {
+            type: "text",
+            text,
 
-        await updateDoc(doc(db, CHAT_COLLECTION, messageId), changes);
+            senderUID: currentProfile.uid,
+            senderName: currentProfile.name,
+            senderDisplayName: currentProfile.displayName,
+
+            recipientUID: partnerUID,
+
+            replyTo,
+
+            status: "sent",
+            deliveredAt: null,
+            readAt: null,
+
+            createdAt: serverTimestamp()
+        });
+
+        input.value = "";
+        resizeMessageInput();
+        clearReplyMode();
+        input.focus();
+
     } catch (error) {
-        console.warn("[PD Chat] Receipt update failed:", error?.code || error?.message);
+        console.error("PD: Message failed:", error);
+        alert("Your message could not be sent. Please try again.");
     } finally {
-        receiptsInFlight.delete(key);
+        if (button) button.disabled = false;
     }
 }
 
-function makeFooter(data, mine) {
+
+/* =========================================================
+   DATE HELPERS
+   ========================================================= */
+
+function getDateKey(date) {
+    return [
+        date.getFullYear(),
+        String(date.getMonth() + 1).padStart(2, "0"),
+        String(date.getDate()).padStart(2, "0")
+    ].join("-");
+}
+
+
+function formatChatDate(date) {
+    const today = new Date();
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const key = getDateKey(date);
+
+    if (key === getDateKey(today)) return "Today";
+    if (key === getDateKey(yesterday)) return "Yesterday";
+
+    return date.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    });
+}
+
+
+function addDateSeparator(container, date) {
+    const separator = document.createElement("div");
+    separator.className = "chat-date-separator";
+
+    const span = document.createElement("span");
+    span.textContent = formatChatDate(date);
+
+    separator.appendChild(span);
+    container.appendChild(separator);
+}
+
+
+/* =========================================================
+   MESSAGE FOOTER
+   ========================================================= */
+
+function makeMessageFooter(data, date, mine) {
     const footer = document.createElement("div");
-    footer.className = "message-footer";
+    footer.className = "pd-message-footer";
 
     const time = document.createElement("span");
-    time.textContent = formatTime(data.createdAt);
+    time.className = "message-time";
+
+    if (date) {
+        time.textContent = date.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+
     footer.appendChild(time);
 
-    if (mine) {
-        const read = Array.isArray(data.readBy) ? data.readBy : [];
-        const delivered = Array.isArray(data.deliveredTo)
-            ? data.deliveredTo
-            : [];
-
-        const ticks = document.createElement("span");
-        ticks.className = "message-ticks";
-
-        if (read.length > 1) {
-            ticks.textContent = "✓✓";
-            ticks.classList.add("read");
-            ticks.title = "Read";
-        } else if (delivered.length > 1) {
-            ticks.textContent = "✓✓";
-            ticks.title = "Delivered";
-        } else {
-            ticks.textContent = "✓";
-            ticks.title = "Sent";
-        }
-
-        footer.appendChild(ticks);
-    }
+    const receipt = createReceipt(data, mine);
+    if (receipt) footer.appendChild(receipt);
 
     return footer;
 }
 
 
-/* ================= MESSAGE RENDERING ================= */
+/* =========================================================
+   DISPLAY TEXT MESSAGE — REPLY QUOTES INCLUDED
+   ========================================================= */
 
-function renderMessage(id, data) {
-    const mine = data.senderUID === currentUser.uid;
+function displayTextMessage(container, data, date, messageId) {
+    const message = document.createElement("div");
 
-    const row = document.createElement("div");
-    row.id = `pd-message-${id}`;
-    row.dataset.messageId = id;
-    row.className = mine
-        ? "message-row sent"
-        : "message-row received";
+    const mine = data.senderUID === currentProfile.uid;
 
-    const stack = document.createElement("div");
-    stack.className = "message-stack";
+    message.id = `pd-message-${messageId}`;
+    message.dataset.messageId = messageId;
+    message.className = mine ? "message sent" : "message received";
 
-    const bubble = document.createElement("div");
-    bubble.className = mine
-        ? "message-bubble sent"
-        : "message-bubble received";
+    const quote = createQuotedMessage(data.replyTo);
+    if (quote) message.appendChild(quote);
 
-    if (data.replyTo) {
-        bubble.appendChild(makeQuote(data.replyTo));
-    }
+    const text = document.createElement("div");
+    text.className = "message-text";
 
-    if (data.type === "voice" || data.type === "audio") {
-        const voice = document.createElement("div");
-        voice.className = "voice-message";
+    // textContent keeps user-sent messages safe and preserves line breaks.
+    text.textContent = data.text || "";
 
-        const audio = document.createElement("audio");
-        audio.controls = true;
-        audio.preload = "metadata";
-        audio.src = data.audioURL || data.url || "";
-        audio.setAttribute("aria-label", "Voice message");
-        audio.style.maxWidth = "100%";
+    message.appendChild(text);
+    message.appendChild(makeMessageFooter(data, date, mine));
+    message.appendChild(createReplyButton(messageId, data));
 
-        const label = document.createElement("div");
-        label.className = "voice-duration";
-        label.textContent = `🎤 Voice message · ${durationText(data.duration)}`;
-
-        voice.append(audio, label);
-        bubble.appendChild(voice);
-    } else if (data.type === "image" || data.type === "video") {
-        const attachment = document.createElement("div");
-        attachment.className = "message-attachment";
-
-        if (data.type === "image") {
-            const image = document.createElement("img");
-            image.src = data.url || "";
-            image.alt = data.fileName || "Shared photo";
-            image.loading = "lazy";
-
-            image.addEventListener("click", () => {
-                if (image.src) window.open(image.src, "_blank", "noopener");
-            });
-
-            attachment.appendChild(image);
-        } else {
-            const video = document.createElement("video");
-            video.src = data.url || "";
-            video.controls = true;
-            video.preload = "metadata";
-            video.playsInline = true;
-
-            attachment.appendChild(video);
-        }
-
-        bubble.appendChild(attachment);
-    } else {
-        const text = document.createElement("div");
-        text.className = "message-text";
-        text.textContent = String(data.text || "");
-        bubble.appendChild(text);
-    }
-
-    bubble.appendChild(makeFooter(data, mine));
-    stack.appendChild(bubble);
-
-    const replyButton = document.createElement("button");
-    replyButton.type = "button";
-    replyButton.className = "pd-reply-trigger";
-    replyButton.textContent = "↩";
-    replyButton.title = "Reply";
-    replyButton.setAttribute("aria-label", "Reply to message");
-
-    replyButton.addEventListener("click", () => beginReply(id, data));
-
-    row.append(stack, replyButton);
-
-    return row;
-}
-
-function renderMessages(snapshot) {
-    const box = elements().messages;
-    if (!box || !currentUser) return;
-
-    const nearBottom =
-        box.scrollHeight - box.scrollTop - box.clientHeight < 150;
-
-    const fragment = document.createDocumentFragment();
-    let previousDay = null;
-
-    snapshot.forEach(item => {
-        const data = item.data();
-        const key = dayKey(data.createdAt);
-
-        if (key !== previousDay) {
-            const separator = document.createElement("div");
-            separator.className = "chat-date-separator";
-            separator.textContent = formatDay(data.createdAt);
-            fragment.appendChild(separator);
-            previousDay = key;
-        }
-
-        fragment.appendChild(renderMessage(item.id, data));
-
-        if (
-            data.senderUID !== currentUser.uid &&
-            document.visibilityState === "visible"
-        ) {
-            void updateReceipts(item.id, data);
-        }
-    });
-
-    box.replaceChildren(fragment);
-
-    if (nearBottom) {
-        requestAnimationFrame(() => {
-            box.scrollTop = box.scrollHeight;
-        });
-    }
+    container.appendChild(message);
 }
 
 
-/* ================= SEND TEXT ================= */
+/* =========================================================
+   DISPLAY VOICE MESSAGE — CAN ALSO BE REPLIED TO
+   ========================================================= */
 
-async function sendMessage(event) {
-    event?.preventDefault();
+function displayVoiceMessage(container, data, date, messageId) {
+    if (!data.audioURL) return;
 
-    const { input, send } = elements();
+    const message = document.createElement("div");
+    const mine = data.senderUID === currentProfile.uid;
 
-    if (!input || !currentUser || !currentProfile || isSending) return;
+    message.id = `pd-message-${messageId}`;
+    message.dataset.messageId = messageId;
+    message.className = mine
+        ? "message sent voice-message"
+        : "message received voice-message";
 
-    const text = input.value.trim();
-    if (!text) return;
+    const quote = createQuotedMessage(data.replyTo);
+    if (quote) message.appendChild(quote);
 
-    isSending = true;
-    if (send) send.disabled = true;
+    const box = document.createElement("div");
+    box.className = "voice-message-box";
 
-    try {
-        const message = {
-            type: "text",
-            text,
-            senderUID: currentUser.uid,
-            senderName: currentProfile.name,
-            senderDisplayName: currentProfile.displayName,
-            createdAt: serverTimestamp(),
-            deliveredTo: [currentUser.uid],
-            readBy: [currentUser.uid]
-        };
+    const icon = document.createElement("div");
+    icon.className = "voice-icon";
+    icon.innerHTML = '<i class="fa-solid fa-microphone"></i>';
 
-        if (replyTarget) message.replyTo = { ...replyTarget };
+    const audio = document.createElement("audio");
+    audio.controls = true;
+    audio.preload = "metadata";
+    audio.src = data.audioURL;
 
-        await addDoc(collection(db, CHAT_COLLECTION), message);
+    box.append(icon, audio);
 
-        input.value = "";
-        input.style.height = "auto";
-        clearReply();
-        clearError();
-    } catch (error) {
-        showError(explainError(error));
-    } finally {
-        isSending = false;
-        if (send) send.disabled = false;
-        input.focus();
-    }
+    message.appendChild(box);
+    message.appendChild(makeMessageFooter(data, date, mine));
+    message.appendChild(createReplyButton(messageId, data));
+
+    container.appendChild(message);
 }
 
 
-/* ================= VOICE NOTES ================= */
+/* =========================================================
+   LOADER
+   ========================================================= */
 
-async function startRecording() {
-    if (!storage) {
-        showError("Firebase Storage is not configured.");
+function removeChatLoader() {
+    const loader = document.getElementById("pd-chat-loader");
+    if (!loader) return;
+
+    loader.classList.add("pd-loaded");
+    setTimeout(() => loader.remove(), 150);
+}
+
+
+/* =========================================================
+   START CHAT — SINGLE FIRESTORE LISTENER
+   ========================================================= */
+
+function startChat() {
+    const container = document.getElementById("chatMessages");
+
+    if (!container) {
+        console.error("PD: #chatMessages was not found.");
+        removeChatLoader();
         return;
     }
 
-    if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
-        showError("Voice recording is not supported by this browser.");
+    if (chatUnsubscribe) {
+        chatUnsubscribe();
+        chatUnsubscribe = null;
+    }
+
+    const messagesQuery = query(
+        collection(db, "messages"),
+        orderBy("createdAt", "asc")
+    );
+
+    chatUnsubscribe = onSnapshot(
+        messagesQuery,
+        snapshot => {
+            latestMessageDocs = snapshot.docs;
+
+            const isFirstLoad = !firstMessagesLoaded;
+            firstMessagesLoaded = true;
+
+            const wasNearBottom =
+                container.scrollHeight -
+                container.scrollTop -
+                container.clientHeight < 150;
+
+            const previousScrollTop = container.scrollTop;
+
+            container.innerHTML = "";
+
+            let previousDateKey = null;
+
+            snapshot.forEach(messageDoc => {
+                const data = messageDoc.data();
+                let date = null;
+
+                if (data.createdAt?.toDate) {
+                    date = data.createdAt.toDate();
+                }
+
+                if (date) {
+                    const dateKey = getDateKey(date);
+
+                    if (dateKey !== previousDateKey) {
+                        addDateSeparator(container, date);
+                        previousDateKey = dateKey;
+                    }
+                }
+
+                if (data.type === "voice") {
+                    displayVoiceMessage(
+                        container,
+                        data,
+                        date,
+                        messageDoc.id
+                    );
+                } else {
+                    displayTextMessage(
+                        container,
+                        data,
+                        date,
+                        messageDoc.id
+                    );
+                }
+            });
+
+            removeChatLoader();
+
+            requestAnimationFrame(() => {
+                if (isFirstLoad || wasNearBottom) {
+                    container.scrollTop = container.scrollHeight;
+                } else {
+                    container.scrollTop = Math.min(
+                        previousScrollTop,
+                        container.scrollHeight
+                    );
+                }
+            });
+
+            updateIncomingReceipts(snapshot.docs);
+        },
+        error => {
+            console.error("PD Firestore chat error:", error);
+            removeChatLoader();
+        }
+    );
+}
+
+
+/* =========================================================
+   VOICE RECORDING
+   ========================================================= */
+
+async function startRecording() {
+    if (recording) return;
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+        alert("Voice recording requires HTTPS or localhost.");
         return;
     }
 
@@ -642,355 +1260,205 @@ async function startRecording() {
             audio: true
         });
 
-        recordingChunks = [];
+        const mimeType = [
+            "audio/webm;codecs=opus",
+            "audio/webm",
+            "audio/mp4"
+        ].find(type => MediaRecorder.isTypeSupported(type));
 
-        const options = {};
-        if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) {
-            options.mimeType = "audio/webm;codecs=opus";
-        }
+        mediaRecorder = mimeType
+            ? new MediaRecorder(stream, { mimeType })
+            : new MediaRecorder(stream);
 
-        mediaRecorder = new MediaRecorder(stream, options);
+        audioChunks = [];
+        recording = true;
 
-        mediaRecorder.addEventListener("dataavailable", event => {
-            if (event.data?.size) recordingChunks.push(event.data);
-        });
+        mediaRecorder.ondataavailable = event => {
+            if (event.data.size > 0) audioChunks.push(event.data);
+        };
 
-        mediaRecorder.addEventListener("stop", async () => {
+        mediaRecorder.onstop = async () => {
             stream.getTracks().forEach(track => track.stop());
 
-            const duration = Math.round(
-                (Date.now() - recordingStartedAt) / 1000
-            );
-
-            const blob = new Blob(recordingChunks, {
-                type: mediaRecorder?.mimeType || "audio/webm"
+            const blob = new Blob(audioChunks, {
+                type: mediaRecorder.mimeType || "audio/webm"
             });
 
-            recordingChunks = [];
-            mediaRecorder = null;
-            isRecording = false;
+            if (blob.size > 0) await uploadVoice(blob);
+        };
 
-            const voice = elements().voice;
-            if (voice) {
-                voice.textContent = "🎤";
-                voice.classList.remove("pd-recording-active");
-            }
-
-            if (!blob.size || duration < 1) {
-                showError("The recording was too short.");
-                return;
-            }
-
-            await uploadVoice(blob, duration);
-        });
-
-        recordingStartedAt = Date.now();
-        isRecording = true;
         mediaRecorder.start();
+        updateVoiceButton(true);
 
-        const voice = elements().voice;
-        if (voice) {
-            voice.textContent = "■";
-            voice.classList.add("pd-recording-active");
-        }
     } catch (error) {
-        console.error("[PD Chat] Microphone:", error);
-        showError("Allow microphone access, then try recording again.");
+        console.error("PD microphone error:", error);
+        alert("Please allow microphone access for PD ❤️");
     }
 }
+
 
 function stopRecording() {
-    if (mediaRecorder && mediaRecorder.state !== "inactive") {
-        mediaRecorder.stop();
-    }
+    if (!mediaRecorder || !recording) return;
+
+    recording = false;
+    mediaRecorder.stop();
+    updateVoiceButton(false);
 }
 
-async function uploadVoice(blob, duration) {
-    if (!currentUser || !currentProfile || isUploadingVoice) return;
 
-    isUploadingVoice = true;
-    const voice = elements().voice;
-    if (voice) voice.disabled = true;
+/* =========================================================
+   UPLOAD VOICE NOTE
+   ========================================================= */
+
+async function uploadVoice(audioBlob) {
+    if (!currentProfile) return;
+
+    const button = document.getElementById("voiceButton");
+    if (button) button.classList.add("uploading");
 
     try {
-        const filename = `voice-${Date.now()}.webm`;
+        const partnerUID = await findPartnerUID();
+
+        const extension = audioBlob.type.includes("mp4") ? "m4a" : "webm";
+        const fileName = `voice_${Date.now()}.${extension}`;
+
         const fileRef = storageRef(
             storage,
-            `chat-voice/${currentUser.uid}/${filename}`
+            `voice-messages/${currentProfile.uid}/${fileName}`
         );
 
-        await uploadBytes(fileRef, blob, {
-            contentType: blob.type || "audio/webm"
-        });
+        await uploadBytes(fileRef, audioBlob);
 
         const audioURL = await getDownloadURL(fileRef);
 
-        const message = {
+        await addDoc(collection(db, "messages"), {
             type: "voice",
             audioURL,
-            duration,
-            senderUID: currentUser.uid,
+
+            senderUID: currentProfile.uid,
             senderName: currentProfile.name,
             senderDisplayName: currentProfile.displayName,
-            createdAt: serverTimestamp(),
-            deliveredTo: [currentUser.uid],
-            readBy: [currentUser.uid]
-        };
 
-        if (replyTarget) message.replyTo = { ...replyTarget };
+            recipientUID: partnerUID,
 
-        await addDoc(collection(db, CHAT_COLLECTION), message);
+            replyTo: null,
 
-        clearReply();
-        clearError();
+            status: "sent",
+            deliveredAt: null,
+            readAt: null,
+
+            createdAt: serverTimestamp()
+        });
+
     } catch (error) {
-        showError(explainError(error));
+        console.error("PD voice upload error:", error);
+        alert("Voice note failed to send.");
     } finally {
-        isUploadingVoice = false;
-        if (voice) voice.disabled = false;
+        if (button) button.classList.remove("uploading");
     }
 }
 
 
-/* ================= PRESENCE ================= */
+function updateVoiceButton(active) {
+    const button = document.getElementById("voiceButton");
+    if (!button) return;
 
-function stopPresence() {
-    stopConnection?.();
-    stopPartnerPresence?.();
-
-    stopConnection = null;
-    stopPartnerPresence = null;
+    if (active) {
+        button.classList.add("recording");
+        button.innerHTML = '<i class="fa-solid fa-stop"></i>';
+        button.title = "Stop recording";
+    } else {
+        button.classList.remove("recording");
+        button.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+        button.title = "Record voice note";
+    }
 }
 
-function startOwnPresence() {
-    if (!currentUser || !presenceDB) return;
 
-    const uid = currentUser.uid;
-    const ownRef = dbRef(presenceDB, `status/${uid}`);
-    const connectionRef = dbRef(presenceDB, ".info/connected");
+function setupVoiceButton() {
+    const button = document.getElementById("voiceButton");
+    if (!button || button.dataset.pdBound === "true") return;
 
-    stopConnection = onValue(connectionRef, async snapshot => {
-        if (snapshot.val() !== true || currentUser?.uid !== uid) return;
+    button.dataset.pdBound = "true";
 
-        try {
-            await onDisconnect(ownRef).set({
-                state: "offline",
-                lastChanged: dbTimestamp()
-            });
-
-            if (currentUser?.uid !== uid) return;
-
-            await set(ownRef, {
-                state: "online",
-                lastChanged: dbTimestamp()
-            });
-        } catch (error) {
-            console.warn("[PD Presence]", error);
+    button.addEventListener("click", async () => {
+        if (recording) {
+            stopRecording();
+        } else {
+            await startRecording();
         }
     });
 }
 
-function watchPartnerPresence(uid) {
-    const status = elements().presence;
 
-    if (!status || !presenceDB || !uid || uid === currentUser?.uid) return;
+/* =========================================================
+   PAGE EVENTS
+   ========================================================= */
 
-    stopPartnerPresence?.();
+function setupPageEvents() {
+    const form = document.getElementById("chatForm");
 
-    stopPartnerPresence = onValue(
-        dbRef(presenceDB, `status/${uid}`),
-        snapshot => {
-            const online = snapshot.val()?.state === "online";
-            status.textContent = online
-                ? "Together in PD ❤️"
-                : "Offline 💜";
-        },
-        () => {
-            status.textContent = "Presence unavailable 💜";
-        }
-    );
-}
-
-
-/* ================= REALTIME CHAT ================= */
-
-function startChat() {
-    const box = elements().messages;
-
-    if (!box) {
-        hideLoader();
-        showError("The chat page is missing #chatMessages in chat.html.");
-        return;
-    }
-
-    if (!db || !currentUser) {
-        hideLoader();
-        showError("Firebase or authentication is unavailable.");
-        return;
-    }
-
-    stopMessages?.();
-
-    const messagesQuery = query(
-        collection(db, CHAT_COLLECTION),
-        orderBy("createdAt", "asc")
-    );
-
-    // Prevent a permanent loading screen if Firebase does not respond.
-    const loadingTimeout = setTimeout(() => {
-        if (elements().loader?.style.display !== "none") {
-            hideLoader();
-            showError("The chat is taking too long to load. Check your connection and refresh.");
-        }
-    }, 12000);
-
-    stopMessages = onSnapshot(
-        messagesQuery,
-        snapshot => {
-            clearTimeout(loadingTimeout);
-            renderMessages(snapshot);
-            hideLoader();
-            clearError();
-
-            const partnerMessage = snapshot.docs.find(item =>
-                item.data().senderUID &&
-                item.data().senderUID !== currentUser.uid
-            );
-
-            if (partnerMessage) {
-                const uid = partnerMessage.data().senderUID;
-
-                if (uid !== watchedPartnerUid) {
-                    watchedPartnerUid = uid;
-                    watchPartnerPresence(uid);
-                }
-            }
-        },
-        error => {
-            clearTimeout(loadingTimeout);
-            hideLoader();
-            showError(explainError(error));
-        }
-    );
-}
-
-
-/* ================= EVENTS ================= */
-
-function setupEvents() {
-    const { form, input, voice } = elements();
-
-    if (form && !form.dataset.pdBound) {
+    if (form && form.dataset.pdBound !== "true") {
         form.dataset.pdBound = "true";
-        form.addEventListener("submit", sendMessage);
-    }
 
-    if (input && !input.dataset.pdBound) {
-        input.dataset.pdBound = "true";
-
-        input.addEventListener("input", () => {
-            input.style.height = "auto";
-            input.style.height = `${Math.min(input.scrollHeight, 120)}px`;
-        });
-
-        // ENTER SENDS. SHIFT+ENTER ALSO SENDS.
-        input.addEventListener("keydown", event => {
-            if (event.key === "Enter") {
-                event.preventDefault();
-
-                if (!event.isComposing) {
-                    form?.requestSubmit();
-                }
-            }
-        });
-    }
-
-    if (voice && !voice.dataset.pdBound) {
-        voice.dataset.pdBound = "true";
-        voice.type = "button";
-
-        voice.addEventListener("click", event => {
+        form.addEventListener("submit", event => {
             event.preventDefault();
-
-            if (isRecording) {
-                stopRecording();
-            } else {
-                void startRecording();
-            }
+            sendMessage();
         });
     }
 
-    const scrollButton = $("#scrollToBottomBtn");
-
-    if (scrollButton && !scrollButton.dataset.pdBound) {
-        scrollButton.dataset.pdBound = "true";
-
-        scrollButton.addEventListener("click", () => {
-            const box = elements().messages;
-
-            box?.scrollTo({
-                top: box.scrollHeight,
-                behavior: "smooth"
-            });
-        });
-    }
+    setupMultilineInput();
+    ensureReplyComposer();
+    setupVoiceButton();
 }
 
 
-/* ================= CLEANUP & STARTUP ================= */
+/* =========================================================
+   RECEIPTS WHEN RETURNING TO THE TAB
+   ========================================================= */
 
-function cleanup() {
-    stopMessages?.();
-    stopMessages = null;
-
-    stopPresence();
-    watchedPartnerUid = null;
-
-    if (mediaRecorder && mediaRecorder.state !== "inactive") {
-        mediaRecorder.stop();
+document.addEventListener("visibilitychange", () => {
+    if (
+        document.visibilityState === "visible" &&
+        currentProfile &&
+        latestMessageDocs.length
+    ) {
+        updateIncomingReceipts(latestMessageDocs);
     }
-}
+});
 
-function startPDChat() {
-    setupEvents();
-    showLoader();
 
-    onAuthStateChanged(auth, user => {
-        cleanup();
+/* =========================================================
+   AUTHENTICATION AND STARTUP
+   ========================================================= */
 
-        currentUser = user;
-        currentProfile = null;
+function initializePage() {
+    installChatStyles();
+    setupPageEvents();
 
+    onAuthStateChanged(auth, async user => {
         if (!user) {
-            hideLoader();
-
-            if (!location.pathname.endsWith("login.html")) {
-                location.replace("login.html");
-            }
+            window.location.href = "login.html";
             return;
         }
 
-        setupProfile(user);
+        const ready = await setupProfile(user);
 
-        if (elements().presence) {
-            elements().presence.textContent = "Connecting to PD... 💜";
+        if (!ready) {
+            removeChatLoader();
+            return;
         }
 
-        // Messages start independently of the presence connection.
+        await initializePresence();
         startChat();
-        startOwnPresence();
-    }, error => {
-        hideLoader();
-        showError(explainError(error));
     });
 }
 
-window.addEventListener("pagehide", cleanup);
 
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startPDChat, {
+    document.addEventListener("DOMContentLoaded", initializePage, {
         once: true
     });
 } else {
-    startPDChat();
+    initializePage();
 }

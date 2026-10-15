@@ -2784,7 +2784,7 @@ overflow: hidden;
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: #66fcd600;
+  color: #bd91ff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2806,7 +2806,7 @@ overflow: hidden;
 }
 
 .pd-message-row.received .pd-message-bubble {
-  background: #d4eee746;
+  background: #30243e;
   color: #fff;
   border-bottom-right-radius: 5px;
 }
@@ -2815,9 +2815,9 @@ overflow: hidden;
 .pd-reply-quote {
   margin-bottom: 7px;
   padding: 7px 10px;
-  border-left: 3px solid #ffffff;
+  border-left: 3px solid #e8a5ff;
   border-radius: 7px;
-  background: rgba(255, 132, 132, 0.35);
+  background: rgba(15, 8, 25, .35);
   min-width: 0;
 }
 
@@ -2987,139 +2987,4 @@ overflow: hidden;
     position: relative;
     z-index: 101;
     pointer-events: auto !important;
-}
-
-/* =====================================
-   PD CHAT — GLASS MESSAGE BUBBLES 💜
-===================================== */
-
-/* Received messages — left */
-#chatMessages .message.received .message-content {
-    background: rgba(255, 255, 255, 0.12) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.20);
-    color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-}
-
-/* Sent messages — right */
-#chatMessages .message.sent .message-content {
-    background: rgba(180, 90, 255, 0.20) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(230, 190, 255, 0.28);
-    color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-}
-
-/* Keep message text readable */
-#chatMessages .message-content p,
-#chatMessages .message-content .message-text {
-    color: #ffffff !important;
-}
-
-/* Heart ticks */
-#chatMessages .message-footer {
-    background: transparent !important;
-}
-/* =====================================
-   PD CHAT — SLIM LAVENDER MESSAGE BUBBLES
-   ===================================== */
-
-.message-bubble,
-.message-content,
-.chat-message-bubble {
-    width: fit-content;
-    max-width: 76%;
-    min-width: 0;
-    padding: 9px 13px;
-    border-radius: 17px;
-    overflow-wrap: anywhere;
-    word-break: normal;
-    box-sizing: border-box;
-}
-
-/* Messages sent by you */
-.message-row.sent .message-bubble,
-.message-row.sent .message-content,
-.message-row.sent .chat-message-bubble {
-    background: linear-gradient(135deg, #8b5cf6, #6840c8);
-    color: #fff;
-    border-bottom-right-radius: 5px;
-}
-
-/* Messages received */
-.message-row.received .message-bubble,
-.message-row.received .message-content,
-.message-row.received .chat-message-bubble {
-    background: #302541;
-    color: #f7f0ff;
-    border: 1px solid rgba(196, 167, 255, 0.13);
-    border-bottom-left-radius: 5px;
-}
-
-/* Keep each message row from stretching */
-.message-row {
-    display: flex;
-    width: 100%;
-    margin: 5px 0;
-}
-
-.message-row.sent {
-    justify-content: flex-end;
-}
-
-.message-row.received {
-    justify-content: flex-start;
-}
-/* PD CHAT — COMPACT REPLY PREVIEW */
-
-.reply-preview,
-.reply-quote,
-.message-reply-preview,
-.reply-to-message,
-.reply-preview-box {
-    display: block;
-    width: auto;
-    max-width: 100%;
-    min-width: 0;
-    padding: 5px 9px;
-    margin: 0 0 6px;
-    background: rgba(167, 139, 250, 0.10);
-    border-left: 3px solid #a78bfa;
-    border-radius: 7px;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-/* Keep quoted messages compact */
-.reply-preview *,
-.reply-quote *,
-.message-reply-preview *,
-.reply-to-message *,
-.reply-preview-box * {
-    max-width: 100%;
-    overflow-wrap: anywhere;
-}
-
-/* Smaller reply name and text */
-.reply-preview .reply-name,
-.reply-quote .reply-name,
-.message-reply-preview .reply-name,
-.reply-to-message .reply-name,
-.reply-preview-box .reply-name {
-    font-size: 11px;
-    font-weight: 700;
-    color: #c4b5fd;
-    margin-bottom: 2px;
-}
-
-.reply-preview .reply-text,
-.reply-quote .reply-text,
-.message-reply-preview .reply-text,
-.reply-to-message .reply-text,
-.reply-preview-box .reply-text {
-    font-size: 12px;
-    line-height: 1.35;
 }

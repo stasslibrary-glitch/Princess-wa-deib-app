@@ -19,29 +19,27 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-   
-/* PD — ONLINE AND LAST SEEN */
-.chat-person .pd-presence-status {
-    display: block;
-    margin-top: 3px;
-    font-family: "DM Sans", sans-serif;
-    font-size: 11px;
-    line-height: 1.4;
-    font-weight: 600;
-    color: #cbbbd8;
-    transition: color 0.25s ease;
-}
+        /* PD ONLINE / LAST SEEN */
+        .chat-person .pd-presence-status {
+            display: block;
+            margin-top: 3px;
+            font-family: "DM Sans", sans-serif;
+            font-size: 11px;
+            line-height: 1.4;
+            font-weight: 600;
+            color: #cbbbd8;
+            transition: color .25s ease, opacity .25s ease;
+        }
 
-.chat-person .pd-presence-status.is-online {
-    color: #f2b8ff;
-    text-shadow: 0 0 9px rgba(210, 120, 255, 0.45);
-}
+        .chat-person .pd-presence-status.is-online {
+            color: #dca6ff;
+            text-shadow: 0 0 8px rgba(192, 115, 255, .25);
+        }
 
-.chat-person .pd-presence-status.is-offline {
-    color: #c1b6cc;
-    text-shadow: none;
-}
-
+        .chat-person .pd-presence-status.is-offline {
+            color: #c1b6cc;
+            text-shadow: none;
+        }
     </style>
 </head>
 
@@ -81,7 +79,7 @@
 
                 <div class="person-avatar">
                     <img
-                        src="slideshow/photo1.jpg"
+                        src="slideshow/photo2.jpg"
                         alt="My Princess">
                 </div>
 
@@ -99,7 +97,7 @@
                         class="pd-presence-status"
                         role="status"
                         aria-live="polite">
-                        Online 💜
+                        Connecting to PD... 💜
                     </span>
 
                 </div>
@@ -167,11 +165,12 @@
                 <i class="fa-solid fa-paperclip"></i>
             </button>
 
-            
-<button type="submit" class="send-message" aria-label="Send message">
-    <i class="fa-solid fa-paper-plane"></i>
-</button>
-
+            <button
+                class="send-message"
+                type="submit"
+                aria-label="Send message">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
 
         </form>
 
@@ -187,7 +186,7 @@
             <div class="pd-call-avatar">
 
                 <img
-                    src="slideshow/photo1.jpg"
+                    src="slideshow/photo2.jpg"
                     alt="Princess">
 
                 <span class="pd-call-online"></span>
