@@ -45,7 +45,88 @@ const PD_PROFILES = {
     }
 };
 
+/* =========================================================
+   JUMP TO LATEST MESSAGE — WHATSAPP STYLE
+   ========================================================= */
 
+let pdJumpButton = null;
+let pdNewMessageCount = 0;
+let pdLastSeenMessageId = null;
+let pdWasAtBottom = true;
+
+function setupJumpToLatest() {
+    const container = document.getElementById("chatMessages");
+
+    if (!container) return;
+
+    if (pdJumpButton) return;
+
+    pdJumpButton = document.createElement("button");
+    pdJumpButton.type = "button";
+    pdJumpButton.id = "pdJumpToLatest";
+    pdJumpButton.setAttribute(
+        "aria-label",
+        "Jump to latest message"
+    );
+    pdJumpButton.title = "Jump to latest message";
+
+    pdJumpButton.innerHTML = `
+    <span style="font-size:17px;">👇</span>
+    <span class="pd-new-message-count">0</span>
+`;
+
+    document.body.appendChild(pdJumpButton);
+
+    pdJumpButton.addEventListener("click", () => {
+        container.scrollTo({
+            top: container.scrollHeight,
+            behavior: "smooth"
+        });
+
+        pdNewMessageCount = 0;
+        updateJumpToLatest();
+    });
+
+    container.addEventListener("scroll", updateJumpToLatest, {
+        passive: true
+    });
+
+    updateJumpToLatest();
+}
+
+function updateJumpToLatest() {
+    const container = document.getElementById("chatMessages");
+
+    if (!container || !pdJumpButton) return;
+
+    const distanceFromBottom =
+        container.scrollHeight -
+        container.scrollTop -
+        container.clientHeight;
+
+    pdWasAtBottom = distanceFromBottom < 100;
+
+    pdJumpButton.classList.toggle(
+        "pd-arrow-visible",
+        distanceFromBottom > 180
+    );
+
+    pdJumpButton.classList.toggle(
+        "has-new-messages",
+        pdNewMessageCount > 0
+    );
+
+    const count = pdJumpButton.querySelector(
+        ".pd-new-message-count"
+    );
+
+    if (count) {
+        count.textContent =
+            pdNewMessageCount > 99
+                ? "99+"
+                : String(pdNewMessageCount);
+    }
+}
 /* =========================================================
    GLOBAL STATE
    ========================================================= */
@@ -87,13 +168,70 @@ function installChatStyles() {
             font-weight: 500;
             color: #b9a8d9;
         }
+        /* 💜 Small cute jump-to-latest button */
+#pdJumpToLatest {
+    position: fixed;
+    right: max(18px, calc((100vw - 440px) / 2 + 18px));
+    bottom: 95px;
+    z-index: 9999;
+
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c77dff, #8e35d4);
+    color: white;
+
+    font-size: 17px;
+    box-shadow: 0 3px 12px rgba(142,53,212,0.3);
+
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(5px);
+    transition: all 0.2s ease;
+}
+
+#pdJumpToLatest.pd-arrow-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+#pdJumpToLatest .pd-new-message-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    min-width: 15px;
+    height: 15px;
+    padding: 0 3px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #ff3d9a;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+}
+
+#pdJumpToLatest.has-new-messages .pd-new-message-count {
+    display: flex;
+}
+
 
         .pd-presence-status.is-online {
-            color: #42df91;
+            color: #fae101;
         }
 
         .pd-presence-status.is-offline {
-            color: #b9a8d9;
+            color: #bb4ad1;
         }
 
         .pd-message-footer {
@@ -1225,7 +1363,7 @@ function removeChatLoader() {
 
 function startChat() {
     const container = document.getElementById("chatMessages");
-
+setupJumpToLatest();
     if (!container) {
         console.error("PD: #chatMessages was not found.");
         removeChatLoader();
@@ -1251,11 +1389,26 @@ function startChat() {
             firstMessagesLoaded = true;
 
             const wasNearBottom =
-                container.scrollHeight -
-                container.scrollTop -
-                container.clientHeight < 150;
+    container.scrollHeight -
+    container.scrollTop -
+    container.clientHeight < 150;
 
-            const previousScrollTop = container.scrollTop;
+const previousScrollTop = container.scrollTop;
+
+const newestMessageId = snapshot.docs.length
+    ? snapshot.docs[snapshot.docs.length - 1].id
+    : null;
+
+const hasNewMessage =
+    newestMessageId &&
+    pdLastSeenMessageId &&
+    newestMessageId !== pdLastSeenMessageId;
+
+if (hasNewMessage && !wasNearBottom) {
+    pdNewMessageCount++;
+}
+
+pdLastSeenMessageId = newestMessageId;
 
             container.innerHTML = "";
 
@@ -1319,59 +1472,129 @@ function startChat() {
 
 
 /* =========================================================
-   VOICE RECORDING
+   VOICE RECORDING — FIXED AND MORE RELIABLE
+   Records audio, finalizes the Blob, then uploads it.
    ========================================================= */
 
 async function startRecording() {
     if (recording) return;
 
-    if (!navigator.mediaDevices?.getUserMedia) {
-        alert("Voice recording requires HTTPS or localhost.");
+    if (
+        !navigator.mediaDevices?.getUserMedia ||
+        typeof MediaRecorder === "undefined"
+    ) {
+        alert(
+            "Voice recording is not supported here. Open PD using HTTPS and a supported browser."
+        );
         return;
     }
 
+    let stream;
+
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({
+        stream = await navigator.mediaDevices.getUserMedia({
             audio: true
         });
 
-        const mimeType = [
+        const supportedTypes = [
             "audio/webm;codecs=opus",
             "audio/webm",
             "audio/mp4"
-        ].find(type => MediaRecorder.isTypeSupported(type));
+        ];
 
-        mediaRecorder = mimeType
+        const mimeType = supportedTypes.find(type =>
+            MediaRecorder.isTypeSupported(type)
+        );
+
+        // Keep a local reference so each recording has its own recorder.
+        const recorder = mimeType
             ? new MediaRecorder(stream, { mimeType })
             : new MediaRecorder(stream);
 
+        mediaRecorder = recorder;
         audioChunks = [];
         recording = true;
 
-        mediaRecorder.ondataavailable = event => {
-            if (event.data.size > 0) {
+        recorder.ondataavailable = event => {
+            if (event.data && event.data.size > 0) {
                 audioChunks.push(event.data);
             }
         };
 
-        mediaRecorder.onstop = async () => {
+        recorder.onerror = event => {
+            console.error("PD recording error:", event.error || event);
+            recording = false;
+            updateVoiceButton(false);
+
             stream.getTracks().forEach(track => track.stop());
 
-            const blob = new Blob(audioChunks, {
-                type: mediaRecorder.mimeType || "audio/webm"
-            });
+            alert("Recording failed. Please try recording again.");
+        };
 
-            if (blob.size > 0) {
-                await uploadVoice(blob);
+        recorder.onstop = async () => {
+            // Wait until recording has stopped and its final chunk is received.
+            recording = false;
+            updateVoiceButton(false);
+
+            try {
+                const chunks = [...audioChunks];
+                audioChunks = [];
+
+                const audioType =
+                    recorder.mimeType ||
+                    chunks.find(chunk => chunk.type)?.type ||
+                    "audio/webm";
+
+                const audioBlob = new Blob(chunks, {
+                    type: audioType
+                });
+
+                console.log(
+                    "PD voice recording finished:",
+                    audioBlob.size,
+                    "bytes",
+                    audioBlob.type
+                );
+
+                if (audioBlob.size === 0) {
+                    throw new Error(
+                        "The recording is empty. No audio data was captured."
+                    );
+                }
+
+                await uploadVoice(audioBlob);
+            } catch (error) {
+                console.error("PD voice finalization error:", error);
+                alert(
+                    "The recording could not be prepared. Please try again."
+                );
+            } finally {
+                stream.getTracks().forEach(track => track.stop());
             }
         };
 
-        mediaRecorder.start();
+        // A timeslice helps deliver audio chunks during longer recordings.
+        recorder.start(250);
+
         updateVoiceButton(true);
 
+        console.log("PD: Voice recording started.");
+
     } catch (error) {
-        console.error("PD microphone error:", error);
-        alert("Please allow microphone access for PD ❤️");
+        console.error("PD microphone start error:", error);
+
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+
+        recording = false;
+        updateVoiceButton(false);
+
+        if (error.name === "NotAllowedError") {
+            alert("Please allow microphone access for PD ❤️");
+        } else {
+            alert("Could not start recording. Please try again.");
+        }
     }
 }
 
@@ -1379,48 +1602,103 @@ async function startRecording() {
 function stopRecording() {
     if (!mediaRecorder || !recording) return;
 
+    const recorder = mediaRecorder;
+
     recording = false;
-    mediaRecorder.stop();
     updateVoiceButton(false);
+
+    try {
+        if (recorder.state !== "inactive") {
+            recorder.stop();
+            console.log("PD: Finishing voice recording...");
+        }
+    } catch (error) {
+        console.error("PD could not stop recording:", error);
+        alert("Could not finish the recording. Please try again.");
+    }
 }
 
 
 /* =========================================================
-   UPLOAD VOICE NOTE
+   UPLOAD VOICE NOTE — FIREBASE STORAGE + FIRESTORE
    ========================================================= */
 
 async function uploadVoice(audioBlob) {
-    if (!currentProfile) return;
+    if (!currentProfile) {
+        alert("Your PD account is not ready. Please reload the chat.");
+        return;
+    }
 
     const button = document.getElementById("voiceButton");
 
-    if (button) button.classList.add("uploading");
+    if (button) {
+        button.classList.add("uploading");
+        button.disabled = true;
+        button.title = "Sending voice note...";
+    }
 
     try {
+        console.log("PD: Uploading voice note...", audioBlob.size, "bytes");
+
         const partnerUID = await findPartnerUID();
 
-        const extension = audioBlob.type.includes("mp4") ? "m4a" : "webm";
-        const fileName = `voice_${Date.now()}.${extension}`;
+        const contentType =
+            audioBlob.type.split(";")[0] || "audio/webm";
+
+        let extension = "webm";
+
+        if (contentType.includes("mp4")) {
+            extension = "m4a";
+        } else if (contentType.includes("ogg")) {
+            extension = "ogg";
+        } else if (contentType.includes("wav")) {
+            extension = "wav";
+        }
+
+        const fileName =
+            `voice_${Date.now()}_${Math.random()
+                .toString(36)
+                .slice(2, 8)}.${extension}`;
 
         const fileRef = storageRef(
             storage,
             `voice-messages/${currentProfile.uid}/${fileName}`
         );
 
-        await uploadBytes(fileRef, audioBlob);
+        // Step 1: Upload the audio file.
+        const uploadResult = await uploadBytes(fileRef, audioBlob, {
+            contentType
+        });
 
-        const audioURL = await getDownloadURL(fileRef);
+        console.log("PD: Audio uploaded successfully.");
 
-        await addDoc(collection(db, "messages"), {
+        // Step 2: Get a playable download URL.
+        const audioURL = await getDownloadURL(uploadResult.ref);
+
+        if (!audioURL) {
+            throw new Error("Firebase returned no audio download URL.");
+        }
+
+        // Step 3: Save the voice message in the live chat collection.
+        const messageRef = await addDoc(collection(db, "messages"), {
             type: "voice",
             audioURL,
+            audioContentType: contentType,
 
             senderUID: currentProfile.uid,
             senderName: currentProfile.name,
             senderDisplayName: currentProfile.displayName,
 
             recipientUID: partnerUID,
-            replyTo: null,
+            replyTo: currentReply
+                ? {
+                    messageId: currentReply.messageId,
+                    senderUID: currentReply.senderUID,
+                    senderName: currentReply.senderName,
+                    text: currentReply.text,
+                    type: currentReply.type
+                }
+                : null,
 
             status: "sent",
             deliveredAt: null,
@@ -1429,13 +1707,27 @@ async function uploadVoice(audioBlob) {
             createdAt: serverTimestamp()
         });
 
+        console.log("PD: Voice message saved to chat:", messageRef.id);
+
+        clearReplyMode();
+
     } catch (error) {
-        console.error("PD voice upload error:", error);
-        alert("Voice note failed to send.");
+        console.error("PD voice upload/send failed:", error);
+
+        alert(
+            "Your voice note could not be sent. Check your internet connection and Firebase permissions, then try again."
+        );
     } finally {
-        if (button) button.classList.remove("uploading");
+        if (button) {
+            button.classList.remove("uploading");
+            button.disabled = false;
+            button.title = "Record voice note";
+        }
     }
 }
+
+
+
 
 
 function updateVoiceButton(active) {
@@ -1447,13 +1739,14 @@ function updateVoiceButton(active) {
         button.classList.add("recording");
         button.innerHTML = '<i class="fa-solid fa-stop"></i>';
         button.title = "Stop recording";
+        button.setAttribute("aria-label", "Stop recording");
     } else {
         button.classList.remove("recording");
         button.innerHTML = '<i class="fa-solid fa-microphone"></i>';
         button.title = "Record voice note";
+        button.setAttribute("aria-label", "Record voice note");
     }
 }
-
 
 function setupVoiceButton() {
     const button = document.getElementById("voiceButton");
