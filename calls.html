@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#170b28">
+  <title>PD Calls ❤️ | Princess wa Deib</title>
+
+  <link rel="stylesheet" href="calls.css">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+  <main class="calls-app">
+
+    <header class="topbar">
+      <a class="back-button" href="chat.html" aria-label="Back to chat">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+
+      <div class="brand">
+        <span class="brand-icon"><i class="fa-solid fa-heart"></i></span>
+        <div>
+          <h1>PD Calls</h1>
+          <p>Princess wa Deib</p>
+        </div>
+      </div>
+
+      <span class="online-indicator" title="PD Calls"></span>
+    </header>
+
+    <section class="hero">
+      <div class="hero-glow"></div>
+      <span class="eyebrow">JUST YOU & ME</span>
+      <h2>Every call brings<br>us <span>closer.</span></h2>
+      <p>A little hello from your favourite person. ❤️</p>
+
+      <div class="couple">
+        <div class="person">
+          <div class="avatar avatar-deib">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <span id="myName">You</span>
+        </div>
+
+        <div class="heart-connector">
+          <i class="fa-solid fa-heart"></i>
+        </div>
+
+        <div class="person">
+          <div class="avatar avatar-princess">
+            <i class="fa-solid fa-heart"></i>
+          </div>
+          <span id="partnerName">My Person</span>
+        </div>
+      </div>
+
+      <div class="call-actions">
+        <button class="call-action voice-action" id="voiceCallBtn">
+          <span class="action-icon"><i class="fa-solid fa-phone"></i></span>
+          <span>Voice call</span>
+        </button>
+
+        <button class="call-action video-action" id="videoCallBtn">
+          <span class="action-icon"><i class="fa-solid fa-video"></i></span>
+          <span>Video call</span>
+        </button>
+      </div>
+
+      <p class="call-notice" id="callNotice" role="status">
+        Your private calling space ❤️
+      </p>
+    </section>
+
+    <section class="history-section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">YOUR LITTLE MEMORIES</span>
+          <h2>Recent calls</h2>
+        </div>
+
+        <button class="refresh-btn" id="refreshCalls" aria-label="Refresh calls">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+
+      <div class="history-filters">
+        <button class="filter active" data-filter="all">All</button>
+        <button class="filter" data-filter="missed">Missed</button>
+        <button class="filter" data-filter="incoming">Incoming</button>
+        <button class="filter" data-filter="outgoing">Outgoing</button>
+      </div>
+
+      <div id="callsList" class="calls-list">
+        <div class="loading-state">
+          <i class="fa-solid fa-heart fa-beat"></i>
+          <p>Loading your memories...</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="bottom-nav">
+      <a href="home.html" class="nav-item">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </a>
+
+      <a href="chat.html" class="nav-item">
+        <i class="fa-solid fa-comments"></i>
+        <span>Chat</span>
+      </a>
+
+      <a href="calls.html" class="nav-item selected">
+        <i class="fa-solid fa-phone"></i>
+        <span>Calls</span>
+      </a>
+    </footer>
+
+  </main>
+
+  <script type="module" src="calls.js"></script>
+</body>
+</html>
