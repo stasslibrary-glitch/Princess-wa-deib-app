@@ -440,3 +440,203 @@ a {
     padding-top: 28px;
   }
 }
+
+/* ========== PD LIVE CALL OVERLAY ========== */
+
+.call-overlay[hidden],
+.incoming-actions[hidden],
+.active-actions[hidden],
+.video-stage[hidden] {
+  display: none !important;
+}
+
+.call-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(10, 4, 19, .88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.call-panel {
+  position: relative;
+  width: min(100%, 440px);
+  max-height: 94dvh;
+  overflow-y: auto;
+  padding: 22px 20px;
+  border: 1px solid rgba(224, 178, 255, .22);
+  border-radius: 30px;
+  background:
+    radial-gradient(ellipse at 50% 10%, #8d3cb62b, transparent 48%),
+    linear-gradient(150deg, #28123e, #14091f 75%);
+  box-shadow: 0 25px 90px #0009;
+  text-align: center;
+}
+
+.call-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.call-secure {
+  color: #f1ce8b;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.call-close {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #ffffff1c;
+  border-radius: 12px;
+  background: #ffffff0b;
+  color: white;
+}
+
+.call-person {
+  padding: 28px 0 22px;
+}
+
+.call-big-avatar {
+  width: 104px;
+  height: 104px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 18px;
+  border: 1px solid #e9b6ff77;
+  border-radius: 34px;
+  background: linear-gradient(145deg, #b34ed1, #5b2c91 65%, #3d1d5d);
+  color: #fff;
+  font-size: 35px;
+  box-shadow: 0 0 0 9px #b14bda0c, 0 0 45px #c34eff29;
+}
+
+.call-person h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 27px;
+  overflow-wrap: anywhere;
+}
+
+.call-person p {
+  margin-top: 10px;
+  color: #d5bce7;
+  font-size: 12px;
+}
+
+.call-timer {
+  min-height: 22px;
+  margin-top: 10px;
+  color: #f4d69b;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
+}
+
+.video-stage {
+  position: relative;
+  height: clamp(190px, 40dvh, 320px);
+  overflow: hidden;
+  margin: 0 0 22px;
+  border: 1px solid #ffffff24;
+  border-radius: 22px;
+  background: #08040d;
+}
+
+.video-stage #remoteVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #08040d;
+}
+
+.video-stage #localVideo {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 95px;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border: 2px solid #e7b6ff;
+  border-radius: 13px;
+  background: #21132c;
+  transform: scaleX(-1);
+}
+
+.incoming-actions,
+.active-actions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: clamp(16px, 7vw, 32px);
+  padding: 10px 0 20px;
+}
+
+.round-call-btn {
+  width: 64px;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 0;
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  box-shadow: 0 8px 24px #0003;
+}
+
+.round-call-btn span {
+  position: absolute;
+  transform: translateY(48px);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.round-call-btn.accept {
+  background: linear-gradient(145deg, #36c978, #148e53);
+}
+
+.round-call-btn.decline {
+  background: linear-gradient(145deg, #ff628c, #d92355);
+}
+
+.round-call-btn.secondary {
+  background: linear-gradient(145deg, #684b80, #39234c);
+  border: 1px solid #ffffff1c;
+}
+
+.round-call-btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.call-footnote {
+  margin: 14px auto 0;
+  max-width: 270px;
+  color: #a996ba;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+@media (max-width: 380px) {
+  .call-panel {
+    padding: 16px 12px;
+  }
+
+  .round-call-btn {
+    width: 56px;
+    min-height: 56px;
+  }
+
+  .round-call-btn span {
+    transform: translateY(43px);
+  }
+}

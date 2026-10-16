@@ -119,6 +119,73 @@
 
   </main>
 
+<!-- LIVE CALL SCREEN -->
+<div class="call-overlay" id="callOverlay" hidden>
+  <section class="call-panel" role="dialog" aria-modal="true"
+           aria-labelledby="callName">
+
+    <div class="call-topline">
+      <span class="call-secure">
+        <i class="fa-solid fa-lock"></i> PD PRIVATE CALL
+      </span>
+      <button type="button" id="closeCallScreen" class="call-close"
+              aria-label="Close call screen">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="call-person">
+      <div class="call-big-avatar" id="callAvatar">
+        <i class="fa-solid fa-heart"></i>
+      </div>
+      <h2 id="callName">Your person ❤️</h2>
+      <p id="callStatusText">Preparing call…</p>
+      <div id="callTimer" class="call-timer">00:00</div>
+    </div>
+
+    <div class="video-stage" id="videoStage" hidden>
+      <video id="remoteVideo" autoplay playsinline></video>
+      <video id="localVideo" autoplay muted playsinline></video>
+    </div>
+
+    <!-- Incoming-call controls -->
+    <div class="incoming-actions" id="incomingActions" hidden>
+      <button type="button" id="declineCallBtn" class="round-call-btn decline">
+        <i class="fa-solid fa-phone-slash"></i>
+        <span>Decline</span>
+      </button>
+      <button type="button" id="acceptCallBtn" class="round-call-btn accept">
+        <i class="fa-solid fa-phone"></i>
+        <span>Accept</span>
+      </button>
+    </div>
+
+    <!-- Connected/outgoing-call controls -->
+    <div class="active-actions" id="activeActions" hidden>
+      <button type="button" id="muteBtn" class="round-call-btn secondary">
+        <i class="fa-solid fa-microphone"></i>
+        <span>Mute</span>
+      </button>
+
+      <button type="button" id="cameraBtn" class="round-call-btn secondary">
+        <i class="fa-solid fa-video"></i>
+        <span>Camera off</span>
+      </button>
+
+      <button type="button" id="endCallBtn" class="round-call-btn decline">
+        <i class="fa-solid fa-phone-slash"></i>
+        <span>End call</span>
+      </button>
+    </div>
+
+    <p class="call-footnote">
+      Keep this page open while waiting for your person to answer. ❤️
+    </p>
+  </section>
+</div>
+
+<audio id="remoteAudio" autoplay playsinline></audio>
+
   <script type="module" src="calls.js"></script>
 </body>
 </html>
