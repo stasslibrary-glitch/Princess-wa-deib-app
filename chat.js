@@ -1290,6 +1290,7 @@ function renderMessages() {
    Only query messages involving this signed-in account.
    ========================================================= */
 
+
 function startChat() {
     const container = byId("chatMessages");
 
@@ -1299,8 +1300,13 @@ function startChat() {
         return;
     }
 
-    if (!currentProfile) return;
+    if (!currentProfile?.uid) {
+        console.error("PD: Cannot start chat — current user profile is missing.");
+        removeChatLoader();
+        return;
+    }
 
+    // Stop previous listeners before starting new ones.
     messageUnsubscribers.forEach(unsubscribe => unsubscribe());
     messageUnsubscribers = [];
 
@@ -1315,8 +1321,6 @@ function startChat() {
     const messagesRef = collection(db, "messages");
     const uid = currentProfile.uid;
 
-    // Separate queries help Firestore rules verify that each query
-    // only requests messages the signed-in user is allowed to read.
     const sentQuery = query(
         messagesRef,
         where("senderUID", "==", uid),
@@ -1329,18 +1333,62 @@ function startChat() {
         orderBy("createdAt", "asc")
     );
 
-    function applySnapshot(snapshot) {
-        for (const messageDoc of snapshot.docs) {
-            messageCache.set(messageDoc.id, messageDoc.data());
+    // Keep track of each query's complete current result.
+    const queryResults = {
+        sent: new Map(),
+        received: new Map()
+    };
+
+    function applySnapshot(snapshot, queryName) {
+        console.log(
+            `PD: ${queryName} listener received ${snapshot.size} messages.`
+        );
+
+        const currentResults = queryResults[queryName];
+        currentResults.clear();
+
+        snapshot.forEach(messageDoc => {
+            currentResults.set(messageDoc.id, messageDoc.data());
+        });
+
+        // Merge both query results without duplicates.
+        messageCache.clear();
+
+        for (const results of Object.values(queryResults)) {
+            for (const [id, data] of results) {
+                messageCache.set(id, data);
+            }
         }
 
-        latestMessageDocs = [...messageCache.entries()].map(([id, data]) => ({
-            id,
-            data,
-            ref: doc(db, "messages", id)
-        }));
+        latestMessageDocs = [...messageCache.entries()].map(
+            ([id, data]) => ({
+                id,
+                data,
+                ref: doc(db, "messages", id)
+            })
+        );
+
+        // Sort messages chronologically.
+        latestMessageDocs.sort((a, b) => {
+            const aTime = a.data.createdAt?.toMillis?.() ?? 0;
+            const bTime = b.data.createdAt?.toMillis?.() ?? 0;
+            return aTime - bTime;
+        });
+
+        console.log(
+            "PD: Rendering messages:",
+            latestMessageDocs.map(item => ({
+                id: item.id,
+                text: item.data.text,
+                senderUID: item.data.senderUID,
+                recipientUID: item.data.recipientUID
+            }))
+        );
 
         renderMessages();
+
+        firstMessagesLoaded = true;
+        removeChatLoader();
 
         updateIncomingReceipts(
             latestMessageDocs.map(item => ({
@@ -1351,27 +1399,26 @@ function startChat() {
     }
 
     function listenerError(error) {
-        logError("PD Firestore chat listener failed:", error);
+        console.error("PD: Chat listener failed.", {
+            code: error?.code,
+            message: error?.message,
+            error
+        });
+
         removeChatLoader();
-
-        if (error.code === "failed-precondition") {
-            console.error(
-                "PD: Firestore may require a composite index. " +
-                "Open the index creation link printed by Firebase."
-            );
-        }
-
-        if (error.code === "permission-denied") {
-            console.error(
-                "PD: Check Firestore rules for messages where senderUID " +
-                "or recipientUID equals the authenticated user's UID."
-            );
-        }
     }
 
     messageUnsubscribers.push(
-        onSnapshot(sentQuery, applySnapshot, listenerError),
-        onSnapshot(receivedQuery, applySnapshot, listenerError)
+        onSnapshot(
+            sentQuery,
+            snapshot => applySnapshot(snapshot, "sent"),
+            listenerError
+        ),
+        onSnapshot(
+            receivedQuery,
+            snapshot => applySnapshot(snapshot, "received"),
+            listenerError
+        )
     );
 }
 
@@ -1435,9 +1482,13 @@ async function sendMessage() {
 
         console.log("PD: Message sent:", sentRef.id);
 
-        input.value = "";
-        resizeMessageInput();
-        clearReplyMode();
+input.value = "";
+resizeMessageInput();
+clearReplyMode();
+
+// Allow the next message to be sent.
+pdSendingMessage = false;
+if (button) button.disabled = false;
 
     } catch (error) {
         logError("PD message send failed:", error);
