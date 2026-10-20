@@ -1441,8 +1441,9 @@ async function sendMessage() {
 
     } catch (error) {
         logError("PD message send failed:", error);
-        showError(getFirebaseErrorMessage(error));
-    } finally {
+        showError(
+    `Message failed to send.\n\nError: ${error?.code || "unknown"}\n${error?.message || String(error)}`
+);
         pdSendingMessage = false;
 
         if (button) button.disabled = false;
@@ -1723,8 +1724,10 @@ function setupVoiceButton() {
    PAGE EVENTS
    ========================================================= */
 
+
 function setupPageEvents() {
     const form = byId("chatForm");
+    const sendButton = document.querySelector(".send-message");
 
     if (form && form.dataset.pdBound !== "true") {
         form.dataset.pdBound = "true";
@@ -1735,10 +1738,22 @@ function setupPageEvents() {
         });
     }
 
+    // Explicitly handle the send-button click.
+    // Prevent the default form submission so the message
+    // is not submitted twice.
+    if (sendButton && sendButton.dataset.pdBound !== "true") {
+        sendButton.dataset.pdBound = "true";
+        sendButton.addEventListener("click", event => {
+            event.preventDefault();
+            sendMessage();
+        });
+    }
+
     setupMultilineInput();
     ensureReplyComposer();
     setupVoiceButton();
 }
+
 
 /* =========================================================
    CLEANUP / TAB VISIBILITY
