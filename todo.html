@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8efff">
+  <title>Our To-Do List 💜 | Princess wa Deib</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="todo.css">
+</head>
+
+<body>
+  <main class="todo-app">
+
+    <header class="top-bar">
+      <a class="back-button" href="index.html" aria-label="Back home">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
+
+      <div class="brand">
+        <span class="brand-icon"><i class="fa-solid fa-heart"></i></span>
+        <span>Princess wa Deib</span>
+      </div>
+
+      <span class="online-dot" title="Shared list"></span>
+    </header>
+
+    <section class="hero">
+      <div class="hero-decoration decoration-one">♡</div>
+      <div class="hero-decoration decoration-two">✦</div>
+
+      <span class="eyebrow">OUR LITTLE PLANS</span>
+      <h1>Our To-Do List <span>♡</span></h1>
+      <p>Little plans, big dreams, and everything we want to do together.</p>
+
+      <div class="shared-pill">
+        <i class="fa-solid fa-heart"></i>
+        One list for both of us
+      </div>
+    </section>
+
+    <section class="period-panel">
+      <div class="section-heading">
+        <div>
+          <span class="mini-label">PLAN OUR TIME</span>
+          <h2>Choose your progress</h2>
+        </div>
+        <span class="calendar-icon"><i class="CH"></i></span>
+      </div>
+
+      <div class="period-switch">
+        <button class="period-button active" data-period="month" type="button">
+          <i class="fa-regular fa-calendar"></i> Monthly
+        </button>
+        <button class="period-button" data-period="year" type="button">
+          <i class="fa-solid fa-calendar-days"></i> Yearly
+        </button>
+      </div>
+
+      <div class="period-selectors">
+        <label id="month-selector-wrap">
+          <span>Choose month</span>
+          <select id="month-select"></select>
+        </label>
+
+        <label>
+          <span>Choose year</span>
+          <select id="year-select"></select>
+        </label>
+      </div>
+
+      <div class="period-caption" id="period-caption">Your monthly plans</div>
+    </section>
+
+    <section class="progress-panel">
+      <div class="progress-top">
+        <div>
+          <span class="mini-label">OUR PROGRESS</span>
+          <h2 id="progress-title">We’re getting things done!</h2>
+        </div>
+        <div class="progress-number" id="progress-percent">0%</div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+
+      <div class="progress-bottom">
+        <span><i class="fa-solid fa-circle-check"></i> <b id="completed-count">0</b> completed</span>
+        <span><i class="fa-regular fa-heart"></i> <b id="remaining-count">0</b> remaining</span>
+      </div>
+    </section>
+
+    <section class="add-panel">
+      <div class="section-heading">
+        <div>
+          <span class="mini-label">MAKE IT HAPPEN</span>
+          <h2>Add a new task</h2>
+        </div>
+        <span class="add-icon"><i class="fa-solid fa-plus"></i></span>
+      </div>
+
+      <form id="todo-form">
+        <label class="field-label" for="task-title">What do we need to do?</label>
+        <input
+          id="task-title"
+          type="text"
+          maxlength="120"
+          placeholder="e.g. Plan our next date 💕"
+          required
+        >
+
+        <label class="field-label" for="task-description">A little more detail (optional)</label>
+        <textarea
+          id="task-description"
+          rows="3"
+          maxlength="500"
+          placeholder="Add any details we should remember..."
+        ></textarea>
+
+        <label class="field-label" for="task-due-date">Due date (optional)</label>
+        <input id="task-due-date" type="date">
+
+        <button class="add-task-button" id="add-task-button" type="submit">
+          <i class="fa-solid fa-heart"></i>
+          Add to our list
+        </button>
+
+        <p class="form-message" id="form-message" role="status"></p>
+      </form>
+    </section>
+
+    <section class="tasks-section">
+      <div class="tasks-heading">
+        <div>
+          <span class="mini-label">OUR CHECKLIST</span>
+          <h2 id="tasks-heading-title">Our monthly tasks</h2>
+        </div>
+        <span class="task-count" id="task-count">0 tasks</span>
+      </div>
+
+      <div class="filter-tabs">
+        <button type="button" class="filter-button active" data-filter="all">All</button>
+        <button type="button" class="filter-button" data-filter="pending">Pending</button>
+        <button type="button" class="filter-button" data-filter="completed">Completed</button>
+      </div>
+
+      <div id="tasks-list" class="tasks-list">
+        <div class="loading-state">
+          <i class="fa-solid fa-heart fa-beat"></i>
+          <p>Loading our little plans...</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="todo-footer">
+      <div class="footer-heart">💗</div>
+      <p>One step at a time, together.</p>
+      <span>PRINCESS WA DEIB · OUR LITTLE WORLD</span>
+    </footer>
+
+  </main>
+
+  <!-- Keep your existing Firebase configuration file. -->
+  <script type="module" src="todo.js"></script>
+</body>
+</html>

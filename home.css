@@ -1,54 +1,44 @@
-
-/* ============================================================
-   PRINCESS WA DEIB 💜
-   HOME.CSS — LAVENDER DREAM EDITION
-   Romantic • Premium • Soft Glow • Glassmorphism
-   No moon • No stars • No sky
-============================================================ */
+/* =========================================================
+   PRINCESS WA DEIB — ROYAL RED & GOLD HOME
+   Theme: Valentine Red • Gold • A Touch of Purple
+   ========================================================= */
 
 :root {
-    --pd-deep: #160923;
-    --pd-purple: #542582;
-    --pd-violet: #8b4bd1;
-    --pd-lavender: #d8b8ff;
-    --pd-pink: #ff9bd8;
-    --pd-white: #fff8ff;
-    --pd-muted: #d9c8e8;
+    --pd-red-dark: #28050d;
+    --pd-red-deep: #400817;
+    --pd-red: #741027;
+    --pd-red-main: #a8173b;
+    --pd-red-bright: #c62249;
+    --pd-red-soft: #e13b5e;
 
-    --pd-glass: rgba(255, 255, 255, 0.075);
-    --pd-glass-hover: rgba(255, 255, 255, 0.12);
-    --pd-glass-border: rgba(239, 212, 255, 0.18);
+    --pd-gold: #d9b765;
+    --pd-gold-light: #f3dda0;
+    --pd-gold-dark: #96702c;
+
+    --pd-purple: #57276d;
+    --pd-purple-light: #7a438e;
+
+    --pd-white: #fff5f1;
+    --pd-muted: #d7b9bd;
+
+    --pd-border: rgba(217, 183, 101, 0.48);
+    --pd-glow: 0 0 24px rgba(217, 183, 101, 0.12);
 }
 
-/* =========================
-   GLOBAL BASE
-========================= */
+/* -------------------------
+   PAGE BACKGROUND
+------------------------- */
 
 body.phone-page {
     margin: 0;
     min-height: 100vh;
-    padding: 22px 12px;
-
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-
-    background: #090510;
     color: var(--pd-white);
-
+    background:
+        radial-gradient(ellipse at 15% 10%, rgba(122, 31, 64, 0.42), transparent 38%),
+        radial-gradient(ellipse at 90% 60%, rgba(87, 39, 109, 0.19), transparent 35%),
+        linear-gradient(145deg, #20040b 0%, #420817 48%, #26040d 100%);
     font-family: "DM Sans", sans-serif;
-    overflow-x: hidden;
 }
-
-body.phone-page *,
-body.phone-page *::before,
-body.phone-page *::after {
-    box-sizing: border-box;
-}
-
-/* =========================
-   PHONE FRAME
-========================= */
 
 .phone-container {
     display: none;
@@ -57,540 +47,713 @@ body.phone-page *::after {
 .phone-app {
     position: relative;
     isolation: isolate;
-
     width: 100%;
-    max-width: 420px;
-    min-height: 850px;
-
+    max-width: 460px;
+    min-height: 100vh;
     margin: 0 auto;
-    padding: 23px 18px 34px;
-
     overflow: hidden;
-    border-radius: 38px;
-
-    border: 1px solid rgba(226, 183, 255, 0.38);
-
     background:
-        radial-gradient(
-            ellipse at 0% 10%,
-            rgba(179, 112, 255, 0.19),
-            transparent 38%
-        ),
-        radial-gradient(
-            ellipse at 100% 23%,
-            rgba(255, 117, 207, 0.15),
-            transparent 34%
-        ),
-        radial-gradient(
-            ellipse at 45% 100%,
-            rgba(115, 55, 174, 0.22),
-            transparent 43%
-        ),
-        linear-gradient(
-            150deg,
-            #251039 0%,
-            #170a27 43%,
-            #10071c 100%
-        );
-
-    box-shadow:
-        0 0 0 5px rgba(178, 113, 255, 0.035),
-        0 25px 75px rgba(0, 0, 0, 0.55),
-        0 0 42px rgba(157, 84, 255, 0.13),
-        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+        linear-gradient(180deg, rgba(99, 10, 34, 0.20), rgba(35, 4, 13, 0.42));
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.28);
 }
 
-/* =========================
-   SOFT AMBIENT LIGHT
-========================= */
-
-/* Decorative lights stay inside the phone frame */
-.phone-app::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-
-    top: 95px;
-    right: -100px;
-
-    width: 260px;
-    height: 260px;
-    border-radius: 50%;
-
-    background: rgba(211, 123, 255, 0.12);
-    filter: blur(75px);
-
-    pointer-events: none;
-    animation: pdAmbientGlow 9s ease-in-out infinite alternate;
+/* Remove the old moon and star theme */
+#pd-night-sky {
+    display: none !important;
 }
 
-.phone-app::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-
-    top: 390px;
-    left: -120px;
-
-    width: 260px;
-    height: 300px;
-    border-radius: 50%;
-
-    background: rgba(255, 105, 198, 0.10);
-    filter: blur(85px);
-
-    pointer-events: none;
-    animation: pdAmbientGlow 12s ease-in-out infinite alternate-reverse;
-}
-
-/* =========================
-   FLOATING HEART DECORATIONS
-========================= */
-
-/* Optional decorative layer.
-   Add the matching HTML inside .phone-app if desired. */
-
-#pd-atmosphere {
-    position: absolute;
-    z-index: 0;
-    inset: 0;
-
-    overflow: hidden;
-    border-radius: inherit;
-
-    pointer-events: none;
-}
-
-#pd-atmosphere::before,
-#pd-atmosphere::after {
-    position: absolute;
-    display: block;
-
-    color: rgba(255, 174, 225, 0.22);
-    font-family: Georgia, serif;
-    line-height: 1;
-
-    white-space: pre;
-    pointer-events: none;
-}
-
-#pd-atmosphere::before {
-    content: "♡          ♥\A      ♡\A                ♡\A   ♥\A             ♡";
-
-    top: 115px;
-    right: 7px;
-
-    font-size: 22px;
-    line-height: 100px;
-
-    animation: pdHeartFloat 13s ease-in-out infinite;
-}
-
-#pd-atmosphere::after {
-    content: "♥\A           ♡\A    ♡\A              ♥";
-
-    top: 360px;
-    left: 5px;
-
-    font-size: 17px;
-    line-height: 115px;
-    color: rgba(211, 164, 255, 0.17);
-
-    animation: pdHeartFloat 16s ease-in-out infinite reverse;
-}
-
-/* Keep home content above decorative hearts */
-.phone-app > *:not(#pd-atmosphere) {
-    position: relative;
-}
-
-/* =========================
-   APP HEADER
-========================= */
+/* -------------------------
+   HEADER
+------------------------- */
 
 .app-header {
-    z-index: 2;
-
-    border: 1px solid rgba(239, 213, 255, 0.15);
-    border-radius: 23px;
-
-    background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.09),
-        rgba(255, 255, 255, 0.035)
-    );
-
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.13),
-        inset 0 1px 0 rgba(255, 255, 255, 0.07);
-
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-}
-
-/* =========================
-   PREMIUM GLASS CARDS
-========================= */
-
-.home-cover,
-.days-card,
-.song-card,
-.menu-grid a,
-.menu-grid button {
     position: relative;
-
-    border: 1px solid var(--pd-glass-border);
-
-    background: linear-gradient(
-        145deg,
-        rgba(255, 255, 255, 0.09),
-        rgba(255, 255, 255, 0.035)
-    );
-
-    box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.16),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
-
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-
-    transition:
-        transform 0.28s ease,
-        background 0.28s ease,
-        border-color 0.28s ease,
-        box-shadow 0.28s ease;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 19px 20px 17px;
+    background: linear-gradient(135deg, #650c25, #390713 78%);
+    border-bottom: 1px solid var(--pd-gold);
+    box-shadow: 0 5px 22px rgba(0, 0, 0, 0.20);
 }
 
-/* Delicate shine across cards */
-.home-cover::before,
-.days-card::before,
-.song-card::before {
+.app-header::after {
     content: "";
-
     position: absolute;
-    top: 0;
-    left: 14px;
-    right: 14px;
-
+    left: 20px;
+    right: 20px;
+    bottom: -3px;
     height: 1px;
-
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.30),
-        transparent
-    );
-
-    pointer-events: none;
+    background: rgba(243, 221, 160, 0.42);
 }
 
-/* Hover and desktop pointer interaction */
-@media (hover: hover) {
-    .home-cover:hover,
-    .days-card:hover,
-    .song-card:hover,
-    .menu-grid a:hover,
-    .menu-grid button:hover {
-        transform: translateY(-4px);
-
-        background: var(--pd-glass-hover);
-        border-color: rgba(230, 188, 255, 0.38);
-
-        box-shadow:
-            0 16px 35px rgba(93, 39, 144, 0.19),
-            0 0 20px rgba(190, 121, 255, 0.07);
-    }
+.icon-btn {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    color: var(--pd-gold-light);
+    font-size: 18px;
+    background: linear-gradient(145deg, #79132f, #430916);
+    border: 1px solid var(--pd-gold);
+    border-radius: 13px;
+    cursor: pointer;
+    transition: 0.25s ease;
 }
 
-/* A gentle tap response on phones */
-.home-cover:active,
-.days-card:active,
-.song-card:active,
-.menu-grid a:active,
-.menu-grid button:active {
-    transform: scale(0.985);
-}
-
-/* =========================
-   ROMANTIC TYPOGRAPHY
-========================= */
-
-.home-cover h1,
-.home-cover h2,
-.app-header h1,
-.app-header h2 {
-    color: var(--pd-white);
-
-    text-shadow:
-        0 2px 16px rgba(205, 151, 255, 0.17);
-}
-
-.home-cover p,
-.days-card p,
-.song-card p {
-    color: var(--pd-muted);
-}
-
-/* Use this class for selected accent words */
-.pd-accent {
-    color: var(--pd-lavender);
-
-    text-shadow:
-        0 0 18px rgba(204, 151, 255, 0.22);
-}
-
-/* =========================
-   BUTTON FINISH
-========================= */
-
-.phone-app button {
-    font-family: inherit;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.phone-app a {
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* Optional accent button class */
-.pd-love-button {
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.17);
-    border-radius: 15px;
-
-    background: linear-gradient(
-        120deg,
-        #8f4cce,
-        #bd62c5,
-        #e67ab9
-    );
-
-    box-shadow:
-        0 8px 22px rgba(174, 83, 202, 0.22),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-
-    transition:
-        transform 0.25s ease,
-        filter 0.25s ease;
-}
-
-.pd-love-button:hover {
-    filter: brightness(1.1);
+.icon-btn:hover {
+    color: var(--pd-red-dark);
+    background: var(--pd-gold);
     transform: translateY(-2px);
 }
 
-/* =========================
-   SCROLLBAR
-========================= */
-
-.phone-app {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(194, 146, 235, 0.35) transparent;
+.header-logo {
+    flex: 1;
+    color: var(--pd-gold-light);
+    font-family: "Playfair Display", serif;
+    font-size: 19px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.3px;
 }
 
-.phone-app::-webkit-scrollbar {
-    width: 4px;
+.header-logo span {
+    display: inline-block;
+    margin-left: 3px;
+    color: var(--pd-gold);
+    font-family: "DM Sans", sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
 }
 
-.phone-app::-webkit-scrollbar-thumb {
+.header-heart {
+    color: var(--pd-gold);
+    font-size: 25px;
+    text-shadow: 0 0 13px rgba(217, 183, 101, 0.38);
+    animation: pd-heart-beat 2.2s ease-in-out infinite;
+}
+
+@keyframes pd-heart-beat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.13); }
+}
+
+/* -------------------------
+   MAIN CONTENT
+------------------------- */
+
+.app-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+    padding: 18px 17px 30px;
+}
+
+/* -------------------------
+   HERO COVER
+------------------------- */
+
+.home-cover {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 255px;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 50% 20%, rgba(198, 34, 73, 0.54), transparent 56%),
+        linear-gradient(145deg, #7d102d 0%, #450817 53%, #2a0614 100%);
+    border: 1px solid var(--pd-gold);
+    border-radius: 24px;
+    box-shadow:
+        inset 0 0 35px rgba(0, 0, 0, 0.20),
+        0 12px 30px rgba(0, 0, 0, 0.22),
+        var(--pd-glow);
+}
+
+.home-cover::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    z-index: -1;
+    border: 1px solid rgba(243, 221, 160, 0.35);
+    border-radius: 18px;
+    pointer-events: none;
+}
+
+.home-cover::after {
+    content: "♥";
+    position: absolute;
+    right: 17px;
+    bottom: 5px;
+    color: rgba(217, 183, 101, 0.12);
+    font-size: 125px;
+    line-height: 1;
+    transform: rotate(-14deg);
+    pointer-events: none;
+}
+
+.cover-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 50% 55%, transparent 10%, rgba(30, 2, 10, 0.22) 100%),
+        linear-gradient(0deg, rgba(34, 3, 12, 0.45), transparent 75%);
+    pointer-events: none;
+}
+
+.cover-text {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 25px 15px;
+    text-align: center;
+}
+
+.cover-text h1 {
+    margin: 0;
+    color: var(--pd-gold-light);
+    font-family: "Playfair Display", serif;
+    font-size: clamp(39px, 10vw, 55px);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: 0.5px;
+    text-shadow: 0 3px 16px rgba(0, 0, 0, 0.38);
+}
+
+.cover-text h4 {
+    margin: 3px 0;
+    color: var(--pd-gold);
+    font-family: "Playfair Display", serif;
+    font-size: 21px;
+    font-style: italic;
+    font-weight: 500;
+}
+
+.cover-text > span {
+    display: inline-block;
+    margin-top: 14px;
+    color: var(--pd-gold);
+    font-size: 27px;
+    filter: drop-shadow(0 0 10px rgba(217, 183, 101, 0.38));
+    animation: pd-heart-beat 2.2s ease-in-out infinite;
+}
+
+/* -------------------------
+   HOME CARDS
+------------------------- */
+
+.home-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    padding: 17px;
+    color: var(--pd-white);
+    background:
+        linear-gradient(125deg, rgba(124, 17, 47, 0.96), rgba(58, 7, 22, 0.98));
+    border: 1px solid var(--pd-border);
+    border-radius: 19px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.home-card:hover {
+    border-color: var(--pd-gold-light);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24), var(--pd-glow);
+    transform: translateY(-2px);
+}
+
+.home-icon {
+    display: grid;
+    flex: 0 0 48px;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    color: var(--pd-gold);
+    font-size: 21px;
+    background: linear-gradient(145deg, #68102c, #390816);
+    border: 1px solid var(--pd-gold);
+    border-radius: 15px;
+    box-shadow: inset 0 0 12px rgba(217, 183, 101, 0.05);
+}
+
+.home-card small {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--pd-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.home-card strong {
+    display: block;
+    color: var(--pd-gold-light);
+    font-family: "Playfair Display", serif;
+    font-size: 17px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.days-home > div:last-child,
+.song-home-info {
+    flex: 1;
+    min-width: 0;
+}
+
+/* -------------------------
+   SONG CARD
+------------------------- */
+
+.song-home {
+    background:
+        linear-gradient(115deg, rgba(108, 14, 44, 0.98), rgba(62, 8, 32, 0.98) 72%, rgba(77, 34, 94, 0.72));
+}
+
+.song-home .home-icon {
+    color: var(--pd-gold-light);
+}
+
+.play-btn {
+    display: grid;
+    flex: 0 0 43px;
+    place-items: center;
+    width: 43px;
+    height: 43px;
+    color: var(--pd-red-dark);
+    text-decoration: none;
+    background: linear-gradient(135deg, var(--pd-gold-light), var(--pd-gold));
+    border: 1px solid var(--pd-gold-light);
+    border-radius: 50%;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.20);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.play-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 20px rgba(217, 183, 101, 0.30);
+}
+
+/* -------------------------
+   HOME MENU GRID
+------------------------- */
+
+.home-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.home-menu {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+    min-width: 0;
+    min-height: 116px;
+    padding: 17px 10px 14px;
+    color: var(--pd-white);
+    text-align: center;
+    text-decoration: none;
+    background:
+        linear-gradient(145deg, rgba(116, 16, 39, 0.97), rgba(54, 6, 19, 0.99));
+    border: 1px solid var(--pd-border);
+    border-radius: 19px;
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.16);
+    transition:
+        transform 0.23s ease,
+        background 0.23s ease,
+        border-color 0.23s ease,
+        box-shadow 0.23s ease;
+}
+
+.home-menu > i,
+.home-menu > div > i {
+    color: var(--pd-gold);
+    font-size: 25px;
+    filter: drop-shadow(0 2px 7px rgba(217, 183, 101, 0.16));
+    transition: transform 0.23s ease, color 0.23s ease;
+}
+
+.home-menu p {
+    margin: 0;
+    color: var(--pd-white);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.15px;
+}
+
+.home-menu:hover {
+    background: linear-gradient(145deg, #951536, #4c0a20);
+    border-color: var(--pd-gold-light);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22), var(--pd-glow);
+    transform: translateY(-3px);
+}
+
+.home-menu:hover > i,
+.home-menu:hover > div > i {
+    color: var(--pd-gold-light);
+    transform: scale(1.08);
+}
+
+.home-menu:active {
+    transform: scale(0.98);
+}
+
+/* -------------------------
+   CHAT NOTIFICATION
+------------------------- */
+
+.notification {
+    position: absolute;
+    top: 9px;
+    right: 12px;
+    display: grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    color: #fff8e8;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--pd-purple);
+    border: 1px solid var(--pd-gold);
     border-radius: 20px;
-    background: rgba(194, 146, 235, 0.35);
+    box-shadow: 0 0 12px rgba(87, 39, 109, 0.45);
 }
 
-/* =========================
-   ANIMATIONS
-========================= */
+/* -------------------------
+   OUR LITTLE WORLD CARD
+------------------------- */
 
-@keyframes pdAmbientGlow {
-    0% {
-        opacity: 0.55;
-        transform: translate3d(0, 0, 0) scale(0.95);
+.little-world-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-width: 0;
+    padding: 16px 14px;
+    color: var(--pd-white);
+    text-decoration: none;
+    background: linear-gradient(135deg, #72102e, #400819 75%, #4e2364);
+    border: 1px solid var(--pd-gold);
+    border-radius: 19px;
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.17);
+    transition: transform 0.23s ease, box-shadow 0.23s ease;
+}
+
+.little-world-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--pd-glow);
+}
+
+.home-card-icon {
+    display: grid;
+    flex: 0 0 43px;
+    place-items: center;
+    width: 43px;
+    height: 43px;
+    color: var(--pd-gold-light);
+    font-size: 23px;
+    background: rgba(39, 4, 16, 0.40);
+    border: 1px solid rgba(217, 183, 101, 0.65);
+    border-radius: 13px;
+}
+
+.home-card-title {
+    color: var(--pd-gold-light);
+    font-family: "Playfair Display", serif;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* -------------------------
+   OUR TO-DO LIST HOME BUTTON
+------------------------- */
+
+.your-existing-home-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 0;
+    min-height: 116px;
+    padding: 17px 10px 14px;
+    color: var(--pd-white);
+    text-align: center;
+    text-decoration: none;
+    background: linear-gradient(145deg, #78102e, #390714 85%);
+    border: 1px solid var(--pd-gold);
+    border-radius: 19px;
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.16);
+    transition: transform 0.23s ease, box-shadow 0.23s ease;
+}
+
+.your-existing-home-card i {
+    color: var(--pd-gold);
+    font-size: 25px;
+    filter: drop-shadow(0 2px 7px rgba(217, 183, 101, 0.16));
+}
+
+.your-existing-home-card span {
+    color: var(--pd-white);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.your-existing-home-card:hover {
+    background: linear-gradient(145deg, #951536, #4c0a20);
+    border-color: var(--pd-gold-light);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22), var(--pd-glow);
+    transform: translateY(-3px);
+}
+
+/* -------------------------
+   KEYBOARD ACCESSIBILITY
+------------------------- */
+
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--pd-gold-light);
+    outline-offset: 4px;
+}
+
+/* -------------------------
+   SMALL SCREENS
+------------------------- */
+
+@media (max-width: 360px) {
+    .app-header {
+        padding: 15px 13px;
     }
 
-    100% {
-        opacity: 1;
-        transform: translate3d(10px, -14px, 0) scale(1.08);
+    .header-logo {
+        font-size: 16px;
+    }
+
+    .app-content {
+        gap: 13px;
+        padding: 14px 12px 24px;
+    }
+
+    .home-cover {
+        min-height: 225px;
+    }
+
+    .cover-text h1 {
+        font-size: 39px;
+    }
+
+    .home-grid {
+        gap: 9px;
+    }
+
+    .home-menu {
+        min-height: 105px;
+        padding: 14px 7px;
+    }
+
+    .home-menu p,
+    .your-existing-home-card span {
+        font-size: 12px;
+    }
+
+    .home-card {
+        gap: 11px;
+        padding: 14px;
     }
 }
 
-@keyframes pdHeartFloat {
-    0% {
-        transform: translateY(15px);
-        opacity: 0.45;
-    }
-
-    50% {
-        transform: translateY(-12px);
-        opacity: 0.8;
-    }
-
-    100% {
-        transform: translateY(15px);
-        opacity: 0.45;
-    }
-}
-
-/* =========================
-   RESPONSIVE PHONE FRAME
-========================= */
-
-@media (max-width: 480px) {
-    body.phone-page {
-        padding: 0;
-        background: #10071c;
-    }
-
-    .phone-app {
-        width: 100%;
-        max-width: 100%;
-        min-height: 100vh;
-
-        margin: 0;
-        padding: 22px 17px 32px;
-
-        border: none;
-        border-radius: 0;
-
-        box-shadow: none;
-    }
-}
-
-/* =========================
-   ACCESSIBILITY
-========================= */
+/* -------------------------
+   REDUCE MOTION IF REQUESTED
+------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-    .phone-app::before,
-    .phone-app::after,
-    #pd-atmosphere::before,
-    #pd-atmosphere::after {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* =========================================
+   PD — ANIMATED ROMANTIC HERO BACKGROUND
+   Baby wa Hubby ❤️
+========================================= */
+
+.home-cover {
+    isolation: isolate;
+    overflow: hidden;
+    background: linear-gradient(
+        125deg,
+        #350510,
+        #86112f,
+        #4c0a32,
+        #a8173b,
+        #350510
+    );
+    background-size: 300% 300%;
+    animation: pdRomanticBackground 12s ease-in-out infinite;
+}
+
+/* Soft moving golden and purple light */
+.home-cover .cover-overlay {
+    z-index: 0;
+    background:
+        radial-gradient(
+            circle at 18% 28%,
+            rgba(243, 221, 160, 0.18),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 82% 70%,
+            rgba(154, 75, 190, 0.24),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(224, 47, 91, 0.20),
+            transparent 58%
+        );
+    background-size: 200% 200%;
+    animation: pdMovingGlow 8s ease-in-out infinite alternate;
+}
+
+/* Keep the names above the moving background */
+.home-cover .cover-text {
+    z-index: 2;
+    animation: pdNamesFloat 4s ease-in-out infinite;
+}
+
+/* Golden glow on Baby and Hubby */
+.home-cover .cover-text h1 {
+    color: #f8e4aa;
+    text-shadow:
+        0 0 8px rgba(243, 221, 160, 0.25),
+        0 0 22px rgba(217, 183, 101, 0.24),
+        0 4px 15px rgba(0, 0, 0, 0.45);
+    animation: pdGoldenGlow 3s ease-in-out infinite alternate;
+}
+
+.home-cover .cover-text h1:last-of-type {
+    animation-delay: 1.5s;
+}
+
+/* The little "wa" */
+.home-cover .cover-text h4 {
+    color: #e6c6f5;
+    text-shadow: 0 0 12px rgba(180, 113, 216, 0.65);
+}
+
+/* Heart below the names */
+.home-cover .cover-text > span {
+    filter: drop-shadow(0 0 8px rgba(243, 221, 160, 0.55));
+    animation: pdHeartLove 2s ease-in-out infinite;
+}
+
+/* Floating decorative hearts */
+.home-cover::after {
+    content: "♥     ♡";
+    position: absolute;
+    z-index: 1;
+    right: 10px;
+    bottom: 12px;
+    color: rgba(243, 221, 160, 0.25);
+    font-size: 52px;
+    letter-spacing: 12px;
+    white-space: nowrap;
+    pointer-events: none;
+    animation: pdFloatingHearts 6s ease-in-out infinite;
+}
+
+/* Moving gradient */
+@keyframes pdRomanticBackground {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Drifting light */
+@keyframes pdMovingGlow {
+    0% {
+        background-position: 0% 0%;
+        opacity: 0.75;
+    }
+    100% {
+        background-position: 100% 100%;
+        opacity: 1;
+    }
+}
+
+/* Gentle floating movement */
+@keyframes pdNamesFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+}
+
+/* Gold text shimmer */
+@keyframes pdGoldenGlow {
+    0% {
+        text-shadow:
+            0 0 7px rgba(243, 221, 160, 0.18),
+            0 0 15px rgba(217, 183, 101, 0.15),
+            0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+    100% {
+        text-shadow:
+            0 0 10px rgba(243, 221, 160, 0.45),
+            0 0 28px rgba(217, 183, 101, 0.38),
+            0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* Cute pulsing heart */
+@keyframes pdHeartLove {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.22);
+    }
+}
+
+/* Decorative heart drift */
+@keyframes pdFloatingHearts {
+    0%, 100% {
+        transform: translate(0, 0) rotate(-8deg);
+        opacity: 0.45;
+    }
+    50% {
+        transform: translate(-12px, -15px) rotate(5deg);
+        opacity: 0.9;
+    }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .home-cover,
+    .home-cover .cover-overlay,
+    .home-cover .cover-text,
+    .home-cover .cover-text h1,
+    .home-cover .cover-text > span,
+    .home-cover::after {
         animation: none !important;
     }
-
-    .home-cover,
-    .days-card,
-    .song-card,
-    .menu-grid a,
-    .menu-grid button,
-    .pd-love-button {
-        transition: none;
-    }
-}
-
-.little-world-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 9px;
-  overflow: hidden;
-  padding: 18px;
-  border: 1px solid rgba(214, 174, 255, .3);
-  border-radius: 20px;
-  color: #fff4ff;
-  text-decoration: none;
-  background:
-    radial-gradient(circle at 100% 0%, #f18acb35, transparent 48%),
-    linear-gradient(135deg, #5b3478, #382044 75%);
-  box-shadow: 0 9px 25px rgba(17, 7, 29, .2);
-  transition: transform .25s, box-shadow .25s;
-}
-
-.little-world-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 30px rgba(170, 104, 225, .2);
-}
-
-.little-world-card .home-card-icon {
-  display: grid;
-  place-items: center;
-  width: 43px;
-  height: 43px;
-  border-radius: 15px;
-  background: rgba(255, 255, 255, .12);
-  font-size: 23px;
-}
-
-.little-world-card .home-card-title {
-  font-weight: 700;
-  font-size: 15px;
-}
-
-.little-world-card .home-card-description {
-  color: #e5ccef;
-  font-size: 11px;
-  line-height: 1.6;
-}
-
-.little-world-card .home-card-arrow {
-  position: absolute;
-  top: 18px;
-  right: 17px;
-  color: #ffc5e7;
-  font-size: 20px;
-}
-/* OUR LITTLE WORLD — inside the phone homepage */
-.little-world-card {
-  position: relative;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 9px;
-
-  padding: 18px;
-  margin: 0;
-
-  border: 1px solid rgba(214, 174, 255, 0.35);
-  border-radius: 20px;
-
-  color: #fff4ff;
-  text-decoration: none;
-
-  background:
-    radial-gradient(
-      circle at 100% 0%,
-      rgba(241, 138, 203, 0.22),
-      transparent 48%
-    ),
-    linear-gradient(135deg, #654083, #382044 75%);
-
-  box-shadow: 0 8px 22px rgba(17, 7, 29, 0.18);
-  transition: transform 0.25s, box-shadow 0.25s;
-}
-
-.little-world-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 26px rgba(170, 104, 225, 0.25);
-}
-
-.little-world-card .home-card-icon {
-  display: grid;
-  place-items: center;
-  width: 43px;
-  height: 43px;
-  border-radius: 15px;
-  background: rgba(255, 255, 255, 0.12);
-  font-size: 23px;
-}
-
-.little-world-card .home-card-title {
-  color: #fff4ff;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.little-world-card .home-card-description {
-  color: #e5ccef;
-  font-size: 11px;
-  line-height: 1.6;
-}
-
-.little-world-card .home-card-arrow {
-  position: absolute;
-  top: 18px;
-  right: 17px;
-  color: #ffc5e7;
-  font-size: 20px;
 }
