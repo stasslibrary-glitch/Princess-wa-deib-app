@@ -1,540 +1,260 @@
-
 /* =========================================================
-   PRINCESS WA DEIB — CHAT PAGE
-   chat.css
-   ---------------------------------------------------------
-   Visual design for the Firebase chat.
-   Header + input stay fixed.
-   Only messages scroll.
+   PRINCESS WA DEIB — ROYAL RED & GOLD CHAT
+   Valentine Red • Gold • Subtle Purple
    ========================================================= */
 
-/* =========================================================
-   PD CHAT — FULL PAGE RESET
-   ========================================================= */
+:root {
+    --chat-bg: #25050d;
+    --chat-deep: #320610;
+    --chat-panel: #480a1b;
+    --chat-red: #74112c;
+    --chat-red-bright: #a8173b;
+    --chat-red-light: #cf2d52;
 
-html {
+    --chat-gold: #d9b765;
+    --chat-gold-light: #f3dda0;
+    --chat-gold-dark: #9c7634;
+
+    --chat-purple: #57276d;
+    --chat-purple-light: #84509a;
+
+    --chat-text: #fff5f1;
+    --chat-muted: #d2b5bd;
+    --chat-border: rgba(217, 183, 101, 0.42);
+
+    --chat-shadow: 0 10px 30px rgba(0, 0, 0, 0.24);
+}
+
+/* =========================
+   PAGE AND PHONE APP
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
     width: 100%;
     height: 100%;
     margin: 0;
-    padding: 0;
-    background: #080512;
 }
 
 body.phone-page {
-    width: 100%;
-    height: 100%;
-    min-height: 100dvh;
-
-    margin: 0;
-    padding: 0;
-
-    background: #080512;
-
     overflow: hidden;
+    color: var(--chat-text);
+    background:
+        radial-gradient(ellipse at 10% 0%, rgba(120, 17, 47, 0.25), transparent 42%),
+        radial-gradient(ellipse at 95% 85%, rgba(87, 39, 109, 0.16), transparent 38%),
+        var(--chat-bg);
+    font-family: "DM Sans", sans-serif;
 }
 
-/* =========================================================
-   CHAT APP — FULL MOBILE VIEWPORT
-   ========================================================= */
+button,
+textarea,
+input {
+    font: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    color: inherit;
+}
 
 .phone-app.chat-app {
     position: relative;
-
-    width: 390px !important;
-height: 844px !important;
-min-height: 0 !important;
-max-height: 844px !important;
-
-border: 7px solid #222 !important;
-border-radius: 35px !important;
-
-    margin: 0;
-    padding: 0;
-
-    box-sizing: border-box;
-
     display: flex;
     flex-direction: column;
-
-    overflow: hidden;
-
-    background:
-        radial-gradient(
-            circle at 15% 15%,
-            rgba(255, 40, 130, 0.20),
-            transparent 28%
-        ),
-        radial-gradient(
-            circle at 85% 25%,
-            rgba(145, 50, 255, 0.22),
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 50% 100%,
-            rgba(255, 35, 95, 0.16),
-            transparent 35%
-        ),
-        linear-gradient(
-            145deg,
-            #090513 0%,
-            #14081d 45%,
-            #080512 100%
-        );
-}
-/* =========================================================
-   1. PAGE RESET
-   ========================================================= */
-
-.chat-app,
-.chat-app * {
-    box-sizing: border-box;
-}
-
-.chat-app {
-    position: relative;
-    height: 100dvh;
-    min-height: 100dvh;
-
-    display: flex;
-    flex-direction: column;
-
-    overflow: hidden;
-
-    isolation: isolate;
-
-    color: #fff;
-
-    background:
-        radial-gradient(
-            circle at 15% 15%,
-            rgba(255, 40, 130, 0.20),
-            transparent 28%
-        ),
-        radial-gradient(
-            circle at 85% 25%,
-            rgba(145, 50, 255, 0.22),
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 50% 100%,
-            rgba(255, 35, 95, 0.16),
-            transparent 35%
-        ),
-        linear-gradient(
-            145deg,
-            #090513 0%,
-            #14081d 45%,
-            #080512 100%
-        );
-}
-
-
-/* =========================================================
-   2. ANIMATED ROMANTIC GLOW
-   ========================================================= */
-
-.chat-app::before {
-    content: "";
-
-    position: absolute;
-    inset: -30%;
-
-    z-index: -2;
-
-    background:
-        radial-gradient(
-            circle at 25% 30%,
-            rgba(255, 35, 120, 0.18),
-            transparent 25%
-        ),
-        radial-gradient(
-            circle at 75% 65%,
-            rgba(145, 55, 255, 0.20),
-            transparent 28%
-        );
-
-    filter: blur(45px);
-
-    animation: pdChatGlow 12s ease-in-out infinite alternate;
-}
-
-@keyframes pdChatGlow {
-
-    0% {
-        transform: translate(
-            -5%,
-            -3%
-        ) scale(1);
-    }
-
-    50% {
-        transform: translate(
-            5%,
-            4%
-        ) scale(1.08);
-    }
-
-    100% {
-        transform: translate(
-            -2%,
-            6%
-        ) scale(1.03);
-    }
-}
-
-
-/* =========================================================
-   3. SMALL BACKGROUND STARS / LIGHTS
-   ========================================================= */
-
-.chat-app::after {
-    content: "✦   ·      ✧        ·   ♥       ·        ✦";
-
-    position: absolute;
-
-    top: 15%;
-    left: 0;
-
     width: 100%;
-
-    z-index: -1;
-
-    color: rgba(255, 255, 255, 0.13);
-
-    font-size: 13px;
-
-    letter-spacing: 15px;
-
-    pointer-events: none;
-
-    animation: pdStars 8s ease-in-out infinite alternate;
+    max-width: 520px;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    margin: 0 auto;
+    overflow: hidden;
+    background:
+        linear-gradient(180deg, rgba(82, 9, 29, 0.94), rgba(36, 5, 14, 0.98));
+    box-shadow: 0 0 55px rgba(0, 0, 0, 0.30);
 }
 
-@keyframes pdStars {
-
-    from {
-        opacity: 0.35;
-        transform: translateX(-8px);
-    }
-
-    to {
-        opacity: 0.75;
-        transform: translateX(8px);
-    }
-}
-
-
-/* =========================================================
-   4. CHAT HEADER
-   ========================================================= */
+/* =========================
+   CHAT HEADER
+========================= */
 
 .chat-header {
     position: relative;
-
-    flex: 0 0 72px;
-
-    width: 100%;
-
-    min-height: 72px;
-    height: 72px;
-
+    z-index: 5;
     display: flex;
+    flex: 0 0 auto;
     align-items: center;
-
-    padding:
-        10px
-        13px;
-
     gap: 12px;
-
-    z-index: 50;
-
+    min-height: 76px;
+    padding: 12px 15px;
     background:
-        linear-gradient(
-            135deg,
-            rgba(14, 8, 25, 0.97),
-            rgba(32, 10, 32, 0.94)
-        );
-
-    border-bottom:
-        1px solid
-        rgba(255, 255, 255, 0.09);
-
-    box-shadow:
-        0 8px 25px
-        rgba(0, 0, 0, 0.30),
-
-        0 1px 0
-        rgba(255, 65, 150, 0.12);
-
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+        linear-gradient(125deg, #78112d, #460817 76%, #492052);
+    border-bottom: 1px solid var(--chat-gold);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.22);
 }
 
-
-/* =========================================================
-   5. BACK ARROW
-   ========================================================= */
-
-.chat-header > a {
+.chat-header > a:first-child {
+    display: grid;
     flex: 0 0 38px;
-
+    place-items: center;
     width: 38px;
     height: 38px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-
-    color: #fff;
-
+    color: var(--chat-gold-light);
     text-decoration: none;
-
-    background:
-        rgba(255, 255, 255, 0.07);
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.08);
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease,
-        box-shadow 0.2s ease;
+    background: rgba(35, 4, 13, 0.45);
+    border: 1px solid var(--chat-border);
+    border-radius: 12px;
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.chat-header > a:hover {
-    background:
-        rgba(255, 55, 140, 0.20);
-
-    box-shadow:
-        0 0 18px
-        rgba(255, 50, 140, 0.25);
-
+.chat-header > a:first-child:hover {
+    background: var(--chat-red-bright);
     transform: translateX(-2px);
 }
 
-.chat-header > a:active {
-    transform: scale(0.90);
-}
-
-.chat-header > a i {
+.chat-header > a:first-child i {
     font-size: 15px;
 }
 
-
-/* =========================================================
-   6. PERSON AREA
-   ========================================================= */
-
 .chat-person {
-    min-width: 0;
-
-    flex: 1;
-
     display: flex;
+    flex: 1 1 auto;
     align-items: center;
-
     gap: 10px;
+    min-width: 0;
 }
-
-
-/* =========================================================
-   7. PROFILE PHOTO
-   ========================================================= */
 
 .person-avatar {
     position: relative;
-
-    flex: 0 0 45px;
-
-    width: 45px;
-    height: 45px;
-
-    padding: 2px;
-
+    flex: 0 0 46px;
+    width: 46px;
+    height: 46px;
+    overflow: hidden;
+    background: var(--chat-panel);
+    border: 2px solid var(--chat-gold);
     border-radius: 50%;
-
-    background:
-        linear-gradient(
-            135deg,
-            #ff3c8d,
-            #a85cff,
-            #ff3c8d
-        );
-
-    box-shadow:
-        0 0 12px
-        rgba(255, 45, 135, 0.35);
-}
-
-.person-avatar::after {
-    content: "";
-
-    position: absolute;
-
-    right: 1px;
-    bottom: 1px;
-
-    width: 11px;
-    height: 11px;
-
-    border-radius: 50%;
-
-    background: #48ef91;
-
-    border:
-        2px solid
-        #160a1e;
-
-    box-shadow:
-        0 0 8px
-        rgba(72, 239, 145, 0.7);
+    box-shadow: 0 0 13px rgba(217, 183, 101, 0.13);
 }
 
 .person-avatar img {
+    display: block;
     width: 100%;
     height: 100%;
-
-    display: block;
-
     object-fit: cover;
-
-    border-radius: 50%;
 }
 
-
-/* =========================================================
-   8. PERSON NAME
-   ========================================================= */
-
-.chat-person > div:last-child {
-    min-width: 0;
-
+.chat-person-details {
     display: flex;
+    flex: 1;
     flex-direction: column;
-
-    justify-content: center;
-
-    gap: 2px;
+    min-width: 0;
 }
 
-.chat-person strong {
-    display: block;
-
-    max-width: 150px;
-
+.chat-person-details strong {
     overflow: hidden;
-
-    white-space: nowrap;
+    color: var(--chat-gold-light);
+    font-family: "Playfair Display", serif;
+    font-size: 16px;
+    font-weight: 600;
     text-overflow: ellipsis;
-
-    color: #fff;
-
-    font-family:
-        "DM Sans",
-        sans-serif;
-
-    font-size: 15px;
-
-    font-weight: 700;
+    white-space: nowrap;
 }
 
-.online-status {
+.chat-person .pd-presence-status {
     display: block;
-
-    color: #a7f5c8;
-
-    font-family:
-        "DM Sans",
-        sans-serif;
-
-    font-size: 11px;
-
-    font-weight: 500;
-
-    letter-spacing: 0.2px;
+    margin-top: 3px;
+    color: var(--chat-muted);
+    font-family: "DM Sans", sans-serif;
+    font-size: 10px;
+    line-height: 1.4;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+    transition: color 0.25s ease;
 }
 
+.chat-person .pd-presence-status.is-online {
+    color: #f0d58a;
+    text-shadow: 0 0 8px rgba(217, 183, 101, 0.22);
+}
 
-/* =========================================================
-   9. HEADER ACTIONS
-   ========================================================= */
+.chat-person .pd-presence-status.is-offline {
+    color: #d9a4b2;
+    text-shadow: none;
+}
 
 .chat-actions {
     display: flex;
+    flex: 0 0 auto;
     align-items: center;
-
-    gap: 5px;
+    gap: 7px;
 }
 
-.chat-actions i {
-    width: 38px;
-    height: 38px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-
-    color: rgba(255, 255, 255, 0.86);
-
-    font-size: 15px;
-
+.call-button,
+.video-call-button,
+.chat-more-button {
+    display: grid;
+    flex: 0 0 35px;
+    place-items: center;
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    color: var(--chat-gold-light);
+    text-decoration: none;
+    background: rgba(36, 4, 13, 0.38);
+    border: 1px solid var(--chat-border);
+    border-radius: 11px;
+    cursor: pointer;
     transition:
+        color 0.2s ease,
         background 0.2s ease,
         transform 0.2s ease;
 }
 
-.chat-actions i:hover {
-    background:
-        rgba(255, 255, 255, 0.08);
-
-    transform: scale(1.05);
+.call-button:hover,
+.video-call-button:hover,
+.chat-more-button:hover {
+    color: var(--chat-bg);
+    background: var(--chat-gold);
+    transform: translateY(-2px);
 }
 
+.call-button i,
+.video-call-button i,
+.chat-more-button i {
+    font-size: 14px;
+}
 
-/* =========================================================
-   10. MESSAGE AREA
-   ---------------------------------------------------------
-   THIS IS THE ONLY SCROLLING AREA.
-   ========================================================= */
+/* =========================
+   MESSAGE AREA
+========================= */
 
 .chat-messages {
     position: relative;
-
+    display: flex;
     flex: 1 1 auto;
-
+    flex-direction: column;
+    gap: 12px;
     min-height: 0;
-
-    width: 100%;
-
-    padding:
-        14px
-        10px
-        16px;
-
+    padding: 20px 13px 18px;
     overflow-x: hidden;
     overflow-y: auto;
-
     overscroll-behavior: contain;
-
+    scrollbar-color: rgba(217, 183, 101, 0.45) transparent;
+    scrollbar-width: thin;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(115, 16, 43, 0.13), transparent 65%);
     scroll-behavior: smooth;
-
-    -webkit-overflow-scrolling: touch;
-
-    display: flex;
-    flex-direction: column;
 }
 
-
-/* scrollbar */
-
 .chat-messages::-webkit-scrollbar {
-    width: 4px;
+    width: 5px;
 }
 
 .chat-messages::-webkit-scrollbar-track {
@@ -542,612 +262,289 @@ border-radius: 35px !important;
 }
 
 .chat-messages::-webkit-scrollbar-thumb {
-    background:
-        rgba(255, 80, 160, 0.30);
-
+    background: rgba(217, 183, 101, 0.4);
     border-radius: 20px;
 }
 
+/* =========================
+   MESSAGE BUBBLES
+   These styles support common
+   message class names.
+========================= */
 
-/* =========================================================
-   11. DATE SEPARATOR
-   ========================================================= */
-
-.chat-date-separator {
-    width: 100%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin:
-        12px
-        0
-        15px;
-}
-
-.chat-date-separator span {
-    padding:
-        6px
-        12px;
-
-    border-radius: 20px;
-
-    background:
-        rgba(255, 255, 255, 0.07);
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.07);
-
-    color:
-        rgba(255, 255, 255, 0.58);
-
-    font-size: 10px;
-
-    font-weight: 600;
-
-    letter-spacing: 0.3px;
-
-    backdrop-filter: blur(8px);
-}
-
-
-/* =========================================================
-   12. MESSAGE
-   ========================================================= */
-
-.message {
+.message,
+.message-bubble,
+.chat-message {
     position: relative;
-
-    max-width: 78%;
-
-    margin-bottom: 7px;
-
-    padding:
-        9px
-        11px
-        7px;
-
-    border-radius: 17px;
-
-    animation:
-        pdMessageIn
-        0.25s
-        ease-out;
-}
-
-@keyframes pdMessageIn {
-
-    from {
-        opacity: 0;
-        transform: translateY(6px) scale(0.98);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-
-/* =========================================================
-   13. RECEIVED MESSAGE
-   ========================================================= */
-
-.message.received {
-    align-self: flex-start;
-
-    margin-right: auto;
-
-    border-top-left-radius: 5px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.095),
-            rgba(255, 255, 255, 0.055)
-        );
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.07);
-
-    box-shadow:
-        0 5px 16px
-        rgba(0, 0, 0, 0.16);
-}
-
-
-/* =========================================================
-   14. SENT MESSAGE
-   ========================================================= */
-
-.message.sent {
-    align-self: flex-end;
-
-    margin-left: auto;
-
-    border-top-right-radius: 5px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(173, 62, 255, 0.78),
-            rgba(255, 46, 139, 0.76)
-        );
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.10);
-
-    box-shadow:
-        0 6px 20px
-        rgba(190, 44, 145, 0.22);
-}
-
-
-/* =========================================================
-   15. MESSAGE TEXT
-   ========================================================= */
-
-.message-text {
-    color: #fff;
-
-    font-family:
-        "DM Sans",
-        sans-serif;
-
-    font-size: 14px;
-
-    line-height: 1.45;
-
+    max-width: 82%;
+    padding: 11px 13px;
+    color: var(--chat-text);
+    overflow-wrap: anywhere;
     word-break: break-word;
+    border-radius: 16px;
+    animation: pdMessageAppear 0.22s ease-out;
+}
 
+.message.sent,
+.message-bubble.sent,
+.chat-message.sent,
+.message.outgoing,
+.chat-message.outgoing,
+.message.own,
+.message.my-message {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #9b173a, #68102a);
+    border: 1px solid rgba(217, 183, 101, 0.65);
+    border-bottom-right-radius: 5px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.13);
+}
+
+.message.received,
+.message-bubble.received,
+.chat-message.received,
+.message.incoming,
+.chat-message.incoming,
+.message.their-message {
+    align-self: flex-start;
+    background: linear-gradient(135deg, #4b102a, #351020);
+    border: 1px solid rgba(217, 183, 101, 0.28);
+    border-bottom-left-radius: 5px;
+}
+
+.message p,
+.message-bubble p,
+.chat-message p {
+    margin: 0;
+    color: var(--chat-text);
+    font-size: 14px;
+    line-height: 1.55;
     white-space: pre-wrap;
-
-    padding-right: 3px;
 }
 
-
-/* =========================================================
-   16. MESSAGE TIME
-   ========================================================= */
-
-.message-time {
+.message-time,
+.message-timestamp,
+.message-meta,
+.message-status {
     display: block;
-
-    margin-top: 3px;
-
+    margin-top: 6px;
+    color: #e1c7cb;
+    font-size: 10px;
+    line-height: 1.4;
     text-align: right;
-
-    color:
-        rgba(255, 255, 255, 0.48);
-
-    font-size: 9px;
-
-    line-height: 1;
 }
 
-
-/* =========================================================
-   17. VOICE MESSAGE
-   ========================================================= */
-
-.voice-message {
-    padding: 6px;
+.message.sent .message-time,
+.message.outgoing .message-time,
+.message.own .message-time {
+    color: var(--chat-gold-light);
 }
 
-.voice-message-box {
-    display: flex;
-    align-items: center;
+/* Date separator */
 
-    gap: 7px;
+.date-separator,
+.message-date,
+.chat-date-separator {
+    align-self: center;
+    max-width: 90%;
+    margin: 5px auto;
+    padding: 6px 13px;
+    color: var(--chat-gold-light);
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+    background: rgba(73, 12, 32, 0.86);
+    border: 1px solid var(--chat-border);
+    border-radius: 30px;
 }
 
-.voice-icon {
-    flex: 0 0 30px;
+/* Reply preview */
 
-    width: 30px;
-    height: 30px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-
-    background:
-        rgba(255, 255, 255, 0.12);
-
-    color: #fff;
-
-    font-size: 12px;
+.reply-preview,
+.reply-quote,
+.message-reply {
+    margin-bottom: 8px;
+    padding: 7px 9px;
+    color: var(--chat-muted);
+    font-size: 11px;
+    background: rgba(35, 4, 13, 0.42);
+    border-left: 3px solid var(--chat-gold);
+    border-radius: 5px;
 }
 
-.voice-message audio {
-    width: 170px;
+/* Message images */
 
+.message img,
+.message-bubble img,
+.chat-message img {
     max-width: 100%;
-
-    height: 35px;
+    height: auto;
+    border-radius: 10px;
 }
 
+/* Voice notes */
 
-/* =========================================================
-   18. BOTTOM INPUT BAR
-   ---------------------------------------------------------
-   IMPORTANT:
-   flex-shrink: 0 keeps this visible.
-   ========================================================= */
+.voice-message,
+.voice-note,
+audio {
+    max-width: 100%;
+}
+
+.voice-message,
+.voice-note {
+    color: var(--chat-gold-light);
+}
+
+audio {
+    accent-color: var(--chat-gold);
+}
+
+/* =========================
+   MESSAGE INPUT
+========================= */
 
 .chat-input {
     position: relative;
-
-    flex: 0 0 auto;
-
-    width: 100%;
-
-    min-height: 68px;
-
+    z-index: 5;
     display: flex;
-    align-items: center;
-
-    gap: 7px;
-
-    padding:
-        9px
-        9px
-        calc(9px + env(safe-area-inset-bottom));
-
-    z-index: 60;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(11, 7, 20, 0.98),
-            rgba(28, 8, 27, 0.97)
-        );
-
-    border-top:
-        1px solid
-        rgba(255, 255, 255, 0.08);
-
-    box-shadow:
-        0 -8px 28px
-        rgba(0, 0, 0, 0.30);
-
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    flex: 0 0 auto;
+    align-items: flex-end;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(135deg, #50091d, #310610);
+    border-top: 1px solid var(--chat-gold);
+    box-shadow: 0 -5px 22px rgba(0, 0, 0, 0.19);
 }
 
-
-/* =========================================================
-   19. MESSAGE INPUT
-   ========================================================= */
-
 #messageInput {
+    display: block;
     flex: 1 1 auto;
-
+    width: 0;
     min-width: 0;
-
-    height: 45px;
-
-    padding:
-        0
-        14px;
-
-    border: none;
+    min-height: 43px;
+    max-height: 125px;
+    margin: 0;
+    padding: 12px 13px;
+    resize: none;
+    overflow-y: auto;
+    color: var(--chat-text);
+    font-family: "DM Sans", sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    background: #380817;
+    border: 1px solid rgba(217, 183, 101, 0.45);
+    border-radius: 15px;
     outline: none;
-
-    border-radius: 24px;
-
-    background:
-        rgba(255, 255, 255, 0.08);
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.08);
-
-    color: #fff;
-
-    font-family:
-        "DM Sans",
-        sans-serif;
-
-    font-size: 13px;
-
-    transition:
-        border-color 0.2s ease,
-        background 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 #messageInput::placeholder {
-    color:
-        rgba(255, 255, 255, 0.40);
+    color: #c6a7b0;
+    opacity: 1;
 }
 
 #messageInput:focus {
-    background:
-        rgba(255, 255, 255, 0.105);
-
-    border-color:
-        rgba(207, 87, 255, 0.50);
-
-    box-shadow:
-        0 0 14px
-        rgba(180, 70, 255, 0.12);
+    background: #41091b;
+    border-color: var(--chat-gold);
+    box-shadow: 0 0 0 3px rgba(217, 183, 101, 0.09);
 }
-
-
-/* =========================================================
-   20. BOTTOM BUTTONS
-   ========================================================= */
 
 .attach-button,
 .send-message {
+    display: grid;
     flex: 0 0 42px;
-
+    place-items: center;
     width: 42px;
-    height: 42px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+    height: 43px;
     padding: 0;
-
-    border: none;
-
-    border-radius: 50%;
-
+    border-radius: 13px;
     cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
 
-    color: rgba(255, 255, 255, 0.82);
-
-    background:
-        rgba(255, 255, 255, 0.07);
-
-    transition:
-        transform 0.18s ease,
-        background 0.18s ease,
-        box-shadow 0.18s ease;
+.attach-button {
+    color: var(--chat-gold);
+    background: #480a1b;
+    border: 1px solid var(--chat-border);
 }
 
 .attach-button:hover {
-    background:
-        rgba(255, 255, 255, 0.12);
-
-    transform: scale(1.05);
+    color: var(--chat-gold-light);
+    background: var(--chat-purple);
+    transform: translateY(-2px);
 }
-
-.attach-button:active,
-.send-message:active {
-    transform: scale(0.90);
-}
-
-
-/* =========================================================
-   21. VOICE BUTTON
-   ========================================================= */
-
-#voiceButton {
-    color: #ff83ba;
-}
-
-#voiceButton.recording {
-    color: #fff;
-
-    background:
-        linear-gradient(
-            135deg,
-            #ff2d78,
-            #ff4ba2
-        );
-
-    box-shadow:
-        0 0 18px
-        rgba(255, 45, 120, 0.55);
-
-    animation:
-        pdRecordingPulse
-        1s
-        infinite;
-}
-
-@keyframes pdRecordingPulse {
-
-    0%,
-    100% {
-        box-shadow:
-            0 0 8px
-            rgba(255, 45, 120, 0.35);
-    }
-
-    50% {
-        box-shadow:
-            0 0 22px
-            rgba(255, 45, 120, 0.70);
-    }
-}
-
-
-/* =========================================================
-   22. UPLOADING VOICE
-   ========================================================= */
-
-#voiceButton.uploading {
-    opacity: 0.55;
-
-    pointer-events: none;
-
-    animation:
-        pdUploading
-        0.8s
-        linear
-        infinite;
-}
-
-@keyframes pdUploading {
-
-    50% {
-        transform: scale(0.92);
-    }
-}
-
-
-/* =========================================================
-   23. SEND BUTTON
-   ========================================================= */
 
 .send-message {
-    color: #fff;
-
-    background:
-        linear-gradient(
-            135deg,
-            #a64dff,
-            #f22c8c
-        );
-
-    box-shadow:
-        0 5px 16px
-        rgba(213, 48, 145, 0.30);
+    color: #30050e;
+    background: linear-gradient(135deg, var(--chat-gold-light), var(--chat-gold));
+    border: 1px solid var(--chat-gold-light);
+    box-shadow: 0 4px 13px rgba(0, 0, 0, 0.18);
 }
 
 .send-message:hover {
-    box-shadow:
-        0 0 22px
-        rgba(213, 48, 145, 0.50);
-
-    transform: scale(1.05);
+    background: #ffe9ae;
+    transform: translateY(-2px);
 }
 
-.send-message:disabled {
-    opacity: 0.45;
-
-    cursor: not-allowed;
-
-    transform: none;
-
-    box-shadow: none;
+.send-message i {
+    font-size: 15px;
 }
 
+.attach-button i {
+    font-size: 15px;
+}
 
-/* =========================================================
-   24. LOADING SCREEN
-   ========================================================= */
+/* =========================
+   LOADING SCREEN
+========================= */
 
 #pd-chat-loader {
     position: absolute;
-
     inset: 0;
-
-    z-index: 100;
-
+    z-index: 20;
     display: flex;
     flex-direction: column;
-
     align-items: center;
     justify-content: center;
-
+    gap: 12px;
+    padding: 25px;
     text-align: center;
-
     background:
-        radial-gradient(
-            circle at center,
-            rgba(125, 36, 150, 0.30),
-            transparent 45%
-        ),
-        linear-gradient(
-            145deg,
-            #09040f,
-            #19071c
-        );
-
-    transition:
-        opacity 0.18s ease,
-        visibility 0.18s ease;
-}
-
-#pd-chat-loader.pd-loaded {
-    opacity: 0;
-
-    visibility: hidden;
-
-    pointer-events: none;
+        radial-gradient(circle at 50% 38%, rgba(132, 23, 57, 0.5), transparent 40%),
+        linear-gradient(145deg, #2a050f, #570b23, #28050d);
 }
 
 .pd-loader-heart {
-    font-size: 43px;
-
-    color: #ff3d91;
-
-    text-shadow:
-        0 0 10px #ff3d91,
-        0 0 28px rgba(255, 61, 145, 0.65);
-
-    animation:
-        pdLoaderHeart
-        1.2s
-        ease-in-out
-        infinite;
-}
-
-@keyframes pdLoaderHeart {
-
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.15);
-    }
+    color: var(--chat-gold);
+    font-size: 48px;
+    text-shadow: 0 0 25px rgba(217, 183, 101, 0.4);
+    animation: pdLoaderBeat 1.3s ease-in-out infinite;
 }
 
 .pd-loader-title {
-    margin-top: 10px;
-
-    font-family:
-        "Playfair Display",
-        serif;
-
-    font-size: 22px;
-
-    color: #fff;
+    color: var(--chat-gold-light);
+    font-family: "Playfair Display", serif;
+    font-size: 27px;
+    font-weight: 600;
 }
 
 .pd-loader-text {
-    margin-top: 5px;
-
-    color:
-        rgba(255, 255, 255, 0.55);
-
-    font-size: 11px;
+    color: var(--chat-muted);
+    font-size: 13px;
 }
 
 .pd-loader-dots {
     display: flex;
-
-    gap: 5px;
-
-    margin-top: 14px;
+    gap: 7px;
+    margin-top: 4px;
 }
 
 .pd-loader-dots span {
-    width: 5px;
-    height: 5px;
-
+    width: 7px;
+    height: 7px;
+    background: var(--chat-gold);
     border-radius: 50%;
-
-    background: #ff4c9d;
-
-    animation:
-        pdLoaderDot
-        1s
-        infinite;
+    animation: pdLoaderDot 1s ease-in-out infinite;
 }
 
 .pd-loader-dots span:nth-child(2) {
@@ -1155,1836 +552,712 @@ border-radius: 35px !important;
 }
 
 .pd-loader-dots span:nth-child(3) {
-    animation-delay: 0.30s;
+    animation-delay: 0.3s;
 }
 
-@keyframes pdLoaderDot {
-
-    0%,
-    100% {
-        opacity: 0.25;
-        transform: translateY(0);
-    }
-
-    50% {
-        opacity: 1;
-        transform: translateY(-4px);
-    }
-}
-
-
-/* =========================================================
-   25. SMALL PHONES
-   ========================================================= */
-
-@media (max-width: 380px) {
-
-    .chat-header {
-        flex-basis: 67px;
-        height: 67px;
-        min-height: 67px;
-
-        padding:
-            8px
-            9px;
-    }
-
-    .person-avatar {
-        width: 41px;
-        height: 41px;
-
-        flex-basis: 41px;
-    }
-
-    .chat-person strong {
-        font-size: 14px;
-    }
-
-    .chat-actions i {
-        width: 32px;
-        height: 32px;
-    }
-
-    .message {
-        max-width: 83%;
-    }
-
-    .chat-input {
-        min-height: 64px;
-
-        gap: 5px;
-
-        padding:
-            7px
-            6px
-            calc(7px + env(safe-area-inset-bottom));
-    }
-
-    #messageInput {
-        height: 42px;
-
-        padding:
-            0
-            12px;
-
-        font-size: 12px;
-    }
-
-    .attach-button,
-    .send-message {
-        width: 39px;
-        height: 39px;
-
-        flex-basis: 39px;
-    }
-}
-
-
-/* =========================================================
-   26. TALL / DESKTOP PHONE FRAME
-   ========================================================= */
-
-@media (min-width: 600px) {
-
-    .chat-header {
-        border-radius:
-            20px
-            20px
-            0
-            0;
-    }
-
-    .chat-input {
-        border-radius:
-            0
-            0
-            20px
-            20px;
-    }
-}
-
-
-/* =========================================================
-   27. ACCESSIBILITY
-   ========================================================= */
-
-button:focus-visible,
-a:focus-visible,
-input:focus-visible {
-    outline:
-        2px solid
-        rgba(210, 110, 255, 0.75);
-
-    outline-offset: 2px;
-}
-/* =========================================================
-   PD CHAT — FINAL MOBILE VIEWPORT FIX
-   ========================================================= */
-
-.chat-app {
-    position: relative;
-    width: 100%;
-    height: 100dvh;
-    min-height: 0;
-    max-height: 100dvh;
-
-    display: flex;
-    flex-direction: column;
-
-    overflow: hidden;
-}
-
-/* =========================================================
-   HEADER
-   ========================================================= */
-
-.chat-header {
-    position: relative;
-
-    flex: 0 0 70px;
-
-    width: 100%;
-    height: 70px;
-    min-height: 70px;
-
-    z-index: 50;
-}
-
-/* =========================================================
-   MESSAGES
-   ========================================================= */
-
-.chat-messages {
-    flex: 1 1 0;
-
-    width: 100%;
-    min-height: 0;
-    height: auto;
-
-    overflow-x: hidden;
-    overflow-y: auto;
-
-    -webkit-overflow-scrolling: touch;
-
-    padding-bottom: 12px;
-}
-
-/* =========================================================
-   BOTTOM INPUT
-   ========================================================= */
-
-.chat-input {
-    position: relative;
-
-    flex: 0 0 auto;
-
-    width: 100%;
-    min-height: 64px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 6px;
-
-    padding: 7px 7px;
-
-    /* Important: don't add the safe-area
-       to the height of the bar */
-    padding-bottom: 7px;
-
-    margin: 0;
-
-    z-index: 100;
-
-    box-sizing: border-box;
-}
-
-/* =========================================================
-   MESSAGE BOX
-   ========================================================= */
-
-#messageInput {
-    flex: 1 1 auto;
-
-    width: auto;
-    min-width: 0;
-
-    height: 44px;
-    min-height: 44px;
-
-    margin: 0;
-
-    box-sizing: border-box;
-}
-
-/* =========================================================
-   BOTTOM BUTTONS
-   ========================================================= */
-
-.chat-input .attach-button,
-.chat-input .send-message {
-    flex: 0 0 42px;
-
-    width: 42px;
-    min-width: 42px;
-    max-width: 42px;
-
-    height: 42px;
-    min-height: 42px;
-    max-height: 42px;
-
-    margin: 0;
-    padding: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    position: relative;
-
-    z-index: 110;
-
-    pointer-events: auto;
-}
-
-/* =========================================================
-   SEND BUTTON
-   ========================================================= */
-
-.chat-input .send-message {
-    visibility: visible;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* =========================================================
-   VOICE BUTTON
-   ========================================================= */
-
-.chat-input #voiceButton {
-    visibility: visible;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* =========================================================
-   PAPERCLIP
-   ========================================================= */
-
-.chat-input .attach-button {
-    visibility: visible;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
-
-@media (max-width: 380px) {
-
-    .chat-header {
-        flex-basis: 64px;
-
-        height: 64px;
-        min-height: 64px;
-    }
-
-    .chat-input {
-        flex-basis: 62px;
-
-        min-height: 62px;
-
-        gap: 5px;
-
-        padding: 5px;
-    }
-
-    #messageInput {
-        height: 42px;
-        min-height: 42px;
-
-        padding-left: 12px;
-        padding-right: 12px;
-
-        font-size: 12px;
-    }
-
-    .chat-input .attach-button,
-    .chat-input .send-message {
-
-        flex-basis: 39px;
-
-        width: 39px;
-        min-width: 39px;
-
-        height: 39px;
-        min-height: 39px;
-    }
-}
-
-/* =========================================================
-   PHONE BROWSER SAFE AREA
-   ========================================================= */
-
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-
-    .chat-input {
-        padding-bottom:
-            calc(7px + env(safe-area-inset-bottom));
-    }
-
-}
-/* =========================================================
-   PD CHAT — FINAL MOBILE FRAME / INPUT FIX
-   ========================================================= */
-
-html,
-body,
-.phone-page,
-.phone-app,
-.chat-app {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* The chat fills the entire phone screen */
-body.phone-page {
-    width: 100% !important;
-    height: 100dvh !important;
-    min-height: 100dvh !important;
-
-    overflow: hidden !important;
-}
-
-/* =========================================================
-   CHAT CONTAINER
-   ========================================================= */
-
-.phone-app.chat-app {
-    width: 390px !important;
-height: 844px !important;
-min-height: 0 !important;
-max-height: 844px !important;
-
-border: 7px solid #222 !important;
-border-radius: 35px !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-
-    overflow: hidden !important;
-}
-
-/* =========================================================
-   HEADER
-   ========================================================= */
-
-.chat-header {
-    flex: 0 0 70px !important;
-
-    width: 100% !important;
-    height: 70px !important;
-    min-height: 70px !important;
-
-    box-sizing: border-box !important;
-}
-
-/* =========================================================
-   MESSAGES
-   ========================================================= */
-
-.chat-messages {
-    flex: 1 1 0 !important;
-
-    width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
-
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-
-    box-sizing: border-box !important;
-
-    -webkit-overflow-scrolling: touch;
-}
-
-/* =========================================================
-   INPUT BAR
-   ========================================================= */
-
-.chat-input {
-    flex: 0 0 64px !important;
-
-    width: 100% !important;
-    height: 64px !important;
-    min-height: 64px !important;
-    max-height: 64px !important;
-
-    margin: 0 !important;
-
-    box-sizing: border-box !important;
-
-    display: flex !important;
-    align-items: center !important;
-
-    position: relative !important;
-
-    z-index: 999 !important;
-}
-
-/* =========================================================
-   INPUT
-   ========================================================= */
-
-#messageInput {
-    flex: 1 1 auto !important;
-
-    width: auto !important;
-    min-width: 0 !important;
-
-    height: 42px !important;
-    min-height: 42px !important;
-
-    box-sizing: border-box !important;
-}
-
-/* =========================================================
-   BUTTONS
-   ========================================================= */
-
-.chat-input button {
-    flex: 0 0 42px !important;
-
-    width: 42px !important;
-    min-width: 42px !important;
-
-    height: 42px !important;
-    min-height: 42px !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    position: relative !important;
-
-    z-index: 1000 !important;
-
-    pointer-events: auto !important;
-}
-
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
-
-@media (max-width: 380px) {
-
-    .chat-header {
-        flex-basis: 64px !important;
-        height: 64px !important;
-        min-height: 64px !important;
-    }
-
-    .chat-input {
-        flex-basis: 62px !important;
-        height: 62px !important;
-        min-height: 62px !important;
-    }
-
-    .chat-input button {
-        flex-basis: 39px !important;
-        width: 39px !important;
-        min-width: 39px !important;
-
-        height: 39px !important;
-        min-height: 39px !important;
-    }
-
-    #messageInput {
-        height: 40px !important;
-        min-height: 40px !important;
-    }
-}
-/* =========================================================
-   PD VOICE CALL
-   ========================================================= */
-
-.chat-actions {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.chat-actions button {
-    width: 38px;
-    height: 38px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: none;
-    border-radius: 50%;
-
-    color: rgba(255,255,255,.88);
-
-    background: transparent;
-
-    cursor: pointer;
-
-    transition:
-        background .2s ease,
-        transform .2s ease,
-        box-shadow .2s ease;
-}
-
-.chat-actions button:hover {
-    background: rgba(255,255,255,.09);
-
-    transform: scale(1.05);
-}
-
-.chat-actions button:active {
-    transform: scale(.9);
-}
-
-.chat-call-button i {
-    font-size: 15px;
-}
-
-
-/* =========================================================
+/* =========================
    CALL OVERLAY
-   ========================================================= */
+========================= */
 
 .pd-call-overlay {
-
-    position: absolute;
-
+    position: fixed;
     inset: 0;
-
-    z-index: 500;
-
+    z-index: 1000;
     display: none;
-
     align-items: center;
     justify-content: center;
-
-    padding: 25px;
-
-    background:
-        radial-gradient(
-            circle at 50% 25%,
-            rgba(173, 65, 255, .35),
-            transparent 38%
-        ),
-
-        radial-gradient(
-            circle at 50% 80%,
-            rgba(255, 35, 130, .22),
-            transparent 40%
-        ),
-
-        rgba(7, 3, 15, .97);
-
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    padding: 20px;
+    background: rgba(17, 2, 8, 0.84);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
-.pd-call-overlay.active {
+.pd-call-overlay.active,
+.pd-call-overlay.show,
+.pd-call-overlay.visible {
     display: flex;
 }
 
-
-/* =========================================================
-   CALL CARD
-   ========================================================= */
-
 .pd-call-card {
-
-    width: 100%;
-    max-width: 330px;
-
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    text-align: center;
+    width: 100%;
+    max-width: 340px;
+    padding: 35px 23px 28px;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(135, 22, 59, 0.42), transparent 52%),
+        linear-gradient(155deg, #4a091a, #27050e);
+    border: 1px solid var(--chat-gold);
+    border-radius: 27px;
+    box-shadow: 0 20px 65px rgba(0, 0, 0, 0.42);
+    animation: pdCallEnter 0.3s ease-out;
 }
 
-
-/* =========================================================
-   CALL AVATAR
-   ========================================================= */
-
 .pd-call-avatar {
-
     position: relative;
-
-    width: 105px;
-    height: 105px;
-
-    padding: 4px;
-
-    border-radius: 50%;
-
-    background:
-        linear-gradient(
-            135deg,
-            #ff3c8d,
-            #a85cff,
-            #ff3c8d
-        );
-
-    box-shadow:
-        0 0 25px rgba(255,55,145,.35),
-        0 0 60px rgba(155,70,255,.20);
-
-    animation: pdCallPulse 2s ease-in-out infinite;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
 }
 
 .pd-call-avatar img {
-
+    display: block;
     width: 100%;
     height: 100%;
-
     object-fit: cover;
-
+    border: 3px solid var(--chat-gold);
     border-radius: 50%;
+    box-shadow: 0 0 28px rgba(217, 183, 101, 0.19);
 }
 
 .pd-call-online {
-
     position: absolute;
-
     right: 5px;
-    bottom: 7px;
-
-    width: 18px;
-    height: 18px;
-
+    bottom: 5px;
+    width: 15px;
+    height: 15px;
+    background: #6fd6a4;
+    border: 3px solid #3a0715;
     border-radius: 50%;
-
-    background: #48ef91;
-
-    border: 3px solid #16091e;
-
-    box-shadow:
-        0 0 12px rgba(72,239,145,.8);
 }
-
-@keyframes pdCallPulse {
-
-    0%,100% {
-        transform: scale(1);
-        box-shadow:
-            0 0 25px rgba(255,55,145,.35),
-            0 0 60px rgba(155,70,255,.20);
-    }
-
-    50% {
-        transform: scale(1.04);
-        box-shadow:
-            0 0 35px rgba(255,55,145,.55),
-            0 0 80px rgba(155,70,255,.30);
-    }
-}
-
-
-/* =========================================================
-   CALL NAME
-   ========================================================= */
 
 .pd-call-name {
-
-    margin-top: 22px;
-
-    color: white;
-
-    font-family:
-        "Playfair Display",
-        serif;
-
+    color: var(--chat-gold-light);
+    font-family: "Playfair Display", serif;
     font-size: 24px;
+    font-weight: 600;
+    text-align: center;
 }
-
-
-/* =========================================================
-   CALL STATUS
-   ========================================================= */
 
 .pd-call-status {
-
-    margin-top: 6px;
-
-    color:
-        rgba(255,255,255,.60);
-
+    margin-top: 9px;
+    color: var(--chat-muted);
     font-size: 13px;
+    text-align: center;
 }
 
-
-/* =========================================================
-   TIMER
-   ========================================================= */
-
 .pd-call-timer {
-
-    margin-top: 8px;
-
-    color:
-        rgba(255,255,255,.42);
-
-    font-size: 12px;
-
+    margin-top: 15px;
+    color: var(--chat-gold);
+    font-size: 22px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
     letter-spacing: 1px;
 }
 
-
-/* =========================================================
-   CALL CONTROLS
-   ========================================================= */
-
 .pd-call-controls {
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
-    gap: 25px;
-
-    margin-top: 45px;
+    gap: 23px;
+    width: 100%;
+    margin-top: 27px;
 }
-
-.pd-call-controls.incoming {
-    margin-top: 40px;
-}
-
-
-/* =========================================================
-   CONTROL BUTTON
-   ========================================================= */
 
 .pd-call-control {
-
-    width: 58px;
-    height: 58px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: none;
+    display: grid;
+    place-items: center;
+    width: 57px;
+    height: 57px;
+    color: var(--chat-gold-light);
+    background: #5a1028;
+    border: 1px solid var(--chat-border);
     border-radius: 50%;
-
-    color: white;
-
-    background:
-        rgba(255,255,255,.10);
-
-    box-shadow:
-        0 8px 25px rgba(0,0,0,.25);
-
     cursor: pointer;
-
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        background .2s ease;
+    transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .pd-call-control:hover {
-    transform: scale(1.08);
-}
-
-.pd-call-control:active {
-    transform: scale(.92);
+    background: var(--chat-purple);
+    transform: scale(1.06);
 }
 
 .pd-call-control i {
-    font-size: 18px;
+    font-size: 19px;
 }
-
-
-/* ACCEPT */
-
-.pd-call-control.accept {
-
-    background:
-        linear-gradient(
-            135deg,
-            #27d979,
-            #18b866
-        );
-
-    box-shadow:
-        0 0 25px rgba(39,217,121,.35);
-}
-
-
-/* DECLINE */
 
 .pd-call-control.decline {
-
-    background:
-        linear-gradient(
-            135deg,
-            #ff315f,
-            #e91448
-        );
-
-    box-shadow:
-        0 0 25px rgba(255,49,95,.30);
+    color: #fff5f1;
+    background: #c21f42;
+    border-color: #ed8a9c;
 }
 
-
-/* MUTE */
-
-.pd-call-control.muted {
-
-    background:
-        rgba(255,255,255,.22);
-
-    color: #ff77aa;
+.pd-call-control.decline:hover {
+    background: #e02c50;
 }
 
+.pd-call-control.accept {
+    color: #fffaf0;
+    background: #25875b;
+    border-color: #79d8a6;
+}
 
-/* =========================================================
-   HIDE ACTIVE/INCOMING CONTROLS
-   ========================================================= */
+.pd-call-control.accept:hover {
+    background: #2ea76e;
+}
 
+/* Incoming and active call controls */
+#pdIncomingControls,
 #pdActiveControls {
     display: none;
 }
 
-#pdIncomingControls {
-    display: none;
-}
-
-.pd-call-overlay.calling #pdActiveControls {
+#pdIncomingControls.active,
+#pdActiveControls.active {
     display: flex;
 }
 
-.pd-call-overlay.incoming #pdIncomingControls {
-    display: flex;
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes pdMessageAppear {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.pd-call-overlay.incoming #pdActiveControls {
-    display: none;
+@keyframes pdLoaderBeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
 }
 
+@keyframes pdLoaderDot {
+    0%, 80%, 100% {
+        opacity: 0.4;
+        transform: translateY(0);
+    }
+    40% {
+        opacity: 1;
+        transform: translateY(-6px);
+    }
+}
 
-/* =========================================================
-   MOBILE
-   ========================================================= */
+@keyframes pdCallEnter {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =========================
+   SMALL PHONES
+========================= */
 
 @media (max-width: 380px) {
-
-    .pd-call-avatar {
-        width: 92px;
-        height: 92px;
+    .chat-header {
+        gap: 8px;
+        padding: 10px 9px;
     }
 
-    .pd-call-name {
-        font-size: 22px;
+    .chat-actions {
+        gap: 4px;
     }
 
-    .pd-call-controls {
-        margin-top: 35px;
+    .call-button,
+    .video-call-button,
+    .chat-more-button {
+        flex-basis: 31px;
+        width: 31px;
+        height: 33px;
     }
 
+    .person-avatar {
+        flex-basis: 40px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .chat-person {
+        gap: 7px;
+    }
+
+    .chat-person-details strong {
+        font-size: 14px;
+    }
+
+    .chat-person .pd-presence-status {
+        font-size: 9px;
+    }
+
+    .chat-input {
+        gap: 6px;
+        padding-right: 8px;
+        padding-left: 8px;
+    }
+
+    .attach-button,
+    .send-message {
+        flex-basis: 37px;
+        width: 37px;
+        height: 41px;
+    }
+
+    #messageInput {
+        padding-right: 9px;
+        padding-left: 9px;
+        font-size: 13px;
+    }
 }
 
-/*========================================================= */
+/* =========================
+   ACCESSIBILITY
+========================= */
 
-/* =========================================================
-
-1. DESKTOP — PHONE FRAME
-   ========================================================= */
-
-@media (min-width: 601px) {
-
-
-html,
-body {
-    width: 100%;
-    min-height: 100%;
-    margin: 0;
-    padding: 0;
-
-    background:
-        radial-gradient(
-            circle at center,
-            #321347 0%,
-            #100719 45%,
-            #05030a 100%
-        );
-
-    overflow: hidden;
+button:focus-visible,
+a:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--chat-gold-light);
+    outline-offset: 3px;
 }
 
-
-body.phone-page {
-
-    width: 100%;
-    height: 100vh;
-    min-height: 100vh;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 20px;
-
-    overflow: hidden;
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
 }
+/* ==========================================
+   PD CHAT — ROMANTIC PHOTO BACKGROUND
+========================================== */
 
-
-/* =====================================================
-   PHONE BODY
-   ===================================================== */
-
-.phone-app.chat-app {
-
+.chat-messages {
     position: relative;
+    isolation: isolate;
 
-    width: min(
-        390px,
-        92vw
-    );
+    background-color: #26050f;
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(38, 5, 15, 0.699),
+            rgba(45, 5, 22, 0.014) 48%,
+            rgba(35, 4, 15, 0)
+        ),
+        url("slideshow/111.jpg");
 
-    /*
-       Samsung / Redmi style portrait height.
+    background-position: center, center;
+    background-size: cover, cover;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+}
 
-       844px gives enough room for:
-       header
-       messages
-       input
-       bottom frame
-    */
-    height: min(
-        844px,
-        94vh
-    );
+/* Keep messages above the background photo */
+.chat-messages > * {
+    position: relative;
+    z-index: 1;
+}
 
-    min-height: 0;
-    max-height: 94vh;
-
-    margin: 0;
-
-    padding: 0;
-
-    display: flex;
-    flex-direction: column;
-
-    overflow: hidden;
-
-    border-radius: 34px;
-
-    /*
-       THIS is the visible phone border.
-    */
-    border:
-        7px solid
-        #19151d;
-
+/* Deep red + royal purple atmosphere */
+.chat-app {
     background:
         linear-gradient(
             145deg,
-            #090513,
-            #16091e,
-            #080512
+            rgba(73, 9, 31, 0.98),
+            rgba(43, 5, 22, 0.98),
+            rgba(54, 17, 72, 0.96)
         );
-
-    box-shadow:
-
-        /* outer shadow */
-        0 35px 90px
-        rgba(0,0,0,.65),
-
-        /* purple glow */
-        0 0 45px
-        rgba(168,92,255,.18),
-
-        /* pink glow */
-        0 0 100px
-        rgba(255,45,135,.10),
-
-        /* inner edge */
-        inset 0 0 0 1px
-        rgba(255,255,255,.12);
-
-    isolation: isolate;
 }
 
-
-/* =====================================================
-   INNER SCREEN
-   ===================================================== */
-
-.phone-app.chat-app::before {
-
-    border-radius: 27px;
-
-    pointer-events: none;
-}
-
-
-.phone-app.chat-app::after {
-
-    pointer-events: none;
-
-    border-radius: 27px;
-}
-
-
-/* =====================================================
-   HEADER
-   ===================================================== */
-
-.phone-app.chat-app .chat-header {
-
-    flex:
-        0 0 70px;
-
-    width: 100%;
-
-    height: 70px;
-
-    min-height: 70px;
-
-    flex-shrink: 0;
-
-    border-radius:
-        27px
-        27px
-        0
-        0;
-
-    box-sizing: border-box;
-
-    overflow: hidden;
-}
-
-
-/* =====================================================
-   MESSAGE AREA
-   ===================================================== */
-
-.phone-app.chat-app .chat-messages {
-
-    flex:
-        1 1 0;
-
-    width: 100%;
-
-    min-height: 0;
-
-    height: auto;
-
-    max-height: none;
-
-    overflow-x: hidden;
-    overflow-y: auto;
-
-    box-sizing: border-box;
-
-    padding:
-        12px
-        10px
-        10px;
-
-    flex-shrink: 1;
-}
-
-
-/* =====================================================
-   BOTTOM INPUT
-   ===================================================== */
-
-.phone-app.chat-app .chat-input {
-
-    flex:
-        0 0 64px;
-
-    width: 100%;
-
-    height: 64px;
-
-    min-height: 64px;
-
-    max-height: 64px;
-
-    flex-shrink: 0;
-
-    box-sizing: border-box;
-
-    padding:
-        7px
-        8px;
-
-    margin: 0;
-
-    border-radius:
-        0
-        0
-        27px
-        27px;
-
-    z-index: 100;
-}
-
-
-/* =====================================================
-   INPUT
-   ===================================================== */
-
-.phone-app.chat-app #messageInput {
-
-    flex:
-        1 1 auto;
-
-    min-width: 0;
-
-    width: auto;
-
-    height: 42px;
-
-    min-height: 42px;
-    max-height: 42px;
-
-    box-sizing: border-box;
-}
-
-
-/* =====================================================
-   BOTTOM BUTTONS
-   ===================================================== */
-
-.phone-app.chat-app .chat-input button {
-
-    flex:
-        0 0 42px;
-
-    width: 42px;
-    min-width: 42px;
-    max-width: 42px;
-
-    height: 42px;
-    min-height: 42px;
-    max-height: 42px;
-
-    box-sizing: border-box;
-
-    position: relative;
-
-    z-index: 200;
-}
-
-
-/* =====================================================
-   PHONE INNER SCREEN EDGE
-   ===================================================== */
-
-.phone-app.chat-app {
-
-    box-shadow:
-
-        0 35px 90px
-        rgba(0,0,0,.65),
-
-        0 0 45px
-        rgba(168,92,255,.18),
-
-        inset 0 0 0 2px
-        rgba(255,255,255,.06);
-}
-
-
-/* =====================================================
-   SMALL DESKTOP / LAPTOP
-   ===================================================== */
-
-@media (max-height: 850px) {
-
-    .phone-app.chat-app {
-
-        height: 92vh;
-
-        max-height: 92vh;
-
-        width: min(
-            380px,
-            90vw
-        );
-    }
-}
-
-
-/* =====================================================
-   VERY SHORT LAPTOP
-   ===================================================== */
-
-@media (max-height: 720px) {
-
-    body.phone-page {
-
-        padding:
-            10px;
-    }
-
-    .phone-app.chat-app {
-
-        height: 96vh;
-
-        max-height: 96vh;
-
-        border-width: 6px;
-
-        border-radius: 28px;
-    }
-
-    .phone-app.chat-app .chat-header {
-
-        flex-basis: 62px;
-
-        height: 62px;
-
-        min-height: 62px;
-    }
-
-    .phone-app.chat-app .chat-input {
-
-        flex-basis: 58px;
-
-        height: 58px;
-
-        min-height: 58px;
-
-        max-height: 58px;
-    }
-
-    .phone-app.chat-app #messageInput {
-
-        height: 38px;
-
-        min-height: 38px;
-
-        max-height: 38px;
-    }
-
-    .phone-app.chat-app .chat-input button {
-
-        width: 38px;
-
-        min-width: 38px;
-
-        max-width: 38px;
-
-        height: 38px;
-
-        min-height: 38px;
-
-        max-height: 38px;
-    }
-}
-
-
-}
-
-/* =========================================================
-2. REAL MOBILE PHONE
---------------------
-
-On an actual phone, DON'T show an artificial frame
-around the browser viewport. The chat uses the whole
-available screen.
-========================================================= */
-
-@media (max-width: 600px) {
-
-
-html,
-body {
-
-    width: 100%;
-
-    height: 100%;
-
-    margin: 0;
-
-    padding: 0;
-
-    overflow: hidden;
-}
-
-
-body.phone-page {
-
-    width: 100%;
-
-    height: 100dvh;
-
-    min-height: 100dvh;
-
-    padding: 0;
-
-    margin: 0;
-
-    display: block;
-
-    overflow: hidden;
-}
-
-
-.phone-app.chat-app {
-
-    width: 100% !important;
-
-    height: 100dvh !important;
-
-    min-height: 0 !important;
-
-    max-height: 100dvh !important;
-
-    margin: 0 !important;
-
-    padding: 0 !important;
-
-    border: none;
-
-    border-radius: 0;
-
-    box-shadow: none;
-
-    overflow: hidden;
-}
-
-
-/* HEADER */
-
-.phone-app.chat-app .chat-header {
-
-    flex:
-        0 0 68px;
-
-    height: 68px;
-
-    min-height: 68px;
-
-    border-radius: 0;
-}
-
-
-/* MESSAGES */
-
-.phone-app.chat-app .chat-messages {
-
-    flex:
-        1 1 0;
-
-    min-height: 0;
-
-    height: auto;
-
-    overflow-x: hidden;
-
-    overflow-y: auto;
-
-    padding:
-        10px
-        9px
-        8px;
-}
-
-
-/* INPUT */
-
-.phone-app.chat-app .chat-input {
-
-    flex:
-        0 0 64px;
-
-    height: 64px;
-
-    min-height: 64px;
-
-    max-height: 64px;
-
-    padding:
-        6px;
-
-    border-radius: 0;
-}
-
-
-}
-
-/* =========================================================
-3. REDMI 9A / SMALL PHONE
-========================================================= */
-
-@media (max-width: 380px) {
-
-
-.phone-app.chat-app .chat-header {
-
-    flex-basis: 63px;
-
-    height: 63px;
-
-    min-height: 63px;
-}
-
-
-.phone-app.chat-app .chat-input {
-
-    flex-basis: 61px;
-
-    height: 61px;
-
-    min-height: 61px;
-
-    max-height: 61px;
-
-    padding:
-        5px;
-}
-
-
-.phone-app.chat-app #messageInput {
-
-    height: 40px;
-
-    min-height: 40px;
-
-    max-height: 40px;
-}
-
-
-.phone-app.chat-app .chat-input button {
-
-    width: 39px;
-
-    min-width: 39px;
-
-    max-width: 39px;
-
-    height: 39px;
-
-    min-height: 39px;
-
-    max-height: 39px;
-}
-
-
-}
-
-/* =========================================================
-4. CALL OVERLAY MUST STAY INSIDE PHONE
-========================================================= */
-
-.phone-app.chat-app .pd-call-overlay {
-
-
-position: absolute;
-
-inset: 0;
-
-width: 100%;
-height: 100%;
-
-border-radius: inherit;
-
-overflow: hidden;
-
-z-index: 500;
-
-
-}
-
-/* =========================================================
-5. LOADING SCREEN MUST STAY INSIDE PHONE
-========================================================= */
-
-.phone-app.chat-app #pd-chat-loader {
-
-
-position: absolute;
-
-inset: 0;
-
-width: 100%;
-height: 100%;
-
-border-radius: inherit;
-
-overflow: hidden;
-
-
-}
-/* ================================================
-   PD CHAT — MULTILINE MESSAGE COMPOSER
-================================================ */
-
-.phone-app.chat-app .chat-input {
-    height: auto !important;
-    min-height: 64px;
-    max-height: 190px !important;
-    flex: 0 0 auto !important;
-    align-items: flex-end;
-    gap: 8px;
-    padding: 10px 12px;
-}
-
-.phone-app.chat-app #messageInput {
-    flex: 1 1 auto;
-    min-width: 0;
-    min-height: 42px;
-    max-height: 120px;
-    height: 42px;
-    resize: none;
-    overflow-y: hidden;
-    box-sizing: border-box;
-    padding: 12px 14px;
-    line-height: 1.45;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-    font-family: "DM Sans", sans-serif;
-}
-
-.phone-app.chat-app #messageInput:focus {
-    outline: none;
-}
-
-.phone-app.chat-app .chat-input .send-message,
-.phone-app.chat-app .chat-input .attach-button {
-    flex-shrink: 0;
-    align-self: flex-end;
-}
-
-/* =========================================
-   PD CHAT — CLEAN REPLY LAYOUT
-========================================= */
-
-#chatMessages {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Each message row */
-.pd-message-row {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  width: 100%;
-  min-width: 0;
-}
-
-/* Sent messages on the LEFT */
-.pd-message-row.sent {
-  justify-content: flex-start;
-  flex-direction: row;
-}
-
-/* Received messages on the RIGHT */
-.pd-message-row.received {
-  justify-content: flex-end;
-  flex-direction: row;
-}
-
-/* Keep the message bubble independent of reply controls */
-.pd-message-bubble {
-  display: flex;
-  flex-direction: column;
-  width: fit-content;
-  max-width: min(78%, 340px);
-  min-width: 0;
-  padding: 10px 13px;
-  border-radius: 17px;
-  overflow-wrap: anywhere;
-  box-sizing: border-box;
-}
-
-/* Reply icon stays OUTSIDE the bubble */
-.pd-reply-icon {
-  flex: 0 0 28px;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  color: #bd91ff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 13px;
-  transition: background .2s, transform .2s;
-}
-
-.pd-reply-icon:hover {
-  background: rgba(189, 145, 255, .15);
-  transform: scale(1.08);
-}
-
-/* Different bubble colours */
-.pd-message-row.sent .pd-message-bubble {
-  background: linear-gradient(135deg, #7628bd, #a443dc);
-  color: #fff;
-  border-bottom-left-radius: 5px;
-}
-
-.pd-message-row.received .pd-message-bubble {
-  background: #30243e;
-  color: #fff;
-  border-bottom-right-radius: 5px;
-}
-
-/* Replied-to message preview */
-.pd-reply-quote {
-  margin-bottom: 7px;
-  padding: 7px 10px;
-  border-left: 3px solid #e8a5ff;
-  border-radius: 7px;
-  background: rgba(15, 8, 25, .35);
-  min-width: 0;
-}
-
-.pd-reply-quote strong {
-  display: block;
-  color: #f0b5ff;
-  font-size: 11px;
-  margin-bottom: 3px;
-}
-
-.pd-reply-quote p {
-  margin: 0;
-  color: #e7ddec;
-  font-size: 12px;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-}
-
-/* Main message text */
-.pd-message-text {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.5;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-/* Mobile sizing */
-@media (max-width: 480px) {
-  .pd-message-bubble {
-    max-width: 78%;
-    padding: 9px 11px;
-  }
-
-  .pd-reply-icon {
-    flex-basis: 25px;
-    width: 25px;
-    height: 25px;
-  }
-}
-
-/* PD romantic heart message receipts */
-#chatMessages .pd-message-receipt {
-    color: #ff8acb !important;
-    font-size: 13px;
-    letter-spacing: 1px;
-    font-weight: bold;
-}
-
-#chatMessages .pd-message-receipt.is-read {
-    color: #e8a1ff !important;
-    text-shadow: 0 0 7px rgba(232, 161, 255, 0.65);
-}
-
-
-
-/* =========================================
-   PD CHAT — BACKGROUND FITTED TO PHONE FRAME
-========================================= */
-
-#chatMessages {
-    flex: 1;
-    min-height: 0;
-    width: 100%;
-    box-sizing: border-box;
-
-    /* Background picture */
-    background-image:
+/* Richer purple tone in the header */
+.chat-header {
+    background:
         linear-gradient(
-            rgba(25, 8, 43, 0.35),
-            rgba(25, 8, 43, 0.35)
-        ),
-        url("../photo3.jpg");
-
-    /* Fit picture inside the chat area */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: scroll;
-
-    /* Keep messages scrolling inside the phone */
-    overflow-y: auto;
-    overflow-x: hidden;
-    position: relative;
+            115deg,
+            #7a102f 0%,
+            #4b103b 65%,
+            #351044 100%
+        );
+    border-bottom: 1px solid #d4af37;
 }
 
-/* PD Chat — Scroll to Bottom Button */
-.scroll-bottom-btn {
-    position: absolute;
-    top: 85px;
-    right: max(12px, calc((100% - 430px) / 2 + 12px));
-    z-index: 1000;
+/* Pure gold accents */
+:root {
+    --chat-gold: #d4af37;
+    --chat-gold-light: #ffdf70;
+    --chat-gold-dark: #a67c19;
+}
 
-    width: 42px;
-    height: 42px;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 50%;
+/* Gold edge on outgoing messages */
+.message.sent,
+.message-bubble.sent,
+.chat-message.sent,
+.message.outgoing,
+.chat-message.outgoing,
+.message.own,
+.message.my-message {
+    background: linear-gradient(
+        135deg,
+        rgba(139, 17, 54, 0.96),
+        rgba(79, 11, 48, 0.97)
+    );
+    border: 1px solid rgba(212, 175, 55, 0.8);
+}
 
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    color: #fff;
-    font-size: 17px;
+/* Purple incoming messages */
+.message.received,
+.message-bubble.received,
+.chat-message.received,
+.message.incoming,
+.chat-message.incoming,
+.message.their-message {
+    background: linear-gradient(
+        135deg,
+        rgba(76, 25, 83, 0.96),
+        rgba(45, 12, 52, 0.97)
+    );
+    border: 1px solid rgba(212, 175, 55, 0.45);
+}
+/* ==========================================
+   PD CHAT — GOLD LINE DATE SEPARATOR
+========================================== */
 
+/* Supports the date separator class names */
+.date-separator,
+.message-date,
+.chat-date-separator {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 13px;
 
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-    cursor: pointer;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    width: 100%;
+    max-width: 100%;
+    margin: 13px 0;
+    padding: 0;
+
+    color: #ffdf70;
+    font-family: "DM Sans", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-align: center;
+    text-transform: uppercase;
+
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
 }
 
-.scroll-bottom-btn:hover {
-    transform: scale(1.08);
+/* Gold line from the left and right */
+.date-separator::before,
+.date-separator::after,
+.message-date::before,
+.message-date::after,
+.chat-date-separator::before,
+.chat-date-separator::after {
+    content: "";
+    display: block;
+    flex: 1 1 auto;
+    min-width: 15px;
+    height: 1px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #d4af37 35%,
+        #ffdf70 100%
+    );
 }
 
-.scroll-bottom-btn:active {
-    transform: scale(0.94);
+/* Reverse the gradient for the right line */
+.date-separator::after,
+.message-date::after,
+.chat-date-separator::after {
+    background: linear-gradient(
+        90deg,
+        #ffdf70 0%,
+        #d4af37 65%,
+        transparent 100%
+    );
 }
 
-/* PD — ALWAYS VISIBLE SCROLL BUTTON */
-#scrollToBottomBtn {
-    position: fixed !important;
-    top: 160px !important;
-    right: max(15px, calc((100vw - 430px) / 2 + 15px)) !important;
-    z-index: 99999 !important;
+/* =========================================
+   PD CHAT — ROMANTIC 3-PHOTO SLIDESHOW
+   Changes every 7 seconds
+========================================= */
 
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-
-    width: 42px;
-    height: 42px;
-    border: 1px solid rgba(255,255,255,.5);
-    border-radius: 50%;
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    color: white;
-    font-size: 18px;
-    cursor: pointer;
-    box-shadow: 0 5px 18px rgba(0,0,0,.3);
+.chat-messages {
+    position: relative;
+    isolation: isolate;
+    background: #26050f;
+    overflow-x: hidden;
 }
 
-#scrollToBottomBtn i {
+/* Slideshow layer */
+.chat-messages::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+
+    background-image: url("slideshow/photo1.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    animation: pdChatSlideshow 21s infinite;
+    will-change: background-image;
+}
+
+/* Dark burgundy overlay with purple and gold lighting */
+.chat-messages::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(43, 4, 19, 0.68),
+            rgba(37, 5, 24, 0.76) 50%,
+            rgba(27, 5, 24, 0.80)
+        ),
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(117, 48, 150, 0.24),
+            transparent 45%
+        ),
+        radial-gradient(
+            circle at 85% 80%,
+            rgba(212, 175, 55, 0.10),
+            transparent 38%
+        );
+}
+
+/* Three photos, 7 seconds per photo */
+@keyframes pdChatSlideshow {
+    0%, 32% {
+        background-image: url("slideshow/photo4.jpg");
+    }
+
+    33%, 65% {
+        background-image: url("slideshow/photo2.jpg");
+    }
+
+    66%, 99% {
+        background-image: url("slideshow/photo3.jpg");
+    }
+
+    100% {
+        background-image: url("images/1 (4).jpeg");
+    }
+}
+
+/* Gold and purple accents */
+.chat-header {
+    border-bottom: 1px solid #d4af37;
+    background: linear-gradient(
+        115deg,
+        #78102f,
+        #4b103b 65%,
+        #351044
+    );
+}
+
+.chat-app {
+    background: linear-gradient(
+        145deg,
+        #49091f,
+        #2b0516,
+        #361148
+    );
+}
+
+/* Keep messages readable above the background */
+#chatMessages > * {
+    position: relative;
+}
+
+/* =====================================
+   PD CHAT — STATIC BACKGROUND
+   Messages scroll; background stays still
+===================================== */
+
+.chat-messages {
+    position: relative;
+    isolation: isolate;
+    background: transparent !important;
+}
+
+/* Keep slideshow fixed inside the chat area */
+.chat-messages::before,
+.chat-messages::after {
+    position: absolute;
+    inset: 0;
     pointer-events: none;
 }
 
-/* FIX PD CHAT SEND BUTTON */
-#chatForm {
-    position: relative;
-    z-index: 100;
+/* Photo slideshow layer */
+.chat-messages::before {
+    z-index: -2;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
 }
 
-#chatForm button,
-#chatForm .send-message {
-    position: relative;
-    z-index: 101;
-    pointer-events: auto !important;
-    cursor: pointer;
+/* Dark overlay stays over the photos */
+.chat-messages::after {
+    z-index: -1;
 }
 
-/* Keep the scroll button from blocking the composer */
-#scrollToBottomBtn {
-    pointer-events: auto;
+/* Prevent message content from covering the background */
+#chatMessages > * {
+    position: relative;
 }
 
-/* Ensure the message input and composer remain clickable */
-#messageInput {
+/* Keep scrolling limited to the message area */
+.chat-messages {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* =========================================
+   PD CHAT BACKGROUND SLIDESHOW
+   Only changes the chat background.
+   3 photos, changing every 7 seconds.
+   Background stays fixed while messages scroll.
+========================================= */
+
+.chat-messages {
     position: relative;
-    z-index: 101;
-    pointer-events: auto !important;
+    isolation: isolate;
+    background: #26050f !important;
+}
+
+/* Keep messages above the background */
+.chat-messages > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* Fixed slideshow layer */
+.chat-messages::before {
+    content: "";
+    position: fixed;
+    z-index: 0;
+    pointer-events: none;
+
+    /* Match the visible chat message area */
+    top: 145px;
+    bottom: 90px;
+    left: 50%;
+    width: min(100vw, 440px);
+    transform: translateX(-50%);
+
+    background-image:
+        linear-gradient(
+            180deg,
+            rgba(38, 5, 15, 0.70),
+            rgba(45, 5, 22, 0.78) 50%,
+            rgba(35, 4, 15, 0.82)
+        ),
+        url("slideshow/photo1.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    animation: pdChatBackgroundSlideshow 21s infinite;
+}
+
+/* Dark overlay for readability */
+.chat-messages::after {
+    content: "";
+    position: fixed;
+    z-index: 1;
+    pointer-events: none;
+
+    top: 145px;
+    bottom: 90px;
+    left: 50%;
+    width: min(100vw, 440px);
+    transform: translateX(-50%);
+
+    background:
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(120, 25, 65, 0.12),
+            transparent 55%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(73, 9, 31, 0.12),
+            rgba(43, 5, 22, 0.18),
+            rgba(54, 17, 72, 0.14)
+        );
+}
+
+/* Cycle through the three photos */
+@keyframes pdChatBackgroundSlideshow {
+    0%, 30% {
+        background-image:
+            linear-gradient(
+                180deg,
+                rgba(132, 0, 255, 0.39),
+                rgba(45, 5, 22, 0),
+                rgba(35, 4, 15, 0.82)
+            ),
+            url("slideshow/photo1.jpg");
+    }
+
+    33%, 63% {
+        background-image:
+            linear-gradient(
+                180deg,
+                rgba(233, 18, 18, 0.363),
+                rgba(45, 5, 22, 0),
+                rgba(35, 4, 15, 0)
+            ),
+            url("slideshow/photo2.jpg");
+    }
+
+    66%, 96% {
+        background-image:
+            linear-gradient(
+                180deg,
+                rgba(100, 9, 245, 0.349),
+                rgba(45, 5, 22, 0),
+                rgba(35, 4, 15, 0.82)
+            ),
+            url("slideshow/photo3.jpg");
+    }
+
+    100% {
+        background-image:
+            linear-gradient(
+                180deg,
+                rgba(103, 9, 218, 0.185),
+                rgba(45, 5, 22, 0.78),
+                rgba(35, 4, 15, 0)
+            ),
+            url("images/1 (4).jpeg");
+    }
+}
+
+/* Mobile adjustment */
+@media (max-width: 440px) {
+    .chat-messages::before,
+    .chat-messages::after {
+        width: 100vw;
+    }
 }
