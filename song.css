@@ -1,1950 +1,922 @@
+
 /* =========================================================
    PD — SONG OF THE DAY
-   VERSION 3
-   MIDNIGHT / VIOLET / GLASS
-   ========================================================= */
+   LAVENDER DREAM • ROMANTIC GLASS DESIGN
+========================================================= */
 
-
-/* =========================================================
-   1. GLOBAL
-   ========================================================= */
-
-html,
-body {
-    margin: 0;
-    padding: 0;
-
-    width: 100%;
-    height: 100%;
+:root {
+    --pd-bg: #090617;
+    --pd-purple: #9b6bff;
+    --pd-purple-light: #c5a8ff;
+    --pd-pink: #ff91d5;
+    --pd-text: #fffaff;
+    --pd-muted: #c5bad9;
+    --pd-glass: rgba(255, 255, 255, 0.065);
+    --pd-border: rgba(220, 190, 255, 0.17);
+    --pd-radius: 25px;
+    --pd-shadow: 0 22px 65px rgba(0, 0, 0, 0.32);
 }
 
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    min-height: 100%;
+    background: var(--pd-bg);
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
 }
 
 body.song-page {
-
-    overflow: hidden;
-
+    min-height: 100vh;
+    color: var(--pd-text);
     font-family: "DM Sans", sans-serif;
-
-    color: #fff;
-
     background:
-        radial-gradient(
-            circle at 15% 10%,
-            rgba(101, 86, 255, 0.45),
-            transparent 28%
-        ),
-        radial-gradient(
-            circle at 90% 85%,
-            rgba(255, 53, 182, 0.32),
-            transparent 30%
-        ),
-        linear-gradient(
-            135deg,
-            #050512,
-            #10102c,
-            #210c31
-        );
+        radial-gradient(ellipse at 15% 5%, rgba(119, 65, 204, .23), transparent 38%),
+        radial-gradient(ellipse at 90% 35%, rgba(229, 89, 186, .12), transparent 35%),
+        linear-gradient(160deg, #090617 0%, #130a28 48%, #090617 100%);
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
 }
 
+button,
+input {
+    font: inherit;
+}
+
+button {
+    color: inherit;
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--pd-pink);
+    outline-offset: 4px;
+}
+
+img,
+video {
+    max-width: 100%;
+}
 
 /* =========================================================
-   2. PHONE
-   ========================================================= */
+   PHONE APP
+========================================================= */
 
 .phone-app {
-
-    position: relative;
-
     width: 100%;
-    max-width: 430px;
-
-    height: 100dvh;
-
-    margin: 0 auto;
-
-    overflow: hidden;
-
-    background:
-        rgba(4, 4, 18, 0.50);
-
-    box-shadow:
-        0 0 90px rgba(95, 75, 255, 0.18);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
 }
-
-
-/* =========================================================
-   3. SONG APP
-   ========================================================= */
 
 .song-app {
-
     position: relative;
-
-    width: 100%;
-    height: 100%;
-
-    overflow-x: hidden;
-    overflow-y: auto;
-
-    -webkit-overflow-scrolling: touch;
-
-    overscroll-behavior-y: contain;
-
-    touch-action: pan-y;
-
     isolation: isolate;
+    width: 100%;
+    max-width: 500px;
+    min-height: 100vh;
+    margin: 0 auto;
+    overflow: hidden;
+    background: rgba(12, 7, 27, .46);
 }
-
-
-/* =========================================================
-   4. BACKGROUND IMAGE
-   ========================================================= */
-
-.song-app::before {
-
-    content: "";
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: -10;
-
-    pointer-events: none;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(5,5,22,0.60),
-            rgba(12,7,32,0.92)
-        ),
-        url("images/aaaa.jpg")
-        center / cover no-repeat;
-
-    opacity: 0.75;
-}
-
-
-/* =========================================================
-   5. MOVING LIGHTS
-   ========================================================= */
-
-.background-orb {
-
-    position: fixed;
-
-    border-radius: 50%;
-
-    pointer-events: none;
-
-    filter: blur(55px);
-
-    z-index: -5;
-
-    opacity: 0.55;
-}
-
-
-.orb-one {
-
-    width: 180px;
-    height: 180px;
-
-    top: 5%;
-    left: -70px;
-
-    background: #675cff;
-
-    animation:
-        orbMoveOne 13s ease-in-out infinite alternate;
-}
-
-
-.orb-two {
-
-    width: 210px;
-    height: 210px;
-
-    right: -100px;
-    top: 35%;
-
-    background: #f43cae;
-
-    animation:
-        orbMoveTwo 16s ease-in-out infinite alternate;
-}
-
-
-.orb-three {
-
-    width: 170px;
-    height: 170px;
-
-    left: 25%;
-    bottom: -90px;
-
-    background: #753dff;
-
-    animation:
-        orbMoveThree 18s ease-in-out infinite alternate;
-}
-
-
-@keyframes orbMoveOne {
-
-    from {
-        transform: translate(0,0);
-    }
-
-    to {
-        transform: translate(90px,120px);
-    }
-}
-
-
-@keyframes orbMoveTwo {
-
-    from {
-        transform: translate(0,0);
-    }
-
-    to {
-        transform: translate(-100px,80px);
-    }
-}
-
-
-@keyframes orbMoveThree {
-
-    from {
-        transform: translate(0,0);
-    }
-
-    to {
-        transform: translate(80px,-100px);
-    }
-}
-
-
-/* =========================================================
-   6. CONTAINER
-   ========================================================= */
 
 .song-container {
-
     position: relative;
-
-    width: min(92%, 410px);
-
-    margin: 0 auto;
-
-    padding-top: 20px;
-    padding-bottom: 150px;
+    z-index: 2;
+    width: 100%;
+    max-width: 100%;
+    padding: 28px 18px 36px;
 }
-
 
 /* =========================================================
-   7. HEADER
-   ========================================================= */
+   BACKGROUND ORBS
+========================================================= */
 
-.song-header {
-
-    position: relative;
-
-    padding: 21px 20px;
-
-    margin-bottom: 17px;
-
-    border-radius: 24px;
-
-    overflow: hidden;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255,255,255,0.10),
-            rgba(255,255,255,0.025)
-        );
-
-    border:
-        1px solid rgba(255,255,255,0.13);
-
-    box-shadow:
-        0 20px 50px rgba(0,0,0,0.30);
-
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+.background-orb {
+    position: absolute;
+    z-index: -1;
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    filter: blur(75px);
+    opacity: .45;
+    pointer-events: none;
+    animation: pdOrbFloat 12s ease-in-out infinite alternate;
 }
 
+.orb-one {
+    top: 130px;
+    left: -130px;
+    background: #813eff;
+}
+
+.orb-two {
+    top: 650px;
+    right: -140px;
+    background: #d948bd;
+    animation-delay: -4s;
+}
+
+.orb-three {
+    top: 1200px;
+    left: -130px;
+    background: #5835c8;
+    animation-delay: -7s;
+}
+
+@keyframes pdOrbFloat {
+    from {
+        transform: translate3d(0, -15px, 0) scale(.9);
+    }
+    to {
+        transform: translate3d(30px, 35px, 0) scale(1.15);
+    }
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.song-header {
+    text-align: center;
+    margin-bottom: 27px;
+    padding: 9px 4px 0;
+}
 
 .header-small {
-
-    margin-bottom: 5px;
-
-    color: #ff70c8;
-
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    margin-bottom: 13px;
+    border: 1px solid var(--pd-border);
+    border-radius: 100px;
+    background: rgba(184, 142, 255, .09);
+    color: var(--pd-purple-light);
     font-size: 10px;
-
     font-weight: 700;
-
     letter-spacing: 3px;
 }
 
-
 .song-header h1 {
-
-    margin: 0;
-
     font-family: "Playfair Display", serif;
-
-    font-size: 30px;
-
-    line-height: 1.1;
-
-    color: #fff;
+    font-size: clamp(30px, 8vw, 39px);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -.8px;
+    background: linear-gradient(110deg, #fff 10%, #e1c9ff 50%, #ffb4e5 95%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
 }
-
 
 .song-header p {
-
-    margin: 7px 0 0;
-
-    color: rgba(255,255,255,0.55);
-
+    margin-top: 10px;
+    color: var(--pd-muted);
     font-size: 12px;
+    letter-spacing: .5px;
 }
 
-
 /* =========================================================
-   8. SONG CARD
-   ========================================================= */
+   MAIN MUSIC CARD
+========================================================= */
 
 .song-card {
-
     position: relative;
-
-    padding: 20px;
-
-    border-radius: 30px;
-
+    width: 100%;
+    min-width: 0;
+    padding: 20px 17px 22px;
+    border: 1px solid var(--pd-border);
+    border-radius: 28px;
     background:
-        linear-gradient(
-            145deg,
-            rgba(23,22,58,0.91),
-            rgba(42,14,53,0.82)
-        );
-
-    border:
-        1px solid rgba(255,255,255,0.12);
-
-    box-shadow:
-        0 30px 75px rgba(0,0,0,0.40);
-
+        linear-gradient(145deg, rgba(255, 255, 255, .085), rgba(255, 255, 255, .025)),
+        rgba(21, 12, 42, .84);
+    box-shadow: var(--pd-shadow), inset 0 1px 0 rgba(255, 255, 255, .05);
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
 }
 
-
 /* =========================================================
-   9. SONG TOP
-   ========================================================= */
+   SONG COVER AND DETAILS
+========================================================= */
 
 .song-top {
-
     display: flex;
-
-    flex-direction: column;
-
     align-items: center;
-
-    text-align: center;
+    gap: 16px;
+    min-width: 0;
+    margin-bottom: 24px;
 }
-
-
-/* =========================================================
-   10. COVER
-   ========================================================= */
 
 .song-cover-wrap {
-
+    flex: 0 0 112px;
+    width: 112px;
+    aspect-ratio: 1;
     position: relative;
-
-    margin-bottom: 17px;
 }
 
+.song-cover-wrap::before {
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, var(--pd-purple), var(--pd-pink));
+    opacity: .65;
+    filter: blur(15px);
+}
 
 .song-cover {
-
     position: relative;
-
-    width: 175px;
-    height: 175px;
-
-    padding: 5px;
-
-    border-radius: 50%;
-
-    background:
-        conic-gradient(
-            #7268ff00,
-            #ff58bc00,
-            #a06cff,
-            #5c7dff00,
-            #7168ff
-        );
-
-    box-shadow:
-        0 0 25px rgba(111,100,255,0.50),
-        0 0 70px rgba(255,70,180,0.15);
-
-    animation:
-        coverGlow 8s linear infinite;
-}
-
-
-.song-cover img {
-
     width: 100%;
     height: 100%;
-
-    display: block;
-
-    object-fit: cover;
-
-    border-radius: 50%;
-
-    border:
-        3px solid #8301fd;
-}
-
-
-@keyframes coverGlow {
-
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-
-/* Don't rotate the actual picture */
-.song-cover img {
-
-    animation:
-        coverImageCounter 8s linear infinite;
-}
-
-
-@keyframes coverImageCounter {
-
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(-360deg);
-    }
-}
-
-
-/* =========================================================
-   11. PLAYING COVER
-   ========================================================= */
-
-.song-playing .song-cover {
-
-    box-shadow:
-        0 0 30px rgba(115,105,255,0.75),
-        0 0 75px rgba(255,75,190,0.32);
-}
-
-
-/* =========================================================
-   12. SONG DETAILS
-   ========================================================= */
-
-.today-label {
-
-    display: inline-block;
-
-    padding: 5px 11px;
-
-    margin-bottom: 8px;
-
-    border-radius: 30px;
-
-    background:
-        rgba(255,91,192,0.10);
-
-    border:
-        1px solid rgba(255,100,200,0.20);
-
-    color: #ff8bd4;
-
-    font-size: 9px;
-
-    font-weight: 700;
-
-    letter-spacing: 2px;
-}
-
-
-.song-title {
-
-    margin: 0;
-
-    font-family: "Playfair Display", serif;
-
-    font-size: 26px;
-
-    line-height: 1.2;
-
-    color: #fff;
-}
-
-
-.song-artist {
-
-    margin: 5px 0 0;
-
-    color: rgba(255,255,255,0.52);
-
-    font-size: 13px;
-}
-
-
-.our-song {
-
-    margin-top: 13px;
-
-    color: #e9dfff;
-
-    font-size: 10px;
-
-    letter-spacing: 3px;
-
-    text-shadow:
-        0 0 12px rgba(255,90,200,0.45);
-}
-
-
-/* =========================================================
-   13. HIDE NATIVE AUDIO UI
-   ========================================================= */
-
-#songAudio {
-
-    display: none;
-}
-
-
-/* =========================================================
-   14. SPECTRUM
-   ========================================================= */
-
-.music-spectrum {
-
-    height: 45px;
-
-    margin-top: 23px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 4px;
-
-    padding: 5px 10px;
-
-    border-radius: 15px;
-
-    background:
-        rgba(0,0,0,0.20);
-
-    border:
-        1px solid rgba(255,255,255,0.06);
-
+    padding: 4px;
+    border: 1px solid rgba(255, 255, 255, .2);
+    border-radius: 21px;
+    background: rgba(255, 255, 255, .09);
     overflow: hidden;
 }
 
+.song-cover img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 17px;
+}
+
+.song-cover img.is-playing,
+#songCover.is-playing {
+    animation: pdCoverPulse 5s ease-in-out infinite;
+}
+
+@keyframes pdCoverPulse {
+    0%, 100% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.13);
+    }
+}
+
+.song-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.today-label {
+    display: inline-block;
+    color: var(--pd-pink);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 9px;
+}
+
+.song-title {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(19px, 5vw, 25px);
+    line-height: 1.25;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.song-artist {
+    margin-top: 7px;
+    color: var(--pd-muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.our-song {
+    display: inline-block;
+    margin-top: 13px;
+    padding: 6px 9px;
+    border-radius: 8px;
+    background: rgba(173, 121, 255, .12);
+    color: var(--pd-purple-light);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+/* =========================================================
+   MUSIC SPECTRUM
+   Works with the existing #musicSpectrum and its spans.
+========================================================= */
+
+.music-spectrum {
+    height: 68px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 3px;
+    margin: 8px 0 15px;
+    overflow: hidden;
+    border-radius: 15px;
+    background: linear-gradient(90deg, rgba(139, 82, 255, .06), rgba(255, 125, 214, .08), rgba(139, 82, 255, .06));
+}
 
 .music-spectrum span {
-
-    width: 4px;
-
-    height: 8px;
-
-    border-radius: 10px;
-
-    background:
-        linear-gradient(
-            180deg,
-            #8d83ff,
-            #ff62bf
-        );
-
-    opacity: 0.65;
-
-    transition:
-        height 0.15s ease;
+    flex: 1 1 0;
+    min-width: 2px;
+    max-width: 8px;
+    height: 8%;
+    border-radius: 100px;
+    background: linear-gradient(to top, #9861ff, #e8b9ff 55%, #ff9bdc);
+    box-shadow: 0 0 10px rgba(177, 114, 255, .22);
+    transform: scaleY(.12);
+    transform-origin: bottom;
+    transition: height .12s ease;
 }
 
-
+/* Decorative fallback animation while the song plays.
+   The Web Audio visualizer can override transform. */
 .song-playing .music-spectrum span {
-
-    animation:
-        spectrumDance 0.65s ease-in-out infinite alternate;
+    animation: pdSpectrumFallback .7s ease-in-out infinite alternate;
 }
 
-
-.music-spectrum span:nth-child(2n) {
-    animation-delay: 0.10s;
+.song-playing .music-spectrum span:nth-child(4n + 1) {
+    animation-delay: -.55s;
 }
 
-.music-spectrum span:nth-child(3n) {
-    animation-delay: 0.20s;
+.song-playing .music-spectrum span:nth-child(4n + 2) {
+    animation-delay: -.2s;
 }
 
-.music-spectrum span:nth-child(4n) {
-    animation-delay: 0.30s;
+.song-playing .music-spectrum span:nth-child(4n + 3) {
+    animation-delay: -.4s;
 }
 
-
-@keyframes spectrumDance {
-
+@keyframes pdSpectrumFallback {
     from {
-        height: 7px;
+        transform: scaleY(.2);
     }
-
     to {
-        height: 34px;
+        transform: scaleY(1);
     }
 }
-
 
 /* =========================================================
-   15. TIME
-   ========================================================= */
+   TIME AND PROGRESS
+========================================================= */
 
 .time-row {
-
     display: flex;
-
     justify-content: space-between;
-
-    margin-top: 8px;
-
-    padding: 0 3px;
-
-    color: rgba(255,255,255,0.45);
-
+    align-items: center;
+    color: #b8a9d1;
     font-size: 10px;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 9px;
 }
-
-
-/* =========================================================
-   16. PROGRESS
-   ========================================================= */
 
 .progress-wrapper {
-
-    margin-top: 4px;
+    width: 100%;
+    margin-bottom: 20px;
 }
-
 
 #songProgress {
-
+    display: block;
     width: 100%;
-
     height: 5px;
-
+    margin: 0;
     appearance: none;
-
     -webkit-appearance: none;
-
-    background:
-        rgba(255,255,255,0.12);
-
-    border-radius: 20px;
-
-    outline: none;
-
+    border: 0;
+    border-radius: 100px;
+    background: linear-gradient(90deg, #9b6bff, #ff91d5);
     cursor: pointer;
 }
-
 
 #songProgress::-webkit-slider-thumb {
-
     appearance: none;
     -webkit-appearance: none;
-
-    width: 14px;
-    height: 14px;
-
+    width: 15px;
+    height: 15px;
     border-radius: 50%;
-
     background: #fff;
-
-    box-shadow:
-        0 0 12px rgba(255,100,200,0.75);
-
-    cursor: pointer;
+    border: 3px solid #c39aff;
+    box-shadow: 0 0 12px rgba(203, 150, 255, .75);
 }
-
 
 #songProgress::-moz-range-thumb {
-
-    width: 14px;
-    height: 14px;
-
-    border: none;
-
+    width: 11px;
+    height: 11px;
     border-radius: 50%;
-
     background: #fff;
-
-    box-shadow:
-        0 0 12px rgba(255,100,200,0.75);
-
-    cursor: pointer;
+    border: 3px solid #c39aff;
+    box-shadow: 0 0 12px rgba(203, 150, 255, .75);
 }
 
-
 /* =========================================================
-   17. CONTROLS
-   ========================================================= */
+   PLAYER CONTROLS
+========================================================= */
 
 .song-controls {
-
     display: flex;
-
-    justify-content: center;
-
     align-items: center;
-
-    gap: 20px;
-
-    margin-top: 19px;
+    justify-content: center;
+    gap: 28px;
+    margin: 5px 0 18px;
 }
-
 
 .song-controls button {
-
-    width: 45px;
-    height: 45px;
-
-    border: 1px solid rgba(255,255,255,0.10);
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 43px;
+    height: 43px;
+    border: 1px solid transparent;
     border-radius: 50%;
-
-    color: #fff;
-
-    background:
-        rgba(255,255,255,0.07);
-
+    background: transparent;
+    color: #d8c5f5;
+    font-size: 18px;
     cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: transform .2s ease, background .2s ease, color .2s ease;
 }
-
 
 .song-controls button:hover {
-
-    transform: scale(1.08);
-
-    background:
-        rgba(255,255,255,0.13);
+    transform: scale(1.1);
+    color: #fff;
+    background: rgba(174, 124, 255, .12);
 }
-
 
 .song-controls button:active {
-
-    transform: scale(0.92);
+    transform: scale(.94);
 }
 
-
-.song-controls .main-play {
-
-    width: 66px;
-    height: 66px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #726aff,
-            #e54ba9
-        );
-
-    border:
-        2px solid rgba(255,255,255,0.20);
-
-    box-shadow:
-        0 0 25px rgba(112,101,255,0.45),
-        0 0 50px rgba(240,75,180,0.18);
-
-    font-size: 20px;
+.song-controls button.main-play {
+    width: 61px;
+    height: 61px;
+    border: 0;
+    background: linear-gradient(135deg, #bd92ff, #8950f4 60%, #dc7edb);
+    color: #fff;
+    font-size: 22px;
+    box-shadow: 0 8px 28px rgba(145, 78, 244, .38), inset 0 1px 0 rgba(255, 255, 255, .3);
 }
 
+.song-controls button.main-play:hover {
+    box-shadow: 0 10px 34px rgba(190, 116, 255, .55);
+}
 
 /* =========================================================
-   18. LYRICS
-   ========================================================= */
+   CURRENT LYRIC AREA
+========================================================= */
 
 .pd-current-lyric {
-
-    min-height: 26px;
-
-    margin-top: 18px;
-
-    text-align: center;
-
-    color: #fff;
-
-    font-size: 15px;
-
-    font-weight: 600;
-
-    line-height: 1.5;
-
-    opacity: 0;
-
-    transform: translateY(5px);
-
-    transition:
-        opacity 0.3s ease,
-        transform 0.3s ease;
-
-    text-shadow:
-        0 0 15px rgba(180,150,255,0.45);
-}
-
-
-.pd-current-lyric.show {
-
-    opacity: 1;
-
-    transform: translateY(0);
-}
-
-
-/* =========================================================
-   19. MESSAGE
-   ========================================================= */
-
-.song-message-card {
-
-    display: flex;
-
-    gap: 13px;
-
-    margin-top: 22px;
-
-    padding: 15px;
-
-    border-radius: 20px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255,255,255,0.055),
-            rgba(255,70,180,0.045)
-        );
-
-    border:
-        1px solid rgba(255,255,255,0.08);
-}
-
-
-.message-icon {
-
-    flex-shrink: 0;
-
-    width: 38px;
-    height: 38px;
-
-    display: flex;
-
-    justify-content: center;
-    align-items: center;
-
-    border-radius: 50%;
-
-    color: #ff77c9;
-
-    background:
-        rgba(255,80,190,0.10);
-
-    box-shadow:
-        0 0 15px rgba(255,80,190,0.18);
-}
-
-
-.song-message-card h3 {
-
-    margin: 0 0 5px;
-
-    font-family: "Playfair Display", serif;
-
-    font-size: 15px;
-}
-
-
-.song-message {
-
+    min-height: 0;
     margin: 0;
-
-    color: rgba(255,255,255,0.58);
-
-    font-size: 12px;
-
+    color: #eadcff;
+    text-align: center;
+    font-family: "Playfair Display", serif;
+    font-size: 14px;
     line-height: 1.7;
 }
 
+.pd-current-lyric:empty {
+    display: none;
+}
 
 /* =========================================================
-   20. MEMORIES
-   ========================================================= */
+   LOVE MESSAGE CARD
+========================================================= */
+
+.song-message-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    margin-top: 22px;
+    padding: 17px 15px;
+    border: 1px solid rgba(255, 151, 219, .17);
+    border-radius: 19px;
+    background: linear-gradient(130deg, rgba(224, 118, 211, .10), rgba(137, 86, 244, .09));
+}
+
+.message-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 37px;
+    width: 37px;
+    height: 37px;
+    border-radius: 12px;
+    background: rgba(255, 133, 208, .12);
+    color: #ff9cdb;
+}
+
+.message-icon i {
+    font-size: 15px;
+}
+
+.song-message-card h3 {
+    margin: 2px 0 8px;
+    font-family: "Playfair Display", serif;
+    font-size: 17px;
+    line-height: 1.4;
+}
+
+.song-message-card > div:last-child {
+    min-width: 0;
+}
+
+.song-message {
+    color: #d1c3e3;
+    font-size: 12px;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+}
+
+.song-message strong {
+    color: #ffb3e6;
+}
+
+/* =========================================================
+   MEMORIES SECTION
+========================================================= */
 
 .memories-section {
-
-    margin-top: 20px;
+    width: 100%;
+    min-width: 0;
+    margin-top: 30px;
 }
-
 
 .section-heading {
-
     display: flex;
-
     justify-content: space-between;
-
-    align-items: end;
-
-    margin-bottom: 11px;
-
-    padding: 0 4px;
+    align-items: center;
+    gap: 10px;
+    margin: 0 3px 15px;
 }
-
 
 .section-heading span {
-
-    font-family: "Playfair Display", serif;
-
-    font-size: 19px;
+    color: #f2eaff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.4px;
 }
-
 
 .section-heading small {
-
-    color: rgba(255,255,255,0.40);
-
+    color: #b7a3d4;
     font-size: 10px;
-
-    letter-spacing: 1px;
 }
 
-
 /* =========================================================
-   21. MEDIA SHOWCASE
-   ========================================================= */
+   PHOTO AND VIDEO SHOWCASE
+========================================================= */
 
 .media-showcase {
-
     position: relative;
-
+    isolation: isolate;
     width: 100%;
-
-    height: 300px;
-
+    aspect-ratio: 4 / 5;
+    min-width: 0;
     overflow: hidden;
-
-    border-radius: 26px;
-
-    background:
-        #080817;
-
-    border:
-        1px solid rgba(255,255,255,0.12);
-
-    box-shadow:
-        0 25px 60px rgba(0,0,0,0.38);
+    border: 1px solid rgba(218, 185, 255, .22);
+    border-radius: 24px;
+    background: #160d25;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, .28);
 }
 
-
-/* =========================================================
-   22. SLIDES
-   ========================================================= */
-
+/* Every slide fills the exact same frame */
 .media-slide {
-
     position: absolute;
-
     inset: 0;
-
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
     opacity: 0;
-
     visibility: hidden;
-
-    transform: scale(1.04);
-
+    pointer-events: none;
+    transform: scale(1.025);
     transition:
-        opacity 0.6s ease,
-        transform 0.8s ease,
-        visibility 0.6s ease;
+        opacity .55s ease,
+        transform .8s ease,
+        visibility .55s;
 }
-
 
 .media-slide.active {
-
+    z-index: 1;
     opacity: 1;
-
     visibility: visible;
-
+    pointer-events: auto;
     transform: scale(1);
 }
 
-
 .media-slide img,
 .media-slide video {
-
+    display: block;
     width: 100%;
     height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: center;
+    border: 0;
+    border-radius: 0;
+    background: #160d25;
+}
 
-    display: block;
-
+/* Use contain if you prefer the whole video visible.
+   Cover fills the frame but can crop edges. */
+.media-slide video {
     object-fit: cover;
 }
 
+/* Gentle photo treatment */
+.media-slide[data-type="photo"] img {
+    filter: saturate(1.04);
+}
 
-/* =========================================================
-   23. MEDIA DARK GRADIENT
-   ========================================================= */
-
-.media-slide::after {
-
+/* Subtle bottom shading behind the counter */
+.media-showcase::after {
     content: "";
-
     position: absolute;
-
-    inset: 0;
-
+    z-index: 2;
+    inset: 55% 0 0;
     pointer-events: none;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(0,0,0,0.03),
-            rgba(0,0,0,0.25)
-        );
+    background: linear-gradient(transparent, rgba(8, 4, 19, .5));
 }
-
 
 /* =========================================================
-   24. VIDEO BUTTON
-   ========================================================= */
-
-.video-play {
-
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    transform:
-        translate(-50%, -50%);
-
-    width: 65px;
-    height: 65px;
-
-    border: 1px solid rgba(255,255,255,0.30);
-
-    border-radius: 50%;
-
-    color: #fff;
-
-    background:
-        rgba(20,15,45,0.65);
-
-    backdrop-filter: blur(10px);
-
-    box-shadow:
-        0 0 30px rgba(110,95,255,0.45);
-
-    z-index: 10;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.2s ease;
-}
-
-
-.video-play:hover {
-
-    transform:
-        translate(-50%, -50%)
-        scale(1.08);
-}
-
-
-/* =========================================================
-   25. SLIDE ARROWS
-   ========================================================= */
+   SLIDESHOW ARROWS
+========================================================= */
 
 .slide-arrow {
-
     position: absolute;
-
+    z-index: 4;
     top: 50%;
-
-    transform:
-        translateY(-50%);
-
-    width: 38px;
-    height: 38px;
-
-    border: 1px solid rgba(255,255,255,0.16);
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 39px;
+    height: 39px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, .28);
     border-radius: 50%;
-
+    background: rgba(19, 10, 38, .55);
     color: #fff;
-
-    background:
-        rgba(10,8,30,0.58);
-
-    backdrop-filter: blur(8px);
-
-    z-index: 20;
-
+    font-size: 14px;
     cursor: pointer;
+    transform: translateY(-50%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background .2s ease, transform .2s ease;
 }
 
+.slide-arrow:hover {
+    background: rgba(145, 82, 236, .85);
+}
+
+.slide-arrow:active {
+    transform: translateY(-50%) scale(.92);
+}
 
 .slide-left {
-
     left: 12px;
 }
 
-
 .slide-right {
-
     right: 12px;
 }
 
-
-.slide-arrow:active {
-
-    transform:
-        translateY(-50%)
-        scale(0.90);
-}
-
-
 /* =========================================================
-   26. SLIDE COUNTER
-   ========================================================= */
+   SLIDE COUNTER
+========================================================= */
 
 .slide-counter {
-
     position: absolute;
-
-    right: 13px;
+    z-index: 4;
+    right: 12px;
     bottom: 12px;
-
-    padding: 5px 9px;
-
-    border-radius: 20px;
-
-    color: rgba(255,255,255,0.75);
-
-    background:
-        rgba(0,0,0,0.45);
-
-    backdrop-filter: blur(8px);
-
-    font-size: 9px;
-
-    z-index: 20;
+    padding: 8px 11px;
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: 100px;
+    background: rgba(13, 7, 27, .63);
+    color: #fff;
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
-
 /* =========================================================
-   27. DOTS
-   ========================================================= */
+   SLIDE DOTS
+========================================================= */
 
 .slide-dots {
-
     display: flex;
-
+    align-items: center;
     justify-content: center;
-
-    gap: 6px;
-
-    margin-top: 11px;
+    flex-wrap: wrap;
+    gap: 7px;
+    min-height: 20px;
+    margin: 14px 0 0;
 }
-
 
 .slide-dot {
-
-    width: 6px;
-    height: 6px;
-
-    border: none;
-
+    width: 7px;
+    height: 7px;
+    flex: 0 0 7px;
     padding: 0;
-
+    border: 0;
     border-radius: 50%;
-
-    background:
-        rgba(255,255,255,0.25);
-
+    background: rgba(211, 186, 255, .34);
     cursor: pointer;
-
-    transition:
-        width 0.2s ease,
-        background 0.2s ease;
+    transition: width .25s ease, border-radius .25s ease, background .25s ease;
 }
-
 
 .slide-dot.active {
-
-    width: 18px;
-
-    border-radius: 20px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #776cff,
-            #ff61ba
-        );
+    width: 23px;
+    flex-basis: 23px;
+    border-radius: 100px;
+    background: linear-gradient(90deg, #a579ff, #ff9edb);
+    box-shadow: 0 0 12px rgba(190, 123, 255, .4);
 }
 
-
 /* =========================================================
-   28. LOVE CARD
-   ========================================================= */
+   BOTTOM LOVE CARD
+========================================================= */
 
 .love-card {
-
-    margin-top: 20px;
-
-    padding: 23px;
-
-    text-align: center;
-
-    border-radius: 25px;
-
+    position: relative;
+    margin-top: 28px;
+    padding: 26px 17px;
+    overflow: hidden;
+    border: 1px solid rgba(218, 184, 255, .2);
+    border-radius: 24px;
     background:
-        linear-gradient(
-            135deg,
-            rgba(255,255,255,0.06),
-            rgba(255,65,180,0.05)
-        );
-
-    border:
-        1px solid rgba(255,255,255,0.09);
+        radial-gradient(circle at 50% 0%, rgba(211, 132, 255, .17), transparent 70%),
+        rgba(255, 255, 255, .035);
+    text-align: center;
 }
-
 
 .love-symbol {
-
-    color: #ff68bf;
-
-    font-size: 25px;
-
-    text-shadow:
-        0 0 20px rgba(255,70,190,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 47px;
+    height: 47px;
+    margin: 0 auto 14px;
+    border-radius: 16px;
+    background: linear-gradient(140deg, #b78aff, #ed8ed8);
+    color: #fff;
+    font-size: 22px;
+    box-shadow: 0 7px 25px rgba(188, 106, 240, .28);
+    animation: pdHeartBeat 2.2s ease-in-out infinite;
 }
 
+@keyframes pdHeartBeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    15% {
+        transform: scale(1.08);
+    }
+    30% {
+        transform: scale(1);
+    }
+    45% {
+        transform: scale(1.05);
+    }
+}
 
 .love-card h3 {
-
-    margin: 7px 0 4px;
-
     font-family: "Playfair Display", serif;
-
-    font-size: 19px;
+    font-size: 23px;
+    font-weight: 600;
 }
-
 
 .love-card p {
-
-    margin: 0;
-
-    color: rgba(255,255,255,0.45);
-
+    margin-top: 9px;
+    color: var(--pd-muted);
     font-size: 11px;
+    line-height: 1.8;
 }
 
 /* =========================================================
-   29. TOUCH RIPPLE
-   ========================================================= */
+   TOUCH EFFECTS CREATED BY song.js
+========================================================= */
+
+#click-bubbles {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    overflow: hidden;
+    pointer-events: none;
+}
 
 .pd-touch-ripple {
-
     position: fixed;
-
-    width: 14px;
-    height: 14px;
-
-    border-radius: 50%;
-
-    pointer-events: none;
-
     z-index: 9999;
-
-    transform:
-        translate(-50%, -50%)
-        scale(0);
-
-    background:
-        radial-gradient(
-            circle,
-            #fff 0%,
-            rgba(145,130,255,0.80) 25%,
-            rgba(255,80,195,0.25) 55%,
-            transparent 72%
-        );
-
-    box-shadow:
-        0 0 18px rgba(135,120,255,0.9),
-        0 0 45px rgba(255,80,200,0.5);
-
-    animation:
-        touchRipple 0.8s ease-out forwards;
-}
-
-
-.pd-touch-ripple::before,
-.pd-touch-ripple::after {
-
-    content: "";
-
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    width: 12px;
-    height: 12px;
-
-    border:
-        1px solid rgba(255,255,255,0.7);
-
+    width: 15px;
+    height: 15px;
+    border: 2px solid rgba(219, 177, 255, .8);
     border-radius: 50%;
-
-    transform:
-        translate(-50%, -50%);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    animation: pdRipple .9s ease-out forwards;
 }
 
-
-.pd-touch-ripple::before {
-
-    animation:
-        rippleRing 0.8s ease-out forwards;
-}
-
-
-.pd-touch-ripple::after {
-
-    animation:
-        rippleRing 1.1s 0.08s ease-out forwards;
-}
-
-
-@keyframes touchRipple {
-
+@keyframes pdRipple {
     from {
-
-        opacity: 1;
-
-        transform:
-            translate(-50%, -50%)
-            scale(0.5);
+        opacity: .8;
+        width: 10px;
+        height: 10px;
     }
-
     to {
-
         opacity: 0;
-
-        transform:
-            translate(-50%, -50%)
-            scale(2.6);
+        width: 100px;
+        height: 100px;
     }
 }
-
-
-@keyframes rippleRing {
-
-    from {
-
-        opacity: 0.9;
-
-        transform:
-            translate(-50%, -50%)
-            scale(1);
-    }
-
-    to {
-
-        opacity: 0;
-
-        transform:
-            translate(-50%, -50%)
-            scale(12);
-    }
-}
-
-
-/* =========================================================
-   30. PARTICLES
-   ========================================================= */
 
 .pd-touch-particle {
-
     position: fixed;
-
-    width: 4px;
-    height: 4px;
-
-    border-radius: 50%;
-
-    pointer-events: none;
-
     z-index: 9999;
-
-    background: #fff;
-
-    box-shadow:
-        0 0 8px rgba(130,120,255,1),
-        0 0 17px rgba(255,80,200,0.8);
-
-    animation:
-        particleFly 0.9s ease-out forwards;
-}
-
-
-@keyframes particleFly {
-
-    from {
-
-        opacity: 1;
-
-        transform:
-            translate(0,0)
-            scale(1);
-    }
-
-    to {
-
-        opacity: 0;
-
-        transform:
-            translate(
-                var(--move-x),
-                var(--move-y)
-            )
-            scale(0);
-    }
-}
-
-
-/* =========================================================
-   31. FLOATING HEARTS
-   ========================================================= */
-
-.song-heart {
-
-    position: fixed;
-
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #e7c7ff;
+    box-shadow: 0 0 12px #c394ff;
     pointer-events: none;
-
-    color: #ff71c6;
-
-    text-shadow:
-        0 0 15px rgba(255,70,190,0.8);
-
-    animation:
-        songHeartFloat 6s linear forwards;
-
-    z-index: 500;
+    animation: pdParticle .9s ease-out forwards;
 }
 
-
-@keyframes songHeartFloat {
-
-    0% {
-
-        opacity: 0;
-
-        transform:
-            translateY(20px)
-            scale(0.7);
-    }
-
-    15% {
-
+@keyframes pdParticle {
+    from {
         opacity: 1;
+        transform: translate(0, 0) scale(1);
     }
-
-    80% {
-
-        opacity: 0.75;
-    }
-
-    100% {
-
+    to {
         opacity: 0;
-
-        transform:
-            translateY(-100vh)
-            scale(1.25);
+        transform: translate(var(--move-x), var(--move-y)) scale(0);
     }
 }
-
 
 /* =========================================================
-   32. SCROLLBAR
-   ========================================================= */
-
-.song-app::-webkit-scrollbar {
-
-    width: 4px;
-}
-
-
-.song-app::-webkit-scrollbar-track {
-
-    background: transparent;
-}
-
-
-.song-app::-webkit-scrollbar-thumb {
-
-    border-radius: 20px;
-
-    background:
-        linear-gradient(
-            180deg,
-            #766bff,
-            #ff62ba
-        );
-}
-
-
-/* =========================================================
-   33. MOBILE
-   ========================================================= */
-
-@media (max-width: 600px) {
-
-    .song-container {
-
-        width: 92%;
-
-        padding-top: 16px;
-        padding-bottom: 170px;
-    }
-
-
-    .song-card {
-
-        padding: 17px;
-
-        border-radius: 25px;
-    }
-
-
-    .song-cover {
-
-        width: 150px;
-        height: 150px;
-    }
-
-
-    .media-showcase {
-
-        height: 270px;
-    }
-
-
-    .song-title {
-
-        font-size: 23px;
-    }
-}
-
-
-/* =========================================================
-   34. SMALL PHONES
-   ========================================================= */
+   MOBILE RESPONSIVENESS
+========================================================= */
 
 @media (max-width: 380px) {
-
     .song-container {
-
-        width: 94%;
+        padding: 23px 12px 28px;
     }
-
-
-    .song-cover {
-
-        width: 130px;
-        height: 130px;
-    }
-
-
-    .media-showcase {
-
-        height: 245px;
-    }
-
 
     .song-card {
+        padding: 16px 12px 19px;
+        border-radius: 23px;
+    }
 
-        padding: 14px;
+    .song-top {
+        gap: 12px;
+    }
+
+    .song-cover-wrap {
+        flex-basis: 91px;
+        width: 91px;
+    }
+
+    .song-title {
+        font-size: 18px;
+    }
+
+    .song-controls {
+        gap: 20px;
+    }
+
+    .media-showcase {
+        border-radius: 19px;
+    }
+}
+
+@media (min-width: 600px) {
+    .song-app {
+        border-right: 1px solid rgba(255, 255, 255, .045);
+        border-left: 1px solid rgba(255, 255, 255, .045);
+    }
+
+    .song-container {
+        padding: 35px 22px 45px;
     }
 }
 
 /* =========================================================
-   PD CHAT — DEFINITIVE PHONE VIEWPORT FIX
-   Header + Messages + Bottom Input
-   ========================================================= */
-
-/* Stop the browser/page itself from scrolling */
-html,
-body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden !important;
-}
-
-
-/* =========================================================
-   CHAT PHONE
-   ========================================================= */
-
-body.phone-page {
-    height: 100dvh !important;
-    min-height: 100dvh !important;
-    overflow: hidden !important;
-}
-
-
-.chat-app {
-    position: relative !important;
-
-    width: 100% !important;
-    height: 100dvh !important;
-    min-height: 100dvh !important;
-    max-height: 100dvh !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    display: grid !important;
-
-    /*
-       70px header
-       remaining space messages
-       70px input
-    */
-    grid-template-rows:
-        70px
-        minmax(0, 1fr)
-        70px !important;
-
-    overflow: hidden !important;
-
-    box-sizing: border-box !important;
-}
-
-
-/* =========================================================
-   HEADER
-   ========================================================= */
-
-.chat-app .chat-header {
-    grid-row: 1 !important;
-
-    position: relative !important;
-
-    width: 100% !important;
-    height: 70px !important;
-    min-height: 70px !important;
-    max-height: 70px !important;
-
-    box-sizing: border-box !important;
-
-    z-index: 1000 !important;
-
-    overflow: hidden !important;
-}
-
-
-/* =========================================================
-   MESSAGES
-   ========================================================= */
-
-.chat-app .chat-messages {
-    grid-row: 2 !important;
-
-    position: relative !important;
-
-    width: 100% !important;
-    height: auto !important;
-
-    min-height: 0 !important;
-    max-height: none !important;
-
-    box-sizing: border-box !important;
-
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-
-    -webkit-overflow-scrolling: touch;
-
-    padding:
-        12px
-        10px
-        15px !important;
-
-    margin: 0 !important;
-}
-
-
-/* =========================================================
-   BOTTOM INPUT BAR
-   ========================================================= */
-
-.chat-app .chat-input {
-    grid-row: 3 !important;
-
-    position: relative !important;
-
-    left: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    top: auto !important;
-
-    width: 100% !important;
-
-    height: 70px !important;
-    min-height: 70px !important;
-    max-height: 70px !important;
-
-    box-sizing: border-box !important;
-
-    margin: 0 !important;
-
-    padding:
-        8px
-        8px
-        calc(8px + env(safe-area-inset-bottom))
-        8px !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-
-    gap: 7px !important;
-
-    z-index: 2000 !important;
-
-    overflow: visible !important;
-
-    background:
-        rgba(8, 7, 22, 0.98) !important;
-
-    border-top:
-        1px solid
-        rgba(255, 255, 255, 0.12) !important;
-}
-
-
-/* =========================================================
-   MESSAGE INPUT
-   ========================================================= */
-
-.chat-app #messageInput {
-    flex: 1 1 auto !important;
-
-    width: auto !important;
-    min-width: 0 !important;
-
-    height: 44px !important;
-    min-height: 44px !important;
-    max-height: 44px !important;
-
-    box-sizing: border-box !important;
-
-    margin: 0 !important;
-
-    padding:
-        0
-        14px !important;
-
-    display: block !important;
-
-    opacity: 1 !important;
-
-    visibility: visible !important;
-
-    pointer-events: auto !important;
-}
-
-
-/* =========================================================
-   BOTTOM BUTTONS
-   ========================================================= */
-
-.chat-app .chat-input button {
-    flex:
-        0 0 42px !important;
-
-    width: 42px !important;
-    min-width: 42px !important;
-    max-width: 42px !important;
-
-    height: 42px !important;
-    min-height: 42px !important;
-    max-height: 42px !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    box-sizing: border-box !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    opacity: 1 !important;
-
-    visibility: visible !important;
-
-    pointer-events: auto !important;
-
-    position: relative !important;
-
-    z-index: 3000 !important;
-}
-
-
-/* =========================================================
-   SEND BUTTON
-   ========================================================= */
-
-.chat-app .send-message {
-    flex:
-        0 0 44px !important;
-
-    width: 44px !important;
-    min-width: 44px !important;
-
-    height: 44px !important;
-    min-height: 44px !important;
-
-    opacity: 1 !important;
-
-    visibility: visible !important;
-
-    pointer-events: auto !important;
-
-    cursor: pointer !important;
-}
-
-
-/* =========================================================
-   VOICE BUTTON
-   ========================================================= */
-
-.chat-app #voiceButton {
-    opacity: 1 !important;
-
-    visibility: visible !important;
-
-    pointer-events: auto !important;
-
-    cursor: pointer !important;
-}
-
-
-/* =========================================================
-   PAPERCLIP
-   ========================================================= */
-
-.chat-app .attach-button {
-    opacity: 1 !important;
-
-    visibility: visible !important;
-
-    pointer-events: auto !important;
-
-    cursor: pointer !important;
-}
-
-
-/* =========================================================
-   VERY SMALL SCREENS
-   ========================================================= */
-
-@media (max-height: 650px) {
-
-    .chat-app {
-        grid-template-rows:
-            62px
-            minmax(0, 1fr)
-            62px !important;
+   ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
     }
-
-
-    .chat-app .chat-header {
-        height: 62px !important;
-        min-height: 62px !important;
-        max-height: 62px !important;
-    }
-
-
-    .chat-app .chat-input {
-        height: 62px !important;
-        min-height: 62px !important;
-        max-height: 62px !important;
-
-        padding:
-            5px
-            6px
-            calc(5px + env(safe-area-inset-bottom))
-            6px !important;
-    }
-
-
-    .chat-app #messageInput {
-        height: 40px !important;
-        min-height: 40px !important;
-    }
-
-
-    .chat-app .chat-input button {
-        width: 39px !important;
-        min-width: 39px !important;
-
-        height: 39px !important;
-        min-height: 39px !important;
-    }
-
 }

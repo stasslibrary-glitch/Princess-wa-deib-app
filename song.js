@@ -13,30 +13,30 @@
 const PD_SONGS = [
 
     {
-        title: "Me too",
-        artist: "Abigail Chams, Harmonize",
-        file: "songs/Abigail Chams, Harmonize - Me too.mp3",
+        title: "Beatiful Onyinye",
+        artist: "P-Square",
+        file: "songs/P-Square-Beatiful Onyinye.mp3",
         cover: "images/1 (1).jpeg"
     },
 
     {
-        title: "Mutima",
-        artist: "An-known",
-        file: "songs/An-known - Mutima .mp3",
+        title: "Chap Chap",
+        artist: "Lutty Neika",
+        file: "songs/Lutty Neika - Chap Chap.mp3",
         cover: "images/1 (2).jpeg"
     },
 
     {
-        title: " Good Idea",
-        artist: "Elijah KItaka ft Dax VIbes",
-        file: "songs/Good Idea Elijah KItaka ft Dax VIbes.mp3",
+        title: " Yoyo",
+        artist: "Joshua Baraka",
+        file: "songs/Joshua Baraka - Yoyo.mp3",
         cover: "images/1 (3).jpeg"
     },
 
     {
-        title: "Intentions",
-        artist: "Justin Bieber ft. Quavo",
-        file: "songs/Justin Bieber - Intentions ft. Quavo.mp3",
+        title: "Finally",
+        artist: "Spice Diana",
+        file: "songs/Spice Diana - Finally.mp3",
         cover: "images/1 (4).jpeg"
     },
 
@@ -48,16 +48,16 @@ const PD_SONGS = [
     },
 
     {
-        title: "Yandalula",
-        artist: "Pawaboy AB",
-        file: "songs/Yandalula - Pawaboy AB.mp3",
+        title: "Dangerous",
+        artist: "Ceaserous",
+        file: "songs/Ceaserous - Dangerous.mp3",
         cover: "images/1 (6).jpeg"
     },
 
     {
-        title: "Mpeke",
-        artist: "Ankwon Prosper ft Aroma Music",
-        file: "songs/Mpeke by Ankwon Prosper ft Aroma Music .mp3",
+        title: "Perfect",
+        artist: "Ed Sheeran",
+        file: "songs/Ed Sheeran - Perfect.mp3",
         cover: "images/1 (7).jpeg"
     },
 
@@ -1196,3 +1196,135 @@ document.addEventListener(
 
     }
 );
+
+/* =========================================================
+   10. PD — MUSIC BARS REACT TO THE ACTUAL SONG
+   Add-on only: does not change the existing player or slideshow
+========================================================= */
+
+(() => {
+    const audio = document.getElementById("songAudio");
+
+    if (!audio) return;
+
+    const bars = document.querySelectorAll(
+        ".music-bars span, " +
+        ".music-visualizer span, " +
+        ".equalizer span, " +
+        ".music-bar"
+    );
+
+    if (!bars.length) {
+        console.warn(
+            "PD music bars: No bars found. Check their HTML class names."
+        );
+        return;
+    }
+
+    let audioContext = null;
+    let analyser = null;
+    let frequencyData = null;
+    let animationFrame = null;
+    let sourceConnected = false;
+
+    function setupAudioAnalysis() {
+        if (analyser) return true;
+
+        try {
+            const AudioContextClass =
+                window.AudioContext || window.webkitAudioContext;
+
+            if (!AudioContextClass) return false;
+
+            audioContext = new AudioContextClass();
+            analyser = audioContext.createAnalyser();
+
+            analyser.fftSize = 256;
+            analyser.smoothingTimeConstant = 0.78;
+
+            frequencyData = new Uint8Array(
+                analyser.frequencyBinCount
+            );
+
+            // Connect the existing audio player only once.
+            if (!sourceConnected) {
+                const source =
+                    audioContext.createMediaElementSource(audio);
+
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+
+                sourceConnected = true;
+            }
+
+            return true;
+        } catch (error) {
+            console.error("PD music visualizer:", error);
+            return false;
+        }
+    }
+
+    function animateBars() {
+        if (!analyser || audio.paused || audio.ended) {
+            stopAnimation();
+            return;
+        }
+
+        analyser.getByteFrequencyData(frequencyData);
+
+        bars.forEach((bar, index) => {
+            // Spread the bars across the song's frequency spectrum.
+            const position = Math.floor(
+                (index / Math.max(bars.length, 1)) *
+                frequencyData.length * 0.75
+            );
+
+            const volume = frequencyData[position] / 255;
+
+            // Keep even quieter frequencies visibly moving.
+            const height = 0.12 + volume * 0.88;
+
+            bar.style.transformOrigin = "bottom";
+            bar.style.transform = `scaleY(${height})`;
+        });
+
+        animationFrame = requestAnimationFrame(animateBars);
+    }
+
+    function stopAnimation() {
+        if (animationFrame !== null) {
+            cancelAnimationFrame(animationFrame);
+            animationFrame = null;
+        }
+
+        bars.forEach(bar => {
+            bar.style.transform = "scaleY(0.12)";
+        });
+    }
+
+    audio.addEventListener("play", async () => {
+        if (!setupAudioAnalysis()) return;
+
+        try {
+            if (audioContext.state === "suspended") {
+                await audioContext.resume();
+            }
+
+            if (audio.paused) return;
+
+            if (animationFrame === null) {
+                animateBars();
+            }
+        } catch (error) {
+            console.warn("PD visualizer could not start:", error);
+        }
+    });
+
+    audio.addEventListener("pause", stopAnimation);
+    audio.addEventListener("ended", stopAnimation);
+
+    // Start immediately if the song is already playing.
+    if (!audio.paused) {
+        audio.dispatchEvent(new Event("play"));
+    }
+})();
