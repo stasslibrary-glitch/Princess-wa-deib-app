@@ -1,915 +1,1138 @@
 
-/* =========================================================
-   PRINCESS WA DEIB — VOICE CALL ENGINE
-   WebRTC • Firebase Firestore signaling • Voice calls
-   Incoming calls • Mute • Timer • Safe cleanup
-   ========================================================= */
+/* ==========================================================
+   PRINCESS WA DEIB — LIVE VOICE & VIDEO CALLS
+   Firebase Firestore signaling + WebRTC
+   Existing firebase.js must export: auth, db
+   ========================================================== */
 
 import { auth, db } from "./firebase.js";
 
 import {
-    onAuthStateChanged
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
 import {
-    collection,
-    doc,
-    addDoc,
-    setDoc,
-    updateDoc,
-    getDoc,
-    getDocs,
-    onSnapshot,
-    query,
-    where,
-    serverTimestamp
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+  addDoc
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
-/* =========================================================
-   CONFIGURATION
-   ========================================================= */
+const $ = (id) => document.getElementById(id);
 
-// STUN helps devices discover a route between each other.
-// Some networks also require a TURN server for reliable calls.
+/*
+  Match these emails to the two existing PD Firebase accounts.
+  The partner must have signed in at least once and have a
+  users/{uid} document containing their email.
+*/
+const PD_PROFILES = {
+  "princess@gmail.com": {
+    name: "Baby",
+    displayName: "Baby ❤️",
+    partnerEmail: "deib@gmail.com"
+  },
+  "deib@gmail.com": {
+    name: "Hubby",
+    displayName: "Hubby 💜",
+    partnerEmail: "princess@gmail.com"
+  }
+};
+
+/*
+  Public STUN servers can help establish direct connections.
+  They are not a substitute for a TURN relay.
+*/
 const RTC_CONFIG = {
-    iceServers: [
-        { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:stun1.l.google.com:19302" }
-    ]
+  iceServers: [
+    { urls: "stun:stun.l.google.com:19302" },
+    { urls: "stun:stun1.l.google.com:19302" }
+  ]
 };
 
-const CALL_COLLECTION = "calls";
-const USERS_COLLECTION = "users";
-
-const PD_CALL_PROFILES = {
-    "princess@gmail.com": {
-        name: "Princess",
-        displayName: "Jaris ❤️"
-    },
-    "deib@gmail.com": {
-        name: "Deib",
-        displayName: "Ernest ❤️"
-    }
-};
-
-/* =========================================================
-   STATE
-   ========================================================= */
+const CALL_TIMEOUT_MS = 45000;
 
 let currentUser = null;
-let otherUser = null;
 let currentCallId = null;
+let currentCallRef = null;
+let currentCallData = null;
+let currentCallRole = null; // "caller" or "receiver"
+let currentCallType = "voice";
 
 let peerConnection = null;
 let localStream = null;
-let remoteStream = null;
 
-let incomingCallsUnsubscribe = null;
 let callUnsubscribe = null;
 let candidateUnsubscribe = null;
+let collectionUnsubscribers = [];
 
-let isCaller = false;
-let isMuted = false;
-let isCleaningUp = false;
-let remoteDescriptionReady = false;
+let incomingTimeout = null;
+let outgoingTimeout = null;
+let durationInterval = null;
+let connectedAtMs = null;
+let activeCandidatePath = null;
+let endingCall = false;
 
-let callTimerInterval = null;
-let callSeconds = 0;
+let historyCalls = new Map();
+let activeFilter = "all";
+let toastTimer = null;
+let partnerCache = null;
 
-let pendingCandidates = [];
-let processedCandidateIds = new Set();
-let processedIncomingCallIds = new Set();
+/* -------------------- BASIC HELPERS -------------------- */
 
-/* =========================================================
-   HTML ELEMENTS — KEEP THESE IDS IN chat.html
-   ========================================================= */
-
-const $ = (selector) => document.querySelector(selector);
-
-const overlay = $("#pdCallOverlay");
-const callName = $("#pdCallName");
-const callStatus = $("#pdCallStatus");
-const callTimer = $("#pdCallTimer");
-const remoteAudio = $("#pdRemoteAudio");
-
-const voiceCallButton = $("#voiceCallButton");
-const acceptButton = $("#pdAcceptIncoming");
-const declineButton = $("#pdDeclineIncoming");
-const endButton = $("#pdEndCall");
-const muteButton = $("#pdMuteButton");
-
-/* =========================================================
-   SMALL HELPERS
-   ========================================================= */
-
-function setStatus(message) {
-    if (callStatus) callStatus.textContent = message;
+function normalizedEmail(value) {
+  return String(value || "").trim().toLowerCase();
 }
 
-function getProfile(email) {
-    const normalizedEmail = (email || "").toLowerCase();
-
-    return PD_CALL_PROFILES[normalizedEmail] || {
-        name: "My Love",
-        displayName: "My Love ❤️"
-    };
+function getProfile(user = currentUser) {
+  return PD_PROFILES[normalizedEmail(user?.email)] || {
+    name: user?.displayName || "PD User",
+    displayName: user?.displayName || "PD User",
+    partnerEmail: null
+  };
 }
 
-function getFriendlyError(error) {
-    if (error?.name === "NotAllowedError" ||
-        error?.name === "PermissionDeniedError") {
-        return "Please allow microphone access in your browser settings.";
-    }
-
-    if (error?.name === "NotFoundError" ||
-        error?.name === "DevicesNotFoundError") {
-        return "No microphone was found on this device.";
-    }
-
-    if (error?.name === "NotReadableError") {
-        return "Your microphone may be in use by another application.";
-    }
-
-    if (error?.name === "InvalidStateError") {
-        return "The call is no longer active. Please try again.";
-    }
-
-    if (error?.code === "permission-denied") {
-        return "Firebase denied access to the call. Check your Firestore rules.";
-    }
-
-    return error?.message || "Something went wrong with the call.";
+function getMyName() {
+  return getProfile().displayName;
 }
 
-function showCallScreen(mode, name, status) {
-    if (!overlay) {
-        console.error("Missing #pdCallOverlay in chat.html.");
-        return;
-    }
+function getPartnerName() {
+  const myEmail = normalizedEmail(currentUser?.email);
 
-    if (callName) {
-        callName.textContent = name || "My Love ❤️";
-    }
+  if (myEmail === "princess@gmail.com") return "Hubby 💜";
+  if (myEmail === "deib@gmail.com") return "Baby ❤️";
 
-    if (callTimer) {
-        callTimer.textContent = "00:00";
-    }
+  return "Your person ❤️";
+}
 
-    setStatus(status || "");
+function showToast(message) {
+  const toast = $("toast");
+  if (!toast) {
+    console.log("PD Calls:", message);
+    return;
+  }
 
-    overlay.classList.remove("incoming", "calling", "active");
-    overlay.classList.add("active");
+  toast.textContent = message;
+  toast.classList.add("show");
 
-    if (mode === "incoming") {
-        overlay.classList.add("incoming");
-    } else if (mode === "calling") {
-        overlay.classList.add("calling");
-    }
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 3500);
+}
+
+function showCallStatus(message) {
+  $("callStatusText").textContent = message;
+}
+
+function isTerminalStatus(status) {
+  return [
+    "completed",
+    "missed",
+    "declined",
+    "cancelled",
+    "failed"
+  ].includes(String(status || "").toLowerCase());
+}
+
+function timestampMillis(value) {
+  if (!value) return 0;
+  if (typeof value.toMillis === "function") return value.toMillis();
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? 0 : date.getTime();
+}
+
+function formatCallDate(value) {
+  const millis = timestampMillis(value);
+  if (!millis) return "Time unavailable";
+
+  const date = new Date(millis);
+  const now = new Date();
+  const yesterday = new Date(now);
+
+  yesterday.setDate(now.getDate() - 1);
+
+  const time = date.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+
+  if (date.toDateString() === now.toDateString()) {
+    return `Today · ${time}`;
+  }
+
+  if (date.toDateString() === yesterday.toDateString()) {
+    return `Yesterday · ${time}`;
+  }
+
+  return date.toLocaleDateString([], {
+    day: "numeric",
+    month: "short"
+  }) + ` · ${time}`;
+}
+
+function formatDuration(seconds) {
+  const total = Math.max(0, Math.floor(Number(seconds) || 0));
+  const minutes = Math.floor(total / 60);
+  const remainder = total % 60;
+
+  return `${String(minutes).padStart(2, "0")}:${String(remainder).padStart(2, "0")}`;
+}
+
+function clearCallTimers() {
+  clearTimeout(incomingTimeout);
+  clearTimeout(outgoingTimeout);
+  clearInterval(durationInterval);
+
+  incomingTimeout = null;
+  outgoingTimeout = null;
+  durationInterval = null;
+}
+
+function startDurationTimer() {
+  if (durationInterval) return;
+
+  if (!connectedAtMs) connectedAtMs = Date.now();
+
+  const update = () => {
+    const seconds = Math.floor((Date.now() - connectedAtMs) / 1000);
+    $("callTimer").textContent = formatDuration(seconds);
+  };
+
+  update();
+  durationInterval = setInterval(update, 1000);
+}
+
+function getCallRef(callId) {
+  return doc(db, "calls", callId);
+}
+
+/* -------------------- PARTNER LOOKUP -------------------- */
+
+async function findPartner() {
+  if (partnerCache) return partnerCache;
+
+  const profile = getProfile();
+
+  if (!profile.partnerEmail) {
+    throw new Error(
+      "This PD account has no configured partner email in PD_PROFILES."
+    );
+  }
+
+  const partnerQuery = query(
+    collection(db, "users"),
+    where("email", "==", profile.partnerEmail),
+    limit(1)
+  );
+
+  const result = await getDocs(partnerQuery);
+
+  if (result.empty) {
+    throw new Error(
+      "Your partner's Firebase profile was not found. Ask them to sign in to PD once, then try again."
+    );
+  }
+
+  const partnerDoc = result.docs[0];
+
+  if (partnerDoc.id === currentUser.uid) {
+    throw new Error("The partner account resolves to your own account.");
+  }
+
+  partnerCache = {
+    uid: partnerDoc.id,
+    ...partnerDoc.data()
+  };
+
+  return partnerCache;
+}
+
+/* -------------------- CALL SCREEN -------------------- */
+
+function showCallScreen({
+  name,
+  type,
+  status,
+  incoming = false
+}) {
+  $("callOverlay").hidden = false;
+  $("callName").textContent = name || getPartnerName();
+
+  $("callAvatar").innerHTML = type === "video"
+    ? '<i class="fa-solid fa-video"></i>'
+    : '<i class="fa-solid fa-heart"></i>';
+
+  $("videoStage").hidden = type !== "video";
+  $("incomingActions").hidden = !incoming;
+  $("activeActions").hidden = incoming;
+
+  $("muteBtn").disabled = true;
+  $("cameraBtn").hidden = type !== "video";
+
+  $("callTimer").textContent = "00:00";
+  showCallStatus(status);
+}
+
+function setCallButtonsBusy(busy) {
+  $("acceptCallBtn").disabled = busy;
+  $("declineCallBtn").disabled = busy;
+  $("voiceCallBtn").disabled = busy;
+  $("videoCallBtn").disabled = busy;
 }
 
 function hideCallScreen() {
-    if (!overlay) return;
-
-    overlay.classList.remove("active", "incoming", "calling");
+  $("callOverlay").hidden = true;
+  $("incomingActions").hidden = true;
+  $("activeActions").hidden = true;
+  $("videoStage").hidden = true;
+  $("callTimer").textContent = "00:00";
+  $("muteBtn").innerHTML =
+    '<i class="fa-solid fa-microphone"></i><span>Mute</span>';
+  $("cameraBtn").innerHTML =
+    '<i class="fa-solid fa-video"></i><span>Camera off</span>';
+  setCallButtonsBusy(false);
 }
 
-function setCallButtonsEnabled(enabled) {
-    if (voiceCallButton) {
-        voiceCallButton.disabled = !enabled;
-    }
-}
+/* -------------------- WEBRTC -------------------- */
 
-function setIncomingButtonsVisible(visible) {
-    const incoming = $("#pdIncomingControls");
-    const active = $("#pdActiveControls");
+function makePeerConnection(callId, role) {
+  peerConnection = new RTCPeerConnection(RTC_CONFIG);
 
-    if (incoming) incoming.hidden = !visible;
-    if (active) active.hidden = visible;
-}
+  const candidateCollection = role === "caller"
+    ? "offerCandidates"
+    : "answerCandidates";
 
-/* =========================================================
-   FIND THE OTHER PD ACCOUNT
-   ========================================================= */
+  activeCandidatePath = candidateCollection;
 
-async function getOtherUser() {
-    if (!currentUser) return null;
-
-    const myEmail = (currentUser.email || "").toLowerCase();
-
-    const otherEmail = Object.keys(PD_CALL_PROFILES).find(
-        email => email !== myEmail
-    );
-
-    if (!otherEmail) {
-        throw new Error(
-            "This account is not listed in PD_CALL_PROFILES. Check the two account emails."
-        );
-    }
-
-    // First check whether the user's document ID is their email.
-    try {
-        const emailDoc = await getDoc(
-            doc(db, USERS_COLLECTION, otherEmail)
-        );
-
-        if (emailDoc.exists()) {
-            const data = emailDoc.data();
-
-            return {
-                uid: data.uid || emailDoc.id,
-                email: (data.email || otherEmail).toLowerCase(),
-                displayName:
-                    data.displayName ||
-                    getProfile(otherEmail).displayName
-            };
-        }
-    } catch (error) {
-        console.warn("Could not read email-based user document:", error);
-    }
-
-    // Otherwise find the user by their email field.
-    const usersSnapshot = await getDocs(
-        query(
-            collection(db, USERS_COLLECTION),
-            where("email", "==", otherEmail)
-        )
-    );
-
-    if (usersSnapshot.empty) {
-        throw new Error(
-            `Could not find ${otherEmail} in Firestore's users collection.`
-        );
-    }
-
-    const userDoc = usersSnapshot.docs[0];
-    const data = userDoc.data();
-
-    return {
-        uid: data.uid || userDoc.id,
-        email: (data.email || otherEmail).toLowerCase(),
-        displayName:
-            data.displayName ||
-            getProfile(otherEmail).displayName
-    };
-}
-
-/* =========================================================
-   MICROPHONE
-   ========================================================= */
-
-async function getMicrophone() {
-    if (!navigator.mediaDevices?.getUserMedia) {
-        throw new Error(
-            "Microphone calling requires HTTPS or localhost and a supported browser."
-        );
-    }
-
-    return navigator.mediaDevices.getUserMedia({
-        audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true
-        },
-        video: false
-    });
-}
-
-/* =========================================================
-   FIRESTORE ICE CANDIDATES
-   ========================================================= */
-
-async function saveIceCandidate(candidate) {
-    if (!currentCallId || !candidate) return;
-
-    const subcollection = isCaller
-        ? "callerCandidates"
-        : "calleeCandidates";
+  peerConnection.onicecandidate = async (event) => {
+    if (!event.candidate || currentCallId !== callId) return;
 
     try {
-        await addDoc(
-            collection(db, CALL_COLLECTION, currentCallId, subcollection),
-            candidate.toJSON()
-        );
+      await addDoc(
+        collection(db, "calls", callId, candidateCollection),
+        event.candidate.toJSON()
+      );
     } catch (error) {
-        console.error("Could not save ICE candidate:", error);
+      console.error("PD ICE candidate write failed:", error);
+      showCallStatus("Network setup issue. Trying to connect…");
     }
+  };
+
+  peerConnection.ontrack = async (event) => {
+    const stream = event.streams?.[0];
+    if (!stream) return;
+
+    if (currentCallType === "video") {
+      $("remoteVideo").srcObject = stream;
+      $("videoStage").hidden = false;
+
+      $("remoteVideo").play().catch(() => {
+        showCallStatus("Tap the screen if your browser asks to start media.");
+      });
+    } else {
+      // An audio element keeps voice calls audible without showing a video.
+      $("remoteAudio").srcObject = stream;
+      $("remoteAudio").play().catch(() => {
+        showCallStatus("Tap the page to allow call audio playback.");
+      });
+    }
+  };
+
+  peerConnection.onconnectionstatechange = async () => {
+    if (!peerConnection || currentCallId !== callId) return;
+
+    const state = peerConnection.connectionState;
+    console.log("PD WebRTC connection:", state);
+
+    if (state === "connected") {
+      if (!connectedAtMs) {
+        connectedAtMs = Date.now();
+        startDurationTimer();
+      }
+
+      showCallStatus("Connected ❤️ You're together now.");
+
+      try {
+        await updateDoc(getCallRef(callId), {
+          status: "active",
+          connectedAt: serverTimestamp()
+        });
+      } catch (error) {
+        console.warn("Could not update active call status:", error);
+      }
+    }
+
+    if (state === "failed") {
+      showCallStatus("Connection failed. A TURN relay may be needed.");
+      showToast("Call connection failed. Check your network or TURN setup.");
+      await finishCall("failed");
+    }
+
+    if (state === "disconnected") {
+      showCallStatus("Connection interrupted. Trying to reconnect…");
+    }
+  };
+
+  peerConnection.oniceconnectionstatechange = () => {
+    console.log("PD ICE connection:", peerConnection?.iceConnectionState);
+  };
+
+  return peerConnection;
 }
 
-async function addRemoteCandidate(candidateData) {
-    if (!peerConnection || !candidateData) return;
+async function addLocalTracks(pc, stream) {
+  for (const track of stream.getTracks()) {
+    pc.addTrack(track, stream);
+  }
 
-    try {
-        const candidate = new RTCIceCandidate(candidateData);
-
-        if (!remoteDescriptionReady) {
-            pendingCandidates.push(candidate);
-            return;
-        }
-
-        await peerConnection.addIceCandidate(candidate);
-    } catch (error) {
-        console.error("Could not add remote ICE candidate:", error);
-    }
+  if (currentCallType === "video") {
+    $("localVideo").srcObject = stream;
+    $("videoStage").hidden = false;
+    $("localVideo").play().catch(() => {});
+  }
 }
 
-async function flushPendingCandidates() {
-    if (!peerConnection || !remoteDescriptionReady) return;
+async function listenForRemoteCandidates(callId, collectionName) {
+  if (candidateUnsubscribe) {
+    candidateUnsubscribe();
+    candidateUnsubscribe = null;
+  }
 
-    const candidates = [...pendingCandidates];
-    pendingCandidates = [];
+  const candidatesRef = collection(db, "calls", callId, collectionName);
 
-    for (const candidate of candidates) {
+  candidateUnsubscribe = onSnapshot(
+    candidatesRef,
+    async (snapshot) => {
+      if (!peerConnection || currentCallId !== callId) return;
+
+      for (const change of snapshot.docChanges()) {
+        if (change.type !== "added") continue;
+
         try {
-            await peerConnection.addIceCandidate(candidate);
+          await peerConnection.addIceCandidate(
+            new RTCIceCandidate(change.doc.data())
+          );
         } catch (error) {
-            console.warn("Queued ICE candidate could not be added:", error);
+          console.error("PD could not add remote ICE candidate:", error);
         }
+      }
+    },
+    (error) => {
+      console.error("PD candidate listener error:", error);
+      showCallStatus("Network setup failed. Check Firestore rules.");
     }
+  );
 }
 
-function listenForRemoteCandidates() {
-    if (!currentCallId) return;
+/* -------------------- CALL DOCUMENT WATCHER -------------------- */
 
-    if (candidateUnsubscribe) {
-        candidateUnsubscribe();
-        candidateUnsubscribe = null;
-    }
+function watchCurrentCall(callId, role) {
+  if (callUnsubscribe) {
+    callUnsubscribe();
+    callUnsubscribe = null;
+  }
 
-    const subcollection = isCaller
-        ? "calleeCandidates"
-        : "callerCandidates";
+  callUnsubscribe = onSnapshot(
+    getCallRef(callId),
+    async (snapshot) => {
+      if (!snapshot.exists() || currentCallId !== callId) return;
 
-    candidateUnsubscribe = onSnapshot(
-        collection(db, CALL_COLLECTION, currentCallId, subcollection),
-        snapshot => {
-            snapshot.docChanges().forEach(change => {
-                if (change.type !== "added") return;
+      const data = snapshot.data();
+      currentCallData = data;
 
-                const candidateId = change.doc.id;
-                if (processedCandidateIds.has(candidateId)) return;
+      if (isTerminalStatus(data.status)) {
+        const status = data.status;
 
-                processedCandidateIds.add(candidateId);
-                void addRemoteCandidate(change.doc.data());
-            });
-        },
-        error => {
-            console.error("ICE candidate listener failed:", error);
-            setStatus("Network connection issue. Please try again.");
+        if (!endingCall) {
+          if (status === "missed") showToast("Missed call ❤️");
+          if (status === "declined") showToast("The call was declined.");
+          if (status === "cancelled") showToast("The call ended.");
+          if (status === "failed") showToast("The call could not connect.");
+          if (status === "completed") showToast("Call ended ❤️");
         }
-    );
+
+        await cleanupCall();
+        return;
+      }
+
+      if (
+        role === "caller" &&
+        data.answer &&
+        peerConnection &&
+        !peerConnection.currentRemoteDescription
+      ) {
+        try {
+          await peerConnection.setRemoteDescription(
+            new RTCSessionDescription(data.answer)
+          );
+
+          await listenForRemoteCandidates(callId, "answerCandidates");
+          showCallStatus("Connecting to your person…");
+        } catch (error) {
+          console.error("PD setting remote answer failed:", error);
+          showToast("Could not connect the call. Check the browser console.");
+          await finishCall("failed");
+        }
+      }
+
+      if (data.status === "active") {
+        showCallStatus("Connected ❤️");
+      }
+    },
+    (error) => {
+      console.error("PD call document listener failed:", error);
+      showToast("Call signaling failed. Check Firestore security rules.");
+    }
+  );
 }
 
-/* =========================================================
-   WEBRTC CONNECTION
-   ========================================================= */
+/* -------------------- START OUTGOING CALL -------------------- */
 
-function createPeerConnection() {
-    if (peerConnection) return peerConnection;
+async function startCall(type) {
+  if (!currentUser) {
+    showToast("Please sign in to PD first.");
+    return;
+  }
 
-    peerConnection = new RTCPeerConnection(RTC_CONFIG);
-    remoteStream = new MediaStream();
+  if (currentCallId) {
+    showToast("You already have a call in progress.");
+    return;
+  }
 
-    if (remoteAudio) {
-        remoteAudio.srcObject = remoteStream;
-        remoteAudio.autoplay = true;
-        remoteAudio.playsInline = true;
+  currentCallType = type;
+  setCallButtonsBusy(true);
+
+  try {
+    const partner = await findPartner();
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error("Microphone/camera access requires HTTPS or localhost.");
     }
 
-    peerConnection.ontrack = event => {
-        const incomingStream = event.streams?.[0];
-
-        if (incomingStream) {
-            incomingStream.getTracks().forEach(track => {
-                if (!remoteStream.getTracks().some(t => t.id === track.id)) {
-                    remoteStream.addTrack(track);
-                }
-            });
-        } else if (
-            event.track &&
-            !remoteStream.getTracks().some(t => t.id === event.track.id)
-        ) {
-            remoteStream.addTrack(event.track);
-        }
-
-        if (remoteAudio) {
-            remoteAudio.srcObject = remoteStream;
-
-            remoteAudio.play().catch(error => {
-                console.warn("Tap the call screen to enable audio:", error);
-                setStatus("Connected ❤️ Tap the screen if you cannot hear.");
-            });
-        }
-    };
-
-    peerConnection.onicecandidate = event => {
-        if (event.candidate) {
-            void saveIceCandidate(event.candidate);
-        }
-    };
-
-    peerConnection.onconnectionstatechange = () => {
-        if (!peerConnection) return;
-
-        const state = peerConnection.connectionState;
-        console.log("📞 PD WebRTC connection:", state);
-
-        if (state === "connected") {
-            setStatus("Connected ❤️");
-            startCallTimer();
-        } else if (state === "connecting") {
-            setStatus("Connecting...");
-        } else if (state === "disconnected") {
-            setStatus("Connection interrupted…");
-        } else if (state === "failed") {
-            setStatus("Connection failed. Check your network.");
-        } else if (state === "closed") {
-            stopCallTimer();
-        }
-    };
-
-    return peerConnection;
-}
-
-function addLocalTracks(stream) {
-    const connection = createPeerConnection();
-
-    stream.getTracks().forEach(track => {
-        const alreadyAdded = connection
-            .getSenders()
-            .some(sender => sender.track?.id === track.id);
-
-        if (!alreadyAdded) {
-            connection.addTrack(track, stream);
-        }
+    showCallScreen({
+      name: partner.displayName || partner.name || getPartnerName(),
+      type,
+      status: "Requesting microphone permission…"
     });
-}
 
-/* =========================================================
-   WATCH CALL DOCUMENT
-   ========================================================= */
+    localStream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: type === "video"
+        ? { facingMode: "user" }
+        : false
+    });
 
-function listenToCall(callId, onCallUpdate) {
-    if (callUnsubscribe) {
-        callUnsubscribe();
-        callUnsubscribe = null;
-    }
+    const callRef = doc(collection(db, "calls"));
+    currentCallRef = callRef;
+    currentCallId = callRef.id;
+    currentCallRole = "caller";
+    connectedAtMs = null;
+    endingCall = false;
 
-    callUnsubscribe = onSnapshot(
-        doc(db, CALL_COLLECTION, callId),
-        snapshot => {
-            if (!snapshot.exists()) {
-                void finishCall(false);
-                return;
-            }
-
-            void onCallUpdate(snapshot.data());
-        },
-        error => {
-            console.error("Call listener failed:", error);
-            setStatus("Lost connection to call signaling.");
-        }
-    );
-}
-
-/* =========================================================
-   START OUTGOING CALL
-   ========================================================= */
-
-async function startVoiceCall() {
-    if (!currentUser || currentCallId || isCleaningUp) return;
-
-    setCallButtonsEnabled(false);
-
-    try {
-        otherUser = await getOtherUser();
-
-        if (!otherUser?.uid || otherUser.uid === currentUser.uid) {
-            throw new Error("The other PD account has an invalid user ID.");
-        }
-
-        isCaller = true;
-        showCallScreen("calling", otherUser.displayName, "Preparing your call…");
-
-        localStream = await getMicrophone();
-
-        createPeerConnection();
-        addLocalTracks(localStream);
-
-        const callRef = doc(collection(db, CALL_COLLECTION));
-        currentCallId = callRef.id;
-
-        const offer = await peerConnection.createOffer();
-        await peerConnection.setLocalDescription(offer);
-
-        await setDoc(callRef, {
-            callerUID: currentUser.uid,
-            callerEmail: (currentUser.email || "").toLowerCase(),
-            callerDisplayName: getProfile(currentUser.email).displayName,
-
-            calleeUID: otherUser.uid,
-            calleeEmail: otherUser.email,
-            calleeDisplayName: otherUser.displayName,
-
-            offer: {
-                type: offer.type,
-                sdp: offer.sdp
-            },
-
-            status: "ringing",
-            createdAt: serverTimestamp()
-        });
-
-        setStatus("Calling… 💜");
-
-        // Start listening before the other device answers.
-        listenForRemoteCandidates();
-
-        listenToCall(currentCallId, async data => {
-            if (!currentCallId || isCleaningUp) return;
-
-            if (
-                data.answer &&
-                peerConnection &&
-                !peerConnection.currentRemoteDescription
-            ) {
-                try {
-                    await peerConnection.setRemoteDescription(
-                        new RTCSessionDescription(data.answer)
-                    );
-
-                    remoteDescriptionReady = true;
-                    await flushPendingCandidates();
-
-                    setStatus("Connecting…");
-                } catch (error) {
-                    console.error("Could not apply call answer:", error);
-                    setStatus("Could not connect the call.");
-                }
-            }
-
-            if (data.status === "declined") {
-                setStatus("Call declined 💜");
-                setTimeout(() => {
-                    if (currentCallId) void finishCall(false);
-                }, 900);
-            } else if (data.status === "ended") {
-                void finishCall(false);
-            }
-        });
-
-    } catch (error) {
-        console.error("Could not start PD call:", error);
-        alert(`Could not start the call: ${getFriendlyError(error)}`);
-
-        if (currentCallId) {
-            await finishCall(true);
-        } else {
-            cleanupCall();
-        }
-    } finally {
-        setCallButtonsEnabled(true);
-    }
-}
-
-/* =========================================================
-   INCOMING CALLS
-   ========================================================= */
-
-function listenForIncomingCalls() {
-    if (!currentUser || incomingCallsUnsubscribe) return;
-
-    // Only listen to calls addressed to this account.
-    // Filter status in JavaScript to avoid needing a composite index.
-    const incomingQuery = query(
-        collection(db, CALL_COLLECTION),
-        where("calleeUID", "==", currentUser.uid)
-    );
-
-    incomingCallsUnsubscribe = onSnapshot(
-        incomingQuery,
-        snapshot => {
-            snapshot.docChanges().forEach(change => {
-                const data = change.doc.data();
-                const callId = change.doc.id;
-
-                if (data.status !== "ringing") return;
-                if (data.callerUID === currentUser.uid) return;
-                if (currentCallId || isCleaningUp) return;
-                if (processedIncomingCallIds.has(callId)) return;
-
-                processedIncomingCallIds.add(callId);
-                receiveIncomingCall(callId, data);
-            });
-        },
-        error => {
-            console.error("Incoming call listener failed:", error);
-        }
-    );
-}
-
-function receiveIncomingCall(callId, data) {
-    if (currentCallId || isCleaningUp) return;
-
-    currentCallId = callId;
-    isCaller = false;
-
-    otherUser = {
-        uid: data.callerUID,
-        email: (data.callerEmail || "").toLowerCase(),
-        displayName:
-            data.callerDisplayName ||
-            getProfile(data.callerEmail).displayName
+    const initialData = {
+      callerUID: currentUser.uid,
+      receiverUID: partner.uid,
+      callerEmail: currentUser.email || "",
+      receiverEmail: partner.email || "",
+      callerName: getMyName(),
+      receiverName: partner.displayName || partner.name || getPartnerName(),
+      type,
+      status: "ringing",
+      createdAt: serverTimestamp(),
+      connectedAt: null,
+      endedAt: null,
+      durationSeconds: 0
     };
 
-    showCallScreen(
-        "incoming",
-        otherUser.displayName,
-        "Incoming voice call… 💜"
-    );
+    await setDoc(callRef, initialData);
+    currentCallData = initialData;
 
-    setIncomingButtonsVisible(true);
+    const pc = makePeerConnection(callRef.id, "caller");
+    await addLocalTracks(pc, localStream);
 
-    // Listen immediately, but queue candidates until the offer is applied.
-    listenForRemoteCandidates();
-
-    // Watch for caller cancelling while the call is ringing.
-    listenToCall(callId, async updatedData => {
-        if (!currentCallId || isCleaningUp) return;
-
-        if (updatedData.status === "ended" ||
-            updatedData.status === "declined") {
-            void finishCall(false);
-        }
+    showCallScreen({
+      name: initialData.receiverName,
+      type,
+      status: "Calling…"
     });
+
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+
+    await updateDoc(callRef, {
+      offer: {
+        type: offer.type,
+        sdp: offer.sdp
+      }
+    });
+
+    watchCurrentCall(callRef.id, "caller");
+
+    outgoingTimeout = setTimeout(async () => {
+      if (
+        currentCallId === callRef.id &&
+        !connectedAtMs &&
+        currentCallData?.status === "ringing"
+      ) {
+        await finishCall("missed");
+      }
+    }, CALL_TIMEOUT_MS);
+
+  } catch (error) {
+    console.error("PD outgoing call error:", error);
+
+    showToast(error.message || "Could not start the call.");
+
+    await cleanupCall();
+  } finally {
+    setCallButtonsBusy(false);
+  }
 }
 
-/* =========================================================
-   ACCEPT INCOMING CALL
-   ========================================================= */
+/* -------------------- INCOMING CALLS -------------------- */
+
+function showIncomingCall(callId, data) {
+  if (currentCallId || !data.offer) return;
+  if (data.callerUID === currentUser?.uid) return;
+
+  currentCallId = callId;
+  currentCallRef = getCallRef(callId);
+  currentCallData = data;
+  currentCallRole = "receiver";
+  currentCallType = data.type === "video" ? "video" : "voice";
+  connectedAtMs = null;
+  endingCall = false;
+
+  showCallScreen({
+    name: data.callerName || getPartnerName(),
+    type: currentCallType,
+    status: currentCallType === "video"
+      ? "Incoming video call…"
+      : "Incoming voice call…",
+    incoming: true
+  });
+
+  watchCurrentCall(callId, "receiver");
+
+  incomingTimeout = setTimeout(async () => {
+    if (
+      currentCallId === callId &&
+      !connectedAtMs &&
+      currentCallData?.status === "ringing"
+    ) {
+      await finishCall("missed");
+    }
+  }, CALL_TIMEOUT_MS);
+}
 
 async function acceptIncomingCall() {
-    if (!currentCallId || isCaller || isCleaningUp) return;
+  if (!currentCallId || currentCallRole !== "receiver") return;
 
-    if (acceptButton) acceptButton.disabled = true;
+  const callId = currentCallId;
+  setCallButtonsBusy(true);
 
-    try {
-        const callRef = doc(db, CALL_COLLECTION, currentCallId);
-        const snapshot = await getDoc(callRef);
+  try {
+    const snapshot = await getDoc(getCallRef(callId));
 
-        if (!snapshot.exists()) {
-            throw new Error("This call no longer exists.");
-        }
-
-        const data = snapshot.data();
-
-        if (data.status !== "ringing" || !data.offer) {
-            throw new Error("This call is no longer available.");
-        }
-
-        localStream = await getMicrophone();
-
-        createPeerConnection();
-        addLocalTracks(localStream);
-
-        await peerConnection.setRemoteDescription(
-            new RTCSessionDescription(data.offer)
-        );
-
-        remoteDescriptionReady = true;
-        await flushPendingCandidates();
-
-        const answer = await peerConnection.createAnswer();
-        await peerConnection.setLocalDescription(answer);
-
-        await updateDoc(callRef, {
-            answer: {
-                type: answer.type,
-                sdp: answer.sdp
-            },
-            status: "accepted",
-            acceptedAt: serverTimestamp()
-        });
-
-        showCallScreen("active", otherUser?.displayName, "Connecting…");
-        setIncomingButtonsVisible(false);
-
-    } catch (error) {
-        console.error("Could not accept PD call:", error);
-        alert(`Could not accept the call: ${getFriendlyError(error)}`);
-        await finishCall(true);
-    } finally {
-        if (acceptButton) acceptButton.disabled = false;
-    }
-}
-
-/* =========================================================
-   DECLINE INCOMING CALL
-   ========================================================= */
-
-async function declineIncomingCall() {
-    if (!currentCallId) return;
-
-    const callId = currentCallId;
-
-    try {
-        await updateDoc(doc(db, CALL_COLLECTION, callId), {
-            status: "declined",
-            endedAt: serverTimestamp()
-        });
-    } catch (error) {
-        console.error("Could not decline call:", error);
+    if (!snapshot.exists()) {
+      throw new Error("This call no longer exists.");
     }
 
-    await finishCall(false);
-}
+    const data = snapshot.data();
+    currentCallData = data;
 
-/* =========================================================
-   MUTE / UNMUTE
-   ========================================================= */
+    if (data.status !== "ringing" || !data.offer) {
+      throw new Error("This call has already ended or is still preparing.");
+    }
 
-function toggleMute() {
-    if (!localStream) return;
+    currentCallType = data.type === "video" ? "video" : "voice";
 
-    const tracks = localStream.getAudioTracks();
-    if (!tracks.length) return;
-
-    isMuted = !isMuted;
-
-    tracks.forEach(track => {
-        track.enabled = !isMuted;
+    showCallScreen({
+      name: data.callerName || getPartnerName(),
+      type: currentCallType,
+      status: "Preparing your microphone…"
     });
 
-    if (muteButton) {
-        muteButton.classList.toggle("muted", isMuted);
-        muteButton.setAttribute(
-            "aria-label",
-            isMuted ? "Unmute microphone" : "Mute microphone"
-        );
+    localStream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: currentCallType === "video"
+        ? { facingMode: "user" }
+        : false
+    });
 
-        muteButton.innerHTML = isMuted
-            ? '<i class="fa-solid fa-microphone-slash"></i>'
-            : '<i class="fa-solid fa-microphone"></i>';
+    const pc = makePeerConnection(callId, "receiver");
+    await addLocalTracks(pc, localStream);
+
+    await pc.setRemoteDescription(
+      new RTCSessionDescription(data.offer)
+    );
+
+    await listenForRemoteCandidates(callId, "offerCandidates");
+
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+
+    await updateDoc(getCallRef(callId), {
+      answer: {
+        type: answer.type,
+        sdp: answer.sdp
+      },
+      status: "accepted",
+      acceptedAt: serverTimestamp()
+    });
+
+    clearTimeout(incomingTimeout);
+    incomingTimeout = null;
+
+    $("incomingActions").hidden = true;
+    $("activeActions").hidden = false;
+    $("muteBtn").disabled = false;
+
+    showCallStatus("Connecting…");
+
+  } catch (error) {
+    console.error("PD accepting call failed:", error);
+
+    showToast(error.message || "Could not accept the call.");
+
+    // Don't silently leave a ringing call if permissions or setup fail.
+    await finishCall("failed");
+  } finally {
+    setCallButtonsBusy(false);
+  }
+}
+
+/* -------------------- END / DECLINE / MISSED -------------------- */
+
+async function declineIncomingCall() {
+  if (!currentCallId) return;
+  await finishCall("declined");
+}
+
+async function finishCall(forcedStatus = null) {
+  if (!currentCallId || endingCall) return;
+
+  endingCall = true;
+
+  const callId = currentCallId;
+  const role = currentCallRole;
+  const data = currentCallData || {};
+  const connected = Boolean(connectedAtMs);
+
+  let status = forcedStatus;
+
+  if (!status) {
+    if (connected) {
+      status = "completed";
+    } else if (role === "caller") {
+      status = "cancelled";
+    } else {
+      status = "declined";
     }
+  }
+
+  const durationSeconds = connected
+    ? Math.max(0, Math.floor((Date.now() - connectedAtMs) / 1000))
+    : 0;
+
+  try {
+    await updateDoc(getCallRef(callId), {
+      status,
+      endedAt: serverTimestamp(),
+      durationSeconds,
+      ...(status === "missed" ? { missedAt: serverTimestamp() } : {}),
+      ...(status === "declined" ? { declinedAt: serverTimestamp() } : {}),
+      ...(status === "cancelled" ? { cancelledAt: serverTimestamp() } : {})
+    });
+  } catch (error) {
+    console.error("PD ending call record failed:", error);
+    showToast("Could not update the call record. Check Firestore rules.");
+  }
+
+  await cleanupCall();
+
+  if (status === "completed") showToast("Call ended ❤️");
+  if (status === "declined") showToast("Call declined.");
+  if (status === "missed") showToast("Call marked as missed.");
+  if (status === "failed") showToast("Call failed.");
 }
 
-/* =========================================================
-   CALL TIMER
-   ========================================================= */
+async function cleanupCall() {
+  clearCallTimers();
 
-function startCallTimer() {
-    if (callTimerInterval) return;
+  if (callUnsubscribe) {
+    callUnsubscribe();
+    callUnsubscribe = null;
+  }
 
-    callSeconds = 0;
+  if (candidateUnsubscribe) {
+    candidateUnsubscribe();
+    candidateUnsubscribe = null;
+  }
 
-    callTimerInterval = setInterval(() => {
-        callSeconds += 1;
+  if (peerConnection) {
+    peerConnection.ontrack = null;
+    peerConnection.onicecandidate = null;
+    peerConnection.onconnectionstatechange = null;
 
-        const minutes = String(Math.floor(callSeconds / 60)).padStart(2, "0");
-        const seconds = String(callSeconds % 60).padStart(2, "0");
-
-        if (callTimer) {
-            callTimer.textContent = `${minutes}:${seconds}`;
-        }
-    }, 1000);
-}
-
-function stopCallTimer() {
-    if (callTimerInterval) {
-        clearInterval(callTimerInterval);
-        callTimerInterval = null;
-    }
-}
-
-/* =========================================================
-   END CALL
-   ========================================================= */
-
-async function endCall() {
-    await finishCall(true);
-}
-
-async function finishCall(notifyOtherPerson) {
-    if (isCleaningUp) return;
-
-    isCleaningUp = true;
-
-    const callId = currentCallId;
-
-    // Clear the local call ID first so a remote update cannot
-    // trigger a second competing cleanup.
-    currentCallId = null;
-
-    if (notifyOtherPerson && callId) {
-        try {
-            await updateDoc(doc(db, CALL_COLLECTION, callId), {
-                status: "ended",
-                endedAt: serverTimestamp()
-            });
-        } catch (error) {
-            console.warn("Could not notify the other caller:", error);
-        }
+    try {
+      peerConnection.close();
+    } catch (error) {
+      console.warn("PD peer connection close:", error);
     }
 
+    peerConnection = null;
+  }
+
+  if (localStream) {
+    localStream.getTracks().forEach((track) => track.stop());
+    localStream = null;
+  }
+
+  $("remoteVideo").srcObject = null;
+  $("localVideo").srcObject = null;
+  $("remoteAudio").srcObject = null;
+
+  currentCallId = null;
+  currentCallRef = null;
+  currentCallData = null;
+  currentCallRole = null;
+  currentCallType = "voice";
+  connectedAtMs = null;
+  activeCandidatePath = null;
+  endingCall = false;
+
+  hideCallScreen();
+}
+
+/* -------------------- MUTE / CAMERA -------------------- */
+
+function toggleMute() {
+  if (!localStream) return;
+
+  const tracks = localStream.getAudioTracks();
+  if (!tracks.length) return;
+
+  const currentlyEnabled = tracks.some((track) => track.enabled);
+  tracks.forEach((track) => {
+    track.enabled = !currentlyEnabled;
+  });
+
+  $("muteBtn").innerHTML = currentlyEnabled
+    ? '<i class="fa-solid fa-microphone-slash"></i><span>Unmute</span>'
+    : '<i class="fa-solid fa-microphone"></i><span>Mute</span>';
+}
+
+function toggleCamera() {
+  if (!localStream) return;
+
+  const tracks = localStream.getVideoTracks();
+  if (!tracks.length) {
+    showToast("This call has no camera track.");
+    return;
+  }
+
+  const currentlyEnabled = tracks.some((track) => track.enabled);
+  tracks.forEach((track) => {
+    track.enabled = !currentlyEnabled;
+  });
+
+  $("cameraBtn").innerHTML = currentlyEnabled
+    ? '<i class="fa-solid fa-video-slash"></i><span>Camera on</span>'
+    : '<i class="fa-solid fa-video"></i><span>Camera off</span>';
+}
+
+/* -------------------- CALL HISTORY -------------------- */
+
+function callDirection(call) {
+  const status = String(call.status || "").toLowerCase();
+
+  if (call.callerUID === currentUser?.uid) {
+    return "outgoing";
+  }
+
+  if (["missed", "declined"].includes(status)) {
+    return "missed";
+  }
+
+  return "incoming";
+}
+
+function callDirectionLabel(call) {
+  const status = String(call.status || "").toLowerCase();
+  const direction = callDirection(call);
+
+  if (status === "missed") {
+    return direction === "outgoing" ? "No answer" : "Missed call";
+  }
+
+  if (status === "declined") {
+    return direction === "outgoing" ? "Call declined" : "You declined";
+  }
+
+  if (status === "cancelled") return "Cancelled";
+  if (status === "failed") return "Failed";
+  if (status === "completed") {
+    return direction === "outgoing" ? "Outgoing call" : "Incoming call";
+  }
+
+  if (status === "ringing" || status === "accepted" || status === "active") {
+    return direction === "outgoing" ? "Outgoing call" : "Incoming call";
+  }
+
+  return "Call";
+}
+
+function renderHistory() {
+  const list = $("callList");
+  const empty = $("emptyState");
+  const status = $("callsStatus");
+
+  if (!list || !empty || !status) return;
+
+  const all = [...historyCalls.values()].sort((a, b) => {
+    return timestampMillis(b.createdAt) - timestampMillis(a.createdAt);
+  });
+
+  const filtered = all.filter((call) => {
+    if (activeFilter === "all") return true;
+    if (activeFilter === "missed") return callDirection(call) === "missed";
+    return callDirection(call) === activeFilter;
+  });
+
+  $("callCount").textContent = `${all.length} ${all.length === 1 ? "call" : "calls"}`;
+
+  list.replaceChildren();
+  status.hidden = true;
+  empty.hidden = filtered.length > 0;
+
+  if (!filtered.length) {
+    $("emptyTitle").textContent =
+      all.length ? "Nothing in this category" : "No calls yet";
+
+    $("emptyText").textContent =
+      all.length
+        ? "No calls match this filter."
+        : "Your real PD call history will appear here.";
+
+    return;
+  }
+
+  for (const call of filtered) {
+    const direction = callDirection(call);
+    const type = call.type === "video" ? "Video call" : "Voice call";
+    const icon = call.type === "video" ? "fa-video" : "fa-phone";
+    const statusLabel = callDirectionLabel(call);
+
+    const row = document.createElement("article");
+    row.className = "call-item";
+
+    const avatar = document.createElement("div");
+    avatar.className = "call-avatar";
+    avatar.innerHTML = `<i class="fa-solid ${icon}"></i>`;
+
+    const info = document.createElement("div");
+    info.className = "call-info";
+
+    const name = document.createElement("div");
+    name.className = "call-name";
+    name.textContent = call.callerUID === currentUser.uid
+      ? (call.receiverName || getPartnerName())
+      : (call.callerName || getPartnerName());
+
+    const meta = document.createElement("div");
+    meta.className = "call-meta";
+
+    const directionEl = document.createElement("span");
+    directionEl.className = `call-direction ${direction}`;
+    directionEl.textContent = statusLabel;
+
+    const date = document.createElement("span");
+    date.textContent = `· ${formatCallDate(call.createdAt)}`;
+
+    meta.append(directionEl, date);
+    info.append(name, meta);
+
+    const right = document.createElement("div");
+    right.className = "call-right";
+
+    const duration = document.createElement("div");
+    duration.className = "call-time";
+    duration.textContent = call.durationSeconds
+      ? formatDuration(call.durationSeconds)
+      : "";
+
+    const kind = document.createElement("div");
+    kind.className = "call-kind";
+    kind.textContent = type;
+
+    right.append(duration, kind);
+    row.append(avatar, info, right);
+    list.appendChild(row);
+  }
+}
+
+function handleCallDocument(callId, data, source) {
+  historyCalls.set(callId, { id: callId, ...data });
+  renderHistory();
+
+  if (currentCallId === callId && isTerminalStatus(data.status)) {
+    const message = data.status === "missed"
+      ? "Missed call ❤️"
+      : data.status === "declined"
+        ? "The call was declined."
+        : data.status === "failed"
+          ? "The call failed."
+          : "Call ended ❤️";
+
+    if (!endingCall) showToast(message);
     cleanupCall();
-    isCleaningUp = false;
+    return;
+  }
+
+  if (
+    source === "receiver" &&
+    data.receiverUID === currentUser?.uid &&
+    data.status === "ringing" &&
+    data.offer &&
+    !currentCallId
+  ) {
+    showIncomingCall(callId, data);
+  }
 }
 
-function cleanupCall() {
-    if (callUnsubscribe) {
-        callUnsubscribe();
-        callUnsubscribe = null;
-    }
+function subscribeToCallHistory() {
+  collectionUnsubscribers.forEach((unsubscribe) => unsubscribe());
+  collectionUnsubscribers = [];
+  historyCalls.clear();
 
-    if (candidateUnsubscribe) {
-        candidateUnsubscribe();
-        candidateUnsubscribe = null;
-    }
+  $("callsStatus").hidden = false;
+  $("callsStatus").innerHTML =
+    '<i class="fa-solid fa-spinner fa-spin"></i><span>Loading call history…</span>';
 
-    if (peerConnection) {
-        peerConnection.ontrack = null;
-        peerConnection.onicecandidate = null;
-        peerConnection.onconnectionstatechange = null;
+  const callerQuery = query(
+    collection(db, "calls"),
+    where("callerUID", "==", currentUser.uid)
+  );
 
-        try {
-            peerConnection.close();
-        } catch (error) {
-            console.warn("Peer connection cleanup:", error);
+  const receiverQuery = query(
+    collection(db, "calls"),
+    where("receiverUID", "==", currentUser.uid)
+  );
+
+  const subscribe = (callQuery, source) => {
+    const unsubscribe = onSnapshot(
+      callQuery,
+      (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "removed") {
+            historyCalls.delete(change.doc.id);
+            renderHistory();
+            return;
+          }
+
+          handleCallDocument(
+            change.doc.id,
+            change.doc.data(),
+            source
+          );
+        });
+
+        if (historyCalls.size === 0) {
+          $("callsStatus").hidden = true;
+          renderHistory();
         }
+      },
+      (error) => {
+        console.error(`PD ${source} calls listener failed:`, error);
 
-        peerConnection = null;
-    }
+        $("callsStatus").hidden = false;
+        $("callsStatus").innerHTML =
+          '<i class="fa-solid fa-triangle-exclamation"></i>' +
+          '<span>Could not load calls. Check your Firestore rules.</span>';
+      }
+    );
 
-    if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-        localStream = null;
-    }
+    collectionUnsubscribers.push(unsubscribe);
+  };
 
-    if (remoteStream) {
-        remoteStream.getTracks().forEach(track => track.stop());
-        remoteStream = null;
-    }
-
-    if (remoteAudio) {
-        remoteAudio.pause();
-        remoteAudio.srcObject = null;
-    }
-
-    stopCallTimer();
-
-    otherUser = null;
-    isCaller = false;
-    isMuted = false;
-    remoteDescriptionReady = false;
-    pendingCandidates = [];
-    processedCandidateIds.clear();
-
-    if (muteButton) {
-        muteButton.classList.remove("muted");
-        muteButton.innerHTML =
-            '<i class="fa-solid fa-microphone"></i>';
-        muteButton.setAttribute("aria-label", "Mute microphone");
-    }
-
-    if (acceptButton) acceptButton.disabled = false;
-
-    setIncomingButtonsVisible(false);
-    hideCallScreen();
-    setCallButtonsEnabled(true);
+  subscribe(callerQuery, "caller");
+  subscribe(receiverQuery, "receiver");
 }
 
-/* =========================================================
-   BUTTON EVENTS
-   ========================================================= */
+/* -------------------- EVENTS / AUTH -------------------- */
 
-voiceCallButton?.addEventListener("click", startVoiceCall);
-acceptButton?.addEventListener("click", acceptIncomingCall);
-declineButton?.addEventListener("click", declineIncomingCall);
-endButton?.addEventListener("click", endCall);
-muteButton?.addEventListener("click", toggleMute);
+function setupFilters() {
+  $("callFilters")?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-filter]");
+    if (!button) return;
 
-/* =========================================================
-   AUTHENTICATION
-   ========================================================= */
+    activeFilter = button.dataset.filter;
 
-onAuthStateChanged(auth, user => {
-    currentUser = user;
+    document.querySelectorAll("#callFilters .filter").forEach((item) => {
+      item.classList.toggle("active", item === button);
+    });
 
-    if (!user) {
-        if (incomingCallsUnsubscribe) {
-            incomingCallsUnsubscribe();
-            incomingCallsUnsubscribe = null;
-        }
+    renderHistory();
+  });
+}
 
-        if (currentCallId) {
-            void finishCall(false);
-        } else {
-            cleanupCall();
-        }
+function setupButtons() {
+  $("voiceCallBtn").addEventListener("click", () => startCall("voice"));
+  $("videoCallBtn").addEventListener("click", () => startCall("video"));
 
-        return;
-    }
+  $("acceptCallBtn").addEventListener("click", acceptIncomingCall);
+  $("declineCallBtn").addEventListener("click", declineIncomingCall);
 
-    console.log("📞 PD voice calling ready:", user.email);
+  $("endCallBtn").addEventListener("click", () => finishCall());
+  $("closeCallScreen").addEventListener("click", () => finishCall());
 
-    listenForIncomingCalls();
+  $("muteBtn").addEventListener("click", toggleMute);
+  $("cameraBtn").addEventListener("click", toggleCamera);
+
+  $("refreshCalls")?.addEventListener("click", () => {
+    renderHistory();
+    showToast("Call history refreshed.");
+  });
+}
+
+setupFilters();
+setupButtons();
+
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  partnerCache = null;
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  $("myName").textContent = getMyName();
+  $("partnerName").textContent = getPartnerName();
+
+  subscribeToCallHistory();
+});
+
+window.addEventListener("beforeunload", () => {
+  clearCallTimers();
+
+  collectionUnsubscribers.forEach((unsubscribe) => unsubscribe());
+
+  if (callUnsubscribe) callUnsubscribe();
+  if (candidateUnsubscribe) candidateUnsubscribe();
+
+  if (peerConnection) peerConnection.close();
+
+  if (localStream) {
+    localStream.getTracks().forEach((track) => track.stop());
+  }
 });

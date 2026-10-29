@@ -1,43 +1,40 @@
-/* =========================================================
-   PRINCESS WA DEIB — ROYAL RED & GOLD HOME
-   Theme: Valentine Red • Gold • A Touch of Purple
-   ========================================================= */
+/* ==================================================
+   PRINCESS WA DEIB 💜
+   HOME.CSS — LAVENDER ROYAL LOVE
+   Purple • Romantic Red • Royal Gold
+   Mobile-first design
+   ================================================== */
 
 :root {
-    --pd-red-dark: #28050d;
-    --pd-red-deep: #400817;
-    --pd-red: #741027;
-    --pd-red-main: #a8173b;
-    --pd-red-bright: #c62249;
-    --pd-red-soft: #e13b5e;
-
-    --pd-gold: #d9b765;
-    --pd-gold-light: #f3dda0;
-    --pd-gold-dark: #96702c;
-
-    --pd-purple: #57276d;
-    --pd-purple-light: #7a438e;
-
-    --pd-white: #fff5f1;
-    --pd-muted: #d7b9bd;
-
-    --pd-border: rgba(217, 183, 101, 0.48);
-    --pd-glow: 0 0 24px rgba(217, 183, 101, 0.12);
+    --home-purple: #8f36dc;
+    --home-purple-light: #c38aff;
+    --home-purple-dark: #190b2b;
+    --home-red: #ff527a;
+    --home-red-dark: #a51d48;
+    --home-gold: #ffd783;
+    --home-gold-light: #fff0bd;
+    --home-white: #fff8ff;
+    --home-muted: #d8c7e9;
+    --home-glass: rgba(255, 255, 255, 0.075);
+    --home-border: rgba(221, 185, 255, 0.2);
 }
 
-/* -------------------------
-   PAGE BACKGROUND
-------------------------- */
+/* BASE */
 
 body.phone-page {
-    margin: 0;
     min-height: 100vh;
-    color: var(--pd-white);
+    min-height: 100dvh;
+    margin: 0;
+    overflow-x: hidden;
+    color: var(--home-white);
+
     background:
-        radial-gradient(ellipse at 15% 10%, rgba(122, 31, 64, 0.42), transparent 38%),
-        radial-gradient(ellipse at 90% 60%, rgba(87, 39, 109, 0.19), transparent 35%),
-        linear-gradient(145deg, #20040b 0%, #420817 48%, #26040d 100%);
+        radial-gradient(ellipse at 10% 12%, rgba(139, 52, 220, 0.24), transparent 38%),
+        radial-gradient(ellipse at 95% 38%, rgba(255, 64, 110, 0.12), transparent 35%),
+        linear-gradient(155deg, #10071c 0%, #211034 48%, #16091f 100%);
+
     font-family: "DM Sans", sans-serif;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .phone-container {
@@ -48,23 +45,77 @@ body.phone-page {
     position: relative;
     isolation: isolate;
     width: 100%;
-    max-width: 460px;
+    max-width: 440px;
     min-height: 100vh;
+    min-height: 100dvh;
     margin: 0 auto;
+    padding: 0 17px 35px;
     overflow: hidden;
-    background:
-        linear-gradient(180deg, rgba(99, 10, 34, 0.20), rgba(35, 4, 13, 0.42));
-    box-shadow: 0 0 60px rgba(0, 0, 0, 0.28);
+    background: transparent;
 }
 
-/* Remove the old moon and star theme */
+/* CINEMATIC BACKGROUND */
+
 #pd-night-sky {
-    display: none !important;
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 50% 5%, rgba(137, 56, 210, 0.16), transparent 38%),
+        linear-gradient(160deg, #170923, #21102e 60%, #13071d);
 }
 
-/* -------------------------
-   HEADER
-------------------------- */
+#pd-stars {
+    position: absolute;
+    inset: 0;
+    opacity: 0.4;
+    background-image:
+        radial-gradient(2px 2px at 20% 20%, #ffe9b0 98%, transparent),
+        radial-gradient(2px 2px at 80% 35%, #e5c3ff 98%, transparent),
+        radial-gradient(1.5px 1.5px at 65% 80%, #ffb7d2 98%, transparent),
+        radial-gradient(1.5px 1.5px at 30% 70%, #ffffff 98%, transparent);
+    background-size: 180px 200px, 230px 260px, 200px 240px, 270px 300px;
+    animation: homeStars 18s linear infinite;
+}
+
+#pd-moon {
+    position: absolute;
+    top: 12%;
+    right: -90px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 215, 131, 0.12), transparent 68%);
+    filter: blur(5px);
+}
+
+#pd-shooting-star {
+    position: absolute;
+    top: 18%;
+    left: -100px;
+    width: 90px;
+    height: 2px;
+    opacity: 0.7;
+    background: linear-gradient(90deg, transparent, #ffe3a2, transparent);
+    transform: rotate(-25deg);
+    animation: homeShootingStar 9s linear infinite;
+}
+
+@keyframes homeStars {
+    from { background-position: 0 0, 0 0, 0 0, 0 0; }
+    to { background-position: 0 400px, 0 300px, 0 500px, 0 350px; }
+}
+
+@keyframes homeShootingStar {
+    0%, 72% { left: -100px; top: 18%; opacity: 0; }
+    76% { opacity: 0.8; }
+    88% { left: 120%; top: 35%; opacity: 0; }
+    100% { left: 120%; opacity: 0; }
+}
+
+/* HEADER */
 
 .app-header {
     position: relative;
@@ -73,687 +124,706 @@ body.phone-page {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 19px 20px 17px;
-    background: linear-gradient(135deg, #650c25, #390713 78%);
-    border-bottom: 1px solid var(--pd-gold);
-    box-shadow: 0 5px 22px rgba(0, 0, 0, 0.20);
-}
 
-.app-header::after {
-    content: "";
-    position: absolute;
-    left: 20px;
-    right: 20px;
-    bottom: -3px;
-    height: 1px;
-    background: rgba(243, 221, 160, 0.42);
+    min-height: 76px;
+    padding: max(12px, env(safe-area-inset-top)) 0 12px;
 }
 
 .icon-btn {
     display: grid;
     place-items: center;
-    width: 42px;
-    height: 42px;
-    color: var(--pd-gold-light);
-    font-size: 18px;
-    background: linear-gradient(145deg, #79132f, #430916);
-    border: 1px solid var(--pd-gold);
-    border-radius: 13px;
-    cursor: pointer;
-    transition: 0.25s ease;
-}
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
 
-.icon-btn:hover {
-    color: var(--pd-red-dark);
-    background: var(--pd-gold);
-    transform: translateY(-2px);
+    border: 1px solid rgba(224, 187, 255, 0.25);
+    border-radius: 15px;
+
+    color: var(--home-gold);
+    font-size: 17px;
+    background: linear-gradient(145deg, rgba(160, 92, 220, 0.2), rgba(255, 255, 255, 0.04));
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.14);
+    cursor: pointer;
+    touch-action: manipulation;
 }
 
 .header-logo {
     flex: 1;
-    color: var(--pd-gold-light);
-    font-family: "Playfair Display", serif;
-    font-size: 19px;
-    font-weight: 600;
+    min-width: 0;
     text-align: center;
-    letter-spacing: 0.3px;
+
+    font-family: "Playfair Display", serif;
+    font-size: clamp(16px, 4.5vw, 20px);
+    font-weight: 600;
+    letter-spacing: 0.1px;
+    color: #fff5ff;
+    text-shadow: 0 0 18px rgba(193, 130, 255, 0.25);
 }
 
 .header-logo span {
-    display: inline-block;
-    margin-left: 3px;
-    color: var(--pd-gold);
+    display: block;
+    margin-top: 3px;
+    color: var(--home-gold);
     font-family: "DM Sans", sans-serif;
-    font-size: 11px;
-    letter-spacing: 1px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 4px;
 }
 
 .header-heart {
-    color: var(--pd-gold);
-    font-size: 25px;
-    text-shadow: 0 0 13px rgba(217, 183, 101, 0.38);
-    animation: pd-heart-beat 2.2s ease-in-out infinite;
+    display: grid;
+    place-items: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+
+    border: 1px solid rgba(255, 143, 176, 0.28);
+    border-radius: 15px;
+    color: #ff8eaf;
+    font-size: 23px;
+
+    background: linear-gradient(145deg, rgba(255, 67, 117, 0.16), rgba(255, 255, 255, 0.04));
+    text-shadow: 0 0 14px rgba(255, 82, 122, 0.7);
+    animation: homeHeartBeat 2.5s ease-in-out infinite;
 }
 
-@keyframes pd-heart-beat {
+@keyframes homeHeartBeat {
     0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.13); }
+    8% { transform: scale(1.08); }
+    16% { transform: scale(1); }
+    24% { transform: scale(1.05); }
+    32% { transform: scale(1); }
 }
 
-/* -------------------------
-   MAIN CONTENT
-------------------------- */
-
-.app-content {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 17px;
-    padding: 18px 17px 30px;
-}
-
-/* -------------------------
-   HERO COVER
-------------------------- */
+/* HERO / COVER */
 
 .home-cover {
     position: relative;
     isolation: isolate;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 255px;
+
+    width: 100%;
+    min-height: 245px;
+    margin: 5px 0 19px;
+    padding: 28px 17px 24px;
     overflow: hidden;
+
+    border: 1px solid rgba(233, 202, 255, 0.32);
+    border-radius: 29px;
+
     background:
-        radial-gradient(ellipse at 50% 20%, rgba(198, 34, 73, 0.54), transparent 56%),
-        linear-gradient(145deg, #7d102d 0%, #450817 53%, #2a0614 100%);
-    border: 1px solid var(--pd-gold);
-    border-radius: 24px;
+        radial-gradient(ellipse at 20% 15%, rgba(211, 155, 255, 0.3), transparent 50%),
+        radial-gradient(ellipse at 85% 90%, rgba(255, 75, 125, 0.2), transparent 48%),
+        linear-gradient(145deg, #462064, #29113f 55%, #39152e);
+
     box-shadow:
-        inset 0 0 35px rgba(0, 0, 0, 0.20),
-        0 12px 30px rgba(0, 0, 0, 0.22),
-        var(--pd-glow);
+        0 16px 38px rgba(0, 0, 0, 0.22),
+        0 0 30px rgba(138, 54, 208, 0.11),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .home-cover::before {
-    content: "";
+    content: "♥";
     position: absolute;
-    inset: 8px;
     z-index: -1;
-    border: 1px solid rgba(243, 221, 160, 0.35);
-    border-radius: 18px;
-    pointer-events: none;
+    top: 14px;
+    right: 22px;
+    color: rgba(255, 221, 146, 0.2);
+    font-size: 44px;
+    transform: rotate(15deg);
+    animation: homeFloat 5s ease-in-out infinite;
 }
 
 .home-cover::after {
-    content: "♥";
+    content: "♡";
     position: absolute;
-    right: 17px;
-    bottom: 5px;
-    color: rgba(217, 183, 101, 0.12);
-    font-size: 125px;
-    line-height: 1;
-    transform: rotate(-14deg);
-    pointer-events: none;
+    z-index: -1;
+    left: 18px;
+    bottom: 22px;
+    color: rgba(255, 147, 191, 0.28);
+    font-size: 52px;
+    animation: homeFloat 6s ease-in-out infinite reverse;
 }
 
 .cover-overlay {
     position: absolute;
+    z-index: -1;
     inset: 0;
-    background:
-        radial-gradient(circle at 50% 55%, transparent 10%, rgba(30, 2, 10, 0.22) 100%),
-        linear-gradient(0deg, rgba(34, 3, 12, 0.45), transparent 75%);
+    background: linear-gradient(120deg, transparent 25%, rgba(255, 255, 255, 0.045), transparent 75%);
     pointer-events: none;
 }
 
 .cover-text {
     position: relative;
     z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 25px 15px;
     text-align: center;
+    margin-bottom: 24px;
 }
 
 .cover-text h1 {
     margin: 0;
-    color: var(--pd-gold-light);
     font-family: "Playfair Display", serif;
-    font-size: clamp(39px, 10vw, 55px);
+    font-size: clamp(37px, 10vw, 48px);
     font-weight: 600;
-    line-height: 1.08;
-    letter-spacing: 0.5px;
-    text-shadow: 0 3px 16px rgba(0, 0, 0, 0.38);
+    line-height: 1.13;
+    letter-spacing: -0.5px;
+
+    background: linear-gradient(120deg, #fff8ff, #e8c9ff 48%, #ffdfa0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 3px 12px rgba(215, 170, 255, 0.12));
 }
 
-.cover-text h4 {
-    margin: 3px 0;
-    color: var(--pd-gold);
-    font-family: "Playfair Display", serif;
-    font-size: 21px;
-    font-style: italic;
-    font-weight: 500;
-}
-
-.cover-text > span {
+.cover-text span {
     display: inline-block;
-    margin-top: 14px;
-    color: var(--pd-gold);
-    font-size: 27px;
-    filter: drop-shadow(0 0 10px rgba(217, 183, 101, 0.38));
-    animation: pd-heart-beat 2.2s ease-in-out infinite;
+    margin-top: 7px;
+    font-size: 26px;
+    filter: drop-shadow(0 0 12px rgba(255, 93, 150, 0.55));
+    animation: homeHeartBeat 2s ease-in-out infinite;
 }
 
-/* -------------------------
-   HOME CARDS
-------------------------- */
+@keyframes homeFloat {
+    0%, 100% { transform: translateY(0) rotate(8deg); }
+    50% { transform: translateY(-9px) rotate(-5deg); }
+}
+
+/* FIREWORKS BUTTON */
+
+.fireworks-button {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    max-width: 315px;
+    min-height: 63px;
+    padding: 11px 14px;
+
+    border: 1px solid rgba(255, 220, 153, 0.55);
+    border-radius: 19px;
+
+    color: #fff;
+    text-decoration: none;
+
+    background: linear-gradient(115deg, rgba(111, 46, 166, 0.94), rgba(91, 23, 73, 0.95));
+    box-shadow: 0 0 20px rgba(173, 91, 240, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    touch-action: manipulation;
+
+    animation: homeButtonGlow 3s ease-in-out infinite;
+    transition: transform 0.2s ease;
+}
+
+.fireworks-button:active {
+    transform: scale(0.97);
+}
+
+.fireworks-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+    background: rgba(255, 218, 144, 0.12);
+    font-size: 25px;
+}
+
+.fireworks-button strong {
+    display: block;
+    font-size: 13px;
+    text-align: left;
+    letter-spacing: 0.3px;
+    color: var(--home-gold-light);
+}
+
+.fireworks-button small {
+    display: block;
+    margin-top: 4px;
+    font-size: 10px;
+    text-align: left;
+    line-height: 1.4;
+    color: #ead7ff;
+}
+
+.button-arrow {
+    margin-left: auto;
+    font-size: 23px;
+    color: var(--home-gold);
+}
+
+@keyframes homeButtonGlow {
+    0%, 100% {
+        box-shadow: 0 0 15px rgba(173, 91, 240, 0.18);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(173, 91, 240, 0.38), 0 0 28px rgba(255, 82, 122, 0.08);
+    }
+}
+
+/* GENERAL GLASS CARDS */
 
 .home-card {
     position: relative;
     display: flex;
     align-items: center;
     gap: 14px;
+
+    width: 100%;
+    min-height: 82px;
+    margin-bottom: 13px;
+    padding: 15px;
+
+    border: 1px solid var(--home-border);
+    border-radius: 22px;
+
+    background: linear-gradient(125deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+}
+
+.home-card > div:last-child,
+.song-home-info {
     min-width: 0;
-    padding: 17px;
-    color: var(--pd-white);
-    background:
-        linear-gradient(125deg, rgba(124, 17, 47, 0.96), rgba(58, 7, 22, 0.98));
-    border: 1px solid var(--pd-border);
-    border-radius: 19px;
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
-    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-.home-card:hover {
-    border-color: var(--pd-gold-light);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.24), var(--pd-glow);
-    transform: translateY(-2px);
-}
-
-.home-icon {
-    display: grid;
-    flex: 0 0 48px;
-    place-items: center;
-    width: 48px;
-    height: 48px;
-    color: var(--pd-gold);
-    font-size: 21px;
-    background: linear-gradient(145deg, #68102c, #390816);
-    border: 1px solid var(--pd-gold);
-    border-radius: 15px;
-    box-shadow: inset 0 0 12px rgba(217, 183, 101, 0.05);
+    flex: 1;
 }
 
 .home-card small {
     display: block;
-    margin-bottom: 5px;
-    color: var(--pd-muted);
+    color: var(--home-muted);
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.2px;
 }
 
 .home-card strong {
     display: block;
-    color: var(--pd-gold-light);
-    font-family: "Playfair Display", serif;
-    font-size: 17px;
-    font-weight: 600;
+    margin-top: 5px;
+    color: var(--home-white);
+    font-size: 15px;
+    font-weight: 700;
     overflow-wrap: anywhere;
 }
 
-.days-home > div:last-child,
-.song-home-info {
-    flex: 1;
-    min-width: 0;
+/* ICON BADGES */
+
+.home-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+
+    border: 1px solid rgba(230, 195, 255, 0.2);
+    border-radius: 16px;
+
+    background: linear-gradient(145deg, rgba(158, 83, 219, 0.3), rgba(255, 255, 255, 0.04));
+    color: #e5c5ff;
+    font-size: 20px;
 }
 
-/* -------------------------
-   SONG CARD
-------------------------- */
+/* DAYS CARD */
+
+.days-home {
+    border-color: rgba(255, 215, 131, 0.23);
+    background: linear-gradient(110deg, rgba(255, 205, 111, 0.085), rgba(255, 255, 255, 0.025));
+}
+
+.days-home .home-icon {
+    color: var(--home-gold);
+    border-color: rgba(255, 215, 131, 0.25);
+    background: linear-gradient(145deg, rgba(255, 215, 131, 0.16), rgba(255, 255, 255, 0.035));
+}
+
+.days-home small {
+    color: #e8d2a5;
+}
+
+/* SONG CARD */
 
 .song-home {
-    background:
-        linear-gradient(115deg, rgba(108, 14, 44, 0.98), rgba(62, 8, 32, 0.98) 72%, rgba(77, 34, 94, 0.72));
+    border-color: rgba(255, 111, 157, 0.2);
+    background: linear-gradient(110deg, rgba(255, 74, 123, 0.085), rgba(255, 255, 255, 0.025));
 }
 
 .song-home .home-icon {
-    color: var(--pd-gold-light);
+    color: #ff9cbe;
+    background: linear-gradient(145deg, rgba(255, 82, 122, 0.19), rgba(255, 255, 255, 0.035));
+    border-color: rgba(255, 111, 157, 0.23);
+}
+
+.song-home-info strong {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .play-btn {
     display: grid;
-    flex: 0 0 43px;
     place-items: center;
+    flex: 0 0 43px;
     width: 43px;
     height: 43px;
-    color: var(--pd-red-dark);
-    text-decoration: none;
-    background: linear-gradient(135deg, var(--pd-gold-light), var(--pd-gold));
-    border: 1px solid var(--pd-gold-light);
+
     border-radius: 50%;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.20);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border: 1px solid rgba(255, 230, 170, 0.5);
+
+    color: #351342;
+    text-decoration: none;
+    background: linear-gradient(145deg, #ffe7a6, #eebd63);
+    box-shadow: 0 0 18px rgba(255, 205, 111, 0.2);
+
+    font-size: 14px;
+    touch-action: manipulation;
 }
 
-.play-btn:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 20px rgba(217, 183, 101, 0.30);
+.play-btn:active {
+    transform: scale(0.94);
 }
 
-/* -------------------------
-   HOME MENU GRID
-------------------------- */
+/* NAVIGATION GRID */
 
 .home-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+    margin-top: 17px;
 }
 
 .home-menu {
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 11px;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+
     min-width: 0;
-    min-height: 116px;
-    padding: 17px 10px 14px;
-    color: var(--pd-white);
-    text-align: center;
+    min-height: 119px;
+    padding: 16px;
+
+    overflow: hidden;
+    border: 1px solid rgba(218, 182, 255, 0.2);
+    border-radius: 22px;
+
+    color: #fff;
     text-decoration: none;
-    background:
-        linear-gradient(145deg, rgba(116, 16, 39, 0.97), rgba(54, 6, 19, 0.99));
-    border: 1px solid var(--pd-border);
-    border-radius: 19px;
-    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.16);
-    transition:
-        transform 0.23s ease,
-        background 0.23s ease,
-        border-color 0.23s ease,
-        box-shadow 0.23s ease;
+
+    background: linear-gradient(145deg, rgba(118, 58, 162, 0.2), rgba(255, 255, 255, 0.035));
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.055);
+
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    touch-action: manipulation;
+}
+
+.home-menu::after {
+    content: "";
+    position: absolute;
+    width: 95px;
+    height: 95px;
+    right: -42px;
+    top: -42px;
+    border-radius: 50%;
+    background: rgba(198, 143, 255, 0.09);
+    pointer-events: none;
 }
 
 .home-menu > i,
 .home-menu > div > i {
-    color: var(--pd-gold);
-    font-size: 25px;
-    filter: drop-shadow(0 2px 7px rgba(217, 183, 101, 0.16));
-    transition: transform 0.23s ease, color 0.23s ease;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 15px;
+
+    color: #e8c9ff;
+    font-size: 20px;
+
+    background: rgba(177, 109, 234, 0.15);
+    border: 1px solid rgba(225, 193, 255, 0.15);
 }
 
 .home-menu p {
+    position: relative;
+    z-index: 1;
     margin: 0;
-    color: var(--pd-white);
+    color: #fff5ff;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.15px;
 }
 
-.home-menu:hover {
-    background: linear-gradient(145deg, #951536, #4c0a20);
-    border-color: var(--pd-gold-light);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22), var(--pd-glow);
-    transform: translateY(-3px);
-}
-
-.home-menu:hover > i,
-.home-menu:hover > div > i {
-    color: var(--pd-gold-light);
-    transform: scale(1.08);
-}
-
 .home-menu:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
+    border-color: rgba(255, 215, 131, 0.5);
+    background: rgba(143, 54, 220, 0.18);
 }
 
-/* -------------------------
-   CHAT NOTIFICATION
-------------------------- */
+/* CHAT NOTIFICATION BADGE */
+
+.home-menu > div {
+    position: relative;
+}
 
 .notification {
     position: absolute;
-    top: 9px;
-    right: 12px;
+    top: -7px;
+    right: -8px;
+    z-index: 2;
+
     display: grid;
     place-items: center;
-    min-width: 20px;
-    height: 20px;
+    min-width: 21px;
+    height: 21px;
     padding: 0 5px;
-    color: #fff8e8;
-    font-size: 11px;
+
+    border: 2px solid #241034;
+    border-radius: 50px;
+
+    background: linear-gradient(135deg, #ff6c91, #e52c60);
+    color: #fff;
+    font-size: 10px;
     font-weight: 700;
-    background: var(--pd-purple);
-    border: 1px solid var(--pd-gold);
-    border-radius: 20px;
-    box-shadow: 0 0 12px rgba(87, 39, 109, 0.45);
+
+    box-shadow: 0 0 12px rgba(255, 70, 115, 0.4);
 }
 
-/* -------------------------
-   OUR LITTLE WORLD CARD
-------------------------- */
+/* OUR LITTLE WORLD */
 
 .little-world-card {
+    position: relative;
     display: flex;
-    align-items: center;
-    gap: 13px;
-    min-width: 0;
-    padding: 16px 14px;
-    color: var(--pd-white);
-    text-decoration: none;
-    background: linear-gradient(135deg, #72102e, #400819 75%, #4e2364);
-    border: 1px solid var(--pd-gold);
-    border-radius: 19px;
-    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.17);
-    transition: transform 0.23s ease, box-shadow 0.23s ease;
-}
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 17px;
 
-.little-world-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--pd-glow);
+    min-width: 0;
+    min-height: 119px;
+    margin: 0;
+    padding: 16px;
+
+    border: 1px solid rgba(255, 111, 157, 0.28);
+    border-radius: 22px;
+
+    color: #fff;
+    text-decoration: none;
+
+    background: linear-gradient(145deg, rgba(165, 35, 84, 0.23), rgba(117, 50, 154, 0.15));
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    touch-action: manipulation;
 }
 
 .home-card-icon {
     display: grid;
-    flex: 0 0 43px;
     place-items: center;
-    width: 43px;
-    height: 43px;
-    color: var(--pd-gold-light);
+    width: 44px;
+    height: 44px;
+    border-radius: 15px;
+
+    background: rgba(255, 89, 139, 0.12);
+    border: 1px solid rgba(255, 146, 184, 0.2);
     font-size: 23px;
-    background: rgba(39, 4, 16, 0.40);
-    border: 1px solid rgba(217, 183, 101, 0.65);
-    border-radius: 13px;
 }
 
 .home-card-title {
-    color: var(--pd-gold-light);
-    font-family: "Playfair Display", serif;
-    font-size: 15px;
-    font-weight: 600;
+    color: #fff3fa;
+    font-size: 13px;
+    line-height: 1.4;
+    font-weight: 700;
 }
 
-/* -------------------------
-   OUR TO-DO LIST HOME BUTTON
-------------------------- */
+.little-world-card:active {
+    transform: scale(0.97);
+    border-color: rgba(255, 215, 131, 0.55);
+}
+
+/* TO-DO CARD */
 
 .your-existing-home-card {
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 17px;
+
     min-width: 0;
-    min-height: 116px;
-    padding: 17px 10px 14px;
-    color: var(--pd-white);
-    text-align: center;
+    min-height: 119px;
+    padding: 16px;
+
+    border: 1px solid rgba(255, 215, 131, 0.24);
+    border-radius: 22px;
+
+    color: #fff;
     text-decoration: none;
-    background: linear-gradient(145deg, #78102e, #390714 85%);
-    border: 1px solid var(--pd-gold);
-    border-radius: 19px;
-    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.16);
-    transition: transform 0.23s ease, box-shadow 0.23s ease;
+
+    background: linear-gradient(145deg, rgba(155, 113, 42, 0.17), rgba(255, 255, 255, 0.035));
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    touch-action: manipulation;
 }
 
 .your-existing-home-card i {
-    color: var(--pd-gold);
-    font-size: 25px;
-    filter: drop-shadow(0 2px 7px rgba(217, 183, 101, 0.16));
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 15px;
+
+    color: var(--home-gold);
+    font-size: 20px;
+
+    background: rgba(255, 215, 131, 0.1);
+    border: 1px solid rgba(255, 215, 131, 0.18);
 }
 
 .your-existing-home-card span {
-    color: var(--pd-white);
+    color: #fff5db;
     font-size: 13px;
-    font-weight: 600;
+    line-height: 1.4;
+    font-weight: 700;
 }
 
-.your-existing-home-card:hover {
-    background: linear-gradient(145deg, #951536, #4c0a20);
-    border-color: var(--pd-gold-light);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22), var(--pd-glow);
-    transform: translateY(-3px);
+.your-existing-home-card:active {
+    transform: scale(0.97);
+    border-color: rgba(255, 215, 131, 0.55);
 }
 
-/* -------------------------
-   KEYBOARD ACCESSIBILITY
-------------------------- */
+/* FINAL NAVIGATION ITEM COLORS */
 
-a:focus-visible,
-button:focus-visible {
-    outline: 2px solid var(--pd-gold-light);
-    outline-offset: 4px;
+.home-menu:nth-child(1) > div > i {
+    color: #ff9cbe;
+    background: rgba(255, 82, 122, 0.12);
 }
 
-/* -------------------------
-   SMALL SCREENS
-------------------------- */
+.home-menu:nth-child(2) > i {
+    color: #d4b1ff;
+}
+
+.home-menu:nth-child(3) > i {
+    color: var(--home-gold);
+    background: rgba(255, 215, 131, 0.1);
+}
+
+.home-menu:nth-child(5) > i {
+    color: #ffb2d0;
+}
+
+.home-menu:nth-child(7) > i {
+    color: #d8c5ff;
+}
+
+/* RESPONSIVE SPACING */
 
 @media (max-width: 360px) {
+    .phone-app {
+        padding-right: 13px;
+        padding-left: 13px;
+    }
+
     .app-header {
-        padding: 15px 13px;
+        gap: 8px;
     }
 
     .header-logo {
         font-size: 16px;
     }
 
-    .app-content {
-        gap: 13px;
-        padding: 14px 12px 24px;
-    }
-
     .home-cover {
-        min-height: 225px;
+        min-height: 230px;
+        padding: 23px 13px;
+        border-radius: 25px;
     }
 
     .cover-text h1 {
-        font-size: 39px;
+        font-size: 36px;
     }
 
     .home-grid {
         gap: 9px;
     }
 
-    .home-menu {
-        min-height: 105px;
-        padding: 14px 7px;
+    .home-menu,
+    .little-world-card,
+    .your-existing-home-card {
+        min-height: 112px;
+        padding: 13px;
+        border-radius: 19px;
     }
 
     .home-menu p,
+    .home-card-title,
     .your-existing-home-card span {
         font-size: 12px;
     }
-
-    .home-card {
-        gap: 11px;
-        padding: 14px;
-    }
 }
 
-/* -------------------------
-   REDUCE MOTION IF REQUESTED
-------------------------- */
+/* REDUCED MOTION */
 
 @media (prefers-reduced-motion: reduce) {
+    #pd-stars,
+    #pd-shooting-star,
+    .header-heart,
+    .home-cover::before,
+    .home-cover::after,
+    .cover-text span,
+    .fireworks-button {
+        animation: none !important;
+    }
+
     *,
     *::before,
     *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
         scroll-behavior: auto !important;
         transition-duration: 0.01ms !important;
     }
 }
+/* ==========================================
+   FIX: ALLOW HOME PAGE SCROLLING ON PHONES
+   ========================================== */
 
-/* =========================================
-   PD — ANIMATED ROMANTIC HERO BACKGROUND
-   Baby wa Hubby ❤️
-========================================= */
+html,
+body.phone-page {
+    height: auto !important;
+    min-height: 100%;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: auto;
+}
 
+.phone-app {
+    height: auto !important;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: visible !important;
+}
+
+.home-grid,
+.home-card,
 .home-cover {
-    isolation: isolate;
-    overflow: hidden;
-    background: linear-gradient(
-        125deg,
-        #350510,
-        #86112f,
-        #4c0a32,
-        #a8173b,
-        #350510
-    );
-    background-size: 300% 300%;
-    animation: pdRomanticBackground 12s ease-in-out infinite;
+    flex-shrink: 0;
 }
 
-/* Soft moving golden and purple light */
-.home-cover .cover-overlay {
-    z-index: 0;
-    background:
-        radial-gradient(
-            circle at 18% 28%,
-            rgba(243, 221, 160, 0.18),
-            transparent 32%
-        ),
-        radial-gradient(
-            circle at 82% 70%,
-            rgba(154, 75, 190, 0.24),
-            transparent 35%
-        ),
-        radial-gradient(
-            circle at 50% 50%,
-            rgba(224, 47, 91, 0.20),
-            transparent 58%
-        );
-    background-size: 200% 200%;
-    animation: pdMovingGlow 8s ease-in-out infinite alternate;
-}
-
-/* Keep the names above the moving background */
-.home-cover .cover-text {
-    z-index: 2;
-    animation: pdNamesFloat 4s ease-in-out infinite;
-}
-
-/* Golden glow on Baby and Hubby */
-.home-cover .cover-text h1 {
-    color: #f8e4aa;
-    text-shadow:
-        0 0 8px rgba(243, 221, 160, 0.25),
-        0 0 22px rgba(217, 183, 101, 0.24),
-        0 4px 15px rgba(0, 0, 0, 0.45);
-    animation: pdGoldenGlow 3s ease-in-out infinite alternate;
-}
-
-.home-cover .cover-text h1:last-of-type {
-    animation-delay: 1.5s;
-}
-
-/* The little "wa" */
-.home-cover .cover-text h4 {
-    color: #e6c6f5;
-    text-shadow: 0 0 12px rgba(180, 113, 216, 0.65);
-}
-
-/* Heart below the names */
-.home-cover .cover-text > span {
-    filter: drop-shadow(0 0 8px rgba(243, 221, 160, 0.55));
-    animation: pdHeartLove 2s ease-in-out infinite;
-}
-
-/* Floating decorative hearts */
-.home-cover::after {
-    content: "♥     ♡";
-    position: absolute;
-    z-index: 1;
-    right: 10px;
-    bottom: 12px;
-    color: rgba(243, 221, 160, 0.25);
-    font-size: 52px;
-    letter-spacing: 12px;
-    white-space: nowrap;
+/* Keep the decorative background behind the content */
+#pd-night-sky {
+    position: fixed;
+    inset: 0;
     pointer-events: none;
-    animation: pdFloatingHearts 6s ease-in-out infinite;
-}
-
-/* Moving gradient */
-@keyframes pdRomanticBackground {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* Drifting light */
-@keyframes pdMovingGlow {
-    0% {
-        background-position: 0% 0%;
-        opacity: 0.75;
-    }
-    100% {
-        background-position: 100% 100%;
-        opacity: 1;
-    }
-}
-
-/* Gentle floating movement */
-@keyframes pdNamesFloat {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-5px); }
-}
-
-/* Gold text shimmer */
-@keyframes pdGoldenGlow {
-    0% {
-        text-shadow:
-            0 0 7px rgba(243, 221, 160, 0.18),
-            0 0 15px rgba(217, 183, 101, 0.15),
-            0 4px 15px rgba(0, 0, 0, 0.4);
-    }
-    100% {
-        text-shadow:
-            0 0 10px rgba(243, 221, 160, 0.45),
-            0 0 28px rgba(217, 183, 101, 0.38),
-            0 4px 15px rgba(0, 0, 0, 0.4);
-    }
-}
-
-/* Cute pulsing heart */
-@keyframes pdHeartLove {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.22);
-    }
-}
-
-/* Decorative heart drift */
-@keyframes pdFloatingHearts {
-    0%, 100% {
-        transform: translate(0, 0) rotate(-8deg);
-        opacity: 0.45;
-    }
-    50% {
-        transform: translate(-12px, -15px) rotate(5deg);
-        opacity: 0.9;
-    }
-}
-
-/* Respect reduced-motion preferences */
-@media (prefers-reduced-motion: reduce) {
-    .home-cover,
-    .home-cover .cover-overlay,
-    .home-cover .cover-text,
-    .home-cover .cover-text h1,
-    .home-cover .cover-text > span,
-    .home-cover::after {
-        animation: none !important;
-    }
+    z-index: -1;
 }

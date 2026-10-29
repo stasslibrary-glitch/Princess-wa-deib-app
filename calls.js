@@ -297,7 +297,11 @@ function listenForCalls() {
     }
   );
 }
+document.getElementById("voiceCallBtn")
+  ?.addEventListener("click", () => startCall("voice"));
 
+document.getElementById("videoCallBtn")
+  ?.addEventListener("click", () => startCall("video"));
 async function requestCall(callType) {
   if (!currentUser || !myProfile) {
     showNotice("Please sign in to use PD Calls.", true);

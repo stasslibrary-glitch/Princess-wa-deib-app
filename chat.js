@@ -40,7 +40,7 @@ import {
     push,
     serverTimestamp as databaseServerTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
-
+import { sendPDMessagePush } from "./notification.js";
 /* =========================================================
    CONFIGURATION
    ========================================================= */
@@ -1475,12 +1475,34 @@ async function sendMessage() {
             createdAt: serverTimestamp()
         };
 
-        const sentRef = await addDoc(
-            collection(db, "messages"),
-            messageData
-        );
+   
+const sentRef = await addDoc(
+    collection(db, "messages"),
+    messageData
+);
 
-        console.log("PD: Message sent:", sentRef.id);
+console.log("PD: Message sent:", sentRef.id);
+
+// Trigger the recipient's background push notification.
+// A push failure must NOT mark the already-saved message as failed.
+try {
+    await sendPDMessagePush(sentRef.id);
+    console.log("💌 PD background notification request completed.");
+} catch (pushError) {
+    console.error(
+        "⚠️ Message saved, but push notification failed:",
+        pushError
+    );
+}
+
+// Continue normal chat cleanup.
+input.value = "";
+resizeMessageInput();
+clearReplyMode();
+
+pdSendingMessage = false;
+if (button) button.disabled = false;
+
 
 input.value = "";
 resizeMessageInput();
