@@ -909,3 +909,25 @@ body.phone-page > *:not(#pd-night-sky) {
     animation: none;
   }
 }
+.hubby-baby-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+}
+
+.hubby-baby-link:hover {
+    transform: translateY(-2px);
+}
+
+.hubby-baby-link .home-icon {
+    flex-shrink: 0;
+}
+
+.hubby-baby-link small {
+    display: block;
+    font-weight: 700;
+}

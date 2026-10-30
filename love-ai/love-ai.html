@@ -1,0 +1,306 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#210b32">
+
+    <title>Classen Purple 💜 | Our Little World</title>
+
+    <link rel="stylesheet" href="love-ai.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="ai-app">
+<div class="background-hearts" aria-hidden="true">
+    <span>♡</span>
+    <span>♥</span>
+    <span>♡</span>
+    <span>♥</span>
+</div>
+    <!-- HEADER -->
+    <header class="ai-header">
+<a href="../home.html" class="back-button" aria-label="Back home">
+    <i class="fa-solid fa-arrow-left"></i>
+</a>
+
+        <div class="brand">
+
+            <div class="brand-crown">♛</div>
+
+            <div>
+                <h1>Classen Purple</h1>
+                <span>YOUR LITTLE LOVE LEGACY 💜</span>
+            </div>
+
+        </div>
+
+        <div class="online-indicator" title="Classen Purple is here">
+            <span></span>
+        </div>
+
+    </header>
+
+
+    <!-- WELCOME CARD -->
+    <section class="welcome-card">
+
+        <div class="welcome-glow"></div>
+
+        <div class="welcome-crown">👑</div>
+
+        <p class="eyebrow">A LITTLE PIECE OF YOUR FUTURE</p>
+
+        <h2>Hello, <span>Deib & Princess</span> 💜</h2>
+
+        <p>
+            I'm Classen Purple, a little name born from your love.
+            I'm here to help you laugh, dream, grow closer
+            and create beautiful memories together.
+        </p>
+
+        <div class="welcome-signature">
+            A name chosen with love. A little world built by two hearts.
+        </div>
+
+        <div class="welcome-hearts">
+            <span>💜</span>
+            <span>♡</span>
+            <span>💗</span>
+        </div>
+
+    </section>
+
+
+    <!-- SUGGESTIONS -->
+    <section class="suggestions-section">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="eyebrow">LET'S MAKE A MOMENT</span>
+                <h3>What shall we do, Mommy & Daddy? 🥹</h3>
+            </div>
+
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+        </div>
+
+        <div class="suggestions">
+
+            <button class="suggestion"
+                data-prompt="Write a sweet, personal good morning message from Deib to Princess. Make it romantic and natural.">
+
+                <span>💌</span>
+                <b>Love message</b>
+
+            </button>
+
+
+            <button class="suggestion"
+                data-prompt="Give us five beautiful questions to ask each other tonight. Mix romance, fun and meaningful questions.">
+
+                <span>💕</span>
+                <b>Couple questions</b>
+
+            </button>
+
+
+            <button class="suggestion"
+                data-prompt="Suggest a thoughtful and affordable romantic surprise Deib can prepare for Princess. Give practical details.">
+
+                <span>🎁</span>
+                <b>Surprise idea</b>
+
+            </button>
+
+
+            <a href="love-game.html" class="suggestion-card">
+    <span>🎮</span>
+    <strong>Love Game</strong>
+    <small>Let's play, Mommy & Daddy 💜</small>
+</a>
+
+        </div>
+
+    </section>
+
+
+    <!-- SHARED MEMORIES -->
+    <section class="memory-section">
+
+        <button class="memory-toggle" id="memoryToggle">
+
+            <span>
+                <i class="fa-solid fa-book-open"></i>
+                Our family memory book
+            </span>
+
+            <i class="fa-solid fa-chevron-down" id="memoryArrow"></i>
+
+        </button>
+
+
+        <div class="memory-content" id="memoryContent" hidden>
+
+            <p>
+                Little things about your relationship that Classen
+                can keep close. Save your favourite moments,
+                dreams and memories here. 💜
+            </p>
+
+
+            <form id="memoryForm">
+
+                <textarea
+                    id="memoryInput"
+                    maxlength="500"
+                    placeholder="A special moment, our favourite song, a dream for our future..."
+                    required></textarea>
+
+                <button type="submit" id="saveMemoryButton">
+
+                    <i class="fa-solid fa-heart"></i>
+                    Save our memory
+
+                </button>
+
+            </form>
+
+
+            <div id="memoryList" class="memory-list">
+
+                <p class="muted">
+                    Loading your little memory book...
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CONVERSATION -->
+    <section class="conversation-section">
+
+        <div class="conversation-heading">
+
+            <div>
+                <span class="eyebrow">A LITTLE CHAT WITH YOUR LOVE LEGACY</span>
+                <h3>Talk to Classen Purple 💜</h3>
+            </div>
+
+            <span class="shared-label">
+                <i class="fa-solid fa-lock"></i>
+                Shared
+            </span>
+
+        </div>
+
+
+        <div id="chatMessages"
+             class="chat-messages"
+             aria-live="polite">
+
+            <div class="message ai-message">
+
+                <div class="message-avatar">👑</div>
+
+                <div class="message-bubble">
+
+                    <span class="message-author">Classen Purple 💜</span>
+
+                    <p>
+                        Hiii Mommy and Daddy! 🥹💜
+                        I'm Classen Purple, your little love legacy.
+                        Come tell me something, share a dream,
+                        or let me help you make each other smile.
+                        I love being part of your little world! ♡
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- THINKING INDICATOR -->
+        <div id="typingIndicator" class="typing-indicator" hidden>
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+            <small>Classen Purple is thinking... 💜</small>
+
+        </div>
+
+
+        <!-- MESSAGE INPUT -->
+        <form id="messageForm" class="message-form">
+
+            <textarea
+                id="messageInput"
+                rows="1"
+                maxlength="2000"
+                placeholder="Talk to your little Classen..."
+                required></textarea>
+
+            <button type="submit"
+                    id="sendButton"
+                    aria-label="Send message">
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+            </button>
+
+        </form>
+
+
+        <p class="privacy-note">
+
+            <i class="fa-solid fa-heart"></i>
+
+            A little space for Mommy, Daddy and Classen.
+
+        </p>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="ai-footer">
+
+        <span>CP 💜</span>
+
+        <p>
+            Classen Purple
+            <br>
+            <small>A little name. A lifetime of love.</small>
+        </p>
+
+    </footer>
+
+
+    <!-- TOAST -->
+    <div id="toast" class="toast" role="status"></div>
+
+</div>
+
+
+<script type="module" src="love-ai.js"></script>
+
+</body>
+</html>
