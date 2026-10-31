@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#190b25">
+    <title>The Great Key Hunt 💜</title>
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="love-game.css">
+</head>
+<body>
+
+<div class="phone-app">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <header class="topbar">
+        <a href="../home.html" class="back-button" aria-label="Back home">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+
+        <div class="brand">
+            <span>YOUR LOVE ADVENTURE</span>
+            <strong>The Great Key Hunt <b>💜</b></strong>
+        </div>
+
+        <div class="profile-icon">
+            <i class="fa-solid fa-heart"></i>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-glow"></div>
+            <span class="eyebrow">A JOURNEY MADE FOR TWO</span>
+            <h1>Five Keys.<br><em>One Love.</em></h1>
+            <p>Complete the challenges, collect your keys and unlock the Grand Vault.</p>
+
+            <div class="key-progress">
+                <div class="progress-heading">
+                    <span>Your key collection</span>
+                    <strong id="keyCount">0 / 5</strong>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="actions-section">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">LET THE ADVENTURE BEGIN</span>
+                    <h2>Your next move</h2>
+                </div>
+                <span class="live-dot">LIVE</span>
+            </div>
+
+            <div class="action-grid">
+                <button class="action-card create-card" id="openCreate">
+                    <span class="action-icon"><i class="fa-solid fa-plus"></i></span>
+                    <strong>Create all challenges</strong>
+                    <small>Set up all five games before publishing</small>
+                    <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+                </button>
+
+                <button class="action-card attempt-card" id="attemptButton" hidden>
+                    <span class="action-icon"><i class="fa-solid fa-gamepad"></i></span>
+                    <strong id="attemptButtonTitle">Play next game</strong>
+                    <small id="challengeHint">Your challenge is ready</small>
+                    <span class="card-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+                </button>
+            </div>
+
+            <div class="waiting-card" id="waitingCard" hidden>
+                <i class="fa-solid fa-hourglass-half"></i>
+                <div>
+                    <strong id="waitingTitle">Your challenges are waiting!</strong>
+                    <p id="waitingText">Your partner is getting ready.</p>
+                </div>
+            </div>
+
+            <div class="approval-card" id="approvalCard" hidden>
+                <div class="approval-icon">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                </div>
+                <div class="approval-content">
+                    <strong id="approvalTitle">A mission needs your approval</strong>
+                    <p id="approvalText"></p>
+                    <div class="approval-submission" id="approvalSubmission"></div>
+                    <div class="approval-actions">
+                        <button id="approveButton" class="primary-button">
+                            <i class="fa-solid fa-check"></i> Approve and award key
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="games-section">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">THE FIVE CHALLENGES</span>
+                    <h2>Collect your keys</h2>
+                </div>
+            </div>
+
+            <div class="game-list" id="gameList">
+                <div class="game-item">
+                    <div class="game-number">01</div>
+                    <div class="game-symbol"><i class="fa-solid fa-brain"></i></div>
+                    <div class="game-info">
+                        <strong>Know Me Better</strong>
+                        <small>Questions only your partner should know</small>
+                    </div>
+                    <span class="game-status">NOT SET</span>
+                </div>
+
+                <div class="game-item">
+                    <div class="game-number">02</div>
+                    <div class="game-symbol"><i class="fa-solid fa-envelope-open-text"></i></div>
+                    <div class="game-info">
+                        <strong>The Mystery Box</strong>
+                        <small>Unlock the secrets hidden inside</small>
+                    </div>
+                    <span class="game-status">NOT SET</span>
+                </div>
+
+                <div class="game-item">
+                    <div class="game-number">03</div>
+                    <div class="game-symbol"><i class="fa-solid fa-fire"></i></div>
+                    <div class="game-info">
+                        <strong>Dare Me</strong>
+                        <small>Romantic, funny and daring missions</small>
+                    </div>
+                    <span class="game-status">NOT SET</span>
+                </div>
+
+                <div class="game-item">
+                    <div class="game-number">04</div>
+                    <div class="game-symbol"><i class="fa-solid fa-puzzle-piece"></i></div>
+                    <div class="game-info">
+                        <strong>The Love Puzzle</strong>
+                        <small>Put the pieces of your story together</small>
+                    </div>
+                    <span class="game-status">NOT SET</span>
+                </div>
+
+                <div class="game-item">
+                    <div class="game-number">05</div>
+                    <div class="game-symbol"><i class="fa-solid fa-star"></i></div>
+                    <div class="game-info">
+                        <strong>The Final Mission</strong>
+                        <small>Your final test before the vault</small>
+                    </div>
+                    <span class="game-status">NOT SET</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="vault-section">
+            <div class="vault-art"><i class="fa-solid fa-vault"></i></div>
+            <span class="eyebrow">THE ULTIMATE PRIZE</span>
+            <h2>The Grand Vault</h2>
+            <p id="vaultMessage">Five keys are needed to reveal your surprise.</p>
+
+            <div class="vault-lock" id="vaultStatus">
+                <i class="fa-solid fa-lock"></i> STILL LOCKED
+            </div>
+
+            <button class="reward-button" id="rewardButton" disabled>
+                <i class="fa-solid fa-gift"></i> Reveal our reward
+            </button>
+        </section>
+
+        <footer>
+            <span>MADE WITH LOVE</span>
+            <strong>DEIB <i class="fa-solid fa-heart"></i> PRINCESS</strong>
+        </footer>
+    </main>
+</div>
+
+<!-- SETUP ALL FIVE CHALLENGES -->
+<div class="modal" id="createModal">
+    <div class="modal-panel wide-panel">
+        <button class="close-modal" data-close="createModal">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <span class="eyebrow" id="setupEyebrow">CHALLENGE SETUP · GAME 01 OF 05</span>
+        <h2 id="setupTitle">Know Me Better</h2>
+        <p class="modal-description" id="setupDescription">
+            Set questions that only your partner should know.
+        </p>
+
+        <div class="wizard-progress">
+            <div class="wizard-progress-fill" id="wizardProgressFill"></div>
+        </div>
+
+        <div class="wizard-steps" id="wizardSteps">
+            <span class="active">01</span>
+            <span>02</span>
+            <span>03</span>
+            <span>04</span>
+            <span>05</span>
+        </div>
+
+        <form id="setupForm">
+            <div id="setupFields"></div>
+
+            <div class="wizard-actions">
+                <button type="button" class="secondary-button" id="previousGameButton">
+                    <i class="fa-solid fa-arrow-left"></i> Previous
+                </button>
+
+                <button type="submit" class="primary-button" id="nextGameButton">
+                    Save and continue <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- REVIEW BEFORE PUBLISHING -->
+<div class="modal" id="reviewModal">
+    <div class="modal-panel wide-panel">
+        <button class="close-modal" data-close="reviewModal">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <span class="eyebrow">FINAL CHECK</span>
+        <h2>Five challenges. One adventure.</h2>
+        <p class="modal-description">
+            Review your five games. Once published, your partner can begin playing.
+        </p>
+
+        <div id="reviewList" class="review-list"></div>
+
+        <button class="primary-button full-button" id="publishAllButton">
+            <i class="fa-solid fa-key"></i> Publish all five challenges
+        </button>
+    </div>
+</div>
+
+<!-- ATTEMPT GAME -->
+<div class="modal" id="attemptModal">
+    <div class="modal-panel wide-panel">
+        <button class="close-modal" data-close="attemptModal">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <span class="eyebrow" id="attemptEyebrow">YOUR PARTNER HAS CHALLENGED YOU</span>
+        <h2 id="attemptTitle">Your challenge 💜</h2>
+        <p class="modal-description" id="attemptDescription"></p>
+
+        <form id="attemptForm">
+            <div id="attemptFields"></div>
+
+            <button type="submit" class="primary-button full-button" id="submitAttemptButton">
+                Submit challenge <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <div id="attemptResult" class="result-message" hidden></div>
+    </div>
+</div>
+
+<!-- REWARD -->
+<div class="modal" id="rewardModal">
+    <div class="modal-panel reward-panel">
+        <button class="close-modal" data-close="rewardModal">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="reward-heart">💜</div>
+        <span class="eyebrow">YOU DID IT!</span>
+        <h2>The Grand Vault is open!</h2>
+        <p id="rewardContent">You collected all five keys.</p>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="love-game.js"></script>
+</body>
+</html>
