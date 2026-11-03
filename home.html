@@ -1,198 +1,196 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#32134f">
+    <meta name="description" content="Princess wa Deib — a little world made for just us.">
 
-    <title>PD | Home</title>
+    <title>PD | Our Little World</title>
 
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="home.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
-        rel="stylesheet"
-    >
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
-<body class="phone-page">
-<div class="phone-container"></div>
-<div class="phone-app">
+<body class="phone-page pd-home-page">
 
-<div id="pd-night-sky" aria-hidden="true">
-    <div id="pd-stars"></div>
-    <div id="pd-moon"></div>
-    <div id="pd-shooting-star"></div>
-</div>
+<div class="phone-app pd-home-app">
 
-    <header class="app-header">
-
-        <button class="icon-btn">
-            <i class="fa-solid fa-bars"></i>
-        </button>
-
-        <div class="header-logo">
-            Princess wa Deib
-            <span>(PD)</span>
+<header class="pd-header">
+    <div class="pd-brand">
+        <div class="pd-brand-icon">
+            <i class="fa-solid fa-heart"></i>
         </div>
 
-        <div class="header-heart">
-            ♥
+        <div>
+            <strong>Princess wa Deib</strong>
+            <small>OUR LITTLE WORLD</small>
         </div>
-
-    </header>
-
-
-<section class="home-cover">
-
-    <div class="cover-overlay"></div>
-
-    <div class="cover-text">
-
-        <h1>Just Us</h1> 
-
-        <span>💘</span>
-
     </div>
 
-    <!-- FIREWORKS BUTTON -->
-    <a href="fireworks.html" class="fireworks-button">
-        <span class="fireworks-icon">🎆</span>
-        <span>
-            <strong>Our Forever</strong>
-            <small>Tap to see our love shine ✨</small>
-        </span>
-        <span class="button-arrow">→</span>
-    </a>
-
-</section>
-       
-<a href="love-ai/love-ai.html" class="hubby-baby-link">
-
-    <div class="home-icon">
-        <i class="fa-solid fa-crown"></i>
+    <div class="pd-header-right">
+        <span class="pd-online-dot"></span>
+        <div class="pd-date-display">
+            <strong id="pdHomeDate">Loading date...</strong>
+            <small>OUR SPECIAL DAYS</small>
+        </div>
     </div>
+</header>
 
-    <div>
-        <small>Hubby wa Baby 💜</small>
-        <!--<strong id="daysTogether">0</strong>-->
-    </div>
 
-</a>
+    <main class="pd-main">
+
+        <!-- PHOTO SLIDESHOW -->
+        <section class="pd-slideshow" aria-label="Our memories slideshow">
+
+            <div class="pd-slide active"
+                 style="background-image:url('slideshow/photo1.jpg')"></div>
+
+            <div class="pd-slide"
+                 style="background-image:url('slideshow/photo2.jpg')"></div>
+
+            <div class="pd-slide"
+                 style="background-image:url('slideshow/photo3.jpg')"></div>
+             <div class="pd-slide"
+                 style="background-image:url('slideshow/slide4.jpg')"></div>
+             <div class="pd-slide"
+                 style="background-image:url('slideshow/111.jpg')"></div>
+   
+            <div class="pd-slide-overlay"></div>
+
+            <div class="pd-slide-content">
+                <span class="pd-slide-label">
+                    <i class="fa-solid fa-heart"></i>
+                    OUR STORY
+                </span>
+
+                <h1>Just You.<br><em>Just Me.</em></h1>
+
+                <p>Every picture holds a memory.<br>Every memory holds a little love.</p>
+
+                <a href="fireworks.html" class="pd-forever-button">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    Our Forever
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="pd-slide-counter">
+                <span class="pd-slide-dot active"></span>
+                <span class="pd-slide-dot"></span>
+                <span class="pd-slide-dot"></span>
+            </div>
+
+            <span class="pd-photo-caption">
+                <i class="fa-regular fa-images"></i>
+                OUR BEAUTIFUL MOMENTS
+            </span>
+
         </section>
 
 
-        <!-- SONG -->
+        <!-- SPECIAL SPACE -->
+        <a href="love-ai/love-ai.html" class="pd-special-card">
+            <div class="pd-special-icon">
+                <i class="fa-solid fa-crown"></i>
+            </div>
 
-        <section class="home-card song-home">
+            <div class="pd-special-copy">
+                <small>YOUR SPECIAL SPACE</small>
+                <strong>Hubby wa Baby 💜</strong>
+                <span>A little place made with love</span>
+            </div>
 
-            <div class="home-icon">
+            <i class="fa-solid fa-chevron-right pd-special-arrow"></i>
+        </a>
+
+        <!-- SONG OF THE DAY -->
+        <a href="song.html" class="pd-song-card">
+            <div class="pd-song-art">
                 <i class="fa-solid fa-music"></i>
+                <span class="pd-music-bars">
+                    <i></i><i></i><i></i><i></i>
+                </span>
             </div>
 
-            <div class="song-home-info">
-
-                <small>
-                    You Will Be Fine👌
-                </small>
-
-                <strong id="songTitle">
-                    I miss you
-                </strong>
-
+            <div class="pd-song-info">
+                <small><i class="fa-solid fa-heart"></i> SONG OF THE DAY</small>
+                <strong id="songTitle">I miss you</strong>
+                <span>A little music for our hearts</span>
             </div>
 
-            <a href="song.html" class="play-btn">
+            <div class="pd-song-play">
                 <i class="fa-solid fa-play"></i>
-            </a>
-
-        </section>
-
-
-        <!-- FOUR BUTTONS -->
-
-        <section class="home-grid">
-
-            <a href="chat.html" class="home-menu">
-
-                <div>
-                    <i class="fa-regular fa-comments"></i>
-
-                    <span class="notification" id="chatNotification" style="display:none;">
-    0
-                        </span>
-                </div>
-
-                <p>
-                    Chat
-                </p>
-
-            </a>
+            </div>
+        </a>
 
 
-            <a href="stats.html" class="home-menu">
+    </main>
 
-                <i class="fa-solid fa-chart-column"></i>
+    <!-- FIXED BOTTOM NAVIGATION -->
+    <nav class="pd-bottom-nav" aria-label="Main navigation">
 
-                <p>
-                    Our Stats
-                </p>
+        <a href="chat.html" class="pd-tab pd-tab-chat">
+            <span class="pd-tab-icon">
+                <i class="fa-solid fa-comments"></i>
+                <span class="notification" id="chatNotification" style="display:none;">0</span>
+            </span>
+            <small>Chat</small>
+        </a>
 
-            </a>
+        <a href="stats.html" class="pd-tab">
+            <span class="pd-tab-icon">
+                <i class="fa-solid fa-chart-simple"></i>
+            </span>
+            <small>Stats</small>
+        </a>
 
+        <a href="love.html" class="pd-tab">
+            <span class="pd-tab-icon">
+                <i class="fa-solid fa-heart"></i>
+            </span>
+            <small>Love Pie</small>
+        </a>
 
-            <a href="love.html" class="home-menu">
+        <a href="little-world.html" class="pd-tab">
+            <span class="pd-tab-icon">
+                <i class="fa-solid fa-earth-africa"></i>
+            </span>
+            <small>Our World</small>
+        </a>
 
-                <i class="fa-solid fa-chart-pie"></i>
+        <a href="calendar.html" class="pd-tab">
+            <span class="pd-tab-icon">
+                <i class="fa-solid fa-calendar-days"></i>
+            </span>
+            <small>Memories</small>
+        </a>
 
-                <p>
-                    Love Pie
-                </p>
+        <a href="todo.html" class="pd-tab">
+            <span class="pd-tab-icon">
+                <i class="fa-solid fa-list-check"></i>
+            </span>
+            <small>To-Do</small>
+        </a>
 
-            </a>
-            <a href="little-world.html" class="home-card little-world-card">
-  <span class="home-card-icon">❤️‍🔥</span>
-  <span class="home-card-title">Hubby and Baby</span>
-  
-</a>
-<a href="calendar.html" class="home-menu">
-
-    <i class="fa-regular fa-m"></i>
-
-    <p>
-        Our Memories
-    </p>
-
-</a>
-
-<a href="todo.html" class="your-existing-home-card">
-  <i class="fa-solid fa-list-check"></i>
-  <span>Our To-Do List</span>
-
+    </nav>
 
 </div>
-<script
-    type="module"
-    src="auth-guard.js"
-></script>
+
+<!-- EXISTING APP SCRIPTS -->
+<script type="module" src="auth-guard.js"></script>
 <script type="module" src="notification.js"></script>
 <script src="home-interactions.js"></script>
-<script type="module" src="script.js"></script>
-<!-- =========================================
-     PD CINEMATIC LOVE EFFECT
-     ========================================= -->
 
-
-<script src="home-effects.js"></script>
-<script src="home-water.js"></script>
-
+<!-- NEW HOME SLIDESHOW / INTERACTIONS -->
+<script src="home.js"></script>
 
 </body>
 </html>
-
-
