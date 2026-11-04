@@ -1,7 +1,8 @@
 
 /* =========================================================
    PRINCESS WA DEIB — HOME LIVE LOVE FEED
-   Old messages replay + highlighted new messages
+   Correct sender identities • Memory replay • New messages
+   Glass bubbles • Smooth fade-out • Mobile-first
 ========================================================= */
 
 import { auth, db } from "./firebase.js";
@@ -19,19 +20,66 @@ import {
     onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
-const NEW_MESSAGE_WINDOW = 3 * 60 * 1000; // 3 minutes
+/* ===================== SETTINGS ===================== */
+
+const NEW_MESSAGE_WINDOW = 3 * 60 * 1000;
 const REPLAY_INTERVAL = 2800;
 const BUBBLE_DURATION = 6200;
+const MAX_BUBBLES = 3;
+const MAX_MESSAGES = 100;
 
-let feedContainer;
+/* ===================== ACCOUNT NAMES ===================== */
+
+const PD_ACCOUNT_NAMES = {
+    "princess@gmail.com": {
+        own: "Hubby 💜",
+        partner: "Baby ❤️"
+    },
+
+    "deib@gmail.com": {
+        own: "Baby ❤️",
+        partner: "Hubby 💜"
+    }
+};
+
+/* ===================== STATE ===================== */
+
+let feedContainer = null;
+let currentUserUID = null;
+let currentUserEmail = null;
+
 let oldMessages = [];
 let newMessages = [];
+
 let shownIds = [];
 let activeBubbles = [];
-let currentUserUID = null;
-let replayStarted = false;
+let messagePool = new Map();
 
-const messagePool = new Map();
+let unsubscribers = [];
+let replayInterval = null;
+let startupTimeout = null;
+
+/* ===================== IDENTITY ===================== */
+
+function getSenderName(data) {
+    const account = PD_ACCOUNT_NAMES[currentUserEmail];
+
+    if (!account) {
+        return data.senderDisplayName ||
+            data.senderName ||
+            "Your love ❤️";
+    }
+
+    // Always identify the sender using senderUID.
+    // Do not trust potentially incorrect display-name fields.
+    if (data.senderUID === currentUserUID) {
+        return account.own;
+    }
+
+    return account.partner;
+}
+
+/* ===================== STYLES ===================== */
 
 function installStyles() {
     if (document.getElementById("pd-live-chat-styles")) return;
@@ -60,26 +108,36 @@ function installStyles() {
             width: fit-content;
             max-width: 100%;
             padding: 9px 12px 9px 9px;
+
             border: 1px solid rgba(255,255,255,.17);
             border-radius: 17px 17px 17px 5px;
-            background: rgba(35,16,53,.88);
+
+            background: rgba(35,16,53,.90);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
+
             box-shadow: 0 8px 25px rgba(0,0,0,.22);
             color: white;
+
             opacity: 0;
-            transform: translateY(22px) scale(.94);
-            animation: pdBubbleEnter .5s cubic-bezier(.2,.8,.2,1) forwards,
-                       pdBubbleExit .65s ease 5.5s forwards;
+            transform: translateY(18px) scale(.96);
+
+            animation:
+                pdBubbleEnter .45s cubic-bezier(.2,.8,.2,1) forwards,
+                pdBubbleExit .85s ease-in 5.15s forwards;
+
+            will-change: opacity, transform;
         }
 
         .pd-live-bubble.is-new {
             border: 1px solid rgba(255,125,205,.75);
+
             background: linear-gradient(
                 120deg,
-                rgba(90,28,91,.95),
-                rgba(45,19,73,.94)
+                rgba(90,28,91,.96),
+                rgba(45,19,73,.95)
             );
+
             box-shadow:
                 0 0 16px rgba(255,90,190,.28),
                 0 8px 25px rgba(0,0,0,.28);
@@ -89,10 +147,13 @@ function installStyles() {
             flex: 0 0 32px;
             width: 32px;
             height: 32px;
+
             display: grid;
             place-items: center;
+
             border-radius: 50%;
             background: linear-gradient(135deg,#e8a4ff,#8539c7);
+
             font-size: 14px;
         }
 
@@ -104,6 +165,7 @@ function installStyles() {
         .pd-live-copy {
             flex: 1;
             min-width: 0;
+
             display: flex;
             flex-direction: column;
             gap: 3px;
@@ -152,6 +214,7 @@ function installStyles() {
             font-weight: 500;
             line-height: 1.4;
             overflow-wrap: anywhere;
+
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -159,6 +222,11 @@ function installStyles() {
         }
 
         @keyframes pdBubbleEnter {
+            from {
+                opacity: 0;
+                transform: translateY(18px) scale(.96);
+            }
+
             to {
                 opacity: 1;
                 transform: translateY(0) scale(1);
@@ -166,9 +234,14 @@ function installStyles() {
         }
 
         @keyframes pdBubbleExit {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
             to {
                 opacity: 0;
-                transform: translateY(-25px) scale(.95);
+                transform: translateY(-18px) scale(.94);
             }
         }
 
@@ -191,11 +264,12 @@ function installStyles() {
     document.head.appendChild(style);
 }
 
+/* ===================== FEED CONTAINER ===================== */
+
 function createFeed() {
-    if (document.getElementById("pd-live-chat-feed")) {
-        feedContainer = document.getElementById("pd-live-chat-feed");
-        return;
-    }
+    feedContainer = document.getElementById("pd-live-chat-feed");
+
+    if (feedContainer) return;
 
     feedContainer = document.createElement("div");
     feedContainer.id = "pd-live-chat-feed";
@@ -203,6 +277,8 @@ function createFeed() {
 
     document.body.appendChild(feedContainer);
 }
+
+/* ===================== MESSAGE HELPERS ===================== */
 
 function getMessageTime(data) {
     if (data.createdAt?.toDate) {
@@ -218,29 +294,45 @@ function getMessageTime(data) {
 
 function isRecentMessage(data) {
     const time = getMessageTime(data);
+    const age = Date.now() - time;
 
     return time > 0 &&
-        Date.now() - time <= NEW_MESSAGE_WINDOW;
+        age >= 0 &&
+        age <= NEW_MESSAGE_WINDOW;
 }
 
 function getMessageText(data) {
-    if (data.type === "voice") return "🎙️ Sent a voice message";
-    if (data.type === "image") return "📷 Sent a photo";
-    if (data.type === "video") return "🎬 Sent a video";
+    if (data.type === "voice") {
+        return "🎙️ Sent a voice message";
+    }
+
+    if (data.type === "image") {
+        return "📷 Sent a photo";
+    }
+
+    if (data.type === "video") {
+        return "🎬 Sent a video";
+    }
 
     return String(data.text || "Sent a message");
 }
 
+/* ===================== MESSAGE POOL ===================== */
+
 function addToPool(id, data, isNew = false) {
     if (!data || !data.senderUID) return;
 
-    const item = {
+    const previous = messagePool.get(id);
+
+    messagePool.set(id, {
         id,
         data,
-        isNew: isNew || isRecentMessage(data)
-    };
+        isNew:
+            isNew ||
+            previous?.isNew ||
+            isRecentMessage(data)
+    });
 
-    messagePool.set(id, item);
     refreshPools();
 }
 
@@ -249,7 +341,6 @@ function refreshPools() {
     newMessages = [];
 
     for (const item of messagePool.values()) {
-        // New messages eventually become memories.
         if (item.isNew && isRecentMessage(item.data)) {
             newMessages.push(item);
         } else {
@@ -259,15 +350,22 @@ function refreshPools() {
     }
 }
 
+/* ===================== MESSAGE SELECTION ===================== */
+
 function chooseMessage() {
     refreshPools();
 
-    if (!oldMessages.length && !newMessages.length) return null;
+    if (!oldMessages.length && !newMessages.length) {
+        return null;
+    }
 
-    // Mostly replay old messages: 80% old, 20% new.
+    // 80% memories, 20% new messages.
     const chooseNew =
         newMessages.length > 0 &&
-        (oldMessages.length === 0 || Math.random() < 0.20);
+        (
+            oldMessages.length === 0 ||
+            Math.random() < 0.20
+        );
 
     const pool = chooseNew ? newMessages : oldMessages;
 
@@ -275,25 +373,32 @@ function chooseMessage() {
         !shownIds.includes(item.id)
     );
 
-    // Allow old messages to replay after the pool has been used.
     if (!candidates.length) {
         shownIds = [];
         candidates = pool;
     }
 
-    if (!candidates.length) {
-        candidates = [...oldMessages, ...newMessages];
-    }
-
     if (!candidates.length) return null;
 
-    return candidates[Math.floor(Math.random() * candidates.length)];
+    return candidates[
+        Math.floor(Math.random() * candidates.length)
+    ];
 }
+
+/* ===================== DISPLAY BUBBLE ===================== */
 
 function displayBubble(item) {
     if (!item || !feedContainer) return;
 
     const data = item.data;
+console.log("PD FEED IDENTITY CHECK", {
+    signedInEmail: currentUserEmail,
+    signedInUID: currentUserUID,
+    messageSenderUID: data.senderUID,
+    messageSenderName: data.senderName,
+    messageSenderDisplayName: data.senderDisplayName,
+    isMine: data.senderUID === currentUserUID
+});
     const isMine = data.senderUID === currentUserUID;
     const isNew = item.isNew && isRecentMessage(data);
 
@@ -302,28 +407,33 @@ function displayBubble(item) {
     bubble.className =
         "pd-live-bubble" + (isNew ? " is-new" : "");
 
+    /* Avatar */
+
     const avatar = document.createElement("div");
     avatar.className = "pd-live-avatar";
-    avatar.textContent = isMine ? "💜" : "❤️";
+    avatar.textContent = isMine ? "❤️‍🔥" : "❤️";
+
+    /* Text container */
 
     const copy = document.createElement("div");
     copy.className = "pd-live-copy";
+
+    /* Sender and label */
 
     const topLine = document.createElement("div");
     topLine.className = "pd-live-topline";
 
     const name = document.createElement("span");
     name.className = "pd-live-name";
-    name.textContent =
-        data.senderDisplayName ||
-        data.senderName ||
-        (isMine ? "Hubby 💜" : "Baby ❤️");
+    name.textContent = getSenderName(data);
 
     const label = document.createElement("span");
     label.className =
         "pd-live-label " + (isNew ? "new" : "memory");
 
     label.textContent = isNew ? "NEW" : "MEMORY";
+
+    /* Message */
 
     const message = document.createElement("span");
     message.className = "pd-live-text";
@@ -332,6 +442,8 @@ function displayBubble(item) {
     topLine.append(name, label);
     copy.append(topLine, message);
     bubble.append(avatar, copy);
+
+    /* Open chat when clicked */
 
     bubble.style.pointerEvents = "auto";
     bubble.style.cursor = "pointer";
@@ -343,33 +455,41 @@ function displayBubble(item) {
     feedContainer.appendChild(bubble);
     activeBubbles.push(bubble);
 
-    while (activeBubbles.length > 3) {
+    /* Keep only three visible bubbles */
+
+    while (activeBubbles.length > MAX_BUBBLES) {
         const oldest = activeBubbles.shift();
         oldest.remove();
     }
 
     shownIds.push(item.id);
 
+    /* Remove after fade-out animation */
+
     setTimeout(() => {
         bubble.remove();
-        activeBubbles = activeBubbles.filter(el => el !== bubble);
+
+        activeBubbles = activeBubbles.filter(
+            element => element !== bubble
+        );
     }, BUBBLE_DURATION);
 }
 
+/* ===================== REPLAY SYSTEM ===================== */
+
 function startReplay() {
-    if (replayStarted) return;
+    if (replayInterval) return;
 
-    replayStarted = true;
-
-    // Wait briefly for both Firestore listeners to load history.
-    setTimeout(() => {
+    startupTimeout = setTimeout(() => {
         displayBubble(chooseMessage());
-    }, 1000);
+    }, 1200);
 
-    setInterval(() => {
+    replayInterval = setInterval(() => {
         displayBubble(chooseMessage());
     }, REPLAY_INTERVAL);
 }
+
+/* ===================== FIRESTORE LISTENERS ===================== */
 
 function listenToMessages(uid, direction) {
     const messagesRef = collection(db, "messages");
@@ -382,50 +502,105 @@ function listenToMessages(uid, direction) {
         messagesRef,
         where(field, "==", uid),
         orderBy("createdAt", "desc"),
-        limit(100)
+        limit(MAX_MESSAGES)
     );
 
     let firstSnapshot = true;
 
-    return onSnapshot(messageQuery, snapshot => {
-        snapshot.docChanges().forEach(change => {
-            const id = change.doc.id;
-            const data = change.doc.data();
+    const unsubscribe = onSnapshot(
+        messageQuery,
+        snapshot => {
+            snapshot.docChanges().forEach(change => {
+                const id = change.doc.id;
+                const data = change.doc.data();
 
-            if (change.type === "removed") {
-                messagePool.delete(id);
-                return;
-            }
-
-            if (change.type === "added") {
-                if (firstSnapshot) {
-                    // Existing chat history: replay as MEMORY,
-                    // except messages sent within the last 3 minutes.
-                    addToPool(id, data, false);
-                } else {
-                    // Messages arriving while home is open.
-                    addToPool(id, data, true);
+                if (change.type === "removed") {
+                    messagePool.delete(id);
+                    return;
                 }
+
+                if (change.type === "added") {
+                    // Initial history is replayed as MEMORY,
+                    // unless it was sent within the last 3 minutes.
+                    addToPool(
+                        id,
+                        data,
+                        !firstSnapshot
+                    );
+                }
+
+                if (change.type === "modified") {
+                    const previous = messagePool.get(id);
+
+                    addToPool(
+                        id,
+                        data,
+                        previous?.isNew || false
+                    );
+                }
+            });
+
+            if (firstSnapshot) {
+                firstSnapshot = false;
+                refreshPools();
             }
-        });
-
-        if (firstSnapshot) {
-            firstSnapshot = false;
-            refreshPools();
+        },
+        error => {
+            console.error(
+                "PD home feed listener error:",
+                error
+            );
         }
+    );
 
-    }, error => {
-        console.error("PD home feed listener error:", error);
-    });
+    unsubscribers.push(unsubscribe);
 }
 
-createFeed();
+/* ===================== CLEANUP ===================== */
+
+function stopFeed() {
+    unsubscribers.forEach(unsubscribe => unsubscribe());
+    unsubscribers = [];
+
+    if (replayInterval) {
+        clearInterval(replayInterval);
+        replayInterval = null;
+    }
+
+    if (startupTimeout) {
+        clearTimeout(startupTimeout);
+        startupTimeout = null;
+    }
+
+    activeBubbles.forEach(bubble => bubble.remove());
+    activeBubbles = [];
+
+    messagePool.clear();
+    oldMessages = [];
+    newMessages = [];
+    shownIds = [];
+
+    if (feedContainer) {
+        feedContainer.innerHTML = "";
+    }
+}
+
+/* ===================== INITIALIZATION ===================== */
+
 installStyles();
+createFeed();
 
 onAuthStateChanged(auth, user => {
-    if (!user || currentUserUID === user.uid) return;
+    stopFeed();
+
+    if (!user) {
+        currentUserUID = null;
+        currentUserEmail = null;
+        return;
+    }
 
     currentUserUID = user.uid;
+    currentUserEmail = user.email?.toLowerCase() || null;
 
     listenToMessages(user.uid, "sent");
     listenToMessages(user.uid, "received");
