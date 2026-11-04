@@ -1988,3 +1988,417 @@ button:focus-visible {
         transition: none !important;
     }
 }
+
+/* =========================================================
+   PD HOME — 3D ELASTIC BUTTON EXPERIENCE
+   Delayed entrance • Magnetic movement • Liquid glass
+   ========================================================= */
+
+/* Button targets */
+.pd-tab,
+.pd-special-card,
+.pd-song-card,
+.pd-forever-button {
+    position: relative;
+    isolation: isolate;
+
+    transform-style: preserve-3d;
+    perspective: 900px;
+
+    will-change: transform, opacity;
+
+    transition:
+        translate .35s cubic-bezier(.2, .9, .3, 1),
+        box-shadow .35s ease,
+        border-radius .5s cubic-bezier(.2, .8, .2, 1),
+        filter .3s ease;
+}
+
+/* ---------- 1. Delayed entrance preparation ---------- */
+
+.pd-button-pending {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.pd-button-revealed {
+    visibility: visible !important;
+    pointer-events: auto !important;
+
+    animation:
+        pdButtonSpringIn .95s
+        cubic-bezier(.16, 1.45, .3, 1)
+        both;
+
+    animation-delay: var(--button-delay, 0ms);
+}
+
+@keyframes pdButtonSpringIn {
+    0% {
+        opacity: 0;
+        transform:
+            perspective(900px)
+            translate3d(0, 65px, -100px)
+            rotateX(-32deg)
+            scale(.65);
+
+        filter: blur(9px);
+    }
+
+    55% {
+        opacity: 1;
+        transform:
+            perspective(900px)
+            translate3d(0, -12px, 15px)
+            rotateX(8deg)
+            scale(1.07);
+
+        filter: blur(0);
+    }
+
+    75% {
+        transform:
+            perspective(900px)
+            translate3d(0, 5px, 0)
+            rotateX(-3deg)
+            scale(.97);
+    }
+
+    100% {
+        opacity: 1;
+        transform:
+            perspective(900px)
+            translate3d(0, 0, 0)
+            rotateX(0)
+            scale(1);
+
+        filter: blur(0);
+    }
+}
+
+/* ---------- 2. 3D depth ---------- */
+
+.pd-special-card {
+    box-shadow:
+        0 15px 0 rgba(30, 9, 57, .28),
+        0 20px 35px rgba(5, 1, 18, .35),
+        0 0 25px rgba(123, 63, 228, .24),
+        inset 0 1px 1px rgba(255,255,255,.25);
+}
+
+.pd-song-card {
+    box-shadow:
+        0 12px 0 rgba(30, 9, 57, .25),
+        0 18px 32px rgba(5, 1, 18, .32),
+        0 0 22px rgba(123, 63, 228, .25),
+        inset 0 1px 1px rgba(255,255,255,.2);
+}
+
+.pd-forever-button {
+    box-shadow:
+        0 7px 0 #95651d,
+        0 12px 25px rgba(244, 201, 93, .3),
+        inset 0 1px 2px rgba(255,255,255,.8);
+}
+
+.pd-tab {
+    box-shadow:
+        0 5px 0 rgba(8, 2, 20, .25),
+        0 8px 16px rgba(5, 1, 18, .2),
+        inset 0 1px 1px rgba(255,255,255,.12);
+}
+
+/* ---------- 3. Liquid glass highlight ---------- */
+
+.pd-special-card::before,
+.pd-song-card::before,
+.pd-forever-button::before,
+.pd-tab::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: -1;
+    pointer-events: none;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            120deg,
+            transparent 10%,
+            rgba(255,255,255,.2) 45%,
+            transparent 70%
+        );
+
+    opacity: 0;
+    transform: translateX(-110%);
+
+    transition: opacity .3s ease;
+}
+
+.pd-special-card:hover::before,
+.pd-song-card:hover::before,
+.pd-forever-button:hover::before,
+.pd-tab:hover::before {
+    opacity: 1;
+    animation: pdLiquidShine 1s ease forwards;
+}
+
+@keyframes pdLiquidShine {
+    from {
+        transform: translateX(-110%);
+    }
+
+    to {
+        transform: translateX(110%);
+    }
+}
+
+/* ---------- 4. Organic border morphing ---------- */
+
+.pd-special-card:hover,
+.pd-song-card:hover {
+    border-radius: 30px 20px 30px 20px;
+}
+
+.pd-forever-button:hover {
+    border-radius: 25px 35px 25px 35px;
+}
+
+.pd-tab:hover {
+    border-radius: 21px 13px 21px 13px;
+}
+
+/* ---------- 5. Magnetic movement ---------- */
+
+/* JavaScript controls the --mag-x and --mag-y values. */
+
+.pd-tab,
+.pd-special-card,
+.pd-song-card,
+.pd-forever-button {
+    translate:
+        var(--mag-x, 0px)
+        var(--mag-y, 0px);
+}
+
+/* ---------- 6. 3D press effect ---------- */
+
+.pd-special-card:active,
+.pd-song-card:active {
+    transform:
+        perspective(900px)
+        translateY(5px)
+        rotateX(3deg)
+        scale(.97) !important;
+
+    box-shadow:
+        0 3px 0 rgba(30, 9, 57, .3),
+        0 7px 15px rgba(5, 1, 18, .3),
+        inset 0 2px 5px rgba(0,0,0,.15);
+}
+
+.pd-forever-button:active {
+    transform:
+        perspective(900px)
+        translateY(4px)
+        rotateX(5deg)
+        scale(.95) !important;
+
+    box-shadow:
+        0 2px 0 #95651d,
+        0 5px 12px rgba(244, 201, 93, .25);
+}
+
+.pd-tab:active {
+    transform: scale(.91) translateY(3px) !important;
+
+    box-shadow:
+        0 2px 0 rgba(8, 2, 20, .3),
+        inset 0 2px 5px rgba(0,0,0,.2);
+}
+
+/* ---------- 7. Active tab floating depth ---------- */
+
+.pd-tab.active {
+    transform: translateY(-3px);
+}
+
+.pd-tab.active .pd-tab-icon {
+    transform: translateZ(12px) translateY(-2px);
+}
+
+/* ---------- 8. Ambient liquid glow ---------- */
+
+.pd-special-card,
+.pd-song-card {
+    overflow: hidden;
+}
+
+.pd-special-card::after,
+.pd-song-card::after {
+    transition:
+        transform .8s cubic-bezier(.2, .8, .2, 1),
+        opacity .5s ease;
+}
+
+.pd-special-card:hover::after,
+.pd-song-card:hover::after {
+    transform: scale(1.8) translate(-8px, 8px);
+    opacity: .8;
+}
+
+/* ---------- 9. Desktop magnetic hover only ---------- */
+
+@media (hover: hover) and (pointer: fine) {
+    .pd-special-card:hover,
+    .pd-song-card:hover {
+        filter: brightness(1.12);
+    }
+
+    .pd-forever-button:hover {
+        filter: brightness(1.08);
+    }
+
+    .pd-tab:hover {
+        filter: brightness(1.15);
+    }
+}
+
+/* ---------- 10. Mobile-friendly performance ---------- */
+
+@media (max-width: 600px) {
+    .pd-tab,
+    .pd-special-card,
+    .pd-song-card,
+    .pd-forever-button {
+        perspective: 700px;
+    }
+
+    .pd-button-revealed {
+        animation-duration: .85s;
+    }
+}
+
+/* ---------- 11. Accessibility ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .pd-button-pending {
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+    }
+
+    .pd-button-revealed {
+        animation: none !important;
+    }
+
+    .pd-tab,
+    .pd-special-card,
+    .pd-song-card,
+    .pd-forever-button {
+        translate: none !important;
+        transition: none !important;
+    }
+}
+    
+/* ==========================================
+   PD — CONTINUOUS 3D BOTTOM NAV ANIMATION
+   ========================================== */
+
+.pd-tab {
+    animation: pdBottomFloat 2.8s ease-in-out infinite !important;
+    transform-style: preserve-3d;
+    will-change: transform, filter;
+    transition: box-shadow .3s ease, background .3s ease !important;
+}
+
+/* Stagger the movement so buttons don't move together */
+.pd-tab:nth-child(1) {
+    animation-delay: 0s !important;
+}
+
+.pd-tab:nth-child(2) {
+    animation-delay: .25s !important;
+}
+
+.pd-tab:nth-child(3) {
+    animation-delay: .5s !important;
+}
+
+.pd-tab:nth-child(4) {
+    animation-delay: .75s !important;
+}
+
+.pd-tab:nth-child(5) {
+    animation-delay: 1s !important;
+}
+
+.pd-tab:nth-child(6) {
+    animation-delay: 1.25s !important;
+}
+
+/* Floating 3D movement */
+@keyframes pdBottomFloat {
+    0%, 100% {
+        transform: perspective(700px)
+                   translateY(0)
+                   rotateX(0deg)
+                   scale(1);
+        filter: brightness(1);
+    }
+
+    25% {
+        transform: perspective(700px)
+                   translateY(-5px)
+                   rotateX(5deg)
+                   scale(1.035);
+        filter: brightness(1.12);
+    }
+
+    50% {
+        transform: perspective(700px)
+                   translateY(-2px)
+                   rotateX(-3deg)
+                   scale(1.015);
+        filter: brightness(1.06);
+    }
+
+    75% {
+        transform: perspective(700px)
+                   translateY(-6px)
+                   rotateX(3deg)
+                   scale(1.04);
+        filter: brightness(1.15);
+    }
+}
+
+/* Active button gets extra purple glow */
+.pd-tab.active {
+    box-shadow:
+        0 0 12px rgba(174, 105, 255, .35),
+        0 0 25px rgba(174, 105, 255, .18),
+        inset 0 1px 8px rgba(255,255,255,.12) !important;
+}
+
+/* More movement when touched or hovered */
+.pd-tab:hover {
+    animation-duration: 1.2s !important;
+    box-shadow:
+        0 8px 25px rgba(160, 90, 255, .3),
+        inset 0 1px 10px rgba(255,255,255,.15) !important;
+}
+
+.pd-tab:active {
+    transform: scale(.9) !important;
+}
+
+/* Respect accessibility settings */
+@media (prefers-reduced-motion: reduce) {
+    .pd-tab {
+        animation: none !important;
+    }
+}

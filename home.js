@@ -378,6 +378,155 @@
     fxEntrance();
     fxDoubleTapHearts();
 
+/* ==================================================
+   7. DELAYED 3D BUTTON ENTRANCE + MAGNETIC PHYSICS
+================================================== */
+
+function pd3DButtonExperience() {
+
+    const selectors = [
+        ".pd-tab",
+        ".pd-special-card",
+        ".pd-song-card",
+        ".pd-forever-button"
+    ];
+
+    const buttons = Array.from(
+        document.querySelectorAll(selectors.join(","))
+    );
+
+    if (!buttons.length) return;
+
+    const reduceMotion =
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* --------------------------------
+       A. DELAYED ELASTIC ENTRANCE
+    -------------------------------- */
+
+    if (!reduceMotion) {
+
+        buttons.forEach(button => {
+            button.classList.add("pd-button-pending");
+        });
+
+        // Wait until the home page has settled.
+        setTimeout(() => {
+
+            buttons.forEach((button, index) => {
+
+                button.style.setProperty(
+                    "--button-delay",
+                    `${index * 110}ms`
+                );
+
+                button.classList.remove("pd-button-pending");
+
+                // Restart entrance animation reliably.
+                void button.offsetWidth;
+
+                button.classList.add("pd-button-revealed");
+
+                button.addEventListener("animationend", event => {
+
+                    if (event.target !== button) return;
+
+                    button.classList.remove("pd-button-revealed");
+
+                    button.style.removeProperty("--button-delay");
+
+                }, { once: true });
+
+            });
+
+        }, 2200);
+
+    }
+
+    /* --------------------------------
+       B. MAGNETIC HOVER
+       Desktop / mouse devices only
+    -------------------------------- */
+
+    const canMagnet =
+        window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+    if (!canMagnet || reduceMotion) return;
+
+    buttons.forEach(button => {
+
+        let frame = null;
+
+        let currentX = 0;
+        let currentY = 0;
+
+        let targetX = 0;
+        let targetY = 0;
+
+        function animateMagnet() {
+
+            // Smooth spring-like movement.
+            currentX += (targetX - currentX) * 0.16;
+            currentY += (targetY - currentY) * 0.16;
+
+            button.style.setProperty(
+                "--mag-x",
+                `${currentX.toFixed(2)}px`
+            );
+
+            button.style.setProperty(
+                "--mag-y",
+                `${currentY.toFixed(2)}px`
+            );
+
+            const stillMoving =
+                Math.abs(targetX - currentX) > .1 ||
+                Math.abs(targetY - currentY) > .1;
+
+            if (stillMoving) {
+                frame = requestAnimationFrame(animateMagnet);
+            } else {
+                frame = null;
+            }
+        }
+
+        button.addEventListener("pointermove", event => {
+
+            const rect = button.getBoundingClientRect();
+
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            // Small, controlled magnetic pull.
+            targetX = ((x - centerX) / centerX) * 5;
+            targetY = ((y - centerY) / centerY) * 5;
+
+            if (!frame) {
+                frame = requestAnimationFrame(animateMagnet);
+            }
+
+        });
+
+        button.addEventListener("pointerleave", () => {
+
+            targetX = 0;
+            targetY = 0;
+
+            if (!frame) {
+                frame = requestAnimationFrame(animateMagnet);
+            }
+
+        });
+
+    });
+
+}
+
+pd3DButtonExperience();
+
     console.log("PD Home controller ready 💜");
 
 })();

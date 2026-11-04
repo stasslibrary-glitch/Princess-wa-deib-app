@@ -1,9 +1,9 @@
 
-/* =========================================================
+/* ============================================================
    PRINCESS WA DEIB — notification.js
    Foreground + Background Notifications
    Unread Counter + Popup + Sound + Firebase Cloud Messaging
-   ========================================================= */
+   ============================================================ */
 
 import { app, auth, db } from "./firebase.js";
 
@@ -14,7 +14,7 @@ import {
 import {
     collection,
     query,
-    orderBy,
+    where,
     onSnapshot,
     doc,
     setDoc,
@@ -31,11 +31,16 @@ import {
 
 /* ================= SETTINGS ================= */
 
-// IMPORTANT: Replace this with your REAL deployed Worker URL.
-const PD_WORKER_URL = "https://pd-notifications.stasslibrary.workers.dev";
+const PD_WORKER_URL =
+    "https://pd-notifications.stasslibrary.workers.dev";
 
 const PD_VAPID_KEY =
     "BIXOKrV58L1gLD618OUPv9Qq0AddRv-O5mhtOlGQQPDzhueRa-PczLbbM2GwUuT23Lw0cdAOJIHeMjg6c9nsGqg";
+
+const PD_APPROVED_EMAILS = [
+    "princess@gmail.com",
+    "deib@gmail.com"
+];
 
 let currentUser = null;
 let firstLoad = true;
@@ -67,13 +72,13 @@ function unlockSound() {
             notificationSound.currentTime = 0;
             soundUnlocked = true;
         })
-        .catch(() => {
-            // Browsers require a user interaction before audio playback.
-        });
+        .catch(() => {});
 }
 
 document.addEventListener("click", unlockSound);
-document.addEventListener("touchstart", unlockSound, { passive: true });
+document.addEventListener("touchstart", unlockSound, {
+    passive: true
+});
 
 function playSound() {
     try {
@@ -81,10 +86,10 @@ function playSound() {
         notificationSound.currentTime = 0;
 
         notificationSound.play().catch(error => {
-            console.warn("PD sound blocked by browser:", error);
+            console.warn("PD sound blocked:", error);
         });
     } catch (error) {
-        console.warn("PD sound could not play:", error);
+        console.warn("PD sound error:", error);
     }
 }
 
@@ -97,7 +102,10 @@ function updateChatBadge() {
         badge.style.display = unreadCount > 0 ? "flex" : "none";
     });
 
-    localStorage.setItem("pdUnreadMessages", String(unreadCount));
+    localStorage.setItem(
+        "pdUnreadMessages",
+        String(unreadCount)
+    );
 }
 
 function clearUnreadMessages() {
@@ -106,6 +114,10 @@ function clearUnreadMessages() {
 }
 
 document.addEventListener("DOMContentLoaded", updateChatBadge);
+
+if (window.location.pathname.toLowerCase().includes("chat.html")) {
+    clearUnreadMessages();
+}
 
 
 /* ================= IN-APP POPUP ================= */
@@ -176,28 +188,18 @@ function getMessageText(data) {
     return data.text || "You have a new message 💕";
 }
 
-function getSenderName() {
-    return currentUser?.email?.toLowerCase() === "deib@gmail.com"
-        ? "Ernest ❤️"
-        : "Jaris ❤️";
+function getSenderName(data) {
+    return data.senderDisplayName ||
+        data.senderName ||
+        "Your love";
 }
 
 function isIncomingMessage(data) {
     if (!currentUser || !data) return false;
 
-    // Never notify for your own messages.
     if (data.senderUID === currentUser.uid) return false;
 
-    // If the message specifies its recipient, make sure it is for this user.
-    if (data.recipientUID && data.recipientUID !== currentUser.uid) {
-        return false;
-    }
-
-    if (data.receiverUID && data.receiverUID !== currentUser.uid) {
-        return false;
-    }
-
-    return true;
+    return data.recipientUID === currentUser.uid;
 }
 
 function handleNewMessage(data) {
@@ -206,11 +208,14 @@ function handleNewMessage(data) {
     unreadCount++;
     updateChatBadge();
 
-    // The in-app popup and sound are for the open website.
-    showPopup(getSenderName(), getMessageText(data));
+    showPopup(
+        getSenderName(data),
+        getMessageText(data)
+    );
+
     playSound();
 
-    console.log("💌 New PD message", {
+    console.log("💌 New PD message received", {
         unreadCount,
         senderUID: data.senderUID
     });
@@ -226,13 +231,18 @@ function startNotificationListener() {
     firstLoad = true;
     knownMessages = new Set();
 
+    // IMPORTANT:
+    // Only listen to messages addressed to this signed-in account.
+    // This matches the existing Firestore message security rules.
+
     const messagesQuery = query(
         collection(db, "messages"),
-        orderBy("createdAt", "asc")
+        where("recipientUID", "==", currentUser.uid)
     );
 
     unsubscribeMessages = onSnapshot(
         messagesQuery,
+
         snapshot => {
             if (firstLoad) {
                 snapshot.forEach(message => {
@@ -242,7 +252,10 @@ function startNotificationListener() {
                 firstLoad = false;
                 updateChatBadge();
 
-                console.log("🔔 PD foreground notification listener ready.");
+                console.log(
+                    "🔔 PD foreground notification listener ready."
+                );
+
                 return;
             }
 
@@ -254,14 +267,20 @@ function startNotificationListener() {
                 if (knownMessages.has(messageId)) return;
 
                 knownMessages.add(messageId);
+
                 handleNewMessage(change.doc.data());
             });
         },
+
         error => {
             listenerStarted = false;
             unsubscribeMessages = null;
 
-            console.error("❌ PD notification listener failed:", error);
+            console.error(
+                "❌ PD notification listener failed:",
+                error.code,
+                error.message
+            );
         }
     );
 }
@@ -272,6 +291,12 @@ function startNotificationListener() {
 export async function enablePDBackgroundNotifications() {
     if (!auth.currentUser) {
         throw new Error("Please sign in to PD first.");
+    }
+
+    if (!PD_APPROVED_EMAILS.includes(
+        auth.currentUser.email?.toLowerCase()
+    )) {
+        throw new Error("This account is not approved for PD.");
     }
 
     if (
@@ -285,12 +310,9 @@ export async function enablePDBackgroundNotifications() {
     }
 
     if (PD_WORKER_URL.includes("YOUR-WORKER-NAME")) {
-        throw new Error(
-            "Set your real Cloudflare Worker URL in notification.js first."
-        );
+        throw new Error("Your Cloudflare Worker URL is missing.");
     }
 
-    // Permission should be requested following a user action.
     let permission = Notification.permission;
 
     if (permission === "default") {
@@ -299,7 +321,7 @@ export async function enablePDBackgroundNotifications() {
 
     if (permission !== "granted") {
         throw new Error(
-            "Notifications are blocked. Allow notifications for your PD website in browser settings."
+            "Allow notifications for your PD website in browser settings."
         );
     }
 
@@ -346,7 +368,9 @@ export async function enablePDBackgroundNotifications() {
         { merge: true }
     );
 
-    console.log("💜 PD background push registration successful.");
+    console.log(
+        "💜 PD background push registration successful."
+    );
 
     return true;
 }
@@ -369,10 +393,10 @@ async function initializeForegroundPush() {
     }
 
     onMessage(messagingInstance, payload => {
-        console.log("💌 PD foreground push received:", payload);
-
-        // Firestore handles the existing popup and sound.
-        // Avoid duplicate popups for the same message.
+        console.log(
+            "💌 PD foreground push received:",
+            payload
+        );
     });
 
     foregroundHandlerRegistered = true;
@@ -381,26 +405,6 @@ async function initializeForegroundPush() {
 
 /* ================= CLOUDFLARE PUSH SENDER ================= */
 
-/*
-Call this AFTER saving the message to Firestore.
-
-Example in chat.js:
-
-const saved = await addDoc(
-    collection(db, "messages"),
-    messageData
-);
-
-await sendPDMessagePush(saved.id);
-
-The deployed Worker must:
-1. Verify the Firebase ID token.
-2. Verify the caller is authorized to use PD.
-3. Read the saved message and find its recipient.
-4. Send Firebase Cloud Messaging push notifications
-   to that recipient's registered tokens.
-*/
-
 export async function sendPDMessagePush(messageId) {
     if (!auth.currentUser) {
         throw new Error("Please sign in before sending a notification.");
@@ -408,12 +412,6 @@ export async function sendPDMessagePush(messageId) {
 
     if (!messageId) {
         throw new Error("A saved Firestore message ID is required.");
-    }
-
-    if (PD_WORKER_URL.includes("YOUR-WORKER-NAME")) {
-        throw new Error(
-            "Add your deployed Cloudflare Worker URL to notification.js."
-        );
     }
 
     const idToken = await auth.currentUser.getIdToken();
@@ -449,10 +447,6 @@ export async function sendPDMessagePush(messageId) {
 
 /* ================= AUTH INITIALIZATION ================= */
 
-if (window.location.pathname.toLowerCase().includes("chat.html")) {
-    clearUnreadMessages();
-}
-
 onAuthStateChanged(auth, async user => {
     currentUser = user;
 
@@ -470,7 +464,13 @@ onAuthStateChanged(auth, async user => {
         return;
     }
 
+    if (!PD_APPROVED_EMAILS.includes(user.email?.toLowerCase())) {
+        console.warn("PD notifications: account not approved.");
+        return;
+    }
+
     startNotificationListener();
+
     updateChatBadge();
 
     initializeForegroundPush().catch(error => {
@@ -480,8 +480,7 @@ onAuthStateChanged(auth, async user => {
         );
     });
 
-    // Re-register automatically if this browser has already granted
-    // notification permission. Do not request permission automatically.
+    // Re-register devices that have already granted permission.
     if (
         "Notification" in window &&
         Notification.permission === "granted" &&
@@ -499,13 +498,10 @@ onAuthStateChanged(auth, async user => {
 
 /* ================= ENABLE BUTTON ================= */
 
-/*
-Optional HTML:
-
-<button id="enablePDNotifications" type="button">
-    Enable PD Notifications 💜
-</button>
-*/
+// Optional HTML:
+// <button id="enablePDNotifications" type="button">
+//   Enable PD Notifications 💜
+// </button>
 
 document.getElementById("enablePDNotifications")
     ?.addEventListener("click", async event => {
@@ -516,6 +512,7 @@ document.getElementById("enablePDNotifications")
 
         try {
             await enablePDBackgroundNotifications();
+
             button.textContent = "Notifications enabled 💜";
         } catch (error) {
             console.error("PD notification setup failed:", error);
