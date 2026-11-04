@@ -187,6 +187,197 @@
         }, { passive: true });
     }
 
+    /* --------------------------------
+       6. EFFECTS: ripples • sparkles • hearts • entrance
+    -------------------------------- */
+
+    const fxReduceMotion =
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const fxSaveData = navigator.connection?.saveData === true;
+
+    const fxSelector = [
+        ".pd-tab",
+        ".pd-special-card",
+        ".pd-song-card",
+        ".pd-forever-button"
+    ].join(",");
+
+    const fxSparkColors = ["#f4c95d", "#ffe9a8", "#cdb4ff", "#e0334f", "#ffffff"];
+    const fxHeartColors = ["#e0334f", "#cdb4ff", "#f4c95d", "#a477f5"];
+
+    const fxRand = (min, max) => min + Math.random() * (max - min);
+    const fxPick = list => list[Math.floor(Math.random() * list.length)];
+
+    // A clipped layer that holds the gold shine and the tap ripple,
+    // so the button itself never needs overflow:hidden.
+    function fxEnsureLayer(el) {
+        let layer = el.querySelector(":scope > .pd-fx-layer");
+
+        if (!layer) {
+            if (getComputedStyle(el).position === "static") {
+                el.style.position = "relative";
+            }
+
+            layer = document.createElement("span");
+            layer.className = "pd-fx-layer";
+            layer.setAttribute("aria-hidden", "true");
+            el.appendChild(layer);
+        }
+
+        return layer;
+    }
+
+    function fxRipple(el, x, y) {
+        const layer = fxEnsureLayer(el);
+        const box = el.getBoundingClientRect();
+        const size = Math.max(box.width, box.height) * 2.2;
+
+        const dot = document.createElement("span");
+        dot.className = "pd-ripple";
+        dot.style.width = dot.style.height = `${size}px`;
+        dot.style.left = `${x - box.left - size / 2}px`;
+        dot.style.top = `${y - box.top - size / 2}px`;
+
+        layer.appendChild(dot);
+
+        dot.addEventListener("animationend", () => dot.remove(), {
+            once: true
+        });
+
+        // Restart the gold shine sweep on every tap.
+        layer.classList.remove("sweep");
+        void layer.offsetWidth;
+        layer.classList.add("sweep");
+    }
+
+    function fxSparkle(x, y, count = 7) {
+        if (fxReduceMotion) return;
+
+        for (let i = 0; i < count; i++) {
+            const star = document.createElement("span");
+            const angle = fxRand(0, Math.PI * 2);
+            const distance = fxRand(22, 56);
+
+            star.className = "pd-spark";
+            star.style.setProperty("--x", `${x}px`);
+            star.style.setProperty("--y", `${y}px`);
+            star.style.setProperty("--dx", `${Math.cos(angle) * distance}px`);
+            star.style.setProperty("--dy", `${Math.sin(angle) * distance}px`);
+            star.style.setProperty("--rot", `${fxRand(-180, 180)}deg`);
+            star.style.setProperty("--sz", `${fxRand(6, 12)}px`);
+            star.style.setProperty("--col", fxPick(fxSparkColors));
+
+            document.body.appendChild(star);
+            setTimeout(() => star.remove(), 800);
+        }
+    }
+
+    function fxHeartBurst(x, y, count = 9) {
+        if (fxReduceMotion) return;
+
+        for (let i = 0; i < count; i++) {
+            const heart = document.createElement("span");
+
+            heart.className = "pd-burst-heart";
+            heart.textContent = "♥";
+            heart.style.setProperty("--x", `${x}px`);
+            heart.style.setProperty("--y", `${y}px`);
+            heart.style.setProperty("--dx", `${fxRand(-70, 70)}px`);
+            heart.style.setProperty("--dy", `${fxRand(-150, -60)}px`);
+            heart.style.setProperty("--rot", `${fxRand(-35, 35)}deg`);
+            heart.style.setProperty("--sz", `${fxRand(14, 28)}px`);
+            heart.style.setProperty("--col", fxPick(fxHeartColors));
+
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 1200);
+        }
+    }
+
+    // Ripple + sparkles on every tap of a main button.
+    document.addEventListener("pointerdown", event => {
+        const target = event.target.closest(fxSelector);
+
+        if (!target) return;
+
+        fxRipple(target, event.clientX, event.clientY);
+        fxSparkle(event.clientX, event.clientY);
+    }, { passive: true });
+
+    // Gentle floating hearts behind the content.
+    function fxFloatingHearts() {
+        if (fxReduceMotion || fxSaveData) return;
+
+        const wrap = document.createElement("div");
+        wrap.className = "pd-fx-hearts";
+        wrap.setAttribute("aria-hidden", "true");
+
+        for (let i = 0; i < 9; i++) {
+            const heart = document.createElement("span");
+
+            heart.className = "pd-fx-heart";
+            heart.textContent = "♥";
+            heart.style.setProperty("--x", `${fxRand(4, 94)}%`);
+            heart.style.setProperty("--s", `${fxRand(11, 24)}px`);
+            heart.style.setProperty("--c", fxPick(fxHeartColors));
+            heart.style.setProperty("--d", `${fxRand(11, 20)}s`);
+            heart.style.setProperty("--delay", `${fxRand(0, 12)}s`);
+
+            wrap.appendChild(heart);
+        }
+
+        document.body.prepend(wrap);
+    }
+
+    // One staggered reveal when the page opens.
+    function fxEntrance() {
+        if (fxReduceMotion) return;
+
+        const items = [
+            document.querySelector(".pd-header"),
+            ...document.querySelectorAll(".pd-main > *"),
+            document.querySelector(".pd-bottom-nav")
+        ].filter(Boolean);
+
+        items.forEach((el, index) => {
+            el.style.setProperty("--i", index);
+            el.classList.add("pd-fx-in");
+
+            el.addEventListener("animationend", event => {
+                if (event.target !== el) return;
+                el.classList.remove("pd-fx-in");
+            }, { once: true });
+        });
+    }
+
+    // Double-tap the slideshow for a burst of hearts.
+    function fxDoubleTapHearts() {
+        const frame = document.querySelector(".pd-slideshow");
+
+        if (!frame) return;
+
+        let lastTap = 0;
+
+        frame.addEventListener("pointerup", event => {
+            if (event.target.closest("a, .pd-slide-dot")) return;
+
+            const now = Date.now();
+
+            if (now - lastTap < 320) {
+                fxHeartBurst(event.clientX, event.clientY);
+                lastTap = 0;
+            } else {
+                lastTap = now;
+            }
+        }, { passive: true });
+    }
+
+    document.querySelectorAll(".pd-forever-button").forEach(fxEnsureLayer);
+
+    fxFloatingHearts();
+    fxEntrance();
+    fxDoubleTapHearts();
+
     console.log("PD Home controller ready 💜");
 
 })();

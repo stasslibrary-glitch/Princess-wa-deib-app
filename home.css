@@ -27,6 +27,13 @@
         rgba(119, 69, 151, .10);
 
     --pd-radius: 22px;
+
+    /* royal purple theme accents */
+    --pd-violet: #7b3fe4;
+    --pd-lilac: #cdb4ff;
+    --pd-gold: #f4c95d;
+    --pd-gold-soft: #ffe9a8;
+    --pd-ruby: #e0334f;
 }
 
 /* ===================== 2. GLOBAL RESET ===================== */
@@ -1203,176 +1210,436 @@ body.pd-home-page {
 }
 
 /* =========================================================
-   PD HOME — PREMIUM GLASS + COLOURFUL GLOW
-   Add at the VERY BOTTOM of home.css
+   13. ROYAL PURPLE THEME
+   Purple everywhere • a little ruby red • a little gold
+   (replaces the old pink / blue / orange glass colour layer;
+    layout from sections 1–12 above is untouched)
 ========================================================= */
 
-:root {
-    --glass-white: rgba(255, 255, 255, 0.13);
-    --glass-border: rgba(255, 255, 255, 0.25);
-    --glass-shadow: 0 12px 35px rgba(30, 8, 55, 0.18);
+/* ---------- Page background + slow aurora ---------- */
+
+html {
+    background: #12061f;
 }
 
-/* WHOLE PAGE */
-.pd-home-page {
+body.pd-home-page {
+    color: #f3e9ff;
+
     background:
-        radial-gradient(circle at 10% 10%, rgba(255, 155, 220, .25), transparent 35%),
-        radial-gradient(circle at 90% 35%, rgba(160, 115, 255, .22), transparent 38%),
-        linear-gradient(145deg, #f8eaff, #e9dcff 48%, #fce5f3);
-    background-attachment: fixed;
+        radial-gradient(circle at 12% 6%, rgba(154, 99, 240, .34), transparent 40%),
+        radial-gradient(circle at 95% 42%, rgba(224, 51, 79, .10), transparent 36%),
+        radial-gradient(circle at 50% 104%, rgba(244, 201, 93, .10), transparent 42%),
+        linear-gradient(160deg, #1e0b3a, #14072a 55%, #0e0420) !important;
+
+    background-attachment: fixed !important;
 }
 
-/* MAIN APP */
-.pd-home-app {
-    background: transparent !important;
+.pd-home-page::before {
+    content: "";
+
+    position: fixed;
+    inset: -25%;
+    z-index: 0;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(40% 35% at 25% 30%, rgba(154, 99, 240, .28), transparent 70%),
+        radial-gradient(35% 30% at 78% 65%, rgba(224, 51, 79, .12), transparent 70%),
+        radial-gradient(30% 28% at 55% 90%, rgba(244, 201, 93, .10), transparent 70%);
+
+    animation: pdAurora 22s ease-in-out infinite alternate;
 }
 
-/* GLASS HEADER */
+@keyframes pdAurora {
+    from { transform: translate3d(-3%, -2%, 0) scale(1); }
+    to   { transform: translate3d(4%, 3%, 0) scale(1.12); }
+}
+
+/* ---------- Header ---------- */
+
 .pd-header {
-    background: rgba(255, 255, 255, 0.20) !important;
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, .06) !important;
+    border: 1px solid rgba(205, 180, 255, .16) !important;
+    border-top: none !important;
     border-radius: 0 0 24px 24px;
-    box-shadow: 0 8px 30px rgba(73, 30, 110, .10);
+    box-shadow: 0 8px 30px rgba(8, 2, 20, .35) !important;
+
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
 }
 
-/* GLASS CONTENT CARDS */
-.pd-welcome,
-.pd-special-card,
-.pd-song-card,
-.pd-love-note {
-    background: rgba(255, 255, 255, 0.22) !important;
-    backdrop-filter: blur(25px) saturate(160%);
-    -webkit-backdrop-filter: blur(25px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.42) !important;
+.pd-brand-icon {
+    color: #ffe9a8;
+
+    background:
+        linear-gradient(145deg, #a877f2, #6a32c9 62%, #3d1782);
+
     box-shadow:
-        0 12px 35px rgba(65, 25, 100, .12),
-        inset 0 1px 0 rgba(255, 255, 255, .45);
-    border-radius: 25px;
+        0 0 0 1px rgba(244, 201, 93, .55),
+        0 6px 16px rgba(123, 63, 228, .5),
+        inset 0 1px 2px rgba(255, 255, 255, .4);
+
+    animation: pdHalo 4s ease-in-out infinite;
 }
 
-/* SLIDESHOW FRAME */
+.pd-brand-icon i {
+    animation: pdHeartBeat 2.5s ease-in-out infinite;
+}
+
+@keyframes pdHalo {
+    0%, 100% { filter: drop-shadow(0 0 4px rgba(205, 180, 255, .5)); }
+    50%      { filter: drop-shadow(0 0 11px rgba(244, 201, 93, .8)); }
+}
+
+.pd-brand strong {
+    color: #f6edff;
+}
+
+.pd-brand small {
+    color: #e2bd68;
+}
+
+.pd-date-display strong {
+    color: #eadcff;
+}
+
+.pd-date-display small {
+    color: #b79ddb;
+}
+
+/* ---------- Slideshow ---------- */
+
 .pd-slideshow {
-    border: 1px solid rgba(255, 255, 255, .45);
-    box-shadow:
-        0 18px 45px rgba(65, 20, 100, .22),
-        0 0 25px rgba(207, 133, 255, .20);
-}
-
-/* GLASS BUTTONS */
-.pd-forever-button,
-.pd-song-play {
-    background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, .35),
-        rgba(255, 255, 255, .12)
-    ) !important;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, .55) !important;
-    box-shadow:
-        0 5px 20px rgba(95, 35, 150, .22),
-        inset 0 1px 0 rgba(255, 255, 255, .5);
-    transition: .3s ease;
-}
-
-.pd-forever-button:hover,
-.pd-song-play:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 28px rgba(150, 70, 220, .35);
-}
-
-/* =========================================================
-   COLOURFUL GLASS BOTTOM NAVIGATION
-========================================================= */
-
-.pd-bottom-nav {
-    background: rgba(255, 255, 255, .20) !important;
-    backdrop-filter: blur(30px) saturate(180%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
-
-    border: 1px solid rgba(255, 255, 255, .48) !important;
-    border-bottom: none !important;
+    border: 1px solid rgba(244, 201, 93, .32);
 
     box-shadow:
-        0 -8px 35px rgba(65, 25, 110, .14),
-        inset 0 1px 0 rgba(255, 255, 255, .55);
-
-    border-radius: 25px 25px 0 0;
-    padding: 12px 7px calc(12px + env(safe-area-inset-bottom));
+        0 18px 45px rgba(8, 2, 20, .55),
+        0 0 28px rgba(123, 63, 228, .35);
 }
 
-/* EACH NAVIGATION BUTTON */
-.pd-tab {
+.pd-slide-label {
+    color: #ffe9a8;
+    border: 1px solid rgba(244, 201, 93, .42);
+    background: rgba(244, 201, 93, .10);
+}
+
+.pd-slide-label i {
+    color: #ff5a78;
+    animation: pdHeartBeat 2.2s ease-in-out infinite;
+}
+
+.pd-slide-content h1 em {
+    color: #f4c95d;
+}
+
+.pd-slide-dot.active {
+    background: #f4c95d;
+    box-shadow: 0 0 10px rgba(244, 201, 93, .65);
+}
+
+.pd-photo-caption {
+    color: rgba(255, 233, 168, .9);
+}
+
+/* ---------- "Our Forever" button: gold ---------- */
+
+.pd-forever-button {
     position: relative;
-    border-radius: 17px;
-    margin: 0 2px;
-    padding: 9px 2px;
+    overflow: hidden;
 
-    background: rgba(255, 255, 255, .16) !important;
-    border: 1px solid rgba(255, 255, 255, .25);
+    color: #3a1a5c;
+
+    background:
+        linear-gradient(110deg, #ffe9a8, #f4c95d 55%, #e6ae3a);
+
+    border: 1px solid rgba(255, 255, 255, .55);
+
+    box-shadow:
+        0 8px 22px rgba(244, 201, 93, .28),
+        0 0 0 1px rgba(244, 201, 93, .25),
+        inset 0 1px 2px rgba(255, 255, 255, .7);
+
+    animation: pdGoldPulse 3.2s ease-in-out infinite;
 
     transition:
         transform .3s ease,
-        background .3s ease,
-        box-shadow .3s ease;
-
-    color: #624477 !important;
+        box-shadow .3s ease,
+        filter .3s ease;
 }
 
-/* ICONS */
+.pd-forever-button i:first-child {
+    color: #b3122f;
+}
+
+@keyframes pdGoldPulse {
+    0%, 100% { filter: drop-shadow(0 4px 10px rgba(123, 63, 228, .45)); }
+    50%      { filter: drop-shadow(0 4px 18px rgba(244, 201, 93, .75)); }
+}
+
+/* ---------- Welcome + love note (same colours, kept consistent) ---------- */
+
+.pd-welcome-kicker {
+    color: #e2bd68;
+}
+
+.pd-welcome h2 {
+    color: #f6edff;
+}
+
+.pd-welcome h2 em {
+    color: #f4c95d;
+}
+
+.pd-welcome p {
+    color: #bfa8df;
+}
+
+.pd-welcome-heart {
+    color: #ff5a78;
+    background: linear-gradient(145deg, rgba(224, 51, 79, .22), rgba(123, 63, 228, .30));
+    box-shadow: 0 5px 15px rgba(224, 51, 79, .22);
+}
+
+.pd-love-note {
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(244, 201, 93, .28);
+    box-shadow: 0 8px 22px rgba(8, 2, 20, .35);
+}
+
+.pd-love-note > i {
+    color: #ff5a78;
+}
+
+.pd-love-note p {
+    color: #eadcff;
+}
+
+.pd-love-note span {
+    color: #e2bd68;
+}
+
+/* ---------- Special space card: purple with a ruby glow + gold edge ---------- */
+
+.pd-special-card {
+    background:
+        linear-gradient(
+            125deg,
+            rgba(123, 63, 228, .62),
+            rgba(62, 22, 120, .72) 58%,
+            rgba(224, 51, 79, .30)
+        );
+
+    border: 1px solid rgba(244, 201, 93, .38);
+    border-radius: 24px;
+
+    box-shadow:
+        0 12px 32px rgba(6, 1, 16, .45),
+        0 0 24px rgba(123, 63, 228, .30),
+        inset 0 1px 0 rgba(255, 255, 255, .18);
+
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease,
+        filter .3s ease;
+}
+
+.pd-special-card::after {
+    background: rgba(244, 201, 93, .10);
+}
+
+.pd-special-icon {
+    color: #f4c95d;
+    background: rgba(244, 201, 93, .14);
+    box-shadow: inset 0 0 0 1px rgba(244, 201, 93, .35);
+}
+
+.pd-special-copy small {
+    color: #f4c95d;
+}
+
+.pd-special-copy strong {
+    color: #ffffff;
+}
+
+.pd-special-copy span {
+    color: rgba(255, 255, 255, .78);
+}
+
+.pd-special-arrow {
+    color: #f4c95d;
+    animation: pdNudge 1.8s ease-in-out infinite;
+}
+
+@keyframes pdNudge {
+    0%, 100% { transform: translateX(0); }
+    50%      { transform: translateX(4px); }
+}
+
+/* ---------- Song card: violet (no more blue) with gold details ---------- */
+
+.pd-song-card {
+    position: relative;
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            125deg,
+            rgba(154, 99, 240, .30),
+            rgba(45, 16, 92, .66)
+        );
+
+    border: 1px solid rgba(205, 180, 255, .30);
+    border-radius: 24px;
+
+    box-shadow:
+        0 12px 32px rgba(6, 1, 16, .45),
+        0 0 22px rgba(123, 63, 228, .25),
+        inset 0 1px 0 rgba(255, 255, 255, .14);
+
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+
+    transition:
+        transform .35s ease,
+        box-shadow .35s ease,
+        filter .3s ease;
+}
+
+.pd-song-art {
+    background:
+        linear-gradient(145deg, #a877f2, #6a32c9 60%, #3d1782);
+
+    box-shadow:
+        0 0 0 1px rgba(244, 201, 93, .45),
+        0 6px 16px rgba(123, 63, 228, .5);
+}
+
+.pd-music-bars i {
+    background: #ffe9a8;
+}
+
+.pd-song-info small {
+    color: #f4c95d;
+}
+
+.pd-song-info small i {
+    color: #ff5a78;
+}
+
+.pd-song-info strong {
+    color: #ffffff;
+}
+
+.pd-song-info span {
+    color: #cdb4ff;
+}
+
+.pd-song-play {
+    color: #3a1a5c;
+
+    background:
+        linear-gradient(135deg, #ffe9a8, #f4c95d);
+
+    border: 1px solid rgba(255, 255, 255, .5);
+
+    box-shadow:
+        0 4px 14px rgba(244, 201, 93, .4);
+
+    animation: pdPlayRing 2.4s ease-out infinite;
+}
+
+@keyframes pdPlayRing {
+    0%   { box-shadow: 0 4px 14px rgba(244, 201, 93, .4), 0 0 0 0 rgba(244, 201, 93, .5); }
+    70%  { box-shadow: 0 4px 14px rgba(244, 201, 93, .4), 0 0 0 12px rgba(244, 201, 93, 0); }
+    100% { box-shadow: 0 4px 14px rgba(244, 201, 93, .4), 0 0 0 0 rgba(244, 201, 93, 0); }
+}
+
+/* ---------- Bottom navigation: dark purple glass, gold edge ---------- */
+
+.pd-bottom-nav {
+    background: rgba(22, 8, 42, .74);
+
+    border: 1px solid rgba(205, 180, 255, .18);
+    border-top: 1px solid rgba(244, 201, 93, .38);
+    border-bottom: none;
+
+    border-radius: 25px 25px 0 0;
+
+    box-shadow:
+        0 -10px 36px rgba(6, 1, 16, .5),
+        inset 0 1px 0 rgba(255, 255, 255, .08);
+
+    backdrop-filter: blur(26px) saturate(170%);
+    -webkit-backdrop-filter: blur(26px) saturate(170%);
+
+    padding: 12px 7px calc(12px + env(safe-area-inset-bottom));
+}
+
+.pd-tab {
+    position: relative;
+
+    margin: 0 2px;
+    padding: 9px 2px;
+
+    color: #cdb4ff;
+
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(205, 180, 255, .14);
+    border-radius: 17px;
+
+    transition:
+        transform .3s cubic-bezier(.2, 1.4, .4, 1),
+        background .3s ease,
+        box-shadow .3s ease,
+        filter .3s ease;
+}
+
 .pd-tab i,
 .pd-tab svg {
     transition: .3s ease;
-    filter: drop-shadow(0 2px 5px rgba(80, 30, 120, .15));
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .35));
 }
 
-/* INDIVIDUAL COLOURS */
-.pd-tab:nth-child(1) i,
-.pd-tab:nth-child(1) svg {
-    color: #ff4f9a !important;
+/* Icon colours: mostly violet, a little ruby, one gold */
+.pd-tab:nth-child(1) i { color: #ff6a85; }   /* Chat       — ruby   */
+.pd-tab:nth-child(2) i { color: #b88cff; }   /* Stats      — lilac  */
+.pd-tab:nth-child(3) i { color: #ff4d6a; }   /* Love Pie   — ruby   */
+.pd-tab:nth-child(4) i { color: #9a63f0; }   /* Our World  — violet */
+.pd-tab:nth-child(5) i { color: #f4c95d; }   /* Memories   — gold   */
+.pd-tab:nth-child(6) i { color: #cdb4ff; }   /* To-Do      — lilac  */
+
+.pd-tab small {
+    color: #e8d8ff;
+    font-weight: 700;
 }
 
-.pd-tab:nth-child(2) i,
-.pd-tab:nth-child(2) svg {
-    color: #9b63ff !important;
-}
-
-.pd-tab:nth-child(3) i,
-.pd-tab:nth-child(3) svg {
-    color: #ff547c !important;
-}
-
-.pd-tab:nth-child(4) i,
-.pd-tab:nth-child(4) svg {
-    color: #a35bdb !important;
-}
-
-.pd-tab:nth-child(5) i,
-.pd-tab:nth-child(5) svg {
-    color: #e6a12d !important;
-}
-
-.pd-tab:nth-child(6) i,
-.pd-tab:nth-child(6) svg {
-    color: #35a9c9 !important;
-}
-
-/* ACTIVE TAB — PURPLE/PINK GLOW */
 .pd-tab.active {
-    background: linear-gradient(
-        145deg,
-        rgba(184, 116, 255, .35),
-        rgba(255, 116, 190, .27)
-    ) !important;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(154, 99, 240, .45),
+            rgba(94, 40, 190, .30)
+        );
 
-    border: 1px solid rgba(255, 255, 255, .65) !important;
+    border: 1px solid rgba(244, 201, 93, .55);
 
     box-shadow:
-        0 0 18px rgba(177, 104, 255, .30),
-        0 0 30px rgba(255, 105, 180, .15),
-        inset 0 1px 8px rgba(255, 255, 255, .4);
+        0 0 18px rgba(154, 99, 240, .45),
+        0 0 28px rgba(244, 201, 93, .14),
+        inset 0 1px 8px rgba(255, 255, 255, .18);
+}
+
+.pd-tab.active .pd-tab-icon {
+    background: transparent;
+}
+
+.pd-tab.active small {
+    color: #ffe9a8;
+    font-weight: 800;
 }
 
 .pd-tab.active i,
@@ -1381,47 +1648,296 @@ body.pd-home-page {
     filter: drop-shadow(0 0 7px currentColor);
 }
 
-/* HOVER / TAP */
-.pd-tab:active {
-    transform: scale(.92);
-}
-
-.pd-tab:hover {
-    background: rgba(255, 255, 255, .38) !important;
-    box-shadow: 0 0 18px rgba(176, 104, 255, .22);
-    transform: translateY(-3px);
-}
-
-/* NAVIGATION LABELS */
-.pd-tab span,
-.pd-tab small {
-    color: #56346f !important;
-    font-weight: 700;
-    text-shadow: 0 1px 8px rgba(255, 255, 255, .7);
-}
-
-/* NOTIFICATION BADGE */
+/* Unread badge: ruby with a pulse ring */
 #chatNotification {
-    background: linear-gradient(135deg, #ff347e, #ff704d) !important;
-    color: white !important;
-    border: 2px solid rgba(255, 255, 255, .85);
+    color: #fff !important;
+
+    background:
+        radial-gradient(circle at 30% 30%, #ff6f88, #e0334f) !important;
+
+    border: 2px solid rgba(255, 233, 168, .9);
+
     box-shadow:
-        0 0 10px rgba(255, 55, 125, .65),
-        0 0 20px rgba(255, 55, 125, .30);
+        0 0 10px rgba(224, 51, 79, .65);
+
+    animation: pdBadgePulse 1.8s ease-out infinite;
 }
 
-/* GLASS DETAILS */
+@keyframes pdBadgePulse {
+    0%   { box-shadow: 0 0 10px rgba(224, 51, 79, .65), 0 0 0 0 rgba(224, 51, 79, .6); }
+    70%  { box-shadow: 0 0 10px rgba(224, 51, 79, .65), 0 0 0 10px rgba(224, 51, 79, 0); }
+    100% { box-shadow: 0 0 10px rgba(224, 51, 79, .65), 0 0 0 0 rgba(224, 51, 79, 0); }
+}
+
+/* ---------- Button feel: lift, squish, gold glow, pop ---------- */
+
 .pd-home-page button {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* KEEP CONTENT ABOVE FIXED NAV */
+.pd-tab,
+.pd-special-card,
+.pd-song-card,
+.pd-forever-button {
+    touch-action: manipulation;
+}
+
+@media (hover: hover) {
+
+    .pd-tab:hover {
+        background: rgba(154, 99, 240, .28);
+        box-shadow: 0 0 18px rgba(154, 99, 240, .40);
+        transform: translateY(-3px);
+    }
+
+    .pd-forever-button:hover {
+        transform: translateY(-3px);
+        box-shadow:
+            0 10px 28px rgba(244, 201, 93, .45),
+            0 0 0 1px rgba(244, 201, 93, .4),
+            inset 0 1px 2px rgba(255, 255, 255, .7);
+    }
+
+    .pd-special-card:hover {
+        transform: translateY(-4px);
+        box-shadow:
+            0 14px 34px rgba(6, 1, 16, .5),
+            0 0 34px rgba(224, 51, 79, .35),
+            inset 0 1px 0 rgba(255, 255, 255, .22);
+    }
+
+    .pd-song-card:hover {
+        transform: translateY(-4px);
+        box-shadow:
+            0 14px 34px rgba(6, 1, 16, .5),
+            0 0 34px rgba(154, 99, 240, .45),
+            inset 0 1px 0 rgba(255, 255, 255, .2);
+    }
+}
+
+.pd-tab:active,
+.pd-special-card:active,
+.pd-song-card:active,
+.pd-forever-button:active {
+    transform: scale(.94);
+    filter: drop-shadow(0 0 12px rgba(244, 201, 93, .55));
+}
+
+.pd-forever-button.is-popping,
+.pd-special-card.is-popping,
+.pd-song-card.is-popping {
+    animation: pdCardPop .42s cubic-bezier(.2, 1.5, .4, 1);
+}
+
+@keyframes pdCardPop {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(1.06) translateY(-3px); }
+    65%  { transform: scale(.97); }
+    100% { transform: scale(1); }
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid #f4c95d;
+    outline-offset: 3px;
+}
+
+/* ---------- Shine + ripple layer (created by home.js) ---------- */
+
+.pd-fx-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    border-radius: inherit;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.pd-fx-layer::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 40%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            105deg,
+            transparent 0%,
+            rgba(255, 233, 168, .55) 50%,
+            transparent 100%
+        );
+
+    opacity: 0;
+    transform: translateX(-130%) skewX(-20deg);
+}
+
+.pd-fx-layer.sweep::before {
+    animation: pdSweep .8s ease-out;
+}
+
+.pd-forever-button .pd-fx-layer::before {
+    animation: pdSweep 4.2s ease-in-out 1.2s infinite;
+}
+
+@keyframes pdSweep {
+    0%   { transform: translateX(-130%) skewX(-20deg); opacity: 0; }
+    20%  { opacity: 1; }
+    100% { transform: translateX(380%) skewX(-20deg); opacity: 0; }
+}
+
+.pd-ripple {
+    position: absolute;
+
+    border-radius: 50%;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 233, 168, .6) 0%,
+            rgba(205, 180, 255, .35) 55%,
+            transparent 70%
+        );
+
+    transform: scale(0);
+    animation: pdRipple .7s ease-out forwards;
+}
+
+@keyframes pdRipple {
+    to { transform: scale(1); opacity: 0; }
+}
+
+/* ---------- Sparkles, heart burst, floating hearts ---------- */
+
+.pd-spark {
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    width: var(--sz, 9px);
+    height: var(--sz, 9px);
+
+    margin: -4px 0 0 -4px;
+
+    pointer-events: none;
+    z-index: 10000;
+
+    background: var(--col, #f4c95d);
+
+    clip-path: polygon(
+        50% 0, 62% 38%, 100% 50%, 62% 62%,
+        50% 100%, 38% 62%, 0 50%, 38% 38%
+    );
+
+    animation: pdSpark .75s cubic-bezier(.2, .8, .3, 1) forwards;
+}
+
+@keyframes pdSpark {
+    0% {
+        transform: translate(var(--x), var(--y)) scale(.2) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform:
+            translate(calc(var(--x) + var(--dx)), calc(var(--y) + var(--dy)))
+            scale(1) rotate(var(--rot));
+        opacity: 0;
+    }
+}
+
+.pd-burst-heart {
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    pointer-events: none;
+    z-index: 10000;
+
+    font-size: var(--sz, 20px);
+    line-height: 1;
+
+    color: var(--col, #e0334f);
+    text-shadow: 0 0 10px rgba(224, 51, 79, .55);
+
+    animation: pdHeartBurst 1.1s cubic-bezier(.2, .7, .3, 1) forwards;
+}
+
+@keyframes pdHeartBurst {
+    0% {
+        transform: translate(var(--x), var(--y)) scale(.3);
+        opacity: 0;
+    }
+
+    15% {
+        opacity: 1;
+    }
+
+    100% {
+        transform:
+            translate(calc(var(--x) + var(--dx)), calc(var(--y) + var(--dy)))
+            scale(1.15) rotate(var(--rot));
+        opacity: 0;
+    }
+}
+
+.pd-fx-hearts {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.pd-fx-heart {
+    position: absolute;
+    bottom: -40px;
+    left: var(--x);
+
+    font-size: var(--s);
+    color: var(--c);
+
+    opacity: 0;
+    text-shadow: 0 0 12px var(--c);
+
+    animation: pdFloat var(--d) linear var(--delay) infinite;
+}
+
+@keyframes pdFloat {
+    0%   { transform: translate(0, 0) scale(.7); opacity: 0; }
+    12%  { opacity: .5; }
+    30%  { transform: translate(14px, -30vh) scale(.9); }
+    55%  { transform: translate(-12px, -58vh) scale(1); }
+    80%  { opacity: .35; }
+    100% { transform: translate(10px, -110vh) scale(1.1); opacity: 0; }
+}
+
+/* ---------- One staggered entrance when the page opens ---------- */
+
+.pd-fx-in {
+    animation: pdRise .7s cubic-bezier(.2, .8, .3, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+@keyframes pdRise {
+    from { opacity: 0; transform: translateY(18px) scale(.98); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* ---------- Keep content above the fixed navigation ---------- */
+
 .pd-main {
     padding-bottom: 115px;
 }
 
-/* MOBILE GLASS EFFECT */
 @media (max-width: 480px) {
+
     .pd-bottom-nav {
         padding-left: 5px;
         padding-right: 5px;
@@ -1438,92 +1954,37 @@ body.pd-home-page {
     }
 }
 
-/* ACCESSIBILITY */
+/* ---------- Reduce motion ---------- */
+
 @media (prefers-reduced-motion: reduce) {
+
+    .pd-home-page::before,
+    .pd-brand-icon,
+    .pd-brand-icon i,
+    .pd-slide-label i,
+    .pd-forever-button,
+    .pd-forever-button .pd-fx-layer::before,
+    .pd-special-arrow,
+    .pd-song-play,
+    #chatNotification,
+    .pd-fx-in,
+    .pd-fx-heart,
+    .pd-spark,
+    .pd-burst-heart,
+    .pd-ripple {
+        animation: none !important;
+    }
+
+    .pd-fx-hearts {
+        display: none;
+    }
+
     .pd-tab,
     .pd-tab i,
     .pd-tab svg,
     .pd-forever-button,
-    .pd-song-play {
+    .pd-special-card,
+    .pd-song-card {
         transition: none !important;
     }
-}
-
-/* =========================================
-   SPECIAL SPACE — ROMANTIC PINK & PURPLE
-========================================= */
-
-.pd-special-card {
-    background: linear-gradient(
-        135deg,
-        rgba(255, 91, 171, .27),
-        rgba(157, 92, 255, .30),
-        rgba(255, 255, 255, .17)
-    ) !important;
-
-    border: 1px solid rgba(255, 170, 220, .55) !important;
-
-    box-shadow:
-        0 0 22px rgba(255, 83, 174, .20),
-        0 12px 35px rgba(113, 53, 180, .16),
-        inset 0 1px 0 rgba(255, 255, 255, .55) !important;
-}
-
-.pd-special-card h2,
-.pd-special-card h3,
-.pd-special-card strong {
-    color: #77245f !important;
-}
-
-.pd-special-card p,
-.pd-special-card span {
-    color: #815078 !important;
-}
-
-
-/* =========================================
-   SONG OF THE DAY — VIOLET & BLUE GLOW
-========================================= */
-
-.pd-song-card {
-    background: linear-gradient(
-        135deg,
-        rgba(125, 91, 255, .29),
-        rgba(75, 166, 255, .22),
-        rgba(255, 255, 255, .18)
-    ) !important;
-
-    border: 1px solid rgba(181, 168, 255, .60) !important;
-
-    box-shadow:
-        0 0 25px rgba(126, 91, 255, .22),
-        0 12px 35px rgba(65, 100, 210, .15),
-        inset 0 1px 0 rgba(255, 255, 255, .60) !important;
-}
-
-.pd-song-card h2,
-.pd-song-card h3,
-.pd-song-card strong {
-    color: #382477 !important;
-}
-
-.pd-song-card p,
-.pd-song-card span {
-    color: #594b91 !important;
-}
-
-/* Smooth glass hover */
-.pd-special-card,
-.pd-song-card {
-    transition: transform .35s ease, box-shadow .35s ease;
-}
-
-.pd-special-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 0 32px rgba(255, 83, 174, .35);
-}
-
-.pd-song-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 0 32px rgba(126, 91, 255, .35);
 }

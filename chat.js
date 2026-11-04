@@ -81,6 +81,10 @@ let pdJumpButton = null;
 let pdNewMessageCount = 0;
 let pdLastSeenMessageId = null;
 
+let recordingStartedAt = 0;
+let recordingTimer = null;
+let recordingCancelled = false;
+
 const receiptUpdatesInFlight = new Set();
 const messageCache = new Map();
 
@@ -1128,6 +1132,414 @@ function displayTextMessage(container, data, date, messageId) {
     container.appendChild(group);
 }
 
+/* =========================================================
+   TOAST (small, non-blocking messages)
+   ========================================================= */
+
+function showToast(message) {
+    let toast = byId("pdToast");
+
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "pdToast";
+        toast.className = "pd-toast";
+        toast.setAttribute("role", "status");
+        document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2800);
+}
+
+/* =========================================================
+   VOICE NOTE PLAYER
+   The <audio> objects live in memory (never inside the message
+   list), so re-drawing the chat can no longer cut a note off.
+   ========================================================= */
+
+const pdVoicePlayers = new Map();
+
+function formatClock(seconds) {
+    const total = Math.max(0, Math.round(seconds || 0));
+    return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
+}
+
+function hashString(text) {
+    let hash = 2166136261;
+
+    for (let i = 0; i < text.length; i++) {
+        hash ^= text.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+    }
+
+    return hash >>> 0;
+}
+
+// A stable, pretty bar pattern per message (same note, same bars).
+function waveHeights(id, count = 32) {
+    let seed = hashString(String(id)) || 1;
+    const heights = [];
+
+    for (let i = 0; i < count; i++) {
+        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+
+        const random = seed / 4294967296;
+        const envelope = 0.55 + 0.45 * Math.sin((i / (count - 1)) * Math.PI);
+
+        heights.push(Math.round(Math.min(100, 20 + random * 80 * envelope)));
+    }
+
+    return heights;
+}
+
+function voiceDuration(player) {
+    const length = player.audio.duration;
+
+    if (Number.isFinite(length) && length > 0) return length;
+
+    // Recordings made in the browser often report "Infinity".
+    // Fall back to the length saved with the message.
+    return player.known || player.real || 0;
+}
+
+// Some browsers cannot tell the length of a fresh recording until
+// the end has been "visited". This reads it once, then rewinds.
+function fixInfiniteDuration(player) {
+    const audio = player.audio;
+
+    if (player.fixing) return;
+    player.fixing = true;
+
+    const finish = () => {
+        audio.removeEventListener("timeupdate", finish);
+
+        if (Number.isFinite(audio.duration)) {
+            player.real = audio.duration;
+        }
+
+        audio.currentTime = 0;
+        player.fixing = false;
+        syncVoiceUI(player);
+    };
+
+    audio.addEventListener("timeupdate", finish);
+    audio.currentTime = 1e101;
+}
+
+function syncVoiceUI(player) {
+    const ui = player.ui;
+    if (!ui) return;
+
+    const audio = player.audio;
+    const total = voiceDuration(player);
+    const playing = !audio.paused && !audio.ended;
+    const current = player.fixing ? 0 : audio.currentTime;
+    const ratio = total > 0 ? Math.min(1, current / total) : 0;
+    const filled = Math.round(ratio * ui.bars.length);
+
+    ui.root.classList.toggle("is-playing", playing);
+    ui.root.classList.toggle("is-error", player.failed || player.unsupported);
+
+    ui.icon.className = playing ? "fa-solid fa-pause" : "fa-solid fa-play";
+
+    ui.btn.setAttribute(
+        "aria-label",
+        playing ? "Pause voice message" : "Play voice message"
+    );
+
+    ui.time.textContent =
+        playing || current > 0.05
+            ? formatClock(current)
+            : formatClock(total);
+
+    ui.bars.forEach((bar, index) => {
+        bar.classList.toggle("on", index < filled);
+        bar.classList.toggle("now", playing && index === filled);
+    });
+
+    ui.wave.setAttribute("aria-valuenow", String(Math.round(ratio * 100)));
+}
+
+function getVoicePlayer(id, data) {
+    const existing = pdVoicePlayers.get(id);
+
+    if (existing && existing.url === data.audioURL) return existing;
+
+    if (existing) existing.audio.pause();
+
+    const audio = new Audio();
+    audio.preload = "metadata";
+    audio.src = data.audioURL;
+
+    const player = {
+        id,
+        url: data.audioURL,
+        audio,
+        known: Number(data.duration) || 0,
+        real: 0,
+        rate: 1,
+        ui: null,
+        failed: false,
+        unsupported: false,
+        fixing: false
+    };
+
+    audio.addEventListener("loadedmetadata", () => {
+        if (audio.duration === Infinity) fixInfiniteDuration(player);
+        syncVoiceUI(player);
+    });
+
+    ["timeupdate", "play", "pause", "durationchange", "seeked"].forEach(name => {
+        audio.addEventListener(name, () => syncVoiceUI(player));
+    });
+
+    audio.addEventListener("ended", () => {
+        audio.currentTime = 0;
+        syncVoiceUI(player);
+    });
+
+    audio.addEventListener("error", () => {
+        player.failed = true;
+        syncVoiceUI(player);
+    });
+
+    pdVoicePlayers.set(id, player);
+    return player;
+}
+
+async function toggleVoice(player) {
+    const audio = player.audio;
+
+    if (player.unsupported || player.failed) {
+        showToast("This phone can't play that voice note. Tap Open instead.");
+        return;
+    }
+
+    if (!audio.paused) {
+        audio.pause();
+        return;
+    }
+
+    // Only one voice note plays at a time.
+    pdVoicePlayers.forEach(other => {
+        if (other !== player && !other.audio.paused) other.audio.pause();
+    });
+
+    try {
+        audio.playbackRate = player.rate;
+        await audio.play();
+    } catch (error) {
+        logError("PD voice playback failed:", error);
+
+        if (error?.name === "NotSupportedError") {
+            player.failed = true;
+            syncVoiceUI(player);
+        }
+
+        showToast("Couldn't play the voice note. Please try again.");
+    }
+}
+
+function createVoicePlayer(id, data) {
+    const player = getVoicePlayer(id, data);
+
+    const root = document.createElement("div");
+    root.className = "pd-voice";
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "pd-voice-play";
+    btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+
+    const body = document.createElement("div");
+    body.className = "pd-voice-body";
+
+    const wave = document.createElement("div");
+    wave.className = "pd-voice-wave";
+    wave.setAttribute("role", "slider");
+    wave.setAttribute("aria-label", "Voice message position");
+    wave.setAttribute("aria-valuemin", "0");
+    wave.setAttribute("aria-valuemax", "100");
+    wave.tabIndex = 0;
+
+    const bars = waveHeights(id).map(height => {
+        const bar = document.createElement("span");
+        bar.style.setProperty("--h", `${height}%`);
+        wave.appendChild(bar);
+        return bar;
+    });
+
+    const meta = document.createElement("div");
+    meta.className = "pd-voice-meta";
+
+    const time = document.createElement("span");
+    time.className = "pd-voice-time";
+    time.textContent = "0:00";
+
+    const speed = document.createElement("button");
+    speed.type = "button";
+    speed.className = "pd-voice-speed";
+    speed.textContent = `${player.rate}×`;
+    speed.setAttribute("aria-label", "Change playback speed");
+
+    const problem = document.createElement("span");
+    problem.className = "pd-voice-problem";
+    problem.textContent = "Can't play here · ";
+
+    const open = document.createElement("a");
+    open.className = "pd-voice-open";
+    open.href = data.audioURL;
+    open.target = "_blank";
+    open.rel = "noopener";
+    open.textContent = "Open";
+    problem.appendChild(open);
+
+    meta.append(time, problem, speed);
+    body.append(wave, meta);
+    root.append(btn, body);
+
+    const icon = btn.querySelector("i");
+
+    player.ui = { root, btn, icon, wave, bars, time, speed };
+
+    // Some phones cannot play the format the other phone recorded.
+    const type = data.audioContentType || "";
+    player.unsupported = Boolean(type) && !player.audio.canPlayType(type);
+
+    btn.addEventListener("click", () => toggleVoice(player));
+
+    speed.addEventListener("click", () => {
+        const rates = [1, 1.5, 2];
+        player.rate = rates[(rates.indexOf(player.rate) + 1) % rates.length];
+        player.audio.playbackRate = player.rate;
+        speed.textContent = `${player.rate}×`;
+    });
+
+    // Tap or drag the bars to jump around.
+    let dragging = false;
+
+    const seekTo = event => {
+        const rect = wave.getBoundingClientRect();
+        const total = voiceDuration(player);
+
+        if (!total || !rect.width) return;
+
+        const ratio = Math.min(
+            1,
+            Math.max(0, (event.clientX - rect.left) / rect.width)
+        );
+
+        player.audio.currentTime = ratio * total;
+        syncVoiceUI(player);
+    };
+
+    wave.addEventListener("pointerdown", event => {
+        dragging = true;
+        wave.setPointerCapture?.(event.pointerId);
+        seekTo(event);
+    });
+
+    wave.addEventListener("pointermove", event => {
+        if (dragging) seekTo(event);
+    });
+
+    ["pointerup", "pointercancel"].forEach(name => {
+        wave.addEventListener(name, () => {
+            dragging = false;
+        });
+    });
+
+    wave.addEventListener("keydown", event => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+        event.preventDefault();
+
+        const step = event.key === "ArrowRight" ? 5 : -5;
+        const total = voiceDuration(player) || Infinity;
+
+        player.audio.currentTime = Math.min(
+            total,
+            Math.max(0, player.audio.currentTime + step)
+        );
+    });
+
+    syncVoiceUI(player);
+
+    return root;
+}
+
+/* =========================================================
+   MESSAGE NODE REUSE
+   A message is only rebuilt when something about it changed,
+   so nothing re-animates or restarts on every update.
+   ========================================================= */
+
+const pdNodeCache = new Map();
+const pdSeparatorCache = new Map();
+
+function getSeparatorNode(key, date) {
+    let node = pdSeparatorCache.get(key);
+
+    if (!node) {
+        const holder = document.createDocumentFragment();
+        addDateSeparator(holder, date);
+        node = holder.firstElementChild;
+        pdSeparatorCache.set(key, node);
+    }
+
+    return node;
+}
+
+function getMessageNode(id, data, date) {
+    const signature = JSON.stringify([
+        data.type || "text",
+        data.text || "",
+        data.audioURL || "",
+        data.duration || 0,
+        data.status || "sent",
+        date ? date.getTime() : 0,
+        data.replyTo?.messageId || "",
+        data.replyTo?.text || ""
+    ]);
+
+    const cached = pdNodeCache.get(id);
+
+    if (cached && cached.signature === signature) return cached.node;
+
+    const holder = document.createDocumentFragment();
+
+    if (data.type === "voice") {
+        displayVoiceMessage(holder, data, date, id);
+    } else {
+        displayTextMessage(holder, data, date, id);
+    }
+
+    const node = holder.firstElementChild;
+
+    if (!node) {
+        pdNodeCache.delete(id);
+        return null;
+    }
+
+    // Only brand-new, recent messages get the pop-in animation.
+    const isFresh =
+        !cached && (!date || Date.now() - date.getTime() < 15000);
+
+    if (isFresh) {
+        node.classList.add("pd-new");
+        setTimeout(() => node.classList.remove("pd-new"), 900);
+    }
+
+    pdNodeCache.set(id, { signature, node });
+
+    return node;
+}
+
 function displayVoiceMessage(container, data, date, messageId) {
     if (!data.audioURL) return;
 
@@ -1151,20 +1563,8 @@ function displayVoiceMessage(container, data, date, messageId) {
         ? "message sent voice-message"
         : "message received voice-message";
 
-    const box = document.createElement("div");
-    box.className = "voice-message-box";
-
-    const icon = document.createElement("div");
-    icon.className = "voice-icon";
-    icon.innerHTML = '<i class="fa-solid fa-microphone"></i>';
-
-    const audio = document.createElement("audio");
-    audio.controls = true;
-    audio.preload = "metadata";
-    audio.src = data.audioURL;
-
-    box.append(icon, audio);
-    message.append(box, makeMessageFooter(data, date, mine));
+    const player = createVoicePlayer(messageId, data);
+    message.append(player, makeMessageFooter(data, date, mine));
 
     const replyButton = createReplyButton(messageId, data);
 
@@ -1245,8 +1645,8 @@ function renderMessages() {
     pdLastSeenMessageId = newest;
     firstMessagesLoaded = true;
 
-    container.replaceChildren();
-
+    const nodes = [];
+    const liveIds = new Set();
     let previousDateKey = null;
 
     for (const { id, data } of docs) {
@@ -1256,17 +1656,27 @@ function renderMessages() {
             const key = getDateKey(date);
 
             if (key !== previousDateKey) {
-                addDateSeparator(container, date);
+                nodes.push(getSeparatorNode(key, date));
                 previousDateKey = key;
             }
         }
 
-        if (data.type === "voice") {
-            displayVoiceMessage(container, data, date, id);
-        } else {
-            displayTextMessage(container, data, date, id);
-        }
+        liveIds.add(id);
+
+        const node = getMessageNode(id, data, date);
+        if (node) nodes.push(node);
     }
+
+    for (const id of [...pdNodeCache.keys()]) {
+        if (!liveIds.has(id)) pdNodeCache.delete(id);
+    }
+
+    // Only touch the page when the list really changed.
+    const unchanged =
+        container.children.length === nodes.length &&
+        nodes.every((node, index) => container.children[index] === node);
+
+    if (!unchanged) container.replaceChildren(...nodes);
 
     updateJumpToLatest();
     removeChatLoader();
@@ -1529,6 +1939,132 @@ if (button) button.disabled = false;
    MULTILINE TEXT INPUT
    ========================================================= */
 
+/* =========================================================
+   COMPOSER STATE: mic and send swap places while you type
+   ========================================================= */
+
+function updateComposerState() {
+    const form = byId("chatForm");
+    const input = byId("messageInput");
+
+    if (!form || !input) return;
+
+    const hasText = input.value.trim().length > 0;
+
+    form.classList.toggle("has-text", hasText);
+
+    const send = form.querySelector(".send-message");
+    const mic = byId("voiceButton");
+
+    // Keep the hidden button out of the keyboard tab order.
+    if (send) send.tabIndex = hasText ? 0 : -1;
+    if (mic) mic.tabIndex = hasText ? -1 : 0;
+}
+
+/* =========================================================
+   TAP EFFECTS: ripple, gold shine, sparkles, paper plane
+   ========================================================= */
+
+function installChatEffects() {
+    if (window.__pdChatEffects) return;
+    window.__pdChatEffects = true;
+
+    const reduceMotion =
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const selector = [
+        ".chat-header > a:first-child",
+        ".call-button",
+        ".video-call-button",
+        ".chat-more-button",
+        ".attach-button",
+        "#voiceButton",
+        ".send-message",
+        ".pd-reply-trigger",
+        ".pd-voice-play",
+        ".pd-voice-speed",
+        ".pd-rec-cancel",
+        ".pd-call-control",
+        "#pdJumpToLatest"
+    ].join(",");
+
+    const colors = ["#f4c95d", "#ffe9a8", "#cdb4ff", "#e0334f", "#ffffff"];
+    const rand = (min, max) => min + Math.random() * (max - min);
+
+    function ensureLayer(el) {
+        let layer = el.querySelector(":scope > .pd-fx-layer");
+
+        if (!layer) {
+            if (getComputedStyle(el).position === "static") {
+                el.style.position = "relative";
+            }
+
+            layer = document.createElement("span");
+            layer.className = "pd-fx-layer";
+            layer.setAttribute("aria-hidden", "true");
+            el.appendChild(layer);
+        }
+
+        return layer;
+    }
+
+    function ripple(el, x, y) {
+        const layer = ensureLayer(el);
+        const box = el.getBoundingClientRect();
+        const size = Math.max(box.width, box.height) * 2.2;
+
+        const dot = document.createElement("span");
+        dot.className = "pd-ripple";
+        dot.style.width = dot.style.height = `${size}px`;
+        dot.style.left = `${x - box.left - size / 2}px`;
+        dot.style.top = `${y - box.top - size / 2}px`;
+
+        layer.appendChild(dot);
+        dot.addEventListener("animationend", () => dot.remove(), { once: true });
+
+        layer.classList.remove("sweep");
+        void layer.offsetWidth;
+        layer.classList.add("sweep");
+    }
+
+    function sparkle(x, y, count = 6) {
+        for (let i = 0; i < count; i++) {
+            const star = document.createElement("span");
+            const angle = rand(0, Math.PI * 2);
+            const distance = rand(20, 50);
+
+            star.className = "pd-spark";
+            star.style.setProperty("--x", `${x}px`);
+            star.style.setProperty("--y", `${y}px`);
+            star.style.setProperty("--dx", `${Math.cos(angle) * distance}px`);
+            star.style.setProperty("--dy", `${Math.sin(angle) * distance}px`);
+            star.style.setProperty("--rot", `${rand(-180, 180)}deg`);
+            star.style.setProperty("--sz", `${rand(6, 11)}px`);
+            star.style.setProperty(
+                "--col",
+                colors[Math.floor(Math.random() * colors.length)]
+            );
+
+            document.body.appendChild(star);
+            setTimeout(() => star.remove(), 800);
+        }
+    }
+
+    document.addEventListener("pointerdown", event => {
+        const target = event.target.closest(selector);
+        if (!target) return;
+
+        ripple(target, event.clientX, event.clientY);
+
+        if (!reduceMotion) sparkle(event.clientX, event.clientY);
+
+        if (target.matches(".send-message")) {
+            target.classList.add("pd-fx-fly");
+            setTimeout(() => target.classList.remove("pd-fx-fly"), 750);
+        }
+    }, { passive: true });
+}
+
 function resizeMessageInput() {
     const input = byId("messageInput");
     if (!input) return;
@@ -1540,6 +2076,8 @@ function resizeMessageInput() {
 
     input.style.overflowY =
         input.scrollHeight > maxHeight ? "auto" : "hidden";
+
+    updateComposerState();
 }
 
 function setupMultilineInput() {
@@ -1573,20 +2111,91 @@ function setupMultilineInput() {
    VOICE NOTES
    ========================================================= */
 
+const MAX_VOICE_SECONDS = 300;
+const MIN_VOICE_MS = 800;
+
 function updateVoiceButton(active) {
     const button = byId("voiceButton");
     if (!button) return;
 
-    if (active) {
-        button.classList.add("recording");
-        button.innerHTML = '<i class="fa-solid fa-stop"></i>';
-        button.title = "Stop recording";
-        button.setAttribute("aria-label", "Stop recording");
-    } else {
-        button.classList.remove("recording");
-        button.innerHTML = '<i class="fa-solid fa-microphone"></i>';
-        button.title = "Record voice note";
-        button.setAttribute("aria-label", "Record voice note");
+    let icon = button.querySelector("i");
+
+    if (!icon) {
+        icon = document.createElement("i");
+        button.prepend(icon);
+    }
+
+    button.classList.toggle("recording", active);
+    byId("chatForm")?.classList.toggle("is-recording", active);
+
+    icon.className = active
+        ? "fa-solid fa-stop"
+        : "fa-solid fa-microphone";
+
+    button.title = active ? "Stop and send" : "Record voice note";
+
+    button.setAttribute(
+        "aria-label",
+        active ? "Stop and send voice note" : "Record voice note"
+    );
+}
+
+function ensureRecordingBar() {
+    let bar = byId("pdRecBar");
+    if (bar) return bar;
+
+    const form = byId("chatForm");
+    const input = byId("messageInput");
+    if (!form || !input) return null;
+
+    bar = document.createElement("div");
+    bar.id = "pdRecBar";
+    bar.className = "pd-rec-bar";
+    bar.setAttribute("role", "status");
+
+    bar.innerHTML =
+        '<span class="pd-rec-dot"></span>' +
+        '<span class="pd-rec-time" id="pdRecTime">0:00</span>' +
+        '<span class="pd-rec-hint">Recording… tap ■ to send</span>';
+
+    const cancel = document.createElement("button");
+    cancel.type = "button";
+    cancel.className = "pd-rec-cancel";
+    cancel.setAttribute("aria-label", "Cancel recording");
+    cancel.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    cancel.addEventListener("click", cancelRecording);
+
+    bar.appendChild(cancel);
+    form.insertBefore(bar, input);
+
+    return bar;
+}
+
+function startRecordingTimer() {
+    stopRecordingTimer();
+
+    recordingStartedAt = Date.now();
+
+    const label = byId("pdRecTime");
+    if (label) label.textContent = "0:00";
+
+    recordingTimer = setInterval(() => {
+        const seconds = (Date.now() - recordingStartedAt) / 1000;
+        const time = byId("pdRecTime");
+
+        if (time) time.textContent = formatClock(seconds);
+
+        if (seconds >= MAX_VOICE_SECONDS) {
+            showToast("Voice notes can be up to 5 minutes long.");
+            stopRecording();
+        }
+    }, 250);
+}
+
+function stopRecordingTimer() {
+    if (recordingTimer) {
+        clearInterval(recordingTimer);
+        recordingTimer = null;
     }
 }
 
@@ -1608,10 +2217,14 @@ async function startRecording() {
             audio: true
         });
 
+        // MP4/AAC first: it plays on iPhones AND Android.
+        // WebM only plays on some iPhones, so it is the fallback.
         const types = [
+            "audio/mp4;codecs=mp4a.40.2",
+            "audio/mp4",
             "audio/webm;codecs=opus",
             "audio/webm",
-            "audio/mp4"
+            "audio/ogg;codecs=opus"
         ];
 
         const mimeType = types.find(type =>
@@ -1623,6 +2236,7 @@ async function startRecording() {
             : new MediaRecorder(activeRecordingStream);
 
         audioChunks = [];
+        recordingCancelled = false;
 
         mediaRecorder.ondataavailable = event => {
             if (event.data?.size) {
@@ -1632,6 +2246,7 @@ async function startRecording() {
 
         mediaRecorder.onerror = event => {
             logError("PD recorder error:", event.error || event);
+            stopRecordingTimer();
             recording = false;
             updateVoiceButton(false);
             activeRecordingStream?.getTracks().forEach(track => track.stop());
@@ -1641,6 +2256,8 @@ async function startRecording() {
             const chunks = [...audioChunks];
             audioChunks = [];
 
+            const heldMs = Date.now() - recordingStartedAt;
+
             const blob = new Blob(chunks, {
                 type: mediaRecorder?.mimeType || "audio/webm"
             });
@@ -1648,20 +2265,33 @@ async function startRecording() {
             activeRecordingStream?.getTracks().forEach(track => track.stop());
             activeRecordingStream = null;
 
+            stopRecordingTimer();
             recording = false;
             updateVoiceButton(false);
+
+            if (recordingCancelled) {
+                recordingCancelled = false;
+                return;
+            }
+
+            if (heldMs < MIN_VOICE_MS) {
+                showToast("Hold on a little longer to record a voice note.");
+                return;
+            }
 
             if (!blob.size) {
                 showError("No audio was recorded. Please try again.");
                 return;
             }
 
-            await uploadVoice(blob);
+            await uploadVoice(blob, Math.round(heldMs / 1000));
         };
 
+        ensureRecordingBar();
         mediaRecorder.start(250);
         recording = true;
         updateVoiceButton(true);
+        startRecordingTimer();
 
         console.log("PD: Voice recording started.");
 
@@ -1670,6 +2300,7 @@ async function startRecording() {
 
         activeRecordingStream?.getTracks().forEach(track => track.stop());
         activeRecordingStream = null;
+        stopRecordingTimer();
         recording = false;
         updateVoiceButton(false);
 
@@ -1692,7 +2323,14 @@ function stopRecording() {
     }
 }
 
-async function uploadVoice(audioBlob) {
+function cancelRecording() {
+    if (!mediaRecorder || !recording) return;
+
+    recordingCancelled = true;
+    stopRecording();
+}
+
+async function uploadVoice(audioBlob, durationSeconds = 0) {
     if (!currentProfile || pdSendingVoice) return;
 
     pdSendingVoice = true;
@@ -1749,6 +2387,7 @@ async function uploadVoice(audioBlob) {
             type: "voice",
             audioURL,
             audioContentType: contentType,
+            duration: durationSeconds,
             senderUID: currentProfile.uid,
             senderName: currentProfile.name,
             senderDisplayName: currentProfile.displayName,
@@ -1761,6 +2400,14 @@ async function uploadVoice(audioBlob) {
         });
 
         console.log("PD: Voice note sent:", messageRef.id);
+
+        // Notify the partner. A push failure must not mark the saved note as failed.
+        try {
+            await sendPDMessagePush(messageRef.id);
+        } catch (pushError) {
+            console.error("Voice note saved, but push notification failed:", pushError);
+        }
+
         clearReplyMode();
 
     } catch (error) {
@@ -1825,6 +2472,8 @@ function setupPageEvents() {
     setupMultilineInput();
     ensureReplyComposer();
     setupVoiceButton();
+    ensureRecordingBar();
+    updateComposerState();
 }
 
 
@@ -1864,6 +2513,7 @@ function initializePage() {
     pdAuthInitialized = true;
 
     installChatStyles();
+    installChatEffects();
     setupPageEvents();
     setupJumpToLatest();
 
