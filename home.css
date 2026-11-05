@@ -2402,3 +2402,183 @@ button:focus-visible {
         animation: none !important;
     }
 }
+
+/* =========================================
+   THE GREAT KEY HUNT — HOME SCREEN CARD
+========================================= */
+
+.suggestion-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    width: 100%;
+    padding: 17px 19px;
+    margin: 14px 0;
+
+    text-decoration: none;
+    color: #fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(139, 92, 246, 0.22),
+            rgba(67, 32, 105, 0.48)
+        );
+
+    border: 1px solid rgba(213, 180, 255, 0.3);
+    border-radius: 20px;
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+    overflow: hidden;
+    transition: all 0.35s ease;
+}
+
+/* Soft glowing background */
+.suggestion-card::before {
+    content: "";
+    position: absolute;
+    top: -60%;
+    left: -30%;
+
+    width: 55%;
+    height: 220%;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.09),
+        transparent
+    );
+
+    transform: rotate(25deg);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+.suggestion-card:hover::before {
+    left: 120%;
+}
+
+/* Lock icon */
+.suggestion-card > span {
+    flex-shrink: 0;
+
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 25px;
+
+    background: linear-gradient(
+        145deg,
+        #a970ff,
+        #6325a5
+    );
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+
+    box-shadow:
+        0 5px 18px rgba(145, 75, 255, 0.4),
+        inset 0 1px 3px rgba(255, 255, 255, 0.3);
+
+    animation: keyGlow 2.5s ease-in-out infinite;
+}
+
+/* Text area */
+.suggestion-card > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.suggestion-card strong {
+    font-family: "DM Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    color: #fff;
+}
+
+.suggestion-card small {
+    font-family: "DM Sans", sans-serif;
+    font-size: 11px;
+    color: #d9c1ff;
+    letter-spacing: 0.3px;
+}
+
+/* Arrow indicator */
+.suggestion-card::after {
+    content: "›";
+    position: absolute;
+    right: 19px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    font-size: 27px;
+    color: #d9b8ff;
+    transition: transform 0.3s ease;
+}
+
+.suggestion-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(218, 183, 255, 0.7);
+
+    box-shadow:
+        0 12px 30px rgba(126, 54, 205, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.suggestion-card:hover::after {
+    transform: translate(5px, -50%);
+}
+
+.suggestion-card:active {
+    transform: scale(0.97);
+}
+
+/* Icon glow animation */
+@keyframes keyGlow {
+    0%, 100% {
+        box-shadow: 0 5px 18px rgba(145, 75, 255, 0.35);
+    }
+    50% {
+        box-shadow:
+            0 5px 25px rgba(177, 112, 255, 0.7),
+            0 0 12px rgba(218, 183, 255, 0.35);
+    }
+}
+
+/* Phone sizing */
+@media (max-width: 480px) {
+    .suggestion-card {
+        padding: 15px 16px;
+        border-radius: 18px;
+    }
+
+    .suggestion-card > span {
+        width: 47px;
+        height: 47px;
+        font-size: 23px;
+    }
+
+    .suggestion-card strong {
+        font-size: 13px;
+    }
+
+    .suggestion-card small {
+        font-size: 10px;
+    }
+}
