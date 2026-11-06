@@ -1,7 +1,8 @@
 
 /* =========================================================
-   PD — LITTLE WORLD
-   Firebase Firestore • Live sync • Shared entries
+   PRINCESS WA DEIB — OUR LITTLE WORLD
+   Firebase Firestore • Live Sync • Love Letters
+   • Special Messages • Open Record Details
    ========================================================= */
 
 import { auth, db } from "./firebase.js";
@@ -21,67 +22,60 @@ import {
 import { onAuthStateChanged } from
   "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-/* -----------------------------------------
-   PAGE ELEMENTS
------------------------------------------ */
+
+/* =========================================================
+   1. PAGE ELEMENTS
+   ========================================================= */
 
 const noticeList = document.getElementById("notice-list");
 const tabs = [...document.querySelectorAll(".tab")];
+
 const sectionTitle = document.getElementById("section-title");
 const sectionKicker = document.getElementById("section-kicker");
 const itemCount = document.getElementById("item-count");
 
+const recordsView = document.getElementById("records-view");
+const recordView = document.getElementById("record-view");
+
+const recordBack = document.getElementById("record-back");
+const recordCategory = document.getElementById("record-category");
+const recordOpenTitle = document.getElementById("record-open-title");
+const recordAuthor = document.getElementById("record-author");
+const recordDate = document.getElementById("record-date");
+const recordBody = document.getElementById("record-body");
+const recordIcon = document.getElementById("record-icon");
+
 const dialog = document.getElementById("create-dialog");
 const createForm = document.getElementById("create-form");
+
 const entryType = document.getElementById("entry-type");
 const entryTitle = document.getElementById("entry-title");
 const entryBody = document.getElementById("entry-body");
 const entryRecipient = document.getElementById("entry-recipient");
 const recipientWrap = document.getElementById("recipient-wrap");
-const reminderWrap = document.getElementById("reminder-wrap");
-const entryDate = document.getElementById("entry-date");
+
+const openCreate = document.getElementById("open-create");
+const closeDialog = document.getElementById("close-dialog");
+
+
+/* =========================================================
+   2. FIREBASE CONFIGURATION
+   IMPORTANT: KEEP THE ORIGINAL COLLECTION
+   ========================================================= */
 
 const ENTRIES_COLLECTION = "littleWorldEntries";
 
 let currentUser = null;
 let entries = [];
 let currentTab = "board";
+let currentRecordId = null;
+
 let unsubscribeListeners = [];
 
-/* -----------------------------------------
-   SPECIAL MESSAGE SAVER SELECTOR
------------------------------------------ */
 
-const savedByWrap = document.createElement("div");
-savedByWrap.id = "saved-by-wrap";
-savedByWrap.className = "form-field";
-savedByWrap.hidden = true;
-
-savedByWrap.innerHTML = `
-  <label for="saved-by">Who is saving this message?</label>
-  <select id="saved-by" name="savedBy">
-    <option value="Deib">Deib ❤️</option>
-    <option value="Princess">Princess 💜</option>
-  </select>
-  <small>Choose who is keeping this special memory.</small>
-`;
-
-const submitButton = createForm.querySelector(
-  'button[type="submit"], button:not([type])'
-);
-
-if (submitButton) {
-  createForm.insertBefore(savedByWrap, submitButton);
-} else {
-  createForm.appendChild(savedByWrap);
-}
-
-const savedBySelect = document.getElementById("saved-by");
-
-/* -----------------------------------------
-   ACCOUNT NAME
------------------------------------------ */
-
+/* =========================================================
+   3. ACCOUNT IDENTITY
+   ========================================================= */
 
 function getAccountName() {
   const email = (currentUser?.email || "").toLowerCase();
@@ -93,9 +87,9 @@ function getAccountName() {
 }
 
 
-/* -----------------------------------------
-   HELPERS
------------------------------------------ */
+/* =========================================================
+   4. HELPERS
+   ========================================================= */
 
 function escapeHTML(value = "") {
   return String(value).replace(/[&<>"']/g, char => ({
@@ -107,42 +101,30 @@ function escapeHTML(value = "") {
   })[char]);
 }
 
-function relativeDate(timestamp) {
-  const time = Number(timestamp) || Date.now();
-  const elapsed = Math.max(0, Date.now() - time);
-  const minutes = Math.floor(elapsed / 60000);
 
-  if (minutes < 1) return "Just now";
-  if (minutes < 60) return `${minutes} min ago`;
-
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours} hr ago`;
-
-  return new Date(time).toLocaleDateString(undefined, {
-    day: "numeric",
-    month: "short",
-    year: "numeric"
-  });
-}
-
-function savedDate(timestamp) {
-  if (!timestamp) return "Date not available";
+function getDate(timestamp) {
+  if (!timestamp) return null;
 
   let date;
 
-  if (typeof timestamp === "string") {
-    date = new Date(timestamp);
+  if (typeof timestamp.toDate === "function") {
+    date = timestamp.toDate();
   } else if (typeof timestamp === "number") {
     date = new Date(timestamp);
-  } else if (typeof timestamp.toDate === "function") {
-    date = timestamp.toDate();
+  } else if (typeof timestamp === "string") {
+    date = new Date(timestamp);
   } else {
-    return "Date not available";
+    return null;
   }
 
-  if (Number.isNaN(date.getTime())) {
-    return "Date not available";
-  }
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+
+function formatDate(timestamp) {
+  const date = getDate(timestamp);
+
+  if (!date) return "Date not available";
 
   return date.toLocaleDateString(undefined, {
     day: "numeric",
@@ -151,57 +133,81 @@ function savedDate(timestamp) {
   });
 }
 
-function typeInfo(type) {
-  const options = {
-    note: {
-      label: "Love note",
-      icon: "💌",
-      color: "paper-pink"
-    },
-    reminder: {
-      label: "Reminder",
-      icon: "🗓️",
-      color: "paper-lilac"
-    },
-    wish: {
-      label: "Our wish",
-      icon: "✨",
-      color: "paper-cream"
-    },
-    notice: {
-      label: "Noticeboard",
-      icon: "📌",
-      color: "paper-white"
-    },
-    special: {
-      label: "Special message",
-      icon: "💗",
-      color: "paper-pink"
-    }
-  };
 
-  return options[type] || options.note;
+function formatRelativeDate(timestamp) {
+  const date = getDate(timestamp);
+
+  if (!date) return "Saved";
+
+  const elapsed = Math.max(0, Date.now() - date.getTime());
+  const minutes = Math.floor(elapsed / 60000);
+
+  if (minutes < 1) return "Just now";
+  if (minutes < 60) return `${minutes} min ago`;
+
+  const hours = Math.floor(minutes / 60);
+
+  if (hours < 24) return `${hours} hr ago`;
+
+  const days = Math.floor(hours / 24);
+
+  if (days < 7) return `${days} days ago`;
+
+  return formatDate(date);
 }
 
-/* -----------------------------------------
-   LIVE FIRESTORE SYNC
------------------------------------------ */
+
+function getEntryDate(entry) {
+  return entry.savedAt ||
+    entry.createdAt ||
+    entry.createdAtMs ||
+    entry.updatedAt;
+}
+
+
+function typeInfo(type) {
+  if (type === "special") {
+    return {
+      label: "Special Message",
+      icon: "💗",
+      className: "special"
+    };
+  }
+
+  return {
+    label: "Love Letter",
+    icon: "💌",
+    className: "love-letter"
+  };
+}
+
+
+/* =========================================================
+   5. FIRESTORE LIVE SYNC
+   ========================================================= */
 
 function startEntriesListener() {
-  unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+  unsubscribeListeners.forEach(stop => stop());
   unsubscribeListeners = [];
 
   if (!currentUser) return;
 
   const entriesRef = collection(db, ENTRIES_COLLECTION);
 
-  // Shared entries: visible to both signed-in accounts.
+  /*
+    Shared records are visible to both accounts.
+
+    Personal records are fetched using the original
+    authorUID field.
+
+    Both queries use the SAME original collection.
+  */
+
   const sharedQuery = query(
     entriesRef,
     where("visibility", "==", "shared")
   );
 
-  // Personal entries: fetch only this account's entries.
   const ownQuery = query(
     entriesRef,
     where("authorUID", "==", currentUser.uid)
@@ -216,27 +222,37 @@ function startEntriesListener() {
       ...ownEntries
     ]);
 
-    entries = [...combined.values()].map(entry => ({
-      ...entry,
-      // Convert Firestore timestamps into numbers for display.
-      createdAt:
-        Number(entry.createdAtMs) ||
-        (typeof entry.createdAt?.toMillis === "function"
-          ? entry.createdAt.toMillis()
-          : Date.now())
-    }));
+    entries = [...combined.values()].map(entry => {
+      const createdDate = getDate(
+        entry.createdAtMs || entry.createdAt || entry.savedAt
+      );
+
+      return {
+        ...entry,
+        createdAt: createdDate
+          ? createdDate.getTime()
+          : 0
+      };
+    });
+
+    console.log(
+      "💜 Little World records loaded:",
+      entries.length,
+      "| Shared:",
+      sharedEntries.size,
+      "| Personal:",
+      ownEntries.size
+    );
 
     renderEntries();
   }
 
-  function convertSnapshot(snapshot, destination) {
+  function processSnapshot(snapshot, destination) {
     destination.clear();
 
     snapshot.forEach(documentSnapshot => {
-      const data = documentSnapshot.data();
-
       destination.set(documentSnapshot.id, {
-        ...data,
+        ...documentSnapshot.data(),
         id: documentSnapshot.id
       });
     });
@@ -246,18 +262,18 @@ function startEntriesListener() {
 
   const stopShared = onSnapshot(
     sharedQuery,
-    snapshot => convertSnapshot(snapshot, sharedEntries),
+    snapshot => processSnapshot(snapshot, sharedEntries),
     error => {
-      console.error("Little World shared entries error:", error);
+      console.error("Shared records error:", error);
       showFirebaseError(error);
     }
   );
 
   const stopOwn = onSnapshot(
     ownQuery,
-    snapshot => convertSnapshot(snapshot, ownEntries),
+    snapshot => processSnapshot(snapshot, ownEntries),
     error => {
-      console.error("Little World personal entries error:", error);
+      console.error("Personal records error:", error);
       showFirebaseError(error);
     }
   );
@@ -265,137 +281,162 @@ function startEntriesListener() {
   unsubscribeListeners.push(stopShared, stopOwn);
 }
 
+
 function showFirebaseError(error) {
+  console.error("Little World Firebase error:", error);
+
+  if (!noticeList) return;
+
+  let message = "We could not load your saved messages.";
+
   if (error.code === "permission-denied") {
-    console.error(
-      "Check your Firestore security rules for littleWorldEntries."
-    );
-  } else {
-    console.error("Could not sync Little World with Firebase.");
+    message = "Firebase denied access. Check your Firestore security rules.";
+  } else if (error.code === "unavailable") {
+    message = "Connection problem. Please check your internet.";
+  } else if (error.code === "failed-precondition") {
+    message = "A Firestore query needs attention. Check the Firebase console.";
   }
+
+  noticeList.innerHTML = `
+    <div class="empty-state special-empty">
+      <span class="empty-heart">💜</span>
+      <strong>Unable to open our collection</strong>
+      <p>${escapeHTML(message)}</p>
+    </div>
+  `;
 }
 
-/* -----------------------------------------
-   FILTER ENTRIES
------------------------------------------ */
+
+/* =========================================================
+   6. FILTER RECORDS
+   ========================================================= */
 
 function getVisibleEntries() {
-  let result = [...entries];
+  let result = entries.filter(entry =>
+    entry.type === "note" || entry.type === "special"
+  );
 
   if (currentTab === "notes") {
     result = result.filter(entry => entry.type === "note");
-  } else if (currentTab === "reminders") {
-    result = result.filter(entry => entry.type === "reminder");
-  } else if (currentTab === "wishes") {
-    result = result.filter(entry => entry.type === "wish");
-  } else if (currentTab === "special") {
+  }
+
+  if (currentTab === "special") {
     result = result.filter(entry => entry.type === "special");
   }
 
   return result.sort((a, b) => {
-    if (a.pinned !== b.pinned) {
-      return Number(b.pinned) - Number(a.pinned);
+    if (Boolean(a.pinned) !== Boolean(b.pinned)) {
+      return Number(Boolean(b.pinned)) -
+        Number(Boolean(a.pinned));
     }
 
-    return (Number(b.createdAt) || 0) -
-           (Number(a.createdAt) || 0);
+    return (b.createdAt || 0) - (a.createdAt || 0);
   });
 }
 
-/* -----------------------------------------
-   SPECIAL MESSAGE CARD
------------------------------------------ */
 
-function renderSpecialMessage(entry) {
-  const saver = entry.savedBy || entry.author || "Unknown";
-  const date = savedDate(entry.savedAt || entry.createdAt);
+/* =========================================================
+   7. TITLE-ONLY RECORD CARDS
+   ========================================================= */
+
+function renderRecordCard(entry) {
+  const info = typeInfo(entry.type);
+
+  const date = formatRelativeDate(getEntryDate(entry));
 
   return `
-    <article class="special-message-card">
-      <div class="special-message-top">
-        <div class="special-message-label">
-          👑 Special Messages
-        </div>
+    <article
+      class="notice-card ${info.className}"
+      data-open-record="${escapeHTML(entry.id)}"
+      tabindex="0"
+      role="button"
+      aria-label="Open ${escapeHTML(entry.title || info.label)}"
+    >
 
-        <div class="note-actions">
-          <button type="button"
-            class="note-pin"
-            data-pin="${escapeHTML(entry.id)}"
-            aria-label="${entry.pinned ? "Unpin" : "Pin"} special message"
-            title="${entry.pinned ? "Unpin message" : "Pin message"}"
-          >${entry.pinned ? "📌" : "♡"}</button>
-
-          <button type="button"
-            class="note-delete"
-            data-delete="${escapeHTML(entry.id)}"
-            aria-label="Delete special message"
-            title="Delete this message"
-          >🗑️</button>
-        </div>
+      <div class="notice-card-icon">
+        ${info.icon}
       </div>
 
-      <h3 class="special-message-title">
-        ${escapeHTML(entry.title || "A little reminder of us 💗")}
-      </h3>
+      <div class="notice-card-info">
 
-      <p class="special-message-text">${escapeHTML(entry.body || "")}</p>
-
-      <div class="special-message-footer">
-        <div class="special-saved-by">
-          Saved on ${escapeHTML(date)}
-          <strong>♡ Saved by ${escapeHTML(saver)}</strong>
+        <div class="notice-card-type">
+          ${info.label}
         </div>
+
+        <h3>
+          ${escapeHTML(entry.title || "Untitled")}
+        </h3>
+
+        <div class="notice-card-date">
+          ${escapeHTML(date)}
+          ${entry.pinned ? " · 📌 Pinned" : ""}
+        </div>
+
       </div>
+
+      <div class="notice-card-arrow">
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+
     </article>
   `;
 }
 
-/* -----------------------------------------
-   RENDER THE PAGE
------------------------------------------ */
+
+/* =========================================================
+   8. RENDER COLLECTION
+   ========================================================= */
 
 function renderEntries() {
+  if (!noticeList) return;
+
   const filtered = getVisibleEntries();
 
   const headings = {
-    board: ["OUR LITTLE COLLECTION", "Pinned with love"],
-    notes: ["WORDS FROM THE HEART", "Our love notes"],
-    reminders: ["THINGS TO REMEMBER", "Our reminders"],
-    wishes: ["DREAMING TOGETHER", "Our little wishes"],
-    special: ["MEMORIES TO KEEP", "Special messages 💌"]
+    board: [
+      "OUR LITTLE COLLECTION",
+      "Saved with love"
+    ],
+    notes: [
+      "WORDS FROM THE HEART",
+      "Our love letters"
+    ],
+    special: [
+      "WORDS TO KEEP FOREVER",
+      "Special messages"
+    ]
   };
 
   const heading = headings[currentTab] || headings.board;
 
-  sectionKicker.textContent = heading[0];
-  sectionTitle.textContent = heading[1];
+  if (sectionKicker) {
+    sectionKicker.textContent = heading[0];
+  }
 
-  itemCount.textContent =
-    `${String(filtered.length).padStart(2, "0")} ${
-      filtered.length === 1 ? "ITEM" : "ITEMS"
-    }`;
+  if (sectionTitle) {
+    sectionTitle.textContent = heading[1];
+  }
+
+  if (itemCount) {
+    itemCount.textContent =
+      `${String(filtered.length).padStart(2, "0")} ${
+        filtered.length === 1 ? "RECORD" : "RECORDS"
+      }`;
+  }
 
   if (!filtered.length) {
     const emptyMessages = {
       board: [
-        "Our page is waiting for a little love 💜",
-        "Nothing here just yet. Leave the first note and make it special."
+        "Our little collection is waiting 💜",
+        "Save a love letter or a special message to begin."
       ],
       notes: [
-        "A blank page for love letters 💌",
-        "Add a sweet note to brighten someone's day."
-      ],
-      reminders: [
-        "Nothing to remember just yet 🗓️",
-        "Add a little reminder for something important to both of you."
-      ],
-      wishes: [
-        "What shall we dream of next? ✨",
-        "Save a wish for your little world together."
+        "A little space for words from the heart 💌",
+        "Your saved love letters will appear here."
       ],
       special: [
-        "Keep your favourite words close 💗",
-        "Save a special text here so you can come back to it whenever you miss each other."
+        "Some words deserve to stay forever 💗",
+        "Your special messages will be kept here."
       ]
     };
 
@@ -412,105 +453,126 @@ function renderEntries() {
     return;
   }
 
-  noticeList.innerHTML = filtered.map(entry => {
-    if (entry.type === "special") {
-      return renderSpecialMessage(entry);
-    }
-
-    const info = typeInfo(entry.type);
-
-    const visibilityLabel =
-      entry.visibility === "private"
-        ? "🔒 A private surprise"
-        : "♡ For both of us";
-
-    const reminderText = entry.reminderAt
-      ? `<div class="note-meta">
-           <span>⏰ ${escapeHTML(
-             new Date(entry.reminderAt).toLocaleString()
-           )}</span>
-         </div>`
-      : "";
-
-    return `
-      <article class="notice-card ${info.color}">
-        <div class="note-top">
-          <span class="note-category">
-            ${info.icon} ${info.label}
-          </span>
-
-          <div class="note-actions">
-            <button type="button"
-              class="note-pin"
-              data-pin="${escapeHTML(entry.id)}"
-              aria-label="${entry.pinned ? "Unpin" : "Pin"} note"
-              title="${entry.pinned ? "Unpin note" : "Pin note"}"
-            >${entry.pinned ? "📌" : "♡"}</button>
-
-            <button type="button"
-              class="note-delete"
-              data-delete="${escapeHTML(entry.id)}"
-              aria-label="Delete ${escapeHTML(entry.title)}"
-              title="Delete this item"
-            >🗑️</button>
-          </div>
-        </div>
-
-        <h3>${escapeHTML(entry.title || "")}</h3>
-        <p class="note-body">${escapeHTML(entry.body || "")}</p>
-
-        ${reminderText}
-
-        <div class="note-meta">
-          <span>♡ ${escapeHTML(entry.author || "Us")} ·
-            ${escapeHTML(relativeDate(entry.createdAt))}
-          </span>
-          <span class="note-tag">${escapeHTML(visibilityLabel)}</span>
-        </div>
-      </article>
-    `;
-  }).join("");
+  noticeList.innerHTML = filtered
+    .map(renderRecordCard)
+    .join("");
 }
 
-/* -----------------------------------------
-   CREATE FORM
------------------------------------------ */
 
-function openCreateForm() {
-  if (!currentUser) {
-    alert("Please sign in to your PD account first. 💜");
-    return;
+/* =========================================================
+   9. OPEN A FULL RECORD
+   ========================================================= */
+
+function openRecord(id) {
+  const entry = entries.find(item => item.id === id);
+
+  if (!entry) return;
+
+  // This page only opens the two supported record types.
+  if (!["note", "special"].includes(entry.type)) return;
+
+  currentRecordId = id;
+
+  const info = typeInfo(entry.type);
+
+  if (recordIcon) {
+    recordIcon.textContent = info.icon;
   }
 
-  createForm.reset();
-  updateFormOptions();
-  dialog.showModal();
-}
-
-function updateFormOptions() {
-  const isReminder = entryType.value === "reminder";
-  const isNote = entryType.value === "note";
-  const isSpecial = entryType.value === "special";
-
-  reminderWrap.hidden = !isReminder;
-  entryDate.required = isReminder;
-
-  recipientWrap.hidden = !isNote;
-  savedByWrap.hidden = !isSpecial;
-  savedBySelect.required = isSpecial;
-
-  if (!isNote) {
-    entryRecipient.value = "shared";
+  if (recordCategory) {
+    recordCategory.textContent = info.label;
   }
+
+  if (recordOpenTitle) {
+    recordOpenTitle.textContent = entry.title || "Untitled";
+  }
+
+  if (recordAuthor) {
+    const saver = entry.savedBy || entry.author || "Us";
+    recordAuthor.textContent = `Saved by ${saver}`;
+  }
+
+  if (recordDate) {
+    recordDate.textContent = formatDate(getEntryDate(entry));
+  }
+
+  if (recordBody) {
+    // textContent prevents saved text from being interpreted as HTML.
+    recordBody.textContent = entry.body || "";
+  }
+
+  if (recordsView) {
+    recordsView.hidden = true;
+  }
+
+  if (recordView) {
+    recordView.hidden = false;
+  }
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
 
-/* -----------------------------------------
-   TABS
------------------------------------------ */
+
+function closeRecord() {
+  currentRecordId = null;
+
+  if (recordView) {
+    recordView.hidden = true;
+  }
+
+  if (recordsView) {
+    recordsView.hidden = false;
+  }
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+recordBack?.addEventListener("click", closeRecord);
+
+
+/* =========================================================
+   10. LIST INTERACTIONS
+   ========================================================= */
+
+noticeList?.addEventListener("click", async event => {
+  const card = event.target.closest("[data-open-record]");
+
+  if (!card) return;
+
+  openRecord(card.dataset.openRecord);
+});
+
+
+noticeList?.addEventListener("keydown", event => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+
+  const card = event.target.closest("[data-open-record]");
+
+  if (!card) return;
+
+  event.preventDefault();
+  openRecord(card.dataset.openRecord);
+});
+
+
+/* =========================================================
+   11. TABS
+   ========================================================= */
 
 tabs.forEach(tab => {
   tab.addEventListener("click", () => {
     currentTab = tab.dataset.tab;
+
+    if (!["board", "notes", "special"].includes(currentTab)) {
+      currentTab = "board";
+    }
 
     tabs.forEach(item => {
       item.classList.toggle("active", item === tab);
@@ -520,84 +582,60 @@ tabs.forEach(tab => {
   });
 });
 
-/* -----------------------------------------
-   OPEN AND CLOSE DIALOG
------------------------------------------ */
 
-document.getElementById("open-create")?.addEventListener(
-  "click",
-  openCreateForm
-);
+/* =========================================================
+   12. CREATE FORM
+   ========================================================= */
+
+function updateFormOptions() {
+  if (!entryType) return;
+
+  const isNote = entryType.value === "note";
+
+  if (recipientWrap) {
+    recipientWrap.hidden = !isNote;
+  }
+
+  if (entryRecipient && !isNote) {
+    entryRecipient.value = "shared";
+  }
+}
+
+
+function openCreateForm() {
+  if (!currentUser) {
+    alert("Please sign in to your PD account first. 💜");
+    return;
+  }
+
+  if (!dialog || !createForm) return;
+
+  createForm.reset();
+  updateFormOptions();
+
+  dialog.showModal();
+}
+
+
+openCreate?.addEventListener("click", openCreateForm);
 
 document.getElementById("footer-create")?.addEventListener(
   "click",
   openCreateForm
 );
 
-document.getElementById("close-dialog")?.addEventListener(
-  "click",
-  () => dialog.close()
-);
-
-entryType.addEventListener("change", updateFormOptions);
-
-/* -----------------------------------------
-   PIN AND DELETE IN FIRESTORE
------------------------------------------ */
-
-noticeList.addEventListener("click", async event => {
-  const deleteButton = event.target.closest("[data-delete]");
-  const pinButton = event.target.closest("[data-pin]");
-
-  if (deleteButton) {
-    const id = deleteButton.dataset.delete;
-    const entry = entries.find(item => item.id === id);
-
-    if (!entry || !currentUser) return;
-
-    // Only the creator may delete their entry.
-    if (entry.authorUID !== currentUser.uid) {
-      alert("Only the person who saved this item can delete it. 💜");
-      return;
-    }
-
-    if (!window.confirm(`Delete "${entry.title}"? This cannot be undone.`)) {
-      return;
-    }
-
-    try {
-      await deleteDoc(doc(db, ENTRIES_COLLECTION, id));
-    } catch (error) {
-      console.error("Could not delete Little World entry:", error);
-      alert("Could not delete this item. Check your connection and Firebase rules.");
-    }
-
-    return;
-  }
-
-  if (pinButton) {
-    const id = pinButton.dataset.pin;
-    const entry = entries.find(item => item.id === id);
-
-    if (!entry || !currentUser) return;
-
-    try {
-      await updateDoc(doc(db, ENTRIES_COLLECTION, id), {
-        pinned: !entry.pinned,
-        updatedAt: serverTimestamp()
-      });
-    } catch (error) {
-      console.error("Could not update pin:", error);
-      alert("Could not update the pin. Check your Firebase rules.");
-    }
-  }
+closeDialog?.addEventListener("click", () => {
+  dialog?.close();
 });
 
-/* -----------------------------------------
-   SAVE NEW ENTRIES TO FIRESTORE
------------------------------------------ */
+entryType?.addEventListener("change", updateFormOptions);
 
-createForm.addEventListener("submit", async event => {
+
+/* =========================================================
+   13. SAVE NEW RECORDS
+   ========================================================= */
+
+createForm?.addEventListener("submit", async event => {
   event.preventDefault();
 
   if (!currentUser) {
@@ -609,94 +647,98 @@ createForm.addEventListener("submit", async event => {
   const title = entryTitle.value.trim();
   const body = entryBody.value.trim();
 
+  if (!["note", "special"].includes(type)) {
+    alert("Please choose Love Letter or Special Message.");
+    return;
+  }
+
   if (!title || !body) return;
 
-  const now = Date.now();
   const author = getAccountName();
+  const now = Date.now();
 
   const newEntry = {
     type,
     title,
     body,
 
-    // Identity comes from the signed-in Firebase account.
     author,
     authorUID: currentUser.uid,
 
-    // Retains your special-message saver selector.
-    savedBy: type === "special" ? savedBySelect.value : author,
+    savedBy: author,
     savedAt: new Date(now).toISOString(),
 
     visibility: type === "note"
-      ? entryRecipient.value
+      ? (entryRecipient?.value || "shared")
       : "shared",
 
     pinned: false,
+
     createdAt: serverTimestamp(),
     createdAtMs: now,
-    reminderAt: type === "reminder" ? entryDate.value : "",
+
     read: false,
     updatedAt: serverTimestamp()
   };
 
-  const originalButton = createForm.querySelector(
+  const submitButton = createForm.querySelector(
     'button[type="submit"], button:not([type])'
   );
 
+  const originalText = submitButton?.textContent || "Save";
+
   try {
-    if (originalButton) {
-      originalButton.disabled = true;
-      originalButton.textContent = "Saving… 💜";
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "Saving… 💜";
     }
 
-    await addDoc(collection(db, ENTRIES_COLLECTION), newEntry);
+    await addDoc(
+      collection(db, ENTRIES_COLLECTION),
+      newEntry
+    );
 
-    if (type === "special") {
-      currentTab = "special";
-    } else if (type === "note") {
-      currentTab = "notes";
-    } else if (type === "reminder") {
-      currentTab = "reminders";
-    } else if (type === "wish") {
-      currentTab = "wishes";
-    } else {
-      currentTab = "board";
-    }
+    currentTab = type === "note" ? "notes" : "special";
 
     tabs.forEach(tab => {
-      tab.classList.toggle("active", tab.dataset.tab === currentTab);
+      tab.classList.toggle(
+        "active",
+        tab.dataset.tab === currentTab
+      );
     });
 
     dialog.close();
     createForm.reset();
     updateFormOptions();
 
-    // Firestore's real-time listener refreshes both accounts.
+    renderEntries();
+
     noticeList.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
 
   } catch (error) {
-    console.error("Could not save Little World entry:", error);
+    console.error("Could not save record:", error);
 
     alert(
       error.code === "permission-denied"
         ? "Firebase blocked this save. Check your Firestore security rules."
-        : "Your entry could not be saved. Check your internet connection and try again."
+        : "Your message could not be saved. Please try again."
     );
 
   } finally {
-    if (originalButton) {
-      originalButton.disabled = false;
-      originalButton.textContent = "Save";
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
     }
   }
 });
 
-/* -----------------------------------------
-   START PD LITTLE WORLD
------------------------------------------ */
+
+/* =========================================================
+   14. START THE PAGE
+   ========================================================= */
 
 updateFormOptions();
 renderEntries();
@@ -704,14 +746,27 @@ renderEntries();
 onAuthStateChanged(auth, user => {
   currentUser = user;
 
-  if (!user) {;
-    unsubscribeListeners.forEach(unsubscribe => unsubscribe());
-    unsubscribeListeners = [];
-    entries = [];
+  unsubscribeListeners.forEach(stop => stop());
+  unsubscribeListeners = [];
+
+  entries = [];
+  currentRecordId = null;
+
+  if (recordView) recordView.hidden = true;
+  if (recordsView) recordsView.hidden = false;
+
+  if (!user) {
+    console.log("Little World: waiting for authentication.");
     renderEntries();
     return;
   }
 
-  console.log("💜 Little World connected:", user.email);
+  console.log(
+    "💜 Little World connected:",
+    user.email,
+    "| UID:",
+    user.uid
+  );
+
   startEntriesListener();
 });

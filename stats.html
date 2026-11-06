@@ -1,43 +1,39 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#10091c">
 
     <title>PD | Our Stats</title>
 
-    <!-- Google Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
-        rel="stylesheet"
-    >
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- STATS ONLY CSS -->
     <link rel="stylesheet" href="stats.css">
 </head>
-
 
 <body>
 
 <div class="stats-app">
 
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="ambient ambient-three"></div>
+
     <!-- HEADER -->
     <header class="stats-header">
 
-        <a href="home.html" class="back-btn">
+        <a href="home.html" class="back-btn" aria-label="Go back home">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
 
         <div class="header-title">
-            <span>Our</span>
-            <h1>Stats</h1>
+            <span>PRINCESS WA DEIB</span>
+            <h1>Our Stats <i class="fa-solid fa-heart"></i></h1>
         </div>
 
         <div class="header-heart">
@@ -47,284 +43,171 @@
     </header>
 
 
-    <!-- MAIN -->
     <main class="stats-content">
-
 
         <!-- INTRO -->
         <section class="stats-intro">
 
-            <div class="intro-heart">
+            <div class="intro-icon">
                 <i class="fa-solid fa-heart"></i>
             </div>
 
-            <h2>Our Little Journey</h2>
+            <span class="eyebrow">A LITTLE BIT OF FOREVER</span>
+
+            <h2>Our Little <em>Journey</em></h2>
 
             <p>
-                Every day I see your Smile becomes another beautiful
-                part of our story.
+                Two hearts, one beautiful story.
+                And every second makes it sweeter.
             </p>
 
-        </section>
-
-
-
-        <!-- DAYS TOGETHER -->
-        <section class="main-stat-card">
-
-            <div class="main-stat-glow"></div>
-
-        
-<!-- PD 200 DAYS ANNIVERSARY COUNTDOWN -->
-<section class="pd-anniversary-card">
-
-    <div class="anniversary-hearts">💜 ❤️‍🔥 💜</div>
-
-    <span class="anniversary-label">
-        OUR NEXT LOVE MILESTONE
-    </span>
-
-    <h2>200 Days Together</h2>
-
-    <p class="anniversary-message">
-        Every day with you is my favourite day. ❤️
-    </p>
-
-    <div class="anniversary-date">
-        <i class="fa-regular fa-calendar-heart"></i>
-        11 January 2027
-    </div>
-
-    <div class="anniversary-countdown">
-
-        <div class="countdown-unit">
-            <strong id="pdDaysLeft">92</strong>
-            <span>DAYS</span>
-        </div>
-
-        <div class="countdown-colon">:</div>
-
-        <div class="countdown-unit">
-            <strong id="pdHoursLeft">00</strong>
-            <span>HOURS</span>
-        </div>
-
-        <div class="countdown-colon">:</div>
-
-        <div class="countdown-unit">
-            <strong id="pdMinutesLeft">00</strong>
-            <span>MINUTES</span>
-        </div>
-
-        <div class="countdown-colon">:</div>
-
-        <div class="countdown-unit">
-            <strong id="pdSecondsLeft">00</strong>
-            <span>SECONDS</span>
-        </div>
-
-    </div>
-
-    <div class="anniversary-footer">
-        Counting every second until our special day 💕
-    </div>
-
-</section>
+            <div class="intro-decoration">
+                <span></span>
+                <i class="fa-solid fa-heart"></i>
+                <span></span>
+            </div>
 
         </section>
 
 
+        <!-- 200 DAYS COUNTDOWN -->
+        <section class="anniversary-card">
 
-        <!-- SMALL STATS -->
-        <div class="stats-grid">
+            <div class="card-glow"></div>
+
+            <div class="anniversary-top">
+
+                <div class="milestone-icon">
+                    <i class="fa-solid fa-gift"></i>
+                </div>
+
+                <span class="milestone-tag">OUR NEXT MILESTONE</span>
+
+                <div class="anniversary-hearts">💜 ❤️‍🔥 💜</div>
+
+            </div>
+
+            <div class="anniversary-title">
+
+                <span>THE COUNTDOWN TO</span>
+
+                <h2>200 Days <em>Together</em></h2>
+
+                <p>Every day with you is my favourite day. ❤️</p>
+
+            </div>
+
+            <div class="anniversary-date">
+                <i class="fa-regular fa-calendar-days"></i>
+                <span>11 January 2027</span>
+            </div>
+
+            <div class="countdown-box">
+
+                <div class="countdown-unit">
+                    <strong id="pdDaysLeft">00</strong>
+                    <span>DAYS</span>
+                </div>
+
+                <div class="countdown-divider"></div>
+
+                <div class="countdown-unit">
+                    <strong id="pdHoursLeft">00</strong>
+                    <span>HOURS</span>
+                </div>
+
+                <div class="countdown-divider"></div>
+
+                <div class="countdown-unit">
+                    <strong id="pdMinutesLeft">00</strong>
+                    <span>MINUTES</span>
+                </div>
+
+                <div class="countdown-divider"></div>
+
+                <div class="countdown-unit">
+                    <strong id="pdSecondsLeft">00</strong>
+                    <span>SECONDS</span>
+                </div>
+
+            </div>
+
+            <div class="countdown-message">
+                <span class="pulse-heart">♥</span>
+                Counting every second until our special day
+                <span class="pulse-heart">♥</span>
+            </div>
+
+            <div class="anniversary-bottom">
+                <span>MADE WITH LOVE</span>
+                <span>•</span>
+                <span>JUST FOR US</span>
+            </div>
+
+        </section>
 
 
-            <!-- MEMORIES -->
-            <div class="small-stat-card">
+        <!-- OUR TIMELINE -->
+        <section class="journey-card">
 
-                <div class="small-stat-icon memory-icon">
+            <div class="journey-heading">
+
+                <div>
+                    <span class="eyebrow">WHERE IT ALL BEGAN</span>
+                    <h3>Our Timeline</h3>
+                </div>
+
+                <div class="journey-heart">
                     <i class="fa-solid fa-heart"></i>
                 </div>
 
-                <span>Special Memories</span>
-
-                <strong id="memoryCount">0</strong>
-
-                <small>
-                    Our little moments
-                </small>
-
             </div>
-
-
-
-            <!-- SONG -->
-            <div class="small-stat-card song-card">
-
-                <div class="small-stat-icon song-icon">
-                    <i class="fa-solid fa-music"></i>
-                </div>
-
-                <span><strong>Forever Faithfully..</strong>.</span>
-
-                <strong id="songTitle">
-                    Your Love Amazes Me
-                </strong>
-
-                <small>
-                    Dont you Every Doubt this Love of Mine
-                </small>
-
-                <a href="song.html" class="song-play">
-                    <i class="fa-solid fa-play"></i>
-                </a>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- OUR JOURNEY -->
-        <section class="journey-card">
-
-            <div class="section-heading">
-
-                <div>
-                    <span>OUR STORY</span>
-                    <h2>Our Journey</h2>
-                </div>
-
-                <i class="fa-solid fa\-heart"></i>
-
-            </div>
-
 
             <div class="timeline">
 
-
-                <!-- START -->
                 <div class="timeline-item">
 
-                    <div class="timeline-dot">
+                    <div class="timeline-icon">
                         <i class="fa-solid fa-heart"></i>
                     </div>
 
-                    <div class="timeline-line"></div>
-
-                    <div class="timeline-content">
-
-                        <strong>Our Story Began</strong>
-
-                        <span>
-                            26th June 2026
-                        </span>
-
+                    <div class="timeline-info">
+                        <strong>The Beginning</strong>
+                        <span>26 June 2026</span>
                     </div>
+
+                    <span class="timeline-status">STARTED</span>
 
                 </div>
 
+                <div class="timeline-line"></div>
 
-
-                <!-- DAY 7 -->
                 <div class="timeline-item">
 
-                    <div class="timeline-dot">
-                        <i class="fa-solid fa-heart"></i>
+                    <div class="timeline-icon upcoming">
+                        <i class="fa-solid fa-gift"></i>
                     </div>
 
-                    <div class="timeline-line"></div>
-
-                    <div class="timeline-content">
-
-                        <strong>200 days Together</strong>
-
-                        <span>
-                            11th Jan 2027
-                        </span>
-
+                    <div class="timeline-info">
+                        <strong>200 Days Together</strong>
+                        <span>11 January 2027</span>
                     </div>
+
+                    <span class="timeline-status upcoming-status">SOON</span>
 
                 </div>
-
-
-
-                <!-- DAY 30 -->
-                <div class="timeline-item">
-
-                    <div class="timeline-dot">
-                        <i class="fa-solid fa-heart"></i>
-                    </div>
-
-                    <div class="timeline-line"></div>
-
-                    <div class="timeline-content">
-
-                        <strong>One Month Together</strong>
-
-                        <span>
-                            25th July 2026
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- DAY 60 -->
-                <div class="timeline-item">
-
-                    <div class="timeline-dot">
-                        <i class="fa-solid fa-heart"></i>
-                    </div>
-
-                    <div class="timeline-line"></div>
-
-                    <div class="timeline-content">
-
-                        <strong>60 Days Together</strong>
-
-                        <span>
-                            24th August 2026
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- TODAY -->
-                <div class="timeline-item today-item">
-
-                    <div class="timeline-dot today-dot">
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-
-                    <div class="timeline-content">
-
-                        <strong>Today ♥</strong>
-
-                        <span id="todayJourney">
-                            Our story continues...
-                        </span>
-
-                    </div>
-
-                </div>
-
 
             </div>
 
         </section>
-
 
 
         <!-- LOVE QUOTE -->
         <section class="quote-card">
 
-            <i class="fa-solid fa-quote-left"></i>
+            <div class="quote-mark">
+                <i class="fa-solid fa-quote-left"></i>
+            </div>
 
             <p>
                 Not just a love story...
@@ -332,18 +215,128 @@
                 <strong>Baby wa Hubby. ♥</strong>
             </p>
 
-            <span>— PD</span>
+            <div class="quote-footer">
+                <span></span>
+                <small>— PD</small>
+                <span></span>
+            </div>
 
         </section>
 
 
+        <footer class="stats-footer">
+            <i class="fa-solid fa-heart"></i>
+            OUR LITTLE WORLD · OUR FOREVER
+            <i class="fa-solid fa-heart"></i>
+        </footer>
+
     </main>
+
+
+    <!-- FIXED BOTTOM NAVIGATION -->
+    <nav class="pd-bottom-nav" aria-label="Main navigation">
+
+        <a href="home.html" class="nav-item">
+            <span class="nav-icon">
+                <i class="fa-solid fa-house"></i>
+            </span>
+            <span class="nav-label">Home</span>
+        </a>
+
+        <a href="chat.html" class="nav-item">
+            <span class="nav-icon">
+                <i class="fa-solid fa-comments"></i>
+            </span>
+            <span class="nav-label">Chat</span>
+        </a>
+
+        <a href="stats.html" class="nav-item active" aria-current="page">
+            <span class="nav-icon">
+                <i class="fa-solid fa-chart-pie"></i>
+            </span>
+            <span class="nav-label">Stats</span>
+        </a>
+
+        <a href="little-world.html" class="nav-item">
+            <span class="nav-icon">
+                <i class="fa-solid fa-earth-africa"></i>
+            </span>
+            <span class="nav-label">World</span>
+        </a>
+
+        <a href="calendar.html" class="nav-item">
+            <span class="nav-icon">
+                <i class="fa-solid fa-calendar-heart"></i>
+            </span>
+            <span class="nav-label">Memories</span>
+        </a>
+
+        <a href="todo.html" class="nav-item">
+            <span class="nav-icon">
+                <i class="fa-solid fa-list-check"></i>
+            </span>
+            <span class="nav-label">To-Do</span>
+        </a>
+
+        <a href="love-game.html" class="nav-item">
+            <span class="nav-icon">
+                <i class="fa-solid fa-key"></i>
+            </span>
+            <span class="nav-label">Key Hunt</span>
+        </a>
+
+        <a href="song.html" class="nav-item">
+            <span class="nav-icon">
+                <i class="fa-solid fa-music"></i>
+            </span>
+            <span class="nav-label">Our Song</span>
+        </a>
+
+    </nav>
 
 </div>
 
 
+<!-- COUNTDOWN -->
+<script>
+(function () {
 
-<!-- STATS ONLY JAVASCRIPT -->
+    const targetDate = new Date(2027, 0, 11, 0, 0, 0).getTime();
+
+    const daysEl = document.getElementById("pdDaysLeft");
+    const hoursEl = document.getElementById("pdHoursLeft");
+    const minutesEl = document.getElementById("pdMinutesLeft");
+    const secondsEl = document.getElementById("pdSecondsLeft");
+
+    function updateCountdown() {
+
+        const distance = targetDate - Date.now();
+
+        if (distance <= 0) {
+            daysEl.textContent = "00";
+            hoursEl.textContent = "00";
+            minutesEl.textContent = "00";
+            secondsEl.textContent = "00";
+            return;
+        }
+
+        const days = Math.floor(distance / 86400000);
+        const hours = Math.floor((distance / 3600000) % 24);
+        const minutes = Math.floor((distance / 60000) % 60);
+        const seconds = Math.floor((distance / 1000) % 60);
+
+        daysEl.textContent = String(days).padStart(2, "0");
+        hoursEl.textContent = String(hours).padStart(2, "0");
+        minutesEl.textContent = String(minutes).padStart(2, "0");
+        secondsEl.textContent = String(seconds).padStart(2, "0");
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+})();
+</script>
+
 <script type="module" src="stats.js"></script>
 
 </body>

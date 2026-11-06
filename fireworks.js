@@ -12,7 +12,7 @@
     if (!ctx) return;
 
     // Change the names here.
-    const NAMES = ["Jaris", "wa", "Ernest"];
+    const NAMES = ["Mahal", "Kita", "Jaris"];
 
     const GOLD = "#ffbd22";
     const PURPLE = "#ffffff";

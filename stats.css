@@ -1,1434 +1,837 @@
 
 /* =========================================================
-   PRINCESS WA DEIB
-   OUR STATS — stats.css
-   ========================================================= */
+   PRINCESS WA DEIB — STATS PAGE
+   Premium Purple Glass + Fixed Bottom Navigation
+========================================================= */
 
-
-/* =========================================================
-   1. RESET
-   ========================================================= */
+:root {
+    --bg: #10091c;
+    --purple: #9c62d5;
+    --purple-light: #c99af2;
+    --pink: #f2a5d4;
+    --white: #fffaff;
+    --muted: #b9a9c9;
+    --glass: rgba(255, 255, 255, 0.055);
+    --glass-border: rgba(222, 188, 255, 0.15);
+    --font: "DM Sans", sans-serif;
+    --display: "Playfair Display", serif;
+}
 
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
-html,
-body {
-    width: 100%;
+html {
     min-height: 100%;
-    margin: 0;
-    padding: 0;
+    scroll-behavior: smooth;
 }
 
 body {
-    font-family: "DM Sans", sans-serif;
-    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: var(--font);
+    color: var(--white);
 
     background:
-        radial-gradient(
-            circle at 15% 10%,
-            rgba(170, 75, 255, .25),
-            transparent 28%
-        ),
-        radial-gradient(
-            circle at 90% 20%,
-            rgba(255, 55, 155, .20),
-            transparent 30%
-        ),
-        linear-gradient(
-            145deg,
-            #080410,
-            #13071c 45%,
-            #080510
-        );
+        radial-gradient(ellipse at 12% 12%, rgba(127, 65, 176, 0.23), transparent 38%),
+        radial-gradient(ellipse at 90% 38%, rgba(172, 83, 157, 0.15), transparent 35%),
+        radial-gradient(ellipse at 50% 95%, rgba(92, 49, 139, 0.24), transparent 40%),
+        linear-gradient(145deg, #10091c, #170d25 48%, #0c0815);
 
-    overflow-x: hidden;
+    background-attachment: fixed;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 
-/* =========================================================
-   2. MAIN APP
-   ========================================================= */
+/* ================= APP ================= */
 
 .stats-app {
     position: relative;
-
+    isolation: isolate;
     width: 100%;
-    max-width: 480px;
-
-    min-height: 100dvh;
-
+    max-width: 520px;
+    min-height: 100vh;
     margin: 0 auto;
 
+    padding: 0 20px calc(125px + env(safe-area-inset-bottom));
+
     overflow: hidden;
-
-    background:
-        radial-gradient(
-            circle at 50% -10%,
-            rgba(180, 75, 255, .18),
-            transparent 35%
-        ),
-        linear-gradient(
-            160deg,
-            #0a0511,
-            #17091f 50%,
-            #090511
-        );
-
-    box-shadow:
-        0 0 80px rgba(130, 50, 220, .12);
 }
 
 
-/* =========================================================
-   3. BACKGROUND GLOW
-   ========================================================= */
+/* ================= AMBIENT LIGHTS ================= */
 
-.stats-app::before {
-    content: "";
-
+.ambient {
     position: fixed;
-
-    width: 260px;
-    height: 260px;
-
-    top: -90px;
-    right: -90px;
-
+    z-index: -1;
     border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(187, 83, 255, .32),
-            transparent 70%
-        );
-
-    filter: blur(25px);
-
+    filter: blur(75px);
     pointer-events: none;
+    opacity: 0.38;
 }
 
-.stats-app::after {
-    content: "";
+.ambient-one {
+    width: 230px;
+    height: 230px;
+    top: 12%;
+    left: -120px;
+    background: #8a42c5;
+}
 
-    position: fixed;
+.ambient-two {
+    width: 200px;
+    height: 200px;
+    top: 42%;
+    right: -120px;
+    background: #a34c91;
+}
 
-    width: 220px;
-    height: 220px;
-
-    bottom: -80px;
-    left: -80px;
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(255, 45, 145, .22),
-            transparent 70%
-        );
-
-    filter: blur(25px);
-
-    pointer-events: none;
+.ambient-three {
+    width: 180px;
+    height: 180px;
+    bottom: 5%;
+    left: 20%;
+    background: #6131a2;
+    opacity: 0.25;
 }
 
 
-/* =========================================================
-   4. HEADER
-   ========================================================= */
+/* ================= HEADER ================= */
 
 .stats-header {
-    position: sticky;
-
-    top: 0;
-
-    z-index: 50;
-
-    height: 72px;
-
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
-
-    padding: 10px 14px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(13, 7, 24, .94),
-            rgba(35, 9, 38, .90)
-        );
-
-    border-bottom:
-        1px solid
-        rgba(255,255,255,.08);
-
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-
-    box-shadow:
-        0 8px 30px
-        rgba(0,0,0,.25);
+    justify-content: space-between;
+    padding: 25px 0 22px;
 }
 
-
-/* =========================================================
-   5. BACK BUTTON
-   ========================================================= */
-
-.back-btn {
-    width: 40px;
-    height: 40px;
-
-    flex: 0 0 40px;
-
+.back-btn,
+.header-heart {
+    width: 43px;
+    height: 43px;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    border-radius: 50%;
-
-    color: #fff;
-
-    text-decoration: none;
-
-    background:
-        rgba(255,255,255,.07);
-
-    border:
-        1px solid
-        rgba(255,255,255,.08);
-
-    transition:
-        .25s ease;
-}
-
-.back-btn:hover {
-    background:
-        rgba(180,75,255,.25);
-
-    box-shadow:
-        0 0 20px
-        rgba(180,75,255,.30);
-
-    transform: translateX(-2px);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    color: var(--purple-light);
+    font-size: 15px;
 }
 
 .back-btn:active {
-    transform: scale(.90);
+    transform: scale(0.92);
+    background: rgba(174, 115, 225, 0.2);
 }
-
-
-/* =========================================================
-   6. HEADER TITLE
-   ========================================================= */
 
 .header-title {
-    flex: 1;
-
     text-align: center;
-
-    line-height: 1;
 }
 
-.header-title span {
+.header-title > span {
     display: block;
-
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: var(--muted);
     margin-bottom: 3px;
-
-    color:
-        rgba(255,255,255,.48);
-
-    font-size: 9px;
-
-    letter-spacing: 2px;
-
-    text-transform: uppercase;
 }
 
 .header-title h1 {
-    margin: 0;
-
-    font-family:
-        "Playfair Display",
-        serif;
-
-    font-size: 22px;
-
+    font-family: var(--display);
+    font-size: 25px;
     font-weight: 600;
-
-    background:
-        linear-gradient(
-            90deg,
-            #fff,
-            #df9cff,
-            #ff83c5
-        );
-
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    color: transparent;
 }
 
-
-/* =========================================================
-   7. HEADER HEART
-   ========================================================= */
+.header-title h1 i {
+    color: var(--pink);
+    font-size: 13px;
+    margin-left: 3px;
+}
 
 .header-heart {
-    width: 40px;
-    height: 40px;
-
-    flex: 0 0 40px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    color: #ff65ae;
-
-    font-size: 17px;
-
-    animation:
-        statsHeart
-        1.8s
-        ease-in-out
-        infinite;
-}
-
-@keyframes statsHeart {
-
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.18);
-    }
+    color: var(--pink);
+    animation: heartBeat 2.4s infinite;
 }
 
 
-/* =========================================================
-   8. MAIN CONTENT
-   ========================================================= */
+/* ================= INTRO ================= */
 
 .stats-content {
     position: relative;
-
-    padding:
-        22px
-        14px
-        35px;
-
-    z-index: 2;
+    z-index: 1;
 }
-
-
-/* =========================================================
-   9. INTRO
-   ========================================================= */
 
 .stats-intro {
     text-align: center;
-
-    padding:
-        8px
-        12px
-        20px;
+    padding: 17px 8px 28px;
 }
 
-.intro-heart {
-    width: 54px;
-    height: 54px;
-
-    margin: 0 auto 13px;
-
+.intro-icon {
+    width: 53px;
+    height: 53px;
+    margin: 0 auto 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    border-radius: 50%;
-
-    color: #fff;
-
+    border-radius: 19px;
+    background: linear-gradient(145deg, #9b61d3, #60328f);
+    box-shadow: 0 8px 30px rgba(157, 89, 218, 0.3);
+    color: white;
     font-size: 20px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #8d43ff,
-            #f53b9b
-        );
-
-    box-shadow:
-        0 0 20px
-        rgba(194,65,255,.35),
-
-        0 0 50px
-        rgba(255,55,150,.18);
-
-    animation:
-        introPulse
-        3s
-        ease-in-out
-        infinite;
+    animation: float 4s ease-in-out infinite;
 }
 
-@keyframes introPulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.06);
-    }
+.eyebrow {
+    display: block;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 2.8px;
+    color: var(--purple-light);
 }
 
 .stats-intro h2 {
-    margin: 0;
+    margin-top: 9px;
+    font-family: var(--display);
+    font-size: 30px;
+    font-weight: 500;
+}
 
-    font-family:
-        "Playfair Display",
-        serif;
-
-    font-size: 25px;
-
+.stats-intro h2 em {
+    color: var(--purple-light);
     font-weight: 600;
 }
 
 .stats-intro p {
-    max-width: 310px;
-
-    margin:
-        8px
-        auto
-        0;
-
-    color:
-        rgba(255,255,255,.55);
-
+    max-width: 285px;
+    margin: 10px auto 0;
+    color: var(--muted);
     font-size: 12px;
+    line-height: 1.8;
+}
 
-    line-height: 1.6;
+.intro-decoration {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    color: var(--pink);
+    font-size: 9px;
+}
+
+.intro-decoration span {
+    width: 32px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(218, 166, 255, 0.7));
+}
+
+.intro-decoration span:last-child {
+    transform: rotate(180deg);
 }
 
 
-/* =========================================================
-   10. MAIN DAYS CARD
-   ========================================================= */
+/* ================= ANNIVERSARY CARD ================= */
 
-.main-stat-card {
+.anniversary-card {
     position: relative;
-
-    min-height: 190px;
-
-    padding:
-        25px
-        20px
-        18px;
-
-    margin-bottom: 14px;
-
+    padding: 25px 17px 19px;
     overflow: hidden;
-
-    text-align: center;
-
-    border-radius: 25px;
+    border-radius: 27px;
+    border: 1px solid rgba(215, 175, 255, 0.25);
 
     background:
-        linear-gradient(
-            145deg,
-            rgba(143,63,255,.22),
-            rgba(255,54,148,.13)
-        );
-
-    border:
-        1px solid
-        rgba(255,255,255,.11);
+        radial-gradient(circle at 50% 0%, rgba(179, 116, 232, 0.25), transparent 55%),
+        linear-gradient(145deg, rgba(65, 34, 91, 0.94), rgba(29, 16, 46, 0.96));
 
     box-shadow:
-        0 15px 40px
-        rgba(0,0,0,.28),
-
-        inset 0 1px 0
-        rgba(255,255,255,.08);
-
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+        0 20px 55px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.09);
 }
 
-
-/* glowing background */
-
-.main-stat-glow {
+.card-glow {
     position: absolute;
-
-    width: 180px;
-    height: 180px;
-
-    top: -100px;
-    right: -70px;
-
+    width: 190px;
+    height: 190px;
+    top: -115px;
+    right: -45px;
     border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(203,80,255,.30),
-            transparent 70%
-        );
-
-    filter: blur(8px);
-
+    background: #b16ee8;
+    filter: blur(75px);
+    opacity: 0.27;
     pointer-events: none;
 }
 
-
-/* icon */
-
-.main-stat-icon {
+.anniversary-top {
     position: relative;
-
-    width: 50px;
-    height: 50px;
-
-    margin: 0 auto 10px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-    border-radius: 16px;
-
-    color: #fff;
-
-    background:
-        linear-gradient(
-            135deg,
-            #8e45ff,
-            #e83d9c
-        );
-
-    box-shadow:
-        0 8px 25px
-        rgba(181,60,255,.30);
-}
-
-.main-stat-icon i {
-    font-size: 20px;
-}
-
-
-/* text */
-
-.main-stat-text {
-    position: relative;
-
-    display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-.main-stat-text span {
-    color:
-        rgba(255,255,255,.60);
-
-    font-size: 11px;
-
-    letter-spacing: .4px;
-}
-
-.main-stat-text strong {
-    margin-top: 2px;
-
-    font-size: 48px;
-
-    line-height: 1;
-
-    font-weight: 700;
-
-    background:
-        linear-gradient(
-            135deg,
-            #fff,
-            #d997ff,
-            #ff75bb
-        );
-
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    color: transparent;
-
-    text-shadow:
-        0 0 25px
-        rgba(199,80,255,.20);
-}
-
-.main-stat-text small {
-    margin-top: 5px;
-
-    color:
-        rgba(255,255,255,.50);
-
-    font-size: 11px;
-}
-
-.since-date {
-    position: relative;
-
-    margin-top: 14px;
-
-    color:
-        rgba(255,255,255,.38);
-
-    font-size: 9px;
-
-    letter-spacing: .5px;
-}
-
-
-/* =========================================================
-   11. SMALL STATS GRID
-   ========================================================= */
-
-.stats-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 12px;
-
-    margin-bottom: 15px;
-}
-
-
-/* =========================================================
-   12. SMALL STAT CARD
-   ========================================================= */
-
-.small-stat-card {
-    position: relative;
-
-    min-width: 0;
-
-    min-height: 160px;
-
-    padding: 17px 13px;
-
+.milestone-icon {
+    width: 43px;
+    height: 43px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    text-align: center;
-
-    overflow: hidden;
-
-    border-radius: 21px;
-
-    background:
-        rgba(255,255,255,.055);
-
-    border:
-        1px solid
-        rgba(255,255,255,.08);
-
-    box-shadow:
-        0 12px 30px
-        rgba(0,0,0,.22),
-
-        inset 0 1px 0
-        rgba(255,255,255,.05);
-
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-
-    transition:
-        transform .25s ease,
-        box-shadow .25s ease;
-}
-
-.small-stat-card:hover {
-    transform: translateY(-4px);
-
-    box-shadow:
-        0 18px 35px
-        rgba(0,0,0,.28),
-
-        0 0 25px
-        rgba(180,70,255,.12);
-}
-
-
-/* icon */
-
-.small-stat-icon {
-    width: 42px;
-    height: 42px;
-
-    display: flex;
-    align-items: center;
     justify-content: center;
-
-    border-radius: 14px;
-
-    margin-bottom: 9px;
-
-    color: #fff;
-}
-
-.memory-icon {
-    background:
-        linear-gradient(
-            135deg,
-            #ff438f,
-            #b146ff
-        );
-
-    box-shadow:
-        0 7px 20px
-        rgba(255,55,145,.25);
-}
-
-.song-icon {
-    background:
-        linear-gradient(
-            135deg,
-            #7247ff,
-            #c63fff
-        );
-
-    box-shadow:
-        0 7px 20px
-        rgba(130,65,255,.25);
-}
-
-.small-stat-card > span {
-    color:
-        rgba(255,255,255,.55);
-
-    font-size: 9px;
-
-    letter-spacing: .3px;
-}
-
-.small-stat-card > strong {
-    margin-top: 5px;
-
-    max-width: 100%;
-
-    overflow: hidden;
-
-    color: #fff;
-
-    font-size: 24px;
-
-    line-height: 1.2;
-
-    text-overflow: ellipsis;
-}
-
-.small-stat-card > small {
-    margin-top: 5px;
-
-    color:
-        rgba(255,255,255,.38);
-
-    font-size: 9px;
-}
-
-
-/* song title */
-
-.song-card > strong {
-    font-family:
-        "Playfair Display",
-        serif;
-
-    font-size: 14px;
-
-    white-space: nowrap;
-}
-
-
-/* =========================================================
-   13. SONG PLAY BUTTON
-   ========================================================= */
-
-.song-play {
-    width: 34px;
-    height: 34px;
-
-    margin-top: 9px;
-
-    display: flex;
     align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-
-    color: #fff;
-
-    text-decoration: none;
-
-    background:
-        linear-gradient(
-            135deg,
-            #9c4dff,
-            #ed3e9d
-        );
-
-    box-shadow:
-        0 5px 18px
-        rgba(194,55,155,.30);
-
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease;
+    border-radius: 15px;
+    background: rgba(204, 157, 246, 0.15);
+    border: 1px solid rgba(225, 187, 255, 0.22);
+    color: var(--purple-light);
+    font-size: 17px;
+    margin-bottom: 13px;
 }
 
-.song-play:hover {
-    transform: scale(1.1);
-
-    box-shadow:
-        0 0 25px
-        rgba(194,55,155,.50);
-}
-
-.song-play i {
-    font-size: 10px;
-
-    margin-left: 2px;
-}
-
-
-/* =========================================================
-   14. JOURNEY CARD
-   ========================================================= */
-
-.journey-card {
-    position: relative;
-
-    padding:
-        19px
-        16px
-        20px;
-
-    margin-bottom: 15px;
-
-    border-radius: 24px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,.065),
-            rgba(255,255,255,.035)
-        );
-
-    border:
-        1px solid
-        rgba(255,255,255,.08);
-
-    box-shadow:
-        0 15px 35px
-        rgba(0,0,0,.25);
-
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-}
-
-
-/* =========================================================
-   15. SECTION HEADING
-   ========================================================= */
-
-.section-heading {
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    margin-bottom: 20px;
-}
-
-.section-heading span {
-    color:
-        #c57aff;
-
+.milestone-tag {
+    color: #d9b9f4;
     font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 3px;
+}
 
+.anniversary-hearts {
+    margin-top: 10px;
+    font-size: 16px;
+    letter-spacing: 5px;
+}
+
+.anniversary-title {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.anniversary-title > span {
+    font-size: 8px;
     font-weight: 700;
+    letter-spacing: 2px;
+    color: #bda8d2;
+}
 
+.anniversary-title h2 {
+    margin-top: 8px;
+    font-family: var(--display);
+    font-size: clamp(25px, 7vw, 34px);
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.anniversary-title h2 em {
+    color: var(--purple-light);
+    font-weight: 600;
+}
+
+.anniversary-title p {
+    margin-top: 8px;
+    color: #c7b6d7;
+    font-size: 11px;
+}
+
+.anniversary-date {
+    width: fit-content;
+    margin: 20px auto 19px;
+    padding: 9px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.065);
+    border: 1px solid rgba(225, 191, 255, 0.14);
+    color: #ead8ff;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.anniversary-date i {
+    color: var(--pink);
+}
+
+
+/* ================= COUNTDOWN ================= */
+
+.countdown-box {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+    align-items: center;
+    gap: 5px;
+    padding: 17px 9px;
+    border-radius: 19px;
+    background: rgba(12, 7, 22, 0.39);
+    border: 1px solid rgba(222, 190, 255, 0.13);
+    box-shadow: inset 0 1px 10px rgba(0, 0, 0, 0.12);
+}
+
+.countdown-unit {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+}
+
+.countdown-unit strong {
+    font-size: clamp(21px, 6vw, 29px);
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -1px;
+    color: #fff;
+    text-shadow: 0 0 18px rgba(195, 140, 255, 0.4);
+}
+
+.countdown-unit span {
+    color: #bda6d4;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.countdown-divider {
+    height: 32px;
+    width: 1px;
+    background: rgba(211, 175, 245, 0.2);
+}
+
+.countdown-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 18px;
+    color: #d4c1e4;
+    font-size: 9px;
+    text-align: center;
+}
+
+.pulse-heart {
+    color: var(--pink);
+    animation: heartBeat 1.6s infinite;
+}
+
+.anniversary-bottom {
+    display: flex;
+    justify-content: center;
+    gap: 9px;
+    margin-top: 20px;
+    padding-top: 13px;
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+    color: #a98dbf;
+    font-size: 7px;
+    font-weight: 800;
     letter-spacing: 2px;
 }
 
-.section-heading h2 {
-    margin: 3px 0 0;
 
-    font-family:
-        "Playfair Display",
-        serif;
+/* ================= JOURNEY CARD ================= */
 
-    font-size: 21px;
+.journey-card {
+    margin-top: 20px;
+    padding: 21px 18px;
+    border-radius: 23px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.13);
 }
 
-.section-heading > i {
-    width: 39px;
-    height: 39px;
+.journey-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
 
+.journey-heading h3 {
+    margin-top: 5px;
+    font-family: var(--display);
+    font-size: 23px;
+    font-weight: 500;
+}
+
+.journey-heart {
+    width: 38px;
+    height: 38px;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    border-radius: 50%;
-
-    color: #ff67ad;
-
-    background:
-        rgba(255,65,155,.10);
-
-    box-shadow:
-        0 0 18px
-        rgba(255,65,155,.12);
+    border-radius: 13px;
+    background: rgba(180, 122, 230, 0.13);
+    color: var(--pink);
 }
-
-
-/* =========================================================
-   16. TIMELINE
-   ========================================================= */
-
-.timeline {
-    position: relative;
-
-    padding-left: 4px;
-}
-
-
-/* =========================================================
-   17. TIMELINE ITEM
-   ========================================================= */
 
 .timeline-item {
     position: relative;
-
-    min-height: 66px;
-
     display: flex;
-
-    gap: 13px;
+    align-items: center;
+    gap: 12px;
 }
 
-
-/* =========================================================
-   18. TIMELINE DOT
-   ========================================================= */
-
-.timeline-dot {
+.timeline-icon {
     position: relative;
-
-    z-index: 3;
-
-    flex: 0 0 30px;
-
-    width: 30px;
-    height: 30px;
-
+    z-index: 1;
+    flex-shrink: 0;
+    width: 39px;
+    height: 39px;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    margin-top: 1px;
-
-    border-radius: 50%;
-
-    color: #fff;
-
-    background:
-        linear-gradient(
-            135deg,
-            #8944ff,
-            #ec3e9d
-        );
-
-    box-shadow:
-        0 0 15px
-        rgba(179,65,255,.30);
+    border-radius: 14px;
+    background: linear-gradient(145deg, #9c61d1, #633b94);
+    color: white;
+    font-size: 13px;
+    box-shadow: 0 5px 18px rgba(153, 93, 207, 0.23);
 }
 
-.timeline-dot i {
-    font-size: 10px;
+.timeline-icon.upcoming {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(205, 167, 241, 0.2);
+    color: var(--purple-light);
+    box-shadow: none;
 }
 
-
-/* =========================================================
-   19. TIMELINE LINE
-   ========================================================= */
-
-.timeline-line {
-    position: absolute;
-
-    left: 14px;
-    top: 30px;
-
-    width: 1px;
-    height: 50px;
-
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(186,82,255,.60),
-            rgba(186,82,255,.05)
-        );
-}
-
-
-/* =========================================================
-   20. TIMELINE CONTENT
-   ========================================================= */
-
-.timeline-content {
-    padding-top: 1px;
-
+.timeline-info {
+    flex: 1;
     display: flex;
     flex-direction: column;
-
-    gap: 3px;
+    gap: 5px;
 }
 
-.timeline-content strong {
-    color: #fff;
-
-    font-size: 12px;
-
-    font-weight: 600;
+.timeline-info strong {
+    font-size: 11px;
+    font-weight: 700;
 }
 
-.timeline-content span {
-    color:
-        rgba(255,255,255,.40);
-
+.timeline-info span {
+    color: var(--muted);
     font-size: 9px;
 }
 
-
-/* =========================================================
-   21. TODAY
-   ========================================================= */
-
-.today-item {
-    min-height: 48px;
+.timeline-status {
+    padding: 6px 9px;
+    border-radius: 20px;
+    background: rgba(164, 106, 214, 0.16);
+    color: #d5b2f3;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 1px;
 }
 
-.today-item .timeline-dot {
-    background:
-        linear-gradient(
-            135deg,
-            #ff3c89,
-            #ff9d4a
-        );
-
-    box-shadow:
-        0 0 18px
-        rgba(255,65,130,.45);
-
-    animation:
-        todayPulse
-        1.8s
-        ease-in-out
-        infinite;
+.upcoming-status {
+    background: rgba(241, 163, 210, 0.1);
+    color: #f1afd7;
 }
 
-@keyframes todayPulse {
-
-    0%,
-    100% {
-        box-shadow:
-            0 0 10px
-            rgba(255,65,130,.25);
-    }
-
-    50% {
-        box-shadow:
-            0 0 25px
-            rgba(255,65,130,.65);
-    }
-}
-
-.today-item strong {
-    color: #ff85bd;
+.timeline-line {
+    width: 1px;
+    height: 25px;
+    margin-left: 19px;
+    background: linear-gradient(var(--purple), rgba(198, 151, 240, 0.15));
 }
 
 
-/* =========================================================
-   22. QUOTE CARD
-   ========================================================= */
+/* ================= QUOTE ================= */
 
 .quote-card {
     position: relative;
-
-    padding:
-        25px
-        18px;
-
+    margin-top: 20px;
+    padding: 24px 20px;
     text-align: center;
-
-    border-radius: 24px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(145,61,255,.16),
-            rgba(255,55,145,.11)
-        );
-
-    border:
-        1px solid
-        rgba(255,255,255,.08);
-
-    box-shadow:
-        0 15px 35px
-        rgba(0,0,0,.22);
+    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(130, 76, 166, 0.17), rgba(255, 255, 255, 0.035));
+    border: 1px solid rgba(215, 176, 247, 0.15);
+    overflow: hidden;
 }
 
-.quote-card > i {
-    color:
-        rgba(199,116,255,.55);
-
+.quote-mark {
+    color: var(--purple-light);
     font-size: 18px;
+    opacity: 0.8;
 }
 
 .quote-card p {
-    margin:
-        10px
-        0
-        8px;
-
-    color:
-        rgba(255,255,255,.68);
-
-    font-family:
-        "Playfair Display",
-        serif;
-
-    font-size: 15px;
-
-    line-height: 1.6;
-}
-
-.quote-card p strong {
-    color: #fff;
-
+    margin-top: 10px;
+    color: #d9c9e8;
+    font-family: var(--display);
+    font-size: 17px;
+    line-height: 1.7;
     font-style: italic;
 }
 
-.quote-card > span {
-    color:
-        #c779ff;
-
-    font-size: 10px;
-
-    letter-spacing: 1px;
-}
-
-
-/* =========================================================
-   23. SCROLLBAR
-   ========================================================= */
-
-.stats-app::-webkit-scrollbar {
-    width: 4px;
-}
-
-.stats-app::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.stats-app::-webkit-scrollbar-thumb {
-    background:
-        rgba(191,76,255,.35);
-
-    border-radius: 20px;
-}
-
-
-/* =========================================================
-   24. MOBILE
-   ========================================================= */
-
-@media (max-width: 380px) {
-
-    .stats-content {
-        padding:
-            18px
-            11px
-            25px;
-    }
-
-    .stats-header {
-        height: 66px;
-    }
-
-    .stats-intro h2 {
-        font-size: 22px;
-    }
-
-    .main-stat-card {
-        min-height: 180px;
-
-        padding-top: 21px;
-    }
-
-    .main-stat-text strong {
-        font-size: 43px;
-    }
-
-    .small-stat-card {
-        min-height: 150px;
-
-        padding:
-            14px
-            10px;
-    }
-
-    .journey-card {
-        padding:
-            17px
-            13px;
-        }
-}
-
-
-/* =========================================================
-   25. TABLET / DESKTOP
-   ========================================================= */
-
-@media (min-width: 600px) {
-
-    body {
-        padding:
-            25px 0;
-    }
-
-    .stats-app {
-        min-height: calc(100dvh - 50px);
-
-        max-width: 430px;
-
-        border-radius: 30px;
-
-        border:
-            1px solid
-            rgba(255,255,255,.10);
-
-        box-shadow:
-            0 25px 80px
-            rgba(0,0,0,.50),
-
-            0 0 50px
-            rgba(140,55,255,.10);
-    }
-
-    .stats-header {
-        border-radius:
-            30px
-            30px
-            0
-            0;
-    }
-}
-
-
-/* =========================================================
-   26. TOUCH FEEDBACK
-   ========================================================= */
-
-.back-btn:active,
-.song-play:active {
-    transform: scale(.90);
-}
-
-
-/* =========================================================
-   27. REDUCE MOTION
-   ========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: .01ms !important;
-    }
-}
-
-/* ======================================
-   PD — 200 DAYS ANNIVERSARY COUNTDOWN
-====================================== */
-
-.pd-anniversary-card {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 27px 18px;
-    border-radius: 25px;
-    text-align: center;
-    color: #fff;
-    font-family: "DM Sans", sans-serif;
-
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(255, 114, 196, .30),
-            transparent 42%
-        ),
-        linear-gradient(
-            145deg,
-            #35105e 0%,
-            #63269a 48%,
-            #a52e83 100%
-        );
-
-    border: 1px solid rgba(255, 255, 255, .20);
-
-    box-shadow:
-        0 15px 35px rgba(77, 22, 112, .25),
-        inset 0 1px 0 rgba(255, 255, 255, .15);
-}
-
-.pd-anniversary-card::before {
-    content: "♥";
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 35px;
-    color: rgba(255, 255, 255, .10);
-    transform: rotate(18deg);
-}
-
-.pd-anniversary-card .anniversary-hearts {
-    font-size: 23px;
-    margin-bottom: 12px;
-    animation: pdHeartFloat 2.5s ease-in-out infinite;
-}
-
-.pd-anniversary-card .anniversary-label {
-    display: block;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2.5px;
-    color: #f8c8ff;
-    margin-bottom: 8px;
-}
-
-.pd-anniversary-card h2 {
-    font-family: "Playfair Display", serif;
-    font-size: clamp(24px, 6vw, 33px);
-    margin: 0 0 10px;
-    color: #fff;
-}
-
-.pd-anniversary-card .anniversary-message {
-    font-size: 12px;
-    line-height: 1.7;
-    color: #f8e9ff;
-    margin: 0 auto 15px;
-}
-
-.pd-anniversary-card .anniversary-date {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 8px 14px;
-    margin-bottom: 22px;
-    border-radius: 30px;
-    font-size: 12px;
+.quote-card p strong {
+    color: #f2b9df;
     font-weight: 600;
-    color: #fff;
-    background: rgba(255, 255, 255, .12);
-    border: 1px solid rgba(255, 255, 255, .17);
 }
 
-.pd-anniversary-countdown {
+.quote-footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(4px, 1.5vw, 10px);
-    margin: 0 auto 20px;
+    gap: 10px;
+    margin-top: 13px;
 }
 
-.pd-anniversary-countdown .countdown-unit {
-    flex: 1;
-    min-width: 0;
-    padding: 14px 3px;
-    border-radius: 15px;
-    background: rgba(255, 255, 255, .12);
-    border: 1px solid rgba(255, 255, 255, .17);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .10);
+.quote-footer span {
+    width: 25px;
+    height: 1px;
+    background: rgba(209, 167, 245, 0.4);
 }
 
-.pd-anniversary-countdown .countdown-unit strong {
-    display: block;
-    font-size: clamp(20px, 5vw, 30px);
-    line-height: 1.2;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    color: #fff;
+.quote-footer small {
+    color: var(--purple-light);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2px;
 }
 
-.pd-anniversary-countdown .countdown-unit span {
-    display: block;
-    margin-top: 7px;
+
+/* ================= FOOTER ================= */
+
+.stats-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    margin-top: 25px;
+    color: #8f7a9e;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.stats-footer i {
+    color: #bd83da;
     font-size: 8px;
-    letter-spacing: 1px;
-    color: #f4d9ff;
-    font-weight: 700;
 }
 
-.pd-anniversary-countdown .countdown-colon {
-    font-size: 18px;
-    color: #ffc8f1;
-    font-weight: 700;
+
+/* =========================================================
+   PD BOTTOM NAVIGATION
+========================================================= */
+
+.pd-bottom-nav {
+    position: fixed;
+    z-index: 1000;
+
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+
+    width: 100%;
+    max-width: 520px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    gap: 0;
+    padding: 9px 7px calc(10px + env(safe-area-inset-bottom));
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    background: rgba(18, 11, 29, 0.91);
+    border-top: 1px solid rgba(207, 168, 244, 0.16);
+
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+
+    box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.28);
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-.pd-anniversary-card .anniversary-footer {
-    font-size: 11px;
-    line-height: 1.6;
-    color: #f8dfff;
+.pd-bottom-nav::-webkit-scrollbar {
+    display: none;
 }
 
-@keyframes pdHeartFloat {
+.nav-item {
+    position: relative;
+    flex: 0 0 76px;
+    min-width: 76px;
+
+    min-height: 57px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    color: #94849f;
+    border-radius: 15px;
+
+    transition:
+        color 0.25s ease,
+        background 0.25s ease,
+        transform 0.25s ease;
+}
+
+.nav-icon {
+    position: relative;
+    width: 34px;
+    height: 28px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    font-size: 17px;
+
+    transition: 0.25s ease;
+}
+
+.nav-label {
+    font-size: 9px;
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.1px;
+}
+
+/* ACTIVE PAGE */
+
+.nav-item.active {
+    color: #e3c5ff;
+    background: rgba(154, 93, 204, 0.13);
+}
+
+.nav-item.active .nav-icon {
+    color: #fff;
+    background: linear-gradient(145deg, #a66bdb, #7544a8);
+
+    box-shadow:
+        0 4px 16px rgba(163, 103, 217, 0.36),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+
+    transform: translateY(-3px);
+}
+
+.nav-item.active .nav-label {
+    color: #e4c7ff;
+    font-weight: 800;
+}
+
+/* Active indicator */
+
+.nav-item.active::before {
+    content: "";
+    position: absolute;
+    top: -9px;
+
+    width: 22px;
+    height: 3px;
+
+    border-radius: 0 0 5px 5px;
+
+    background: #c18bf0;
+    box-shadow: 0 0 12px rgba(193, 139, 240, 0.75);
+}
+
+/* Touch feedback */
+
+.nav-item:active {
+    transform: scale(0.93);
+}
+
+
+/* ================= ANIMATIONS ================= */
+
+@keyframes float {
     0%, 100% {
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
     }
 
     50% {
-        transform: translateY(-4px) scale(1.08);
+        transform: translateY(-6px);
     }
 }
 
-@media (max-width: 360px) {
-    .pd-anniversary-card {
-        padding: 23px 12px;
+@keyframes heartBeat {
+    0%, 100% {
+        transform: scale(1);
     }
 
-    .pd-anniversary-countdown .countdown-unit {
-        padding: 12px 2px;
-        border-radius: 11px;
+    15% {
+        transform: scale(1.13);
     }
 
-    .pd-anniversary-countdown .countdown-unit span {
-        font-size: 7px;
-        letter-spacing: .5px;
+    30% {
+        transform: scale(1);
+    }
+
+    45% {
+        transform: scale(1.08);
+    }
+}
+
+
+/* ================= SMALL PHONES ================= */
+
+@media (max-width: 370px) {
+
+    .stats-app {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .anniversary-card {
+        padding: 22px 12px 17px;
+    }
+
+    .countdown-box {
+        gap: 3px;
+        padding: 15px 5px;
+    }
+
+    .countdown-unit strong {
+        font-size: 21px;
+    }
+
+    .countdown-unit span {
+        font-size: 6px;
+    }
+
+    .anniversary-title h2 {
+        font-size: 25px;
+    }
+
+    .stats-intro h2 {
+        font-size: 27px;
+    }
+
+    .nav-item {
+        flex-basis: 72px;
+        min-width: 72px;
+    }
+}
+
+
+/* ================= REDUCED MOTION ================= */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
     }
 }

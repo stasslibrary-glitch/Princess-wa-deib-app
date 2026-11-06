@@ -3,60 +3,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#32134f">
-    <meta name="description" content="Princess wa Deib — a little world made for just us.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#100b1c">
 
     <title>PD | Our Little World</title>
 
-    <link rel="stylesheet" href="home.css">
-
-    <!-- Installable app (needed for notifications on iPhone) -->
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
+
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PD">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="home.css">
 </head>
 
-<body class="phone-page pd-home-page">
+<body class="pd-home-page">
 
-<div class="phone-app pd-home-app">
+<div class="iphone-shell">
 
-<header class="pd-header">
-    <div class="pd-brand">
-        <div class="pd-brand-icon">
-            <i class="fa-solid fa-heart"></i>
-        </div>
-
-        <div>
-            <strong>Princess wa Deib</strong>
-            <small>OUR LITTLE WORLD</small>
-        </div>
+    <!-- STATUS BAR -->
+    <div class="ios-status-bar">
+        <span id="iosTime">9:41</span>
+        <div class="dynamic-island"><span></span></div>
     </div>
 
-    <div class="pd-header-right">
-        <span class="pd-online-dot"></span>
-        <div class="pd-date-display">
-            <strong id="pdHomeDate">Loading date...</strong>
-            <small>OUR SPECIAL DAYS</small>
-        </div>
-    </div>
-</header>
+    <main class="pd-content">
 
+        <!-- HEADER -->
+        <header class="pd-header">
 
-    <main class="pd-main">
+            <div class="pd-brand">
+                <div class="pd-brand-icon">
+                    <i class="fa-solid fa-heart"></i>
+                    <span></span>
+                </div>
+
+                <div class="pd-brand-text">
+                    <strong>Princess wa Deib</strong>
+                    <small id="pdHomeDate">Loading...</small>
+                </div>
+            </div>
+
+            <a href="fireworks.html"
+               class="header-action"
+               aria-label="Our Forever">
+                <i class="fa-solid fa-heart"></i>
+            </a>
+
+        </header>
 
         <!-- PHOTO SLIDESHOW -->
-        <section class="pd-slideshow" aria-label="Our memories slideshow">
+        <section class="pd-slideshow" aria-label="Our photos">
 
             <div class="pd-slide active"
                  style="background-image:url('slideshow/photo1.jpg')"></div>
@@ -66,136 +70,102 @@
 
             <div class="pd-slide"
                  style="background-image:url('slideshow/photo3.jpg')"></div>
-             <div class="pd-slide"
+
+            <div class="pd-slide"
                  style="background-image:url('slideshow/slide4.jpg')"></div>
-             <div class="pd-slide"
+
+            <div class="pd-slide"
                  style="background-image:url('slideshow/111.jpg')"></div>
-   
-            <div class="pd-slide-overlay"></div>
 
-            <div class="pd-slide-content">
-                <span class="pd-slide-label">
-                    <i class="fa-solid fa-heart"></i>
-                    OUR STORY
-                </span>
+            <div class="slide-shade"></div>
 
-                <h1>Just You.<br><em>Just Me.</em></h1>
 
-                <p>Every picture holds a memory.<br>Every memory holds a little love.</p>
-
-                <a href="fireworks.html" class="pd-forever-button">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    Our Forever
-                    <i class="fa-solid fa-arrow-right"></i>
-                </a>
-            </div>
+            <a href="fireworks.html" class="slide-forever">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Our Forever</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
 
             <div class="pd-slide-counter">
                 <span class="pd-slide-dot active"></span>
                 <span class="pd-slide-dot"></span>
                 <span class="pd-slide-dot"></span>
+                <span class="pd-slide-dot"></span>
+                <span class="pd-slide-dot"></span>
             </div>
-
-            <span class="pd-photo-caption">
-                <i class="fa-regular fa-images"></i>
-                OUR BEAUTIFUL MOMENTS
-            </span>
 
         </section>
 
-
-            <a href="love-game.html" class="suggestion-card">
-    <span>🔐</span>
-    <div>
-        <strong>The Great Key Hunt</strong>
-        <small>Five keys. One love. 💜</small>
-    </div>
-</a>
-
-</section>
-
-        </a>
-
-        <!-- SONG OF THE DAY -->
-        <a href="song.html" class="pd-song-card">
-            <div class="pd-song-art">
-                <i class="fa-solid fa-music"></i>
-                <span class="pd-music-bars">
-                    <i></i><i></i><i></i><i></i>
-                </span>
-            </div>
-
-            <div class="pd-song-info">
-                <small><i class="fa-solid fa-heart"></i> SONG OF THE DAY</small>
-                <strong id="songTitle">I miss you</strong>
-                <span>A little music for our hearts</span>
-            </div>
-
-            <div class="pd-song-play">
-                <i class="fa-solid fa-play"></i>
-            </div>
-        </a>
-
-
     </main>
 
-    <!-- FIXED BOTTOM NAVIGATION -->
+    <!-- EIGHT-BUTTON BOTTOM NAVIGATION -->
     <nav class="pd-bottom-nav" aria-label="Main navigation">
 
-        <a href="chat.html" class="pd-tab pd-tab-chat">
-            <span class="pd-tab-icon">
+        <a href="home.html" class="pd-tab active">
+            <i class="fa-solid fa-house"></i>
+            <small>Home</small>
+        </a>
+
+        <a href="chat.html" class="pd-tab">
+            <span class="nav-icon">
                 <i class="fa-solid fa-comments"></i>
-                <span class="notification" id="chatNotification" style="display:none;">0</span>
+                <span id="chatNotification"
+                      class="notification notification-source"
+                      style="display:none;">0</span>
+                <span id="chatNotificationBottom"
+                      class="notification"
+                      style="display:none;">0</span>
             </span>
             <small>Chat</small>
         </a>
 
         <a href="stats.html" class="pd-tab">
-            <span class="pd-tab-icon">
-                <i class="fa-solid fa-chart-simple"></i>
-            </span>
+            <i class="fa-solid fa-chart-simple"></i>
             <small>Stats</small>
         </a>
 
-        <a href="love.html" class="pd-tab">
-            <span class="pd-tab-icon">
-                <i class="fa-solid fa-heart"></i>
-            </span>
-            <small>Love Pie</small>
-        </a>
-
         <a href="little-world.html" class="pd-tab">
-            <span class="pd-tab-icon">
-                <i class="fa-solid fa-earth-africa"></i>
-            </span>
-            <small>Our World</small>
+            <i class="fa-solid fa-earth-africa"></i>
+            <small>World</small>
         </a>
 
         <a href="calendar.html" class="pd-tab">
-            <span class="pd-tab-icon">
-                <i class="fa-solid fa-calendar-days"></i>
-            </span>
+            <i class="fa-solid fa-calendar-days"></i>
             <small>Memories</small>
         </a>
 
         <a href="todo.html" class="pd-tab">
-            <span class="pd-tab-icon">
-                <i class="fa-solid fa-list-check"></i>
-            </span>
+            <i class="fa-solid fa-list-check"></i>
             <small>To-Do</small>
+        </a>
+
+        <!-- GREAT KEY HUNT -->
+        <a href="love-game.html" class="pd-tab">
+            <i class="fa-solid fa-key"></i>
+            <small>Key Hunt</small>
+        </a>
+
+        <!-- SONG OF THE DAY -->
+        <a href="song.html" class="pd-tab">
+            <i class="fa-solid fa-music"></i>
+            <small>Our Song</small>
         </a>
 
     </nav>
 
+    <div class="ios-home-indicator">
+        <span></span>
+    </div>
+
 </div>
 
-<!-- EXISTING APP SCRIPTS -->
+<!-- AUTHENTICATION & NOTIFICATIONS -->
 <script type="module" src="auth-guard.js"></script>
 <script type="module" src="notification.js"></script>
-<script src="home-interactions.js"></script>
 
-<!-- NEW HOME SLIDESHOW / INTERACTIONS -->
+<!-- HOME INTERACTIONS -->
 <script src="home.js"></script>
 <script type="module" src="home-live-chat.js"></script>
+
 </body>
 </html>
