@@ -3,10 +3,10 @@
 
 <head>
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#8f2de2">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#8f2de2">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -14,16 +14,10 @@
 
     <link rel="stylesheet" href="index.css">
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
-        rel="stylesheet"
-    >
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
-</head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="nav.css">`n</head>
 
 <body class="phone-page">
 
@@ -31,73 +25,66 @@
 
         <div class="splash-glow"></div>
 
-        <div class="pd-crown">
-            ♛
-        </div>
+        <div class="pd-crown">♛</div>
 
-        <div class="pd-logo">
-            PD
-        </div>
+        <div class="pd-logo" id="pdLogo">PD</div>
 
-        <div class="splash-heart">
-            ♥
-        </div>
+        <div class="splash-heart">♥</div>
 
-        <h1>
-            Princess wa Deib
-        </h1>
+        <h1 id="title">Princess wa Deib</h1>
 
-        <span class="pd-small">
-            (PD)
-        </span>
+        <span class="pd-small">(PD)</span>
 
-        <p>
-            Our private space...<br>
-            Just us
-            <span>♥</span>
-        </p>
+        <p>Our private space...<br>Just us <span>♥</span></p>
 
         <div class="splash-wave">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span><span></span><span></span><span></span>
         </div>
 
-        <a href="home.html" class="enter-btn">
+        <a href="home.html" class="enter-btn" id="enterBtn">
             Enter our world
             <i class="fa-solid fa-arrow-right"></i>
         </a>
 
     </main>
-<script
-    type="module"
-    src="auth-guard.js"
-></script>
-<script type="module" src="notification.js"></script>
-<script type="module" src="firebase.js"></script>
-<script type="module" src="script.js"></script>
-<script>
-if ("serviceWorker" in navigator) {
 
-    window.addEventListener("load", () => {
-
-        navigator.serviceWorker
-            .register("./sw.js")
-            .then(registration => {
-
-                console.log("❤️ PD Service Worker registered:", registration.scope);
-
-            })
-            .catch(error => {
-
-                console.error("❌ PD Service Worker registration failed:", error);
-
+    <script>
+        const t = document.getElementById('title');
+        if (t) {
+            const text = t.textContent;
+            t.textContent = '';
+            [...text].forEach((ch, i) => {
+                const s = document.createElement('span');
+                s.className = 'letter';
+                s.textContent = ch === ' ' ? '\u00A0' : ch;
+                s.style.setProperty('--d', (0.6 + i * 0.06) + 's');
+                t.appendChild(s);
             });
-
-    });
-
-}
-</script>
+        }
+    </script>
+    <script type="module" src="notification.js"></script>
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="script.js"></script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("./sw.js")
+                    .then(r => console.log("❤️ PD Service Worker registered:", r.scope))
+                    .catch(e => console.error("❌ PD Service Worker registration failed:", e));
+            });
+        }
+    </script>
+    <script type="module" src="index-motion.js"></script>
+<nav class="pd-bottom-nav" aria-label="Main navigation">
+  <a href="home.html" class="pd-tab"><i class="fa-solid fa-house"></i><small>Home</small></a>
+  <a href="chat.html" class="pd-tab"><i class="fa-solid fa-comments"></i><small>Chat</small></a>
+  <a href="stats.html" class="pd-tab"><i class="fa-solid fa-chart-simple"></i><small>Stats</small></a>
+  <a href="little-world.html" class="pd-tab"><i class="fa-solid fa-earth-africa"></i><small>World</small></a>
+  <a href="calendar.html" class="pd-tab"><i class="fa-solid fa-calendar-days"></i><small>Memories</small></a>
+  <a href="todo.html" class="pd-tab"><i class="fa-solid fa-list-check"></i><small>To-Do</small></a>
+  <a href="love-game.html" class="pd-tab"><i class="fa-solid fa-key"></i><small>Key Hunt</small></a>
+  <a href="song.html" class="pd-tab"><i class="fa-solid fa-music"></i><small>Our Song</small></a>
+</nav>
 </body>
-</html>
+
+

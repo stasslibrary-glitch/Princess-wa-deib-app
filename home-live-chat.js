@@ -91,7 +91,7 @@ function installStyles() {
         #pd-live-chat-feed {
             position: fixed;
             left: max(12px, calc((100vw - 440px) / 2 + 12px));
-            bottom: 88px;
+            bottom: 170px;
             width: min(310px, calc(100vw - 32px));
             display: flex;
             flex-direction: column;

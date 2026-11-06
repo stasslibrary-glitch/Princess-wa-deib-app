@@ -1,745 +1,753 @@
 
-/* ==================================================
-   PRINCESS WA DEIB — MINIMAL IPHONE HOME
-   Clean • Glass • Lavender • Mobile First
-================================================== */
+/* =========================================================
+   PRINCESS WA DEIB — HOME PAGE
+   Premium Glass • Romantic Purple • Animated Background
+   CRUZ1 PHOTO INSIDE THE PHONE FRAME
+========================================================= */
 
-:root {
-    --bg: #100b1c;
-    --purple: #a878ed;
-    --purple-light: #d1b4ff;
-    --pink: #ff9bcf;
-    --muted: #a99bb9;
-    --glass: rgba(255,255,255,.065);
-    --border: rgba(255,255,255,.10);
-    --font: "DM Sans", sans-serif;
-    --serif: "Playfair Display", serif;
-}
+/* ===================== 1. GLOBAL ===================== */
 
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
 }
 
-html {
+:root {
+    --bg: #0a0612;
+    --bg2: #1a1030;
+
+    --glass: rgba(255,255,255,0.07);
+    --glass-border: rgba(255,255,255,0.13);
+
+    --text: #f5f0fa;
+    --muted: #c0b2d2;
+
+    --accent: #8f2de2;
+    --accent2: #e64a9b;
+
+    --radius: 20px;
+}
+
+html,
+body {
+    width: 100%;
     min-height: 100%;
+    font-family: "DM Sans", system-ui, sans-serif;
+    color: var(--text);
     background: var(--bg);
-    scroll-behavior: smooth;
 }
 
-body.pd-home-page {
+/* ===================== 2. PAGE BACKGROUND ===================== */
+
+.pd-home-page {
     min-height: 100vh;
     min-height: 100dvh;
-    overflow-x: hidden;
-    color: white;
-    font-family: var(--font);
+
+    display: grid;
+    place-items: center;
+
+    padding: 0;
 
     background:
-        radial-gradient(ellipse at 0% 10%, rgba(132,77,190,.20), transparent 40%),
-        radial-gradient(ellipse at 100% 55%, rgba(102,55,150,.13), transparent 40%),
-        linear-gradient(155deg, #100b1c, #190f29 55%, #0d0916);
+        radial-gradient(
+            1200px 800px at 50% -10%,
+            rgba(143,45,226,0.3),
+            transparent 60%
+        ),
+        #080511;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
-}
+/* ===================== 3. PHONE FRAME ===================== */
+
 .iphone-shell {
     position: relative;
+    isolation: isolate;
+
     width: 100%;
-    max-width: 480px;
-    min-height: 100vh;
-    margin: 0 auto;
+    max-width: 430px;
+
+    height: 100vh;
+    height: 100dvh;
+
+    max-height: 100vh;
+    max-height: 100dvh;
+
+    display: flex;
+    flex-direction: column;
+
     overflow: hidden;
+
+    border-radius: 40px;
+
+    background: #100b1c;
+
+    box-shadow:
+        0 40px 100px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* ===================== 4. CRUZ PHOTO BACKGROUND ===================== */
+
+/* The photo exists ONLY inside the phone frame */
+
+.iphone-shell::before {
+    content: "";
+
+    position: absolute;
+    inset: -18px;
+
+    z-index: -1;
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            145deg,
+            rgba(12, 6, 24, 0.089),
+            rgba(133, 35, 231, 0.11)
+        ),
+        url("slideshow/cruz1.jpg");
+
+     background-position: center 55%;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    filter: blur(0px);
+
+    opacity: 0.22;
+
+    transform: scale(2.06);
+
+    animation: cruzPhotoPulse 7s ease-in-out infinite;
+}
+
+/* Photo gently becomes more visible, then fades */
+
+@keyframes cruzPhotoPulse {
+    0%, 100% {
+        opacity: 10.18;
+        filter: blur(3px);
+        transform: scale(1.06);
+    }
+
+    50% {
+        opacity: 10.68;
+        filter: blur(2px);
+        transform: scale(1.12);
+    }
+}
+
+/* Floating purple ambient glow */
+
+.iphone-shell::after {
+    content: "";
+
+    position: absolute;
+
+    width: 230px;
+    height: 230px;
+
+    top: -90px;
+    left: -90px;
+
+    border-radius: 50%;
 
     background:
         radial-gradient(
-            circle at 50% 15%,
-            rgba(190, 143, 255, 0.075),
-            transparent 40%
-        ),
-        radial-gradient(
-            circle at 0% 65%,
-            rgba(212, 128, 194, 0.055),
-            transparent 35%
+            circle,
+            rgba(143,45,226,0.25),
+            transparent 70%
         );
+
+    filter: blur(35px);
+
+    pointer-events: none;
+    z-index: 0;
+
+    animation: floatGlow 8s ease-in-out infinite;
 }
 
-/* STATUS BAR */
+@keyframes floatGlow {
+    0%, 100% {
+        transform: translate(0,0);
+    }
+
+    50% {
+        transform: translate(45px,65px);
+    }
+}
+
+/* Keep phone contents above the background effects */
+
+.iphone-shell > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ===================== 5. IOS STATUS BAR ===================== */
 
 .ios-status-bar {
-    height: 48px;
-    padding: 0 26px;
+    flex-shrink: 0;
+
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    position: relative;
-    z-index: 20;
-    font-size: 13px;
-    font-weight: 800;
+    align-items: center;
+
+    padding: 14px 24px 8px;
+
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .dynamic-island {
-    position: absolute;
-    left: 50%;
-    top: 8px;
-    transform: translateX(-50%);
-    width: 112px;
-    height: 31px;
-    border-radius: 30px;
+    width: 120px;
+    height: 34px;
+
     background: #000;
-    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 20px;
+
+    display: grid;
+    place-items: center;
 }
 
 .dynamic-island span {
-    position: absolute;
-    right: 13px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
+    width: 10px;
+    height: 10px;
+
     border-radius: 50%;
-    background: #282039;
+
+    background: #1a1a1a;
+
+    box-shadow:
+        0 0 8px rgba(255,255,255,0.1);
 }
 
-.ios-status-icons {
-    display: flex;
-    gap: 7px;
-    font-size: 12px;
-}
-
-/* MAIN CONTENT */
+/* ===================== 6. MAIN CONTENT ===================== */
 
 .pd-content {
-    padding: 7px 18px calc(112px + env(safe-area-inset-bottom));
+    position: relative;
+    z-index: 2;
+
+    flex: 1;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 0 16px 16px;
+    gap: 16px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background: transparent !important;
 }
 
-/* HEADER */
+/* ===================== 7. HEADER ===================== */
 
 .pd-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 13px 0 21px;
+    justify-content: space-between;
+
+    padding: 8px 4px;
+
+    animation:
+        headerIn 0.6s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes headerIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .pd-brand {
     display: flex;
     align-items: center;
-    gap: 11px;
+    gap: 12px;
 }
 
 .pd-brand-icon {
-    position: relative;
     width: 44px;
     height: 44px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            var(--accent2)
+        );
+
     display: grid;
     place-items: center;
-    border-radius: 16px;
-    color: white;
-    font-size: 17px;
-    background: linear-gradient(140deg, #c28cff, #7137ae);
-    box-shadow: 0 6px 20px rgba(151,89,222,.3);
+
+    color: #fff;
+    font-size: 18px;
+
+    box-shadow:
+        0 8px 24px rgba(143,45,226,0.4);
+
+    position: relative;
 }
 
 .pd-brand-icon span {
     position: absolute;
-    right: -2px;
-    bottom: -2px;
-    width: 11px;
-    height: 11px;
-    background: #55e69b;
-    border: 2px solid var(--bg);
-    border-radius: 50%;
+    inset: 0;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--accent),
+            var(--accent2)
+        );
+
+    filter: blur(7px);
+    opacity: 0.6;
+
+    z-index: -1;
+
+    animation: pulse 2s ease-in-out infinite;
 }
 
-.pd-brand div:last-child {
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: scale(1.3);
+        opacity: 0.3;
+    }
+}
+
+.pd-brand-text {
     display: flex;
     flex-direction: column;
-    gap: 4px;
 }
 
-.pd-brand strong {
-    font-family: var(--serif);
-    font-size: 17px;
+.pd-brand-text strong {
+    font-size: 16px;
+    font-weight: 700;
 }
 
-.pd-brand small {
-    font-size: 9px;
-    color: var(--muted);
-    letter-spacing: .6px;
+.pd-brand-text small {
+    font-size: 12px;
+    color: #d0c1e3;
 }
+
+/* Header action */
 
 .header-action {
-    width: 39px;
-    height: 39px;
+    width: 40px;
+    height: 40px;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,0.09);
+
+    border: 1px solid var(--glass-border);
+
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+
     display: grid;
     place-items: center;
-    border-radius: 14px;
-    color: var(--pink);
-    background: rgba(255,155,207,.08);
-    border: 1px solid rgba(255,155,207,.14);
+
+    color: var(--accent2);
+    text-decoration: none;
+
+    transition:
+        transform .2s,
+        background .2s;
 }
-/* ===================== PHOTO SLIDESHOW ===================== */
+
+.header-action:hover {
+    transform: scale(1.1) rotate(8deg);
+    background: rgba(230,74,155,0.2);
+}
+
+/* ===================== 8. PHOTO SLIDESHOW ===================== */
 
 .pd-slideshow {
     position: relative;
+    flex-shrink: 0;
+
     width: 100%;
-    height: clamp(350px, 105vw, 470px);
 
+    /* Increased slideshow height */
+    height: 380px;
+    min-height: 380px;
+
+    aspect-ratio: auto;
+
+    border-radius: var(--radius);
     overflow: hidden;
-    border-radius: 27px;
 
-    background: #160e25;
-    border: 1px solid rgba(211, 177, 255, 0.22);
+    background: rgba(17,10,28,0.5);
+
+    border: 1px solid rgba(255,255,255,0.12);
 
     box-shadow:
-        0 18px 45px rgba(0, 0, 0, 0.38),
-        0 0 25px rgba(155, 103, 205, 0.16);
+        0 20px 50px rgba(0,0,0,0.4);
+
+    animation:
+        slideIn 0.8s 0.2s cubic-bezier(.2,.8,.2,1) both;
 }
 
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
 .pd-slide {
     position: absolute;
     inset: 0;
 
-    background-size: contain;
-    background-position: center;
+    background-size: cover;
+    background-position: center center;
     background-repeat: no-repeat;
 
     opacity: 0;
-    transform: scale(0.96);
 
     transition:
-        opacity 1s ease,
-        transform 1.5s ease;
+        opacity 1.2s ease,
+        transform 6s ease;
+
+    transform: scale(1.02);
 }
 
 .pd-slide.active {
     opacity: 1;
     transform: scale(1);
 }
+
 .pd-slide.active {
     opacity: 1;
     transform: scale(1);
 }
+
+/* Slideshow shade */
 
 .slide-shade {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        180deg,
-        rgba(12,7,22,.24),
-        transparent 30%,
-        transparent 60%,
-        rgba(12,7,22,.42)
-    );
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent 40%,
+            rgba(0,0,0,0.7)
+        );
+
     pointer-events: none;
 }
 
-.slide-top {
-    position: absolute;
-    z-index: 2;
-    top: 14px;
-    left: 14px;
-    right: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.slide-live {
-    width: 32px;
-    height: 32px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    color: #ff9bcf;
-    background: rgba(15,9,27,.48);
-    backdrop-filter: blur(10px);
-}
-
-#slideNumber {
-    padding: 8px 11px;
-    border-radius: 20px;
-    color: white;
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    background: rgba(15,9,27,.48);
-    backdrop-filter: blur(10px);
-}
+/* Forever button */
 
 .slide-forever {
     position: absolute;
-    z-index: 3;
-    bottom: 25px;
-    left: 18px;
+
+    bottom: 14px;
+    left: 14px;
+    right: 14px;
+
     display: flex;
     align-items: center;
-    gap: 9px;
+    justify-content: space-between;
+    gap: 8px;
+
     padding: 12px 16px;
+
     border-radius: 14px;
-    color: white;
-    font-size: 10px;
-    font-weight: 800;
-    background: linear-gradient(120deg, #a76de8, #7941b5);
-    box-shadow: 0 6px 20px rgba(117,62,178,.3);
-    transition: transform .2s ease;
+
+    background: rgba(255,255,255,0.12);
+
+    border: 1px solid rgba(255,255,255,0.2);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    color: #fff;
+    text-decoration: none;
+
+    font-weight: 600;
+    font-size: 14px;
+
+    transition:
+        transform .2s,
+        background .2s;
 }
 
-.slide-forever:active {
-    transform: scale(.95);
+.slide-forever:hover {
+    transform: translateY(-2px);
+    background: rgba(255,255,255,0.2);
 }
+
+.slide-forever i:last-child {
+    transition: transform .2s;
+}
+
+.slide-forever:hover i:last-child {
+    transform: translateX(4px);
+}
+
+/* Slideshow indicators */
 
 .pd-slide-counter {
     position: absolute;
-    z-index: 3;
-    bottom: 34px;
-    right: 19px;
+
+    top: 14px;
+    right: 14px;
+
     display: flex;
-    align-items: center;
-    gap: 5px;
+    gap: 6px;
 }
 
 .pd-slide-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 10px;
-    background: rgba(255,255,255,.5);
-    transition: all .3s ease;
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.4);
+
+    transition: all .3s;
 }
 
 .pd-slide-dot.active {
-    width: 19px;
-    background: #d4b1ff;
+    width: 18px;
+
+    border-radius: 3px;
+
+    background: #fff;
 }
 
-/* QUICK ACTION GRID */
-
-.quick-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 11px;
-    margin-top: 19px;
-}
-
-.quick-card {
-    min-height: 91px;
-    padding: 13px 5px 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-    border-radius: 19px;
-    background: var(--glass);
-    border: 1px solid var(--border);
-    box-shadow: 0 7px 20px rgba(0,0,0,.10);
-    transition: transform .2s ease, background .2s ease;
-}
-
-.quick-card:active {
-    transform: scale(.94);
-    background: rgba(170,120,237,.14);
-}
-
-.quick-icon {
-    position: relative;
-    width: 35px;
-    height: 35px;
-    display: grid;
-    place-items: center;
-    border-radius: 12px;
-    font-size: 16px;
-    color: var(--purple-light);
-    background: rgba(168,120,237,.13);
-}
-
-.quick-card:nth-child(2) .quick-icon {
-    color: #8dd9ff;
-    background: rgba(141,217,255,.10);
-}
-
-.quick-card:nth-child(3) .quick-icon {
-    color: #ff9bcf;
-    background: rgba(255,155,207,.10);
-}
-
-.quick-card:nth-child(4) .quick-icon {
-    color: #a8e8c7;
-    background: rgba(168,232,199,.10);
-}
-
-.quick-card:nth-child(5) .quick-icon {
-    color: #ffd58b;
-    background: rgba(255,213,139,.10);
-}
-
-.quick-card:nth-child(6) .quick-icon {
-    color: #c6adff;
-    background: rgba(198,173,255,.10);
-}
-
-.quick-card strong {
-    font-size: 10px;
-    font-weight: 700;
-}
-
-.notification {
-    position: absolute;
-    top: -5px;
-    right: -6px;
-    min-width: 17px;
-    height: 17px;
-    display: grid;
-    place-items: center;
-    padding: 0 4px;
-    border: 2px solid #191027;
-    border-radius: 20px;
-    color: white;
-    background: #fa548a;
-    font-size: 8px;
-    font-weight: 800;
-}
-
-/* FEATURE CARDS */
-
-.feature-card {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    min-height: 79px;
-    margin-top: 13px;
-    padding: 12px 14px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: linear-gradient(115deg, rgba(129,76,188,.20), rgba(255,255,255,.045));
-    box-shadow: 0 10px 25px rgba(0,0,0,.12);
-    transition: transform .2s ease;
-}
-
-.feature-card:active {
-    transform: scale(.975);
-}
-
-.feature-icon {
-    width: 46px;
-    height: 46px;
-    flex-shrink: 0;
-    display: grid;
-    place-items: center;
-    border-radius: 15px;
-    font-size: 18px;
-    color: #ffe1a4;
-    background: linear-gradient(145deg, #9e64d9, #542b85);
-}
-
-.feature-details {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.feature-details strong {
-    font-size: 12px;
-    font-weight: 800;
-}
-
-.feature-details small {
-    font-size: 9px;
-    color: var(--muted);
-}
-
-.feature-arrow {
-    width: 29px;
-    height: 29px;
-    flex-shrink: 0;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    color: var(--purple-light);
-    background: rgba(255,255,255,.07);
-    font-size: 10px;
-}
-
-/* SONG */
-
-.song-card {
-    background: linear-gradient(125deg, rgba(112,65,163,.22), rgba(255,255,255,.045));
-}
-
-.song-art {
-    position: relative;
-    width: 56px;
-    height: 56px;
-    flex-shrink: 0;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    border-radius: 15px;
-    background: linear-gradient(140deg, #c07bde, #6532a2 65%, #30194f);
-}
-
-.vinyl {
-    width: 43px;
-    height: 43px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background: repeating-radial-gradient(circle, #21172c 0, #21172c 2px, #45304e 3px, #21172c 4px);
-    animation: vinylSpin 9s linear infinite;
-}
-
-.vinyl-center {
-    width: 17px;
-    height: 17px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    color: white;
-    background: #b477dc;
-    font-size: 8px;
-}
-
-@keyframes vinylSpin {
-    to { transform: rotate(360deg); }
-}
-
-.music-bars {
-    position: absolute;
-    right: 4px;
-    bottom: 4px;
-    height: 14px;
-    display: flex;
-    align-items: flex-end;
-    gap: 2px;
-}
-
-.music-bars i {
-    width: 3px;
-    border-radius: 4px;
-    background: white;
-    animation: musicBars .8s ease-in-out infinite alternate;
-}
-
-.music-bars i:nth-child(1) { height: 6px; }
-.music-bars i:nth-child(2) { height: 12px; animation-delay: .2s; }
-.music-bars i:nth-child(3) { height: 8px; animation-delay: .4s; }
-.music-bars i:nth-child(4) { height: 13px; animation-delay: .1s; }
-
-@keyframes musicBars {
-    to { height: 3px; }
-}
-
-.song-details {
-    gap: 5px;
-}
-
-.song-details small {
-    color: var(--pink);
-    font-size: 7px;
-    letter-spacing: 1px;
-    font-weight: 800;
-}
-
-.song-details strong {
-    font-family: var(--serif);
-    font-size: 16px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.play-button {
-    width: 35px;
-    height: 35px;
-    flex-shrink: 0;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    color: white;
-    background: linear-gradient(140deg, #b581f1, #7943b7);
-    box-shadow: 0 5px 15px rgba(149,93,207,.25);
-    font-size: 10px;
-}
-
-/* BOTTOM NAV */
+/* ===================== 9. BOTTOM NAVIGATION ===================== */
 
 .pd-bottom-nav {
-    position: fixed;
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%);
-    z-index: 100;
-    width: 100%;
-    max-width: 480px;
-    display: flex;
-    justify-content: flex-start;
-    gap: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding: 10px 8px calc(18px + env(safe-area-inset-bottom));
-    background: rgba(19,12,30,.92);
-    border-top: 1px solid rgba(255,255,255,.09);
-    backdrop-filter: blur(25px) saturate(150%);
-    -webkit-backdrop-filter: blur(25px) saturate(150%);
-    box-shadow: 0 -12px 35px rgba(0,0,0,.23);
-}
+    flex-shrink: 0;
 
-.pd-bottom-nav::-webkit-scrollbar {
-    display: none;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 6px;
+
+    padding: 10px 8px 14px;
+
+    background: rgba(20,12,35,0.78);
+
+    border-top: 1px solid var(--glass-border);
+
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
 .pd-tab {
-    position: relative;
-    flex: 0 0 68px;
-    min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 5px;
-    color: #887995;
-    transition: color .2s ease, transform .2s ease;
+
+    gap: 4px;
+
+    padding: 8px 4px;
+
+    border-radius: 12px;
+
+    color: var(--muted);
+    text-decoration: none;
+
+    font-size: 11px;
+    font-weight: 500;
+
+    transition:
+        all .25s cubic-bezier(.2,.8,.2,1);
+
+    opacity: 0;
+    transform: translateY(40px);
+
+    animation:
+        tabFlyIn 0.6s cubic-bezier(.2,.8,.2,1) forwards;
 }
 
-.pd-tab:active {
-    transform: scale(.9);
+.pd-tab:nth-child(1) { animation-delay: 0.3s; }
+.pd-tab:nth-child(2) { animation-delay: 0.35s; }
+.pd-tab:nth-child(3) { animation-delay: 0.4s; }
+.pd-tab:nth-child(4) { animation-delay: 0.45s; }
+.pd-tab:nth-child(5) { animation-delay: 0.5s; }
+.pd-tab:nth-child(6) { animation-delay: 0.55s; }
+.pd-tab:nth-child(7) { animation-delay: 0.6s; }
+.pd-tab:nth-child(8) { animation-delay: 0.65s; }
+
+@keyframes tabFlyIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.pd-tab > i,
-.nav-icon {
-    width: 35px;
-    height: 28px;
+.pd-tab i,
+.pd-tab .nav-icon {
+    font-size: 18px;
+}
+
+.pd-tab small {
+    font-size: 10px;
+}
+
+.pd-tab:hover,
+.pd-tab.active {
+    color: #fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(143,45,226,0.3),
+            rgba(230,74,155,0.2)
+        );
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 8px 20px rgba(143,45,226,0.25);
+}
+
+.pd-tab.active {
+    color: var(--accent2);
+}
+
+/* ===================== 10. CHAT NOTIFICATIONS ===================== */
+
+.notification {
+    position: absolute;
+
+    top: -4px;
+    right: -6px;
+
+    min-width: 16px;
+    height: 16px;
+
+    padding: 0 4px;
+
+    border-radius: 8px;
+
+    background: var(--accent2);
+
+    color: #fff;
+
+    font-size: 10px;
+    font-weight: 700;
+
     display: grid;
     place-items: center;
-    border-radius: 11px;
-    font-size: 16px;
+
+    box-shadow:
+        0 0 10px rgba(230,74,155,0.6);
+
+    animation:
+        notifPop 0.4s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes notifPop {
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1);
+    }
 }
 
 .nav-icon {
     position: relative;
+    display: inline-block;
 }
 
-.pd-tab small {
-    font-size: 8px;
-    font-weight: 700;
-    white-space: nowrap;
-}
-
-.pd-tab.active {
-    color: #c7a2ff;
-}
-
-.pd-tab.active > i {
-    background: rgba(166,111,234,.15);
-}
+/* ===================== 11. HOME INDICATOR ===================== */
 
 .ios-home-indicator {
-    position: fixed;
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%);
-    z-index: 110;
-    width: 100%;
-    max-width: 480px;
-    height: calc(5px + env(safe-area-inset-bottom));
-    display: flex;
-    justify-content: center;
-    pointer-events: none;
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    padding: 8px;
 }
 
 .ios-home-indicator span {
-    width: 105px;
-    height: 4px;
-    border-radius: 10px;
-    background: rgba(255,255,255,.75);
+    width: 130px;
+    height: 5px;
+
+    border-radius: 3px;
+
+    background: rgba(255,255,255,0.5);
 }
 
-/* SMALL PHONES */
+/* ===================== 12. RESPONSIVE ===================== */
 
-@media (max-width: 380px) {
-    .pd-content {
-        padding-left: 14px;
-        padding-right: 14px;
-    }
-
-    .pd-slideshow {
-        height: 355px;
-    }
-
-    .quick-grid {
-        gap: 8px;
-    }
-
-    .quick-card {
-        min-height: 84px;
-    }
-
-    .pd-tab {
-        flex-basis: 63px;
-    }
-}
-
-/* TABLETS / DESKTOP PREVIEW */
-
-@media (min-width: 600px) {
+@media (min-width: 431px) {
     .iphone-shell {
-        border-left: 1px solid rgba(255,255,255,.04);
-        border-right: 1px solid rgba(255,255,255,.04);
+        height: calc(100dvh - 32px);
+        max-height: 900px;
+
+        border: 1px solid rgba(255,255,255,0.1);
+
+        border-radius: 40px;
     }
 
-    body {
-    min-height: 100vh;
-    font-family: "DM Sans", sans-serif;
-    color: var(--pd-text);
-    overflow-x: hidden;
-
-    background:
-        radial-gradient(
-            ellipse at 12% 8%,
-            rgba(157, 103, 220, 0.28),
-            transparent 38%
-        ),
-        radial-gradient(
-            ellipse at 90% 25%,
-            rgba(205, 119, 190, 0.17),
-            transparent 34%
-        ),
-        radial-gradient(
-            ellipse at 50% 75%,
-            rgba(103, 65, 166, 0.20),
-            transparent 42%
-        ),
-        radial-gradient(
-            ellipse at 5% 95%,
-            rgba(111, 75, 180, 0.15),
-            transparent 35%
-        ),
-        linear-gradient(
-            145deg,
-            #10091c 0%,
-            #211333 45%,
-            #130d22 75%,
-            #0b0814 100%
-        );
-
-    background-attachment: fixed;
-}
+    .pd-home-page {
+        padding: 16px;
+    }
 }
 
-/* ACCESSIBILITY */
+@media (max-width: 430px) {
+    .iphone-shell {
+        max-width: 100%;
+        width: 100%;
+
+        height: 100dvh;
+        max-height: 100dvh;
+
+        border-radius: 0;
+    }
+
+    .pd-home-page {
+        display: block;
+    }
+}
+
+/* ===================== 13. REDUCED MOTION ===================== */
 
 @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: .01ms !important;
+    .iphone-shell::before,
+    .iphone-shell::after {
+        animation: none;
+    }
+
+    .pd-tab,
+    .pd-header,
+    .pd-slideshow {
+        animation: none;
+        opacity: 1;
+        transform: none;
     }
 }
+
